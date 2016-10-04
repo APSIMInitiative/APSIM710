@@ -64,13 +64,11 @@
          <heatOnsetT description="Onset temperature for heat effects on photosynthesis (oC)">26.0  30.0  35.0</heatOnsetT>
          <heatFullT description="Temperature for full heat effects on photosynthesis (oC)">31.0  35.0  40.0</heatFullT>
          <heatSumT description="Temperature sum for recovery from heat effects (oC)">30.0  20.0  50.0</heatSumT>
-         <heatTq description="Exponent for computing recovery from heat stress">1.0  1.0  1.0</heatTq>
          <heatRecoverT description="Base temperature for recovery from heat stress (oC)">25.0  25.0  25.0</heatRecoverT>
          <useColdStress description="Whether cold stress is considered, reduces photosynthesis (yes/no)">no  no  no</useColdStress>
          <coldOnsetT description="Onset temperature for cold effects on photosynthesis (oC)">1.0  0.0  8.0</coldOnsetT>
          <coldFullT description="Temperature for full cold effects on photosynthesis (oC)">-3.0  -2.0  3.0</coldFullT>
          <coldSumT description="Temperature sum for recovery from cold effects (oC)">30.0  30.0  50.0</coldSumT>
-         <coldTq description="Exponent for computing recovery from cold stress">1.0  1.0  1.0</coldTq>
          <coldRecoverT description="Base temperature for recovery from cold effects (oC)">0.0  0.0  0.0</coldRecoverT>
          <growthEfficiency description="Growth efficiency factor - photosynthesis minus growth respiration (0-1)">0.75  0.75  0.75</growthEfficiency>
          <maintRespiration description="Maintenance respiration coefficient (%)">3.0  3.0  3.0</maintRespiration>
@@ -99,6 +97,10 @@
          <SpecificLeafArea description="Specific leaf area, per dry matter weight (m2/kgDM)">20  20  20</SpecificLeafArea>
          <SpecificRootLength description="Specific root length, per dry matter weight (m/gDM)">75  75  75</SpecificRootLength>
 
+         <StolonEffectOnLAI description="Fraction of stolon tissue used when computing green LAI (0-1)">0.0  0.3  0.0</StolonEffectOnLAI>
+         <ShootMaxEffectOnLAI description="Maximum aboveground biomass for using stems when computing LAI (kgDM/ha)">1000  1000  1000</ShootMaxEffectOnLAI>
+         <MaxStemEffectOnLAI description="Maximum effect of stems when computing green LAI (0-1)">1.0  1.0  1.0</MaxStemEffectOnLAI>
+
          <rateLive2Dead description="Reference tissue turnover rate for shoot (0-1)">0.05  0.05  0.05</rateLive2Dead>
          <facGrowingTissue description="Factor for adjusting DM turnover of growing tissue (>0.0)">2.0  2.0  2.0</facGrowingTissue>
          <rateDead2Litter description="Reference littering rate - dead tissue to litter (0-1)">0.08  0.08  0.07</rateDead2Litter>
@@ -111,7 +113,6 @@
          <massFluxDeadWq description="Exponent to adjust GLFWater for senescing tissue (>1.0)">3.0  3.0  3.0</massFluxDeadWq>
          <massFluxDeadWf description="Factor to adjust GLFWater for senescing tissue (0-1)">0.1  0.1  0.1</massFluxDeadWf>
          <stockParameter description="Parameter for stock influence on tissue senescence">0.05  0.05  0.05</stockParameter>
-
          <massFluxDefoliationEffect description="Coefficient of function increasing the stolons turnover rate due to defoliation (>0.0)">0.0  0.65  0.0</massFluxDefoliationEffect>
          <massFluxMinDefoliationEff description="Minimum significant daily effect of defoliation on stolons turnover rate (>0.0)">1.0  1.0  1.0</massFluxMinDefoliationEff>
         
@@ -121,6 +122,7 @@
 
          <digestLiveCellWall description="Digestibility of live plant material (0-1)">0.6  0.6  0.6</digestLiveCellWall>
          <digestDeadCellWall description="Digestibility of dead plant material (0-1)">0.2  0.2  0.2</digestDeadCellWall>
+         <SugarFractionNewGrowth description="Soluble fraction of carbohydrates in newly grown tissues (0-1)">0.5  0.5  0.5</SugarFractionNewGrowth>
 
          <dmshoot description="Default initial shoot dry matter weight (kgDM/ha)">1500  500  300</dmshoot>
          <dmroot description="Default initial root dry matter weight - if negative, start value is calculated (kgDM/ha)">450  150  100</dmroot>
@@ -143,19 +145,18 @@
          <NMinFix description="Minimum fraction of N demand fixed by legumes (when N in soil is sufficient) (0-1)">0.0  0.2  0.0</NMinFix>
          <NMaxFix description="Maximum fraction of N demand fixed by legumes (when N in soil is absent) (0-1)">0.0  0.6  0.0</NMaxFix>
          <NdilutCoeff description="Coefficient for modifying the effect of N stress on plant growth (0-1)">0.5  1.0  0.5</NdilutCoeff>
-         <waterStressFactor description="coefficient for modifying the effect of water stress on plant growth (0-1)">1.0  1.0  1.0</waterStressFactor>
          <soilSatFactor description="Coefficient for growth limitations due to soil moisture saturation (0-1)">0.1  0.1  0.1</soilSatFactor>
          <MinMacroPorosity description="Minimum soil macroporosity (pores>30um) for optimum plant growth (0-1)">-1  -1  -1</MinMacroPorosity>
+         <!-- A negative value indicates that DUL will be used  -->
+         <SoilSaturationRecoveryFactor description="Daily recovery rate from water logging (0-1)">1.0  1.0  1.0</SoilSaturationRecoveryFactor>
          <GenericGLF description="Generic relative growth limiting factor (0-1)">1.0  1.0  1.0</GenericGLF>
          <SFertilityGLF description="Soil related generic growth limiting factor (0-1)">1.0  1.0  1.0</SFertilityGLF>
 
          <NFixCostMethod description="Which method is used for determining the costs of N fixation (0-2)">0</NFixCostMethod>
-         <NFixCostMax description="Maximum reduction in growth as cost for N fixation (method01) (0-1)">0.00  0.24  0.00</NFixCostMax>
          <symbiontCostFactor description="Respiration cost due to the presence of symbiont bacteria (method02) (gC/gCroots)">0.00  0.01  0.00</symbiontCostFactor>
          <NFixingCostFactor description="Activity cost of N fixation (method02) (gC/gNfixed)">0.0  4.0  0.0</NFixingCostFactor>
 
-         <PreferenceForGreenDM description="Weight factor defining the preference level for green DM (on removal)">1  1  1</PreferenceForGreenDM>
-         <PreferenceForDeadDM description="Weight factor defining the preference level for dead DM (on removal)">1  1  1</PreferenceForDeadDM>
+         <PreferenceForGreenDM description="Weight factor defining the preference level for green over dead DM (on removal)">1  1  1</PreferenceForGreenDM>
          <PreferenceForLeaves description="Weight factor defining the preference level for leaves over stems (on removal)">1  1  1</PreferenceForLeaves>
 
          <rootDepth description="Default rooting depth (mm)">750  350  850</rootDepth>

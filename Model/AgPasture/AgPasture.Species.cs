@@ -53,48 +53,54 @@ public class Species
 
     ////- General parameters (name and type) >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    /// <summary>Some Description</summary>
+    /// <summary>Actual name of this species</summary>
     internal string speciesName;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Plant type for micromet</summary>
     internal string micrometType;
 
-    /// <summary>Photosynthesis pathways: 3=C3, 4=C4; no consideration for CAM(=3)</summary>
+    /// <summary>Metabolic pathway for C fixation during photosynthesis (C3 or C4)</summary>
     internal string photoPath;
+
+    /// <summary>Whether the plant is a legume species (1=yes, 0=no)</summary>
+    internal bool isLegume;
+
+    /// <summary>Whether the plant is an annual species (1=yes, 0=no)</summary>
+    internal bool isAnnual;
 
     ////- Potential growth (photosynthesis) >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    /// <summary>reference leaf co2 mg/m^2/s maximum</summary>
+    /// <summary>Reference leaf CO2 assimilation rate for photosynthesis</summary>
     internal double Pm;
 
-    /// <summary>Partition factor for intercepted light for each species</summary>
+    /// <summary>Relative factor for light partition between species</summary>
     internal double lightPartitioningFactor;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Leaf photosynthetic efficiency</summary>
     internal double alphaPhoto;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Photosynthesis curvature parameter</summary>
     internal double thetaPhoto;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Fraction of radiation that is photosynthetic active</summary>
     internal double fractionPAR;
 
     /// <summary>Light extinction coefficient</summary>
     internal double lightExtCoeff;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Reference CO2 concentration for photosynthesis</summary>
     internal double referenceCO2 = 380;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Scaling parameter for the CO2 effect on photosynthesis</summary>
     internal double CO2PmaxScale;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Scaling parameter for the CO2 effects on N requirements</summary>
     internal double CO2NScale;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Minimum value for the CO2 effect on N requirements</summary>
     internal double CO2NMin;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Exponent controlling the CO2 effect on N requirements</summary>
     internal double CO2NCurvature;
 
     /// <summary>Minimum temperature for growth</summary>
@@ -103,360 +109,305 @@ public class Species
     /// <summary>Optimum temperature for growth</summary>
     internal double growthTopt;
 
-    /// <summary>Temperature curvature coefficient</summary>
+    /// <summary>Curve parameter for growth response to temperature</summary>
     internal double growthTq;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Whether heat damage stress is enabled</summary>
     internal bool usingHeatStress = false;
 
-    /// <summary>onset temperature for heat effects</summary>
+    /// <summary>Onset temperature for heat effects on photosynthesis</summary>
     internal double heatOnsetT;
 
-    /// <summary>full temperature for heat effects</summary>
+    /// <summary>Temperature for full heat effect on photosynthesis</summary>
     internal double heatFullT;
 
-    /// <summary>Some Description</summary>
-    internal double heatTq;
-
-    /// <summary>temperature sum for recovery</summary>
+    /// <summary>Cumulative degrees-day for recovery from heat stress</summary>
     internal double heatSumT;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Reference temperature for recovery from heat stress</summary>
     internal double heatRecoverT;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Whether cold damage stress is enabled</summary>
     internal bool usingColdStress = false;
 
-    /// <summary>onset temperature for cold effects</summary>
+    /// <summary>Onset temperature for cold effects on photosynthesis</summary>
     internal double coldOnsetT;
 
-    /// <summary>full temperature for cold effects</summary>
+    /// <summary>Temperature for full cold effect on photosynthesis</summary>
     internal double coldFullT;
 
-    /// <summary>Some Description</summary>
-    internal double coldTq;
-
-    /// <summary>temperature sum for recovery - sum of means</summary>
+    /// <summary>Cumulative degrees for recovery from cold stress</summary>
     internal double coldSumT;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Reference temperature for recovery from cold stress</summary>
     internal double coldRecoverT;
 
     ////- Respiration parameters >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-        /// <summary>Some Description</summary>
+    /// <summary>Maintenance respiration coefficient</summary>
     internal double maintRespiration;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Growth respiration coefficient</summary>
     internal double growthEfficiency;
 
-    /// <summary>Some Description</summary>
+    /// <summary>0</summary>
     internal double maxTempEffectResp = 1.25;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Reference temperature for maintenance respiration</summary>
     internal double respTref;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Exponent controlling the effect of temperature on respiration</summary>
     internal double respExponent;
+
+    ////- N concentrations thresholds >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    /// <summary>N concentration for plants at stage 2 (developing), relative to optimum</summary>
+    internal double NcRel2;
+
+    /// <summary>N concentration for plants at stage 3 (mature), relative to optimum</summary>
+    internal double NcRel3;
 
     ////- Germination and emergence >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    /// <summary>Some Description</summary>
+    /// <summary>Cumulative degrees-day needed for seed germination</summary>
     internal double degreesdayForGermination;
 
-    /// <summary>Some Description</summary>
+    /// <summary>The fractions of DM for each plant part at emergence, for all plants</summary>
     internal double[] emergenceDM;
 
     ////- Allocation of new growth >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    /// <summary>Shoot-Root ratio targeted</summary>
+    /// <summary>Target or ideal plant's shoot:root ratio at vegetative stage</summary>
     internal double TargetSRratio;
 
-    /// <summary>Maximum allocation of DM to roots</summary>
+    /// <summary>Maximum fraction of DM growth that can be allocated to roots</summary>
     internal double MaxRootAllocation;
-
-    /// <summary>factor for different biomass allocation among seasons</summary>
-    internal double allocationSeasonF;
-
-    /// <summary>Some Description</summary>
-    internal double startHighAllocation;
-
-    /// <summary>Some Description</summary>
-    internal double durationHighAllocation;
-
-    /// <summary>Some Description</summary>
-    internal double shoulderHighAllocation;
-
-    /// <summary>Some Description</summary>
-    internal bool usingLatFunctionFShoot = false;
-
-    /// <summary>Some Description</summary>
-    internal double referenceLatitude = 60;
-
-    /// <summary>Some Description</summary>
-    internal double paramALatFunction = 5.0;
-
-    /// <summary>Some Description</summary>
-    internal double onsetFacLatFunction = 0.5;
-
-    /// <summary>Some Description</summary>
-    internal double outsetFacLatFunction = 0.5;
-
-    /// <summary>Some Description</summary>
-    internal double maxShoulderLatFunction = 60;
-
-    /// <summary>Some Description</summary>
-    internal double minPlateauLatFunction = 15;
-
-    /// <summary>Some Description</summary>
-    internal double paramBLatFunction = 2.75;
-
-    /// <summary>Some Description</summary>
-    internal double allocationMax = 0.4;
-
-    /// <summary>Some Description</summary>
-    internal double paramCLatFunction = 4.0;
 
     /// <summary>Maximum effect that soil GLFs have on Shoot-Root ratio</summary>
     internal double GlfEffectOnSR = 0.5;
 
-    /// <summary>Flag whether the effect of reproductive stage on shoot DM allocation are considered</summary>
+    /// <summary>Whether Shoot:Root ratio should be adjusted to mimic DM allocation during reproductive season (perennial species)</summary>
     internal bool UsingReproSeasonFactor = true;
 
     /// <summary>Reference latitude determining timing for reproductive season</summary>
     internal double ReproSeasonReferenceLatitude = 41;
 
-    /// <summary>Controls how the time to start the reproductive season varies with latitude</summary>
+    /// <summary>Coefficient controlling the time to start the reproductive season as function of latitude</summary>
     internal double ReproSeasonTimingCoeff = 0.14;
 
-    /// <summary>Control how the duration of the reproductive season varies with latitude</summary>
+    /// <summary>Coefficient controlling the duration of the reproductive season as function of latitude</summary>
     internal double ReproSeasonDurationCoeff = 2.0;
-     
-    /// <summary>The ratio between the length of shoulders and the period with full reproductive growth effect</summary>
+
+    /// <summary>Ratio between the length of shoulders and the period with full reproductive growth effect</summary>
     internal double ReproSeasonShouldersLengthFactor = 1.0;
-     
+
     /// <summary>The proportion of the length of shoulder before the period with full reproductive growth effect</summary>
     internal double ReproSeasonOnsetDurationFactor = 0.6;
 
     /// <summary>Maximum increase in DM allocation to shoot during reproductive growth</summary>
     internal double ReproSeasonMaxAllocationIncrease = 0.5;
 
-    /// <summary>Controls how the increase in shoot allocation during reproductive growth varies with latitude</summary>
+    /// <summary>Coefficient controlling the increase in shoot allocation during reproductive growth as function of latitude</summary>
     internal double ReproSeasonAllocationCoeff = 0.10;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Maximum target allocation of new growth to leaves</summary>
     internal double FractionLeafMaximum;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Minimum target allocation of new growth to leaves</summary>
     internal double FractionLeafMinimum;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Shoot DM at which allocation of new growth to leaves start to decrease</summary>
     internal double FractionLeafDMThreshold;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Shoot DM when allocation to leaves is midway maximum and minimum</summary>
     internal double FractionLeafDMFactor;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Exponent of function describing DM allocation to leaves</summary>
     internal double FractionLeafExponent;
 
-    /// <summary>Growth partition to stolon (0-1)</summary>
+    /// <summary>Fraction of new growth to be allocated to stolon</summary>
     internal double StolonAllocationFactor;
 
-    /// <summary>Specific leaf area (m2/kg dwt)</summary>
+    /// <summary>Specific leaf area, per dry matter weight</summary>
     internal double SpecificLeafArea;
 
-    /// <summary>Specific root length (m/kg dwt)</summary>
+    /// <summary>Specific root length, per dry matter weight</summary>
     internal double SpecificRootLength;
+
+    /// <summary>Fraction of stolon tissue used when computing green LAI</summary>
+    internal double StolonEffectOnLAI = 0.3;
+
+    /// <summary>Maximum aboveground biomass for using stems when computing LAI</summary>
+    internal double ShootMaxEffectOnLAI = 1000;
+
+    /// <summary>Maximum effect of stems when computing green LAI</summary>
+    internal double MaxStemEffectOnLAI = 0.316227766;
 
     ////- Tissue turnover and senescence >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    /// <summary>Some Description</summary>
+    /// <summary>Number of live leaves per tiller</summary>
     internal double LiveLeavesPerTiller;
 
-    /// <summary>Some Description</summary>
-    internal double refTissueTurnoverRate; //Decay coefficient between live and dead
+    /// <summary>Reference daily DM turnover rate for shoot tissues</summary>
+    internal double refTissueTurnoverRate;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Reference daily DM turnover rate for root tissues</summary>
+    internal double rateRootSen;
+
+    /// <summary>Relative turnover rate for emerging tissues</summary>
     internal double facGrowingTissue;
 
-    /// <summary>Some Description</summary>
-    internal double refLitteringRate; //Decay coefficient between dead and litter
+    /// <summary>Reference daily detachment rate for dead tissues</summary>
+    internal double refLitteringRate;
 
-    /// <summary>Some Description</summary>
-    internal double rateRootSen; //Decay reference root senescence rate (%/day)
+    /// <summary>Minimum temperature for tissue turnover</summary>
+    internal double massFluxTmin;
 
-    /// <summary>Some Description</summary>
-    internal double massFluxTmin; //grfxt1    Mass flux minimum temperature
+    /// <summary>Reference temperature for tissue turnover</summary>
+    internal double massFluxTopt;
 
-    /// <summary>Some Description</summary>
-    internal double massFluxTopt; //grfxt2    Mass flux optimum temperature
-
-    /// <summary>Some Description</summary>
+    /// <summary>Exponent of function for temperature effect on tissue turnover</summary>
     internal double massFluxTq;
 
-    /// <summary>Mass flux scale factor at GLFwater=0 (must be > 1)</summary>
+    /// <summary>Maximum increase in tissue turnover due to water deficit</summary>
     internal double massFluxW0;
 
-    /// <summary>Mass flux optimum temperature</summary>
+    /// <summary>Minimum GLFwater without effect on tissue turnover</summary>
     internal double massFluxWopt;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Coefficient controlling detachment rate as function of moisture</summary>
     internal double exponentGLFW2dead;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Minimum effect of drought on detachment rate</summary>
     internal double factorGLFW2dead;
 
-    /// <summary>Some Description</summary>
-    internal double stockParameter; //Stock influence parameter
+    /// <summary>Factor increasing tissue turnover rate due to stock trampling</summary>
+    internal double stockParameter;
 
-    /// <summary>Some Description</summary>
+    /// <summary></summary>
     internal static double stockingRate = 0.0;
     //stocking rate affecting transfer of dead to litter (default as 0 for now)
 
-    /// <summary>Fraction of luxury N in tissue 1 that can be remobilised</summary>
+    /// <summary>Fraction of luxury N remobilisable from tissue 1 each day</summary>
     internal double Kappa1 = 0.0;
 
-    /// <summary>Fraction of luxury N in tissue 2 that can be remobilised</summary>
+    /// <summary>Fraction of luxury N remobilisable from tissue 2 each day</summary>
     internal double Kappa2 = 0.0;
 
-    /// <summary>Fraction of luxury N in tissue 3 that can be remobilised</summary>
+    /// <summary>Fraction of luxury N remobilisable from tissue 3 each day</summary>
     internal double Kappa3 = 0.0;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Coefficient for partitioning non-used Nremob into tissue 4</summary>
     internal double Kappa4 = 0.0;
-
-    ////- N concentrations thresholds >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    /// <summary>Some Description</summary>
-    internal double NcstemFr; //stem Nc as % of leaf Nc
-
-    /// <summary>Some Description</summary>
-    internal double NcstolFr; //stolon Nc as % of leaf Nc
-
-    /// <summary>Some Description</summary>
-    internal double NcrootFr; //root Nc as % of leaf Nc
-
-    /// <summary>N concentration in tissue 2 relative to tissue 1</summary>
-    internal double NcRel2;
-
-    /// <summary>N concentration in tissue 3 relative to tissue 1</summary>
-    internal double NcRel3;
 
     ////- N fixation (for legumes) >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    /// <summary>N fixation fraction when no soil N available</summary>
+    /// <summary>Minimum fraction of N demand supplied by biologic N fixation</summary>
     internal double MaxFix;
 
-    /// <summary>N fixation fraction when soil N sufficient</summary>
+    /// <summary>Maximum fraction of N demand supplied by biologic N fixation</summary>
     internal double MinFix;
 
-    /// <summary>Maximum reduction in growth as cost for N fixation</summary>
-    internal double NFixCostMax;
+    /// <summary>Which method is used for determining the costs of N fixation</summary>
+    internal int NFixationCostMethod;
 
-    /// <summary>Respiration cost due to the presence of symbiont bacteria (kgC/kgC roots)</summary>
+    /// <summary>Respiration cost factor due to the presence of symbiont bacteria</summary>
     internal double symbiontCostFactor;
 
-    /// <summary>Activity cost of N fixation (gC/gN fixed)</summary>
+    /// <summary>Respiration cost factor due to the activity of symbiont bacteria</summary>
     internal double NFixingCostFactor;
-
-    /// <summary>Some Description</summary>
-    internal int NFixationCostMethod;
 
     ////- Growth limiting factors >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    /// <summary>Some Description</summary>
-    internal double waterStressFactor;
-
-    /// <summary>Some Description</summary>
+    /// <summary>Maximum reduction in plant growth due to water logging (saturated soil)</summary>
     internal double soilSatFactor;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Minimum water-free pore space for growth with no limitations</summary>
     internal double minMacroPorosity;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Daily recovery rate from water logging</summary>
+    internal double saturationRecoveryFactor;
+
+    /// <summary>Exponent for modifying the effect of N deficiency on plant growth</summary>
     internal double NdilutCoeff;
 
-    /// <summary>Some Description</summary>
-    internal double tempFactorRespiration;
-
-    /// <summary>Some Description</summary>
-    internal double tempFacTTurnover;
-
-    /// <summary>Some Description</summary>
-    internal double swFacTTurnover;
-
-    /// <summary>Some Description</summary>
+    /// <summary>Generic factor affecting potential plant growth</summary>
     internal double GLFGeneric;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Generic growth limiting factor due to soil fertility</summary>
     internal double GLFSFertility;
-
-    ////- Harvest limits and preferences >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    /// <summary>Relative preference for green tissues over dead, for DM removal</summary>
-    internal double PreferenceGreenOverDead;
-
-    /// <summary>Relative preference for leaves over stem-stolon, for DM removal</summary>
-    internal double PreferenceLeafOverStem;
 
     ////- Plant height >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    /// <summary>Some Description</summary>
+    /// <summary>Minimum plant height, for each species in the sward</summary>
     internal double MaxPlantHeight;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Maximum plant height, for each species in the sward</summary>
+    internal double MinimumHeight;
+
+    /// <summary>DM weight above ground for maximum plant height</summary>
     internal double MassForMaxHeight;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Exponent controlling shoot height as function of DM weight</summary>
     internal double ExponentHeightFromMass;
-
-    /// <summary>Some Description</summary>
-    internal double MinimumHeight;
 
     ////- Root depth and distribution >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    /// <summary>minimum root depth (mm)</summary>
+    /// <summary>Minimum rooting depth, at emergence</summary>
     internal double minRootDepth;
 
-    /// <summary>maximum root depth</summary>
-    internal double maxRootDepth; //Maximum root depth (mm)
+    /// <summary>Maximum rooting depth</summary>
+    internal double maxRootDepth;
 
-    /// <summary>Base root elongation rate (mm/day)</summary>
+    /// <summary>Daily root elongation rate at optimum temperature</summary>
     internal double rootElongationRate;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Depth from surface where root proportion starts to decrease</summary>
     internal double expoLinearDepthParam = 90.0;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Exponent controlling the root distribution as function of depth</summary>
     internal double expoLinearCurveParam = 3.2;
 
-    /// <summary>Some Description</summary>
+    ////- Harvest limits and preferences >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    /// <summary>Fraction of soluble carbohydrates in newly grown tissues (0-1)</summary>
+    internal double fToSugar = 0.5;
+
+    /// <summary>Relative preference for live over dead material during graze</summary>
+    internal double PreferenceGreenOverDead;
+
+    /// <summary>Relative preference for leaf over stem-stolon material during graze</summary>
+    internal double PreferenceLeafOverStem;
+
+    ////- Soil related (water and N uptake) >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    /// <summary>Maximum NH4 uptake rate for each species</summary>
     internal double MaximumUptakeRateNH4 = 1.0;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Maximum NO3 uptake rate for each species</summary>
     internal double MaximumUptakeRateNO3 = 1.0;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Reference root length density for water and N uptake</summary>
     internal double referenceRLD = 0.2;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Exponent of water content factor for water and N uptake</summary>
     internal double exponentSWCuptake = 0.25;
 
-    /// <summary>Some Description</summary>
+    /// <summary>Root exploration factor, for each layer</summary>
     internal double[] xf;
 
     ////- Parameters for annual species >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    /// <summary>Earliest day of year for emergence (for annuals only)</summary>
+    /// <summary>Earliest day of emergence (for annuals only)</summary>
     internal double dayGermn;
 
-    /// <summary>Days needed to complete germination</summary>
+    /// <summary>Earliest month of emergence (for annuals only)</summary>
     internal double daysToGermn;
 
-    /// <summary>Days from emergence to Anthesis</summary>
+    /// <summary>Earliest day of anthesis (for annuals only)</summary>
     internal double daysEmgToAnth;
 
-    /// <summary>Days from anthesis to maturity</summary>
+    /// <summary>Earliest month of anthesis (for annuals only)</summary>
     internal double daysAnthToMatur;
 
     #endregion  ------------------------------------------------------------------------------------------------------------
@@ -482,14 +433,6 @@ public class Species
 
     /// <summary>basic state variables for each species (to be used for reset)</summary>
     internal SpeciesBasicState InitialState;
-
-    ////- Defining the plant type >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    /// <summary>Flag whether the species is a legume</summary>
-    internal bool isLegume;
-
-    /// <summary>Some Description</summary>
-    internal bool isAnnual; //Species type (1=annual,0=perennial)
 
     ////- Annuals and phenology >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -590,6 +533,15 @@ public class Species
 
     /// <summary>Some Description</summary>
     internal double gamaS = 0.0; // for stolons
+
+    /// <summary>Some Description</summary>
+    internal double tempFactorRespiration;
+
+    /// <summary>Some Description</summary>
+    internal double tempFacTTurnover;
+
+    /// <summary>Some Description</summary>
+    internal double swFacTTurnover;
 
     /// <summary>Effect of defoliation on stolon turnover (0-1).</summary>
     private double cumDefoliationFraction;
@@ -719,6 +671,9 @@ public class Species
 
     /// <summary>Some Description</summary>
     internal double glfAeration = 1.0;
+
+    /// <summary>Cumulative water logging factor</summary>
+    internal double cumWaterLogging;
 
     /// <summary>Some Description</summary>
     internal double glfN = 1.0; //from N deficit
@@ -1054,7 +1009,7 @@ public class Species
     /// <returns>Plant growth (kg/ha)</returns>
     internal double CalcGrowthAfterWaterLimitations()
     {
-        dGrowthW = dGrowthPot * Math.Pow(Math.Min(glfWater, glfAeration), waterStressFactor);
+        dGrowthW = dGrowthPot * Math.Min(glfWater, glfAeration);
 
         return dGrowthW;
     }
@@ -1531,7 +1486,6 @@ public class Species
             roots.tissue[0].DMTransferedIn = dGrowthRoot;
 
             // Set the amount of sugar in each organ
-            double fToSugar = 0.5;
             leaves.SugarWt = fToSugar * toLeaf * dGrowth;
             stems.SugarWt = fToSugar * toStem * dGrowth;
             stolons.SugarWt = fToSugar * toStolon * dGrowth;
@@ -1977,19 +1931,26 @@ public class Species
     /// <summary>Calculates the LAI values for green and dead material</summary>
     internal void EvaluateLAI()
     {
-        greenLAI = (0.0001 * leaves.DMGreen * SpecificLeafArea)
-                   + (0.0001 * stolons.DMTotal * 0.3 * SpecificLeafArea);
-        // 0.0001: kg/ha->kg/m2; SLA: m2/kg - assuming stolon = 0.3*SLA
+        // Get the amount of green tissue of leaves (converted from kg/ha to kg/m2)
+        double greenTissue = leaves.DMGreen / 10000;
+
+        // Get a proportion of green tissue from stolons
+        greenTissue += stolons.DMTotal * StolonEffectOnLAI / 10000;
+
+        // Consider some green tissue from stems (if DM is very low)
+        if (!isLegume && AboveGroundLiveWt < ShootMaxEffectOnLAI)
+        {
+            double shootFactor = MaxStemEffectOnLAI * Math.Sqrt(1.0 - (AboveGroundLiveWt / ShootMaxEffectOnLAI));
+            greenTissue += stems.DMGreen * shootFactor / 10000;
+        }
         // Resilience after unfavoured conditions
         // Consider cover will be bigger for the same amount of DM when DM is low due to
         // - light extinction coefficient will be bigger - plant leaves will be more horizontal than in dense high swards
         // - more parts will turn green for photosynthesis (?)
         // - quick response of plant shoots to favoured conditions after release of stress
-        // » Specific leaf area should be reduced (RCichota2014)
-        if (!isLegume && AboveGroundLiveWt < 1000)
-        {
-            greenLAI += 0.0001 * stems.DMGreen * SpecificLeafArea * Math.Sqrt((1000 - AboveGroundLiveWt) / 1000);
-        }
+        // » maybe specific leaf area should be reduced (RCichota2014)
+
+        greenLAI = greenTissue * SpecificLeafArea;
 
         deadLAI = 0.0001 * leaves.tissue[3].DM * SpecificLeafArea;
         totalLAI = greenLAI + deadLAI;
@@ -2382,7 +2343,7 @@ public class Species
             // check recovery factor
             double recoveryFactor = 0.0;
             if (MetFile.MaxT <= heatOnsetT)
-                recoveryFactor = (1 - heatFactor) * Math.Pow(accumTHeat / heatSumT, heatTq);
+                recoveryFactor = (1 - heatFactor) * (accumTHeat / heatSumT);
 
             // accumulate temperature
             accumTHeat += Math.Max(0.0, heatRecoverT - Tmean);
@@ -2424,7 +2385,7 @@ public class Species
             // check recovery factor
             double recoveryFactor = 0.0;
             if (MetFile.MinT >= coldOnsetT)
-                recoveryFactor = (1 - coldFactor) * Math.Pow(accumTCold / coldSumT, coldTq);
+                recoveryFactor = (1 - coldFactor) *(accumTCold / coldSumT);
 
             // accumulate temperature
             accumTCold += Math.Max(0.0, Tmean - coldRecoverT);

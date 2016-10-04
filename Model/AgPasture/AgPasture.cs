@@ -229,17 +229,17 @@ public class AgPasture
     ////- Initial state parameters (replace the default values) >>> - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     [Param(IsOptional = true)]
-    [Description("Initial above ground DM each species")]
+    [Description("Initial above ground DM weight for each species")]
     [Units("kg/ha")]
     private double[] iniShootDM;
 
     [Param(IsOptional = true)]
-    [Description("Initial below ground DM each species")]
+    [Description("Initial below ground DM weight for each species")]
     [Units("kg/ha")]
     private double[] iniRootDM;
 
     [Param(IsOptional = true)]
-    [Description("Initial root depth for each species")]
+    [Description("Initial rooting depth for each species")]
     [Units("kg/ha")]
     private double[] iniRootDepth;
 
@@ -263,19 +263,24 @@ public class AgPasture
     private string[] micrometType = null;
 
     [Param]
-    [Description("Photosynthesis pathway (C3 or C4)")]
+    [Description("Metabolic pathway for C fixation during photosynthesis (C3 or C4)")]
     [Units("3/4")]
     private double[] photoPath = null;
 
     [Param]
-    [Description("Whether the species is legume (1=yes, 0=no)")]
+    [Description("Whether the plant is a legume species (1=yes, 0=no)")]
     [Units("0/1")]
     private double[] isLegume = null;
 
+    //[Param]
+    [Description("Whether the plant is an annual species (1=yes, 0=no)")]
+    [Units("0/1")]
+    private double[] isAnnual = null;
+
     ////- Potential growth (photosynthesis) >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     [Param]
-    [Description("Reference leaf C assimilation during photosynthesis")]
-    [Units("mgCO2/m^2/s")]
+    [Description("Reference leaf CO2 assimilation rate for photosynthesis")]
+    [Units("mgCO2/m^2 leaf/s")]
     private double[] Pm;
 
     [Param]
@@ -284,12 +289,12 @@ public class AgPasture
     private double[] LightPartitioningFactor;
 
     [Param]
-    [Description("Leaf gross photosynthesis rate")]
+    [Description("Leaf photosynthetic efficiency")]
     [Units("mg CO2/J")]
     private double[] alphaPhoto;
 
     [Param]
-    [Description("photosynthesis curvature parameter")]
+    [Description("Photosynthesis curvature parameter")]
     [Units("J/kg/s")]
     private double[] thetaPhoto;
 
@@ -299,34 +304,34 @@ public class AgPasture
     private double[] fractionPAR;
 
     [Param]
-    [Description("Base CO2 content in atmosphere")]
+    [Description("Light extinction coefficient")]
+    [Units("")]
+    private double[] lightExtCoeff;
+
+    [Param]
+    [Description("Reference CO2 concentration for photosynthesis")]
     [Units("ppm")]
     private double[] referenceCO2;
 
     [Param]
-    [Description("scale factor for CO2 effect on photosynthesis")]
+    [Description("Scaling parameter for the CO2 effect on photosynthesis")]
     [Units("ppm")]
     private double[] CO2PmaxScale;
 
     [Param]
-    [Description("scale factor for CO2 effects on plant N concentration")]
+    [Description("Scaling parameter for the CO2 effects on N requirements")]
     [Units("ppm")]
     private double[] CO2NScale;
 
     [Param]
-    [Description("minimum reduction of plant N concentration under elevated CO2")]
+    [Description("Minimum value for the CO2 effect on N requirements")]
     [Units("0-1")]
     private double[] CO2NMin;
 
     [Param]
-    [Description("curvature factor of CO2 effect on plant N concentration")]
+    [Description("Exponent controlling the CO2 effect on N requirements")]
     [Units(">1.0")]
     private double[] CO2NCurvature;
-
-    [Param]
-    [Description("Light extinction coefficient")]
-    [Units("")]
-    private double[] lightExtCoeff;
 
     [Param]
     [Description("Minimum temperature for growth")]
@@ -339,80 +344,70 @@ public class AgPasture
     private double[] growthTopt;
 
     [Param]
-    [Description("Coefficient q on temperature function for plant growth")]
+    [Description("Curve parameter for growth response to temperature")]
     [Units("")]
     private double[] growthTq;
 
     [Param]
-    [Description("whether heat stress will be use")]
+    [Description("Whether heat damage stress is enabled")]
     [Units("")]
     private string[] useHeatStress;
 
     [Param]
-    [Description("onset temperature for heat effects")]
+    [Description("Onset temperature for heat effects on photosynthesis")]
     [Units("")]
     private double[] heatOnsetT;
 
     [Param]
-    [Description("full temperature for heat effects")]
+    [Description("Temperature for full heat effect on photosynthesis")]
     [Units("")]
     private double[] heatFullT;
 
     [Param]
-    [Description("temperature sum for recovery - sum of (25-mean)")]
+    [Description("Cumulative degrees-day for recovery from heat stress")]
     [Units("")]
     private double[] heatSumT;
 
     [Param]
-    [Description("base temperature for recovery from heat stress")]
+    [Description("Reference temperature for recovery from heat stress")]
     [Units("oC")]
     private double[] heatRecoverT;
 
     [Param]
-    [Description("exponent for computing recovery from heat stress")]
-    [Units("")]
-    private double[] heatTq;
-
-    [Param]
-    [Description("whether heat stress will be use")]
+    [Description("Whether cold damage stress is enabled")]
     [Units("")]
     private string[] useColdStress;
 
     [Param]
-    [Description("onset temperature for cold effects")]
+    [Description("Onset temperature for cold effects on photosynthesis")]
     [Units("")]
     private double[] coldOnsetT;
 
     [Param]
-    [Description("full temperature for cold effects")]
+    [Description("Temperature for full cold effect on photosynthesis")]
     [Units("")]
     private double[] coldFullT;
 
     [Param]
-    [Description("temperature sum for recovery - sum of means")]
+    [Description("Cumulative degrees for recovery from cold stress")]
     [Units("")]
     private double[] coldSumT;
 
     [Param]
-    [Description("base temperature for recovery from cold stress")]
+    [Description("Reference temperature for recovery from cold stress")]
     [Units("oC")]
     private double[] coldRecoverT;
 
-    [Param]
-    [Description("exponent for computing recovery from cold stress")]
-    [Units("")]
-    private double[] coldTq;
-
     ////- Respiration parameters >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     [Param]
-    [Description("Pgrowth/Pgross")]
-    [Units("")]
-    private double[] growthEfficiency;
-
-    [Param]
-    [Description("Maintenance respiration")]
+    [Description("Maintenance respiration coefficient")]
     [Units("%")]
     private double[] maintRespiration;
+
+    [Param]
+    [Description("Growth respiration coefficient")]
+    [Units("0-1")]
+    private double[] growthEfficiency;
 
     [Param]
     [Description("Reference temperature for maintenance respiration")]
@@ -465,6 +460,43 @@ public class AgPasture
     [Units("0-1")]
     private double[] RelativeNconc_stage3;
 
+    ////- Default values for DM >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    [Param]
+    [Description("Default shoot DM weight")]
+    [Units("kgDM/ha")]
+    private double[] dmshoot;
+
+    [Param]
+    [Description("default root DM weight")]
+    [Units("kgDM/ha")]
+    private double[] dmroot;
+
+    [Param]
+    [Description("Default rooting depth")]
+    [Units("mm")]
+    private double[] rootDepth;
+
+    [Param]
+    [Description("Initial fractions of DM for each plant part, for non-legumes")]
+    [Units("0-1")]
+    private double[] initialDMFractions_grass;
+
+    [Param]
+    [Description("Initial fractions of DM for each plant part, for legume species")]
+    [Units("0-1")]
+    private double[] initialDMFractions_legume;
+
+    ////- Germination and emergence >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    [Param]
+    [Description("Cumulative degrees-day needed for seed germination")]
+    [Units("oCd")]
+    private double[] DegreesDayForGermination { get; set; }
+
+    [Param]
+    [Description("The fractions of DM for each plant part at emergence, for all plants")]
+    [Units("0-1")]
+    private double[] EmergenceDMFractions;
+
     ////- Allocation of new growth >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // - Shoot:root partition
     [Param]
@@ -473,18 +505,18 @@ public class AgPasture
     private double[] TargetSRratio;
 
     [Param]
-    [Description("Maximum fraction of biomass that can be allocated to roots")]
+    [Description("Maximum fraction of DM growth that can be allocated to roots")]
     [Units("0-1")]
     private double[] MaxRootAllocation;
 
     [Param]
-    [Description("Coefficient controlling the maximum effect that soil GLFs have on Shoot-Root ratio")]
+    [Description("Maximum effect that soil GLFs have on Shoot-Root ratio")]
     [Units("0-1")]
     private double[] GlfEffectsOnSR;
 
     // - Effect of reproductive season ....................................
     [Param]
-    [Description("Whether DM allocation (shoot/root) should be adjusted for reproductive period (perennials)")]
+    [Description("Whether Shoot:Root ratio should be adjusted to mimic DM allocation during reproductive season (perennial species)")]
     [Units("yes/no")]
     private string[] UseReproSeasonFactor;
 
@@ -494,12 +526,12 @@ public class AgPasture
     private double[] ReproSeasonReferenceLatitude;
 
     [Param]
-    [Description("Coefficient controling the time to start the reproductive season as function of latitude")]
+    [Description("Coefficient controlling the time to start the reproductive season as function of latitude")]
     [Units("-")]
     private double[] ReproSeasonTimingCoeff;
 
     [Param]
-    [Description("Coefficient controling the duration of the reproductive season as function of latitude")]
+    [Description("Coefficient controlling the duration of the reproductive season as function of latitude")]
     [Units("-")]
     private double[] ReproSeasonDurationCoeff;
 
@@ -519,28 +551,28 @@ public class AgPasture
     private double[] ReproSeasonMaxAllocationIncrease;
 
     [Param]
-    [Description("Coefficient controling the increase in shoot allocation during reproductive growth as function of latitude")]
+    [Description("Coefficient controlling the increase in shoot allocation during reproductive growth as function of latitude")]
     [Units("-")]
     private double[] ReproSeasonAllocationCoeff;
 
     // - Partition of shoot DM into leaves
     [Param]
-    [Description("Maximum fraction of new growth allocated to leaf")]
+    [Description("Maximum target allocation of new growth to leaves")]
     [Units("0-1")]
     private double[] FractionLeafMaximum;
 
     [Param]
-    [Description("Minimum fraction of new shoot growth allocated to leaves")]
+    [Description("Minimum target allocation of new growth to leaves")]
     [Units("0-1")]
     private double[] FractionLeafMinimum;
 
     [Param]
-    [Description("Shoot DM for maximum leaf allocation")]
+    [Description("Shoot DM at which allocation of new growth to leaves start to decrease")]
     [Units("kgDM/ha")]
     private double[] FractionLeafDMThreshold;
 
     [Param]
-    [Description("Reference DM, when allocation to leaves is midway max and min")]
+    [Description("Shoot DM when allocation to leaves is midway maximum and minimum")]
     [Units("kgDM/ha")]
     private double[] FractionLeafDMFactor;
 
@@ -550,7 +582,7 @@ public class AgPasture
     private double[] FractionLeafExponent;
 
     [Param]
-    [Description("Fraction of new growth allocated to stolon")]
+    [Description("Fraction of new growth to be allocated to stolon")]
     [Units("0-1")]
     private double[] StolonAllocationFactor;
 
@@ -565,6 +597,21 @@ public class AgPasture
     [Units("m/gDM")]
     private double[] SpecificRootLength;
 
+    [Param]
+    [Description("Fraction of stolon tissue used when computing green LAI")]
+    [Units("0-1")]
+    private double[] StolonEffectOnLAI;
+
+    [Param]
+    [Description("Maximum aboveground biomass for using stems when computing LAI")]
+    [Units("kg/ha")]
+    private double[] ShootMaxEffectOnLAI;
+
+    [Param]
+    [Description("Maximum effect of stems when computing green LAI")]
+    [Units("0-1")]
+    private double[] MaxStemEffectOnLAI;
+
     ////- Tissue turnover and senescence >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     [Param]
     [Description("Number of live leaves per tiller")]
@@ -572,72 +619,82 @@ public class AgPasture
     private double[] LiveLeavesPerTiller;
 
     [Param]
-    [Description("Factor for adjusting DM turnover of growing tissue")]
-    [Units("<0.0")]
-    private double[] facGrowingTissue;
-
-    [Param]
-    [Description("Senescence rate for shoot (live to dead material)")]
+    [Description("Reference daily DM turnover rate for shoot tissues")]
     [Units("")]
     private double[] rateLive2Dead;
 
     [Param]
-    [Description("Littering rate (dead to litter)")]
-    [Units("")]
-    private double[] rateDead2Litter;
-
-    [Param]
-    [Description("Senescence rate for roots (live to soil FOM)")]
+    [Description("Reference daily DM turnover rate for root tissues")]
     [Units("")]
     private double[] rateRootSen;
 
     [Param]
-    [Description("Mass flux minimum temperature")]
+    [Description("Relative turnover rate for emerging tissues")]
+    [Units("<0.0")]
+    private double[] facGrowingTissue;
+
+    [Param]
+    [Description("Reference daily detachment rate for dead tissues")]
+    [Units("")]
+    private double[] rateDead2Litter;
+
+    [Param]
+    [Description("Minimum temperature for tissue turnover")]
     [Units("")]
     private double[] massFluxTmin;
 
     [Param]
-    [Description("Mass flux optimum temperature")]
+    [Description("Reference temperature for tissue turnover")]
     [Units("")]
     private double[] massFluxTopt;
 
     [Param]
-    [Description("Exponent of function for mass flux")]
+    [Description("Exponent of function for temperature effect on tissue turnover")]
     [Units("")]
     private double[] massFluxTq;
 
     [Param(MinVal = 1.0)]
-    [Description("Mass flux scale factor at GLFwater=0.0")]
+    [Description("Maximum increase in tissue turnover due to water deficit")]
     [Units("")]
     private double[] massFluxW0;
 
     [Param]
-    [Description("Mass flux optimum GLFwater=0.5")]
+    [Description("Minimum GLFwater without effect on tissue turnover")]
     [Units("")]
     private double[] massFluxWopt;
 
     [Param]
-    [Description("Mass flux exponent")]
+    [Description("Coefficient controlling detachment rate as function of moisture")]
     [Units("")]
     private double[] massFluxDeadWq;
 
     [Param]
-    [Description("Mass flux factor")]
+    [Description("Minimum effect of drought on detachment rate")]
     [Units("")]
     private double[] massFluxDeadWf;
 
     [Param]
-    [Description("Parameter for stock influence on senescence")]
+    [Description("Factor increasing tissue turnover rate due to stock trampling")]
     [Units("")]
     private double[] stockParameter;
 
     [Param]
-    [Description("Coefficient for using luxury N from tissue 2 to Nremob")]
+    [Description("Coefficient of function increasing the stolons turnover rate due to defoliation")]
+    [Units("")]
+    private double[] massFluxDefoliationEffect;
+
+    [Param]
+    [Description("Minimum significant daily effect of defoliation on stolons turnover rate")]
+    [Units("")]
+    private double[] massFluxMinDefoliationEff;
+
+    [Param]
+    [Description("Fraction of luxury N remobilisable from tissue 2 each day")]
     [Units("0-1")]
     private double[] Kappa2_Remob;
 
     [Param]
-    [Description("Coefficient for using luxury N from tissue 3 to Nremob")]
+    [Description("Fraction of luxury N remobilisable from tissue 3 each day")]
     [Units("0-1")]
     private double[] Kappa3_Remob;
 
@@ -648,12 +705,12 @@ public class AgPasture
 
     ////- N fixation (for legumes) >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     [Param]
-    [Description("Minimum fraction of N demand fixed by legumes")]
+    [Description("Minimum fraction of N demand supplied by biologic N fixation")]
     [Units("0-1")]
     private double[] NMinFix;
 
     [Param]
-    [Description("Maximum fraction of N demand fixed by legumes")]
+    [Description("Maximum fraction of N demand supplied by biologic N fixation")]
     [Units("0-1")]
     private double[] NMaxFix;
 
@@ -669,154 +726,77 @@ public class AgPasture
     }
 
     [Param]
-    [Description("Maximum reduction in growth as cost for N fixation")]
-    [Units("0-1")]
-    private double[] NFixCostMax;
-
-    [Param]
-    [Description("Respiration cost due to the presence of symbiont bacteria")]
-    [Units("gC/gCroots")]
+    [Description("Respiration cost factor due to the presence of symbiont bacteria")]
+    [Units("kgC/kgCroots")]
     private double[] symbiontCostFactor;
 
     [Param]
-    [Description("Activity cost of N fixation")]
-    [Units("gC/gNfixed")]
+    [Description("Respiration cost factor due to the activity of symbiont bacteria")]
+    [Units("kgC/kgNfixed")]
     private double[] NFixingCostFactor;
 
     ////- Growth limiting factors >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     [Param]
-    [Description("Coefficient for modifying the effect of N stress on plant growth")]
-    [Units("")]
-    private double[] NdilutCoeff;
-
-    [Param]
-    [Description("Effects of water uptake/demand on plant growth")]
-    [Units("0-1")]
-    private double[] waterStressFactor;
-
-    [Param]
-    [Description("Soil moisture saturation effects on growth")]
+    [Description("Maximum reduction in plant growth due to water logging (saturated soil)")]
     [Units("0-1")]
     private double[] soilSatFactor;
 
     [Param]
-    [Description("Minimum macroporosity (pores>30um) for optimum plant growth")]
+    [Description("Minimum water-free pore space for growth with no limitations")]
     [Units("0-1")]
     private double[] MinMacroPorosity;
 
     [Param]
-    [Description("Generic growth limiting factor")]
+    [Description("Daily recovery rate from water logging")]
+    [Units("0-1")]
+    private double[] SoilSaturationRecoveryFactor;
+
+    [Param]
+    [Description("Exponent for modifying the effect of N deficiency on plant growth")]
+    [Units("")]
+    private double[] NdilutCoeff;
+
+    [Param]
+    [Description("Generic factor affecting potential plant growth")]
     [Units("0-1")]
     private double[] GenericGLF;
 
     [Param]
-    [Description("Generic, soil related, growth limiting factor")]
+    [Description("Generic growth limiting factor due to soil fertility")]
     [Units("0-1")]
     private double[] SFertilityGLF;
 
-    ////- Digestibility and feed quality >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    [Param]
-    [Description("Digestibility of live plant material (0-1)")]
-    [Units("")]
-    private double[] digestLiveCellWall;
-
-    [Param]
-    [Description("Digestibility of dead plant material (0-1)")]
-    [Units("")]
-    private double[] digestDeadCellWall;
-
-    ////- Default values for DM >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    [Param]
-    [Description("Shoot dry weight")]
-    [Units("kgDM/ha")]
-    private double[] dmshoot;
-
-    [Param]
-    [Description("Root dry weight")]
-    [Units("kgDM/ha")]
-    private double[] dmroot;
-
-    [Param]
-    [Description("Fractions of initial dmshoot for each biomass pool, for non-legumes")]
-    [Units("0-1")]
-    private double[] initialDMFractions_grass;
-
-    [Param]
-    [Description("Fractions of initial dmshoot for each biomass pool, for legume species")]
-    [Units("0-1")]
-    private double[] initialDMFractions_legume;
-
-    [Param]
-    [Description("Fractions of DM amount for each biomass pool at emergence,")]
-    [Units("0-1")]
-    private double[] EmergenceDMFractions;
-
-    ////- Harvest limits and preferences >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    [Param]
-    [Output]
-    [Description("Minimum green DM")]
-    [Units("kgDM/ha")]
-    private double[] dmgreenmin;
-
-    [Param]
-    [Output]
-    [Description("Proportion of stolons standing, i.e. harvestable")]
-    [Units("0-1")]
-    private double[] FractionStolonsStanding { get; set; }
-
-    [Param]
-    [Description("Weight factor defining the preference level for green DM")]
-    [Units("")]
-    private double[] PreferenceForGreenDM;
-
-    [Param]
-    [Description("Weight factor defining the preference level for dead DM")]
-    [Units("")]
-    private double[] PreferenceForDeadDM;
-
-    [Param]
-    [Description("Weight factor defining the preference level for leaves over stem-stolons")]
-    [Units("")]
-    private double[] PreferenceForLeaves;
-
     ////- Plant height >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     [Param]
-    [Description("Maximum average height for each species in the sward")]
-    [Units("mm")]
-    private double[] MaxPlantHeight;
-
-    [Param]
-    [Description("Minimum plant height, for all species")]
+    [Description("Minimum plant height, for each species in the sward")]
     [Units("mm")]
     private double[] MinimumHeight;
 
     [Param]
-    [Description("Mass above ground when maximum height is reached")]
+    [Description("Maximum plant height, for each species in the sward")]
+    [Units("mm")]
+    private double[] MaxPlantHeight;
+
+    [Param]
+    [Description("DM weight above ground for maximum plant height")]
     [Units("kgDM/ha")]
     private double[] MassForMaxHeight;
 
     [Param]
-    [Description("Exponent of function describing plant height as function of DM weight")]
+    [Description("Exponent controlling shoot height as function of DM weight")]
     [Units(">1.0")]
     private double[] ExponentHeightFromMass;
 
     ////- Root depth and distribution >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    /// <summary>Current root depth (mm)</summary>
-    private double[] myRootDepth;
-
     [Param]
-    [Description("Initial root depth")]
-    [Units("mm")]
-    private double[] rootDepth
-    {
-        get { return myRootDepth; }
-        set { myRootDepth = value; }
-    }
-
-    [Param]
-    [Description("Root depth at germination")]
+    [Description("Minimum rooting depth, at emergence")]
     [Units("mm")]
     private double[] MinimumRootDepth { get; set; }
+
+    //[Param]
+    [Description("Maximum rooting depth")]
+    [Units("mm")]
+    private double[] maxRootDepth; // This is being set as iniRootDepth
 
     [Param]
     [Description("Daily root elongation rate at optimum temperature")]
@@ -844,7 +824,7 @@ public class AgPasture
 
     [Param]
     [Output]
-    [Description("Exponent to determine mass distribution in the soil profile")]
+    [Description("Exponent controlling the root distribution as function of depth")]
     [Units("")]
     private double[] ExpoLinearCurveParam
     {
@@ -856,6 +836,44 @@ public class AgPasture
                 rootCurveParam[s] = value[s];
         }
     }
+
+    ////- Digestibility and feed quality >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    [Param]
+    [Description("Digestibility of cell wall in live plant tissues (0-1)")]
+    [Units("")]
+    private double[] digestLiveCellWall;
+
+    [Param]
+    [Description("Digestibility of cell wall in dead plant tissues (0-1)")]
+    [Units("")]
+    private double[] digestDeadCellWall;
+
+    [Param]
+    [Description("Fraction of soluble carbohydrates in newly grown tissues (0-1)")]
+    [Units("0-1")]
+    private double[] SugarFractionNewGrowth;
+
+    ////- Harvest limits and preferences >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    [Param]
+    [Output]
+    [Description("Minimum above ground green DM")]
+    [Units("kgDM/ha")]
+    private double[] dmgreenmin;
+
+    [Param]
+    [Description("Proportion of stolon DM standing, available for removal")]
+    [Units("0-1")]
+    private double[] FractionStolonsStanding;
+
+    [Param]
+    [Description("Relative preference for live over dead material during graze")]
+    [Units("")]
+    private double[] PreferenceForGreenDM;
+
+    [Param]
+    [Description("Relative preference for leaf over stem-stolon material during graze")]
+    [Units("")]
+    private double[] PreferenceForLeaves;
 
     ////- Soil related (water and N uptake) >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     [Param]
@@ -921,23 +939,10 @@ public class AgPasture
     [Units("0-1")]
     private double[] xf = null;
 
-    ////- Additional functions (vapour pressure deficit) >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    [Link]
-    private LinearInterpolation FVPDFunction = null;
-
     ////- Parameters for annual species >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    [Param]
-    [Description("Cumulative degrees-day needed for seed germination")]
-    [Units("oCd")]
-    private double[] DegreesDayForGermination { get; set; }
 
     //  NOTE: these were de-activated (hidden) as they are not really used and some procedure were
     //   never really implemented  (RCichota, Oct/2014)
-    //[Param]
-    [Description("Species type (1=annual,0=perennial)")]
-    [Units("0/1")]
-    private double[] isAnnual = null;
-
     //[Param]
     [Description("Earliest day of emergence (for annuals only)")]
     [Units("")]
@@ -963,15 +968,9 @@ public class AgPasture
     [Units("")]
     private double[] daysToMature;
 
-    //[Param]
-    [Description("Daily root growth")]
-    [Units("(mm)")]
-    private double[] dRootDepth; // replaced by rootElongationRate
-
-    //[Param]
-    [Description("Maximum root depth")]
-    [Units("(mm)")]
-    private double[] maxRootDepth; // This is being reused
+    ////- Additional functions (vapour pressure deficit) >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    [Link]
+    private LinearInterpolation FVPDFunction = null;
 
     #endregion  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -1368,7 +1367,7 @@ public class AgPasture
                     if (iniRootDepth[s1] > 0.0)
                         maxRootDepth[s2] = iniRootDepth[s1];
                     else
-                        maxRootDepth[s2] = myRootDepth[s2];
+                        maxRootDepth[s2] = rootDepth[s2];
 
                     // set the parameters and initialise the species
                     SetSpeciesParameters(s1, s2);
@@ -1403,7 +1402,7 @@ public class AgPasture
                         if (iniRootDepth[s1] <= 0.0)
                         {
                             // iniRootDepth is zero or negative, use the default value
-                            iniRootDepth[s1] = myRootDepth[s2];
+                            iniRootDepth[s1] = rootDepth[s2];
                         }
 
                         mySpecies[s1].InitialState.DMWeight[11] = iniRootDM[s1];
@@ -1566,8 +1565,6 @@ public class AgPasture
             breakCode("heatFullT");
         if (heatSumT.Length < NumSpecies)
             breakCode("heatSumT");
-        if (heatTq.Length < NumSpecies)
-            breakCode("heatTq");
         if (heatRecoverT.Length < NumSpecies)
             breakCode("heatRecoverT");
         if (useColdStress.Length < NumSpecies)
@@ -1578,8 +1575,6 @@ public class AgPasture
             breakCode("coldFullT");
         if (coldSumT.Length < NumSpecies)
             breakCode("coldSumT");
-        if (coldTq.Length < NumSpecies)
-            breakCode("coldTq");
         if (coldRecoverT.Length < NumSpecies)
             breakCode("coldRecoverT");
 
@@ -1639,6 +1634,12 @@ public class AgPasture
             breakCode("SpecificLeafArea");
         if (SpecificRootLength.Length < NumSpecies)
             breakCode("SpecificRootLength");
+        if (StolonEffectOnLAI.Length < NumSpecies)
+            breakCode("StolonEffectOnLAI");
+        if (ShootMaxEffectOnLAI.Length < NumSpecies)
+            breakCode("ShootMaxEffectOnLAI");
+        if (MaxStemEffectOnLAI.Length < NumSpecies)
+            breakCode("MaxStemEffectOnLAI");
 
         ////- Tissue turnover and senescence >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         if (LiveLeavesPerTiller.Length < NumSpecies)
@@ -1697,22 +1698,20 @@ public class AgPasture
             breakCode("NMinFix");
         if (NMaxFix.Length < NumSpecies)
             breakCode("NMaxFix");
-        if (NFixCostMax.Length < NumSpecies)
-            breakCode("NFixCostMax");
         if (symbiontCostFactor.Length < NumSpecies)
             breakCode("symbiontCostFactor");
         if (NFixingCostFactor.Length < NumSpecies)
             breakCode("NFixingCostFactor");
 
         ////- Growth limiting factors >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        if (NdilutCoeff.Length < NumSpecies)
-            breakCode("NdilutCoeff");
-        if (waterStressFactor.Length < NumSpecies)
-            breakCode("waterStressFactor");
         if (soilSatFactor.Length < NumSpecies)
             breakCode("soilSatFactor");
         if (MinMacroPorosity.Length < NumSpecies)
             breakCode("MinMacroPorosity");
+        if (SoilSaturationRecoveryFactor.Length < NumSpecies)
+            breakCode("SoilSaturationRecoveryFactor");
+        if (NdilutCoeff.Length < NumSpecies)
+            breakCode("NdilutCoeff");
         if (GenericGLF.Length < NumSpecies)
             breakCode("GenericGLF");
         if (SFertilityGLF.Length < NumSpecies)
@@ -1749,6 +1748,8 @@ public class AgPasture
             breakCode("digestLive");
         if (digestDeadCellWall.Length < NumSpecies)
             breakCode("digestDead");
+        if (SugarFractionNewGrowth.Length < NumSpecies)
+            breakCode("SugarFractionNewGrowth");
 
         ////- Harvest limits and preferences >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         if (dmshoot.Length < NumSpecies)
@@ -1761,8 +1762,6 @@ public class AgPasture
             breakCode("FractionStolonsStanding");
         if (PreferenceForGreenDM.Length < NumSpecies)
             breakCode("PreferenceForGreenDM");
-        if (PreferenceForDeadDM.Length < NumSpecies)
-            breakCode("PreferenceForDeadDM");
         if (PreferenceForLeaves.Length < NumSpecies)
             breakCode("PreferenceForLeaves");
     }
@@ -1827,13 +1826,11 @@ public class AgPasture
         mySpecies[s1].usingHeatStress = useHeatStress[s2].ToLower() == "yes";
         mySpecies[s1].heatOnsetT = heatOnsetT[s2];
         mySpecies[s1].heatFullT = heatFullT[s2];
-        mySpecies[s1].heatTq = heatTq[s2];
         mySpecies[s1].heatSumT = heatSumT[s2];
         mySpecies[s1].heatRecoverT = heatRecoverT[s2];
         mySpecies[s1].usingColdStress = useColdStress[s2].ToLower() == "yes";
         mySpecies[s1].coldOnsetT = coldOnsetT[s2];
         mySpecies[s1].coldFullT = coldFullT[s2];
-        mySpecies[s1].coldTq = coldTq[s2];
         mySpecies[s1].coldSumT = coldSumT[s2];
         mySpecies[s1].coldRecoverT = coldRecoverT[s2];
 
@@ -1865,6 +1862,9 @@ public class AgPasture
 
         mySpecies[s1].SpecificLeafArea = SpecificLeafArea[s2];
         mySpecies[s1].SpecificRootLength = SpecificRootLength[s2];
+        mySpecies[s1].StolonEffectOnLAI = StolonEffectOnLAI[s2];
+        mySpecies[s1].ShootMaxEffectOnLAI = ShootMaxEffectOnLAI[s2];
+        mySpecies[s1].MaxStemEffectOnLAI = MaxStemEffectOnLAI[s2];
 
         ////- Tissue turnover and senescence >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         mySpecies[s1].LiveLeavesPerTiller = LiveLeavesPerTiller[s2];
@@ -1885,41 +1885,37 @@ public class AgPasture
         mySpecies[s1].Kappa4 = Kappa4_Remob[s2];
 
         ////- N concentrations thresholds >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-        mySpecies[s1].NcstemFr = RelativeNconc_Stems[s2];
-        mySpecies[s1].NcstolFr = RelativeNconc_Stolons[s2];
-        mySpecies[s1].NcrootFr = RelativeNconc_Roots[s2];
         mySpecies[s1].NcRel2 = RelativeNconc_stage2[s2];
         mySpecies[s1].NcRel3 = RelativeNconc_stage3[s2];
 
         // Note: 0.01 is for conversion of % to fraction
         mySpecies[s1].leaves.NConcOptimum = 0.01 * NconcOptimum_leaves[s2];
-        mySpecies[s1].stems.NConcOptimum = mySpecies[s1].leaves.NConcOptimum * mySpecies[s1].NcstemFr;
-        mySpecies[s1].stolons.NConcOptimum = mySpecies[s1].leaves.NConcOptimum * mySpecies[s1].NcstolFr;
-        mySpecies[s1].roots.NConcOptimum = mySpecies[s1].leaves.NConcOptimum * mySpecies[s1].NcrootFr;
+        mySpecies[s1].stems.NConcOptimum = mySpecies[s1].leaves.NConcOptimum * RelativeNconc_Stems[s2];
+        mySpecies[s1].stolons.NConcOptimum = mySpecies[s1].leaves.NConcOptimum * RelativeNconc_Stolons[s2];
+        mySpecies[s1].roots.NConcOptimum = mySpecies[s1].leaves.NConcOptimum * RelativeNconc_Roots[s2];
 
         mySpecies[s1].leaves.NConcMaximum = 0.01 * NconcMaximum_leaves[s2];
-        mySpecies[s1].stems.NConcMaximum = mySpecies[s1].leaves.NConcMaximum * mySpecies[s1].NcstemFr;
-        mySpecies[s1].stolons.NConcMaximum = mySpecies[s1].leaves.NConcMaximum * mySpecies[s1].NcstolFr;
-        mySpecies[s1].roots.NConcMaximum = mySpecies[s1].leaves.NConcMaximum * mySpecies[s1].NcrootFr;
+        mySpecies[s1].stems.NConcMaximum = mySpecies[s1].leaves.NConcMaximum * RelativeNconc_Stems[s2];
+        mySpecies[s1].stolons.NConcMaximum = mySpecies[s1].leaves.NConcMaximum * RelativeNconc_Stolons[s2];
+        mySpecies[s1].roots.NConcMaximum = mySpecies[s1].leaves.NConcMaximum * RelativeNconc_Roots[s2];
 
         mySpecies[s1].leaves.NConcMinimum = 0.01 * NconcMinimum_leaves[s2];
-        mySpecies[s1].stems.NConcMinimum = mySpecies[s1].leaves.NConcMinimum * mySpecies[s1].NcstemFr;
-        mySpecies[s1].stolons.NConcMinimum = mySpecies[s1].leaves.NConcMinimum * mySpecies[s1].NcstolFr;
-        mySpecies[s1].roots.NConcMinimum = mySpecies[s1].leaves.NConcMinimum * mySpecies[s1].NcrootFr;
+        mySpecies[s1].stems.NConcMinimum = mySpecies[s1].leaves.NConcMinimum * RelativeNconc_Stems[s2];
+        mySpecies[s1].stolons.NConcMinimum = mySpecies[s1].leaves.NConcMinimum * RelativeNconc_Stolons[s2];
+        mySpecies[s1].roots.NConcMinimum = mySpecies[s1].leaves.NConcMinimum * RelativeNconc_Roots[s2];
 
         ////- N fixation >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         mySpecies[s1].MaxFix = NMaxFix[s2];
         mySpecies[s1].MinFix = NMinFix[s2];
         mySpecies[s1].NFixationCostMethod = NFixationCostMethod;
-        mySpecies[s1].NFixCostMax = NFixCostMax[s2];
         mySpecies[s1].symbiontCostFactor = symbiontCostFactor[s2];
         mySpecies[s1].NFixingCostFactor = NFixingCostFactor[s2];
 
         ////- Growth limiting factors >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         mySpecies[s1].NdilutCoeff = NdilutCoeff[s2];
-        mySpecies[s1].waterStressFactor = waterStressFactor[s2];
         mySpecies[s1].soilSatFactor = soilSatFactor[s2];
         mySpecies[s1].minMacroPorosity = MinMacroPorosity[s2];
+        mySpecies[s1].saturationRecoveryFactor = SoilSaturationRecoveryFactor[s2];
         mySpecies[s1].GLFSFertility = SFertilityGLF[s2];
         mySpecies[s1].GLFGeneric = GenericGLF[s2];
 
@@ -1961,6 +1957,7 @@ public class AgPasture
         mySpecies[s1].stems.DigestDeadCellWall = digestDeadCellWall[s2];
         mySpecies[s1].stolons.DigestLiveCellWall = digestLiveCellWall[s2];
         mySpecies[s1].stolons.DigestDeadCellWall = digestDeadCellWall[s2];
+        mySpecies[s1].fToSugar = SugarFractionNewGrowth[s2];
 
         ////- Harvest limits and preferences >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         mySpecies[s1].leaves.MinimumGreenDM = dmgreenmin[s2] * 0.80;
@@ -1968,7 +1965,7 @@ public class AgPasture
         mySpecies[s1].stolons.MinimumGreenDM = 0.0;
         mySpecies[s1].roots.MinimumGreenDM = dmgreenmin[s2] * 0.50;
         mySpecies[s1].stolons.FractionStanding = FractionStolonsStanding[s2];
-        mySpecies[s1].PreferenceGreenOverDead = MathUtility.Divide(PreferenceForGreenDM[s2], PreferenceForDeadDM[s2], 1000000);
+        mySpecies[s1].PreferenceGreenOverDead = PreferenceForGreenDM[s2];
         mySpecies[s2].PreferenceLeafOverStem = PreferenceForLeaves[s2];
         if ((mySpecies[s1].PreferenceGreenOverDead < Epsilon) || (mySpecies[s1].PreferenceGreenOverDead < Epsilon))
             throw new Exception("Relative preferences for green or leaf DM cannot be set to zero");
@@ -4227,10 +4224,6 @@ public class AgPasture
         FomLayer.Layer = fomLL;
         IncorpFOM.Invoke(FomLayer);
     }
-
-    #endregion  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    #region - DM allocation and related processes - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     #endregion  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
