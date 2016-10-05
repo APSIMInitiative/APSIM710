@@ -23,6 +23,7 @@
 #elif defined(__unix__)
   #include <unistd.h>
   #include <limits.h>
+  #define GetProcessId getpid
 #endif
 
 using namespace std;
@@ -62,9 +63,9 @@ string ConvertToSim(const string& apsimPath, string& simulationName)
    // We need to send StdErr from ApsimToSim to a unique filename. Create that filename now.
    string uniqueFileName; 
    if (simulationName  == "")
-	   uniqueFileName = fileDirName(apsimPath) + pathsep + fileTailNoExtension(apsimPath);
+	   uniqueFileName = fileDirName(apsimPath) + pathsep + fileTailNoExtension(apsimPath) + "." + itoa(GetCurrentProcessId());
    else
-	   uniqueFileName = fileRoot(apsimPath);
+	   uniqueFileName = fileRoot(apsimPath)+ "." + itoa(GetCurrentProcessId());
 
    replaceAll(uniqueFileName, "\"", "");
    unsigned i = uniqueFileName.find_last_of("/");
@@ -83,7 +84,7 @@ string ConvertToSim(const string& apsimPath, string& simulationName)
 
    // exec ApsimToSim and read its stdout as the .sim file name.
    if (system(CommandLine.c_str()) != 0) {
-       cout << "APSIM  Fatal  Error" << endl;
+       cout << "       Fatal  Error" << endl;
        cout << "-------------------" << endl;
        cout << "Error finding \"" << simulationName << "\" in apsim file " << apsimPath << endl;
    }
@@ -110,18 +111,6 @@ extern "C" int EXPORT STDCALL RunAPSIM(const char* sdml)
    int retcode = 0;
    try
       {
-      const char* Banner  = "     ###     ######     #####   #   #     #   \n"
-                            "    #   #    #     #   #        #   ##   ##   \n"
-                            "   #     #   #     #   #        #   ##   ##   \n"
-                            "   #######   ######     #####   #   # # # #   \n"
-                            "   #     #   #              #   #   #  #  #   \n"
-                            "   #     #   #         #####    #   #  #  #   \n"
-                            "                                              \n"
-                            "                                              \n"
-                            " The Agricultural Production Systems Simulator\n"
-                            "             Copyright(c) APSRU               \n\n";
-      cout << Banner;
-
       Simulation simulation;
       simulation.go(sdml);
       }
@@ -129,7 +118,7 @@ extern "C" int EXPORT STDCALL RunAPSIM(const char* sdml)
       {
       if (!Str_i_Eq(error.what(), "fatal")) 
          {        
-         cout << "APSIM  Fatal  Error" << endl;
+         cout << "     Fatal  Error" << endl;
          cout << "-----------------" << endl;
          cout << error.what() << endl;
          cout.flush();
@@ -142,7 +131,7 @@ extern "C" int EXPORT STDCALL RunAPSIM(const char* sdml)
    }
    catch (...)
       {
-      cout << "APSIM  Fatal  Error" << endl;
+      cout << "     Fatal  Error" << endl;
       cout << "-----------------" << endl;
       cout << "An unknown exception has occurred in APSIM" << endl;
       cout.flush();
@@ -154,6 +143,16 @@ extern "C" int EXPORT STDCALL RunAPSIM(const char* sdml)
    return(retcode);
 }
 
+      const char* Banner  = "     ###     ######     #####   #   #     #   \n"
+                            "    #   #    #     #   #        #   ##   ##   \n"
+                            "   #     #   #     #   #        #   ##   ##   \n"
+                            "   #######   ######     #####   #   # # # #   \n"
+                            "   #     #   #              #   #   #  #  #   \n"
+                            "   #     #   #         #####    #   #  #  #   \n"
+                            "                                              \n"
+                            "                                              \n"
+                            " The Agricultural Production Systems Simulator\n"
+                            "             Copyright(c) APSRU               \n\n";
 
 //---------------------------------------------------------------------------
 // main entrypoint when running from command line.
@@ -165,6 +164,8 @@ int main(int argc, char **argv)
       cout << "Usage: APSIM simfile" << endl;
       return 1;
       }
+
+   cout << Banner;
 
    setlocale(LC_ALL, "English_Australia.1252");
    // Get the full path name to the sim file.
@@ -184,7 +185,7 @@ int main(int argc, char **argv)
    // Make sure the .sim file exists.
    if (!fileExists(simPath))
       {
-      cout << "APSIM  Fatal  Error" << endl;
+      cout << "       Fatal  Error" << endl;
       cout << "-------------------" << endl;
       cout << "Cannot find simulation file: " << simPath.c_str() << endl;
       return 1;

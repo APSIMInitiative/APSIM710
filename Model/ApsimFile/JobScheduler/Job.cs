@@ -110,8 +110,11 @@ namespace JobScheduler {
                         return false;
                     else if (T.Status == Status_t.Running)
                         return false;
-                    else if (T.Status == Status_t.Fail && ! Dependency.IgnoreErrors)
+                    else if (T.Status == Status_t.Fail && !Dependency.IgnoreErrors)
+                    {
+                        Status = Status_t.Fail;
                         return false;
+                    }
                 }
                 else
                 {
@@ -122,9 +125,11 @@ namespace JobScheduler {
                     if (J.Status == Status_t.Waiting)
                         return false;
 
-                    else if (J.Status == Status_t.Fail && ! Dependency.IgnoreErrors)
+                    else if (J.Status == Status_t.Fail && !Dependency.IgnoreErrors)
+                    {
+                        Status = Status_t.Fail;
                         return false;
-
+                    }
                     else if (J.Status == Status_t.Running)
                         return false;
                 }

@@ -175,12 +175,11 @@ namespace ApsimFile
                     if (PosLastSlash != -1)
                         simName = simName.Substring(PosLastSlash + 1);
                     string simFileName = Path.Combine(Path.GetDirectoryName(FileName), simName + ".sim");
-                    StreamWriter fp = new StreamWriter(simFileName);
                     try
                     {
-                        ApsimToSim.GetSimDoc(df.Find(SimulationPath), Configuration.getArchitecture()).Save(fp);
-                        Job J = CreateJob(simFileName,
-                                                   Path.Combine(Path.GetDirectoryName(FileName), simName + ".sum"));
+                        Job J = CreateJob(FileName,
+                                          Path.Combine(Path.GetDirectoryName(FileName), simName + ".sum"),
+                                          SimulationPath);
                         J.IgnoreErrors = false;
                         jobs.Add(J);
                         J = CleanupJob(simFileName, J.Name);
@@ -190,10 +189,6 @@ namespace ApsimFile
                     {
                         string sumFileName = Path.ChangeExtension(simFileName, ".sum");
                         WriteErrorToSummaryFile(sumFileName, err.Message);
-                    }
-                    finally
-                    {
-                        fp.Close();
                     }
                 }
             }
@@ -398,7 +393,7 @@ namespace ApsimFile
 		{
 			// create job and return it.
 			Job J = new Job ();
-			J.CommandLine = "cmd.exe /c del " + StringManip.DQuote (FileName);
+			J.CommandLine = "%ComSpec% /c del " + StringManip.DQuote (FileName);
 			J.CommandLineUnix = "/bin/rm -f " + StringManip.DQuote (FileName);
 
 			J.WorkingDirectory = Path.GetDirectoryName (FileName);

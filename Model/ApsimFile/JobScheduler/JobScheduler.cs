@@ -66,21 +66,32 @@ namespace JobScheduler
         }
         static int Main(string[] args)
         {
+            int result = 0;
             try
             {
                 JobScheduler Scheduler = Instance;
                 //Console.CancelKeyPress += delegate { Instance.Stop(); };
                 if (Scheduler.RunJob(args))
-                    return 1;
-                else
-                    return 0;
+                    result = 1;
             }
             catch (Exception err)
             {
                 Console.WriteLine(err.Message);
                 //Instance.Stop();
-                return 1;
+                result = 1;
             }
+            finally 
+            {
+                string outf  = "";
+                if (args.Count() > 0) 
+                   if (args[0].Contains(".xml"))
+                       outf = args[0].Replace(".xml", "Output.xml");
+                   else
+                       outf = args[0] + ".Output.xml";
+
+                Instance.Project.SaveXmlFile(outf);
+            }
+            return(result);
         }
 
         /// Data items
@@ -142,7 +153,6 @@ namespace JobScheduler
             Console.WriteLine(" [" + ElapsedTime.ToString() + "sec]");
             Console.WriteLine("");
 
-            Project.SaveXmlFile(args[0].Replace(".xml", "Output.xml"));
             return HasErrors;
         }
 
@@ -244,6 +254,7 @@ namespace JobScheduler
                 if (justFinishedAJob) {
                     Project.CheckAllJobsForCompletion();
                 }
+            
             } while ( !Project.MainTargetFinished );
 
             if (cancellationTokenSource.IsCancellationRequested)
@@ -259,7 +270,7 @@ namespace JobScheduler
         public void WaitForFinish()
         {
             while (!Project.MainTargetFinished)
-               Thread.Sleep(500);  
+               Thread.Sleep(500);
         }
 
         /// <summary>

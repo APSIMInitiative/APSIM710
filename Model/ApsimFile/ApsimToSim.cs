@@ -339,7 +339,8 @@ public class ApsimToSim
                     string VariableName = MacroName.Substring(MacroName.IndexOf(' ') + 1);
                     APSIM.Shared.Soils.SoilCrop crop = mySoil.Water.Crops.Find(c => c.Name.Equals(CropName, StringComparison.InvariantCultureIgnoreCase));
                     if (crop == null)
-                        throw new Exception("Cannot find crop: " + CropName);
+                        throw new Exception("Cannot find soil water information for crop '" + CropName + "'. " +
+                            "You likely need to \"Manage Crops\" in the Water node of your soil, and set the water properties of this crop" );
                     if (VariableName.Equals("ll", StringComparison.CurrentCultureIgnoreCase))
                         Obj = crop.LL;
                     else if (VariableName.Equals("kl", StringComparison.CurrentCultureIgnoreCase))
