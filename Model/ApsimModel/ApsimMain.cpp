@@ -20,10 +20,10 @@
 #include "Simulation.h"
 #ifdef __WIN32__
   #include <windows.h>
-#elif defined(__unix__)
+#elif defined(__unix__) 
   #include <unistd.h>
   #include <limits.h>
-  #define GetProcessId getpid
+  #define GetCurrentProcessId getpid
 #endif
 
 using namespace std;
