@@ -1436,7 +1436,6 @@ public class Script
    [Input] DateTime today;
    [Input] double[] dul_dep;     //drained upper limit (field capacity) 
    [Input] double[] sw_dep;      //soil water
-   [Input] double[] ll15_dep;    //15 bar lower limit
    [Param] int deficit;          //allowable soil water deficit
    [Param] double eff;           //irrigation efficiency
    [Param] string start;         //no irrigation will be applied before this date
@@ -1445,18 +1444,8 @@ public class Script
    [Param] int amount;
    [Output] double totalSWD;     //total soil water deficit for given layers
 
-   private double[] DulDep;
-   private double[] SwDep;
-   private double[] LL15Dep;
-   private double[] SWD;
-
    [EventHandler] public void OnInitialised()
    {
-      DulDep = new double[dul_dep.Length];
-      SwDep = new double[dul_dep.Length];
-      LL15Dep = new double[dul_dep.Length];
-      SWD = new double[dul_dep.Length];
-
       if (maxlayer &gt; dul_dep.Length)
       {
          Console.WriteLine("Warning: max layer is greater than number of layers.");
@@ -1468,9 +1457,10 @@ public class Script
    // The following event handler will be called each day at the beginning of the day
    [EventHandler] public void OnPrepare()
    {
+      double[] SWD = new double[dul_dep.Length];
       for (int i = 0; i &lt; (maxlayer &gt; 0 ? maxlayer : dul_dep.Length); i++)
       {
-         SWD[i] = dul_dep[i] - sw_dep[i];
+         SWD[i] = Math.Max(0.0, dul_dep[i] - sw_dep[i]);
       }
       totalSWD = MathUtility.Sum(SWD);
 
@@ -1478,7 +1468,7 @@ public class Script
       if (totalSWD &gt; deficit &amp;&amp; DateUtility.WithinDates(start, today, end))
       {
          IrrigationApplicationType data = new IrrigationApplicationType(); //using a type means we can use defaults for values we don't change
-         data.Amount = amount == 0 ? deficit : amount;
+         data.Amount = amount == 0 ? (int) totalSWD : amount;
          Irrigation.Set("irrigation_efficiency", eff);
          Irrigation.Apply(data);
       }
