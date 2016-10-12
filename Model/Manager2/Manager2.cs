@@ -129,7 +129,7 @@ public class Manager2
                     else
                         Params.ReferencedAssemblies.Add(Path.Combine(Path.GetDirectoryName(DllFileName), val));
                 }
-                Params.TempFiles = new TempFileCollection(".");
+                Params.TempFiles = new TempFileCollection(Path.GetTempPath());
                 Params.TempFiles.KeepFiles = false;
                 string[] source = new string[1];
                 source[0] = Text;
