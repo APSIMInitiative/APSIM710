@@ -59,7 +59,7 @@
          <CO2EffectExponent description="Exponent controlling the CO2 effect on N requirements (>1.0)">2.0  2.0  2.0</CO2EffectExponent>
          <GrowthTminimum description="Minimum temperature for growth (oC)">1.0  2.0  10.0</GrowthTminimum>
          <GrowthToptimum description="Optimum temperature for growth (oC)">20.0  22.0  32.0</GrowthToptimum>
-         <GrowthTEffectExponent description="Curve parameter for growth response to temperature ()">1.7  1.7  1.25</GrowthTEffectExponent>
+         <GrowthTEffectExponent description="Curve parameter for growth response to temperature (>1.0)">1.7  1.7  1.25</GrowthTEffectExponent>
          <UseHeatStressFactor description="Whether heat damage stress is enabled (yes/no)">yes  yes  yes</UseHeatStressFactor>
          <HeatOnsetTemperature description="Onset temperature for heat effects on photosynthesis (oC)">28.0  30.0  35.0</HeatOnsetTemperature>
          <HeatFullTemperature description="Temperature for full heat effect on photosynthesis (oC)">35.0  36.0  40.0</HeatFullTemperature>
@@ -73,7 +73,7 @@
          <GrowthRespirationCoefficient description="Growth respiration coefficient (0-1)">0.75  0.75  0.75</GrowthRespirationCoefficient>
          <MaintenanceRespirationCoefficient description="Maintenance respiration coefficient (%)">3.0  4.0  3.0</MaintenanceRespirationCoefficient>
          <RespirationTReference description="Reference temperature for maintenance respiration (oC)">20.0  20.0  20.0</RespirationTReference>
-         <RespirationExponent description="Exponent controlling the effect of temperature on respiration ()">1.5  1.5  1.5</RespirationExponent>
+         <RespirationExponent description="Exponent controlling the effect of temperature on respiration (>1.0)">1.5  1.5  1.5</RespirationExponent>
 
          <NconcOptimumForLeaves description="Optimum N concentration of leaves (no stress) (%)">4.0  4.5  3.0</NconcOptimumForLeaves>
          <NconcMaximumForLeaves description="Maximum N concentration of leaves (luxury uptake) (%)">5.0  5.5  3.5</NconcMaximumForLeaves>
@@ -90,7 +90,7 @@
          <InitialDMFractionsLegumes description="Initial fractions of DM for each plant part, for legume species (0-1)">0.16  0.23  0.22  0.05  0.03  0.05  0.05  0.01  0.04  0.08  0.08</InitialDMFractionsLegumes>
          <EmergenceDMFractions description="The fractions of DM for each plant part at emergence, for all plants (0-1)">0.60  0.25  0.00  0.00  0.15  00.0  0.00  0.00  0.00  0.00  0.00</EmergenceDMFractions>
          <!-- There are 11 pools, in order: dmleaf1, dmleaf2, dmleaf3, dmleaf4, dmstem1, dmstem2, dmstem3, dmstem4, dmstol1, dmstol2, and dmstol3 -->
-         <DegreesDayForGermination description="Cumulative degrees-day needed for seed germination (oCd)">100  120  150</DegreesDayForGermination>
+         <DegreesDayForGermination description="Cumulative degrees-day needed for seed germination (oCd)">125  100  150</DegreesDayForGermination>
 
          <TargetShootRootRatio description="Target or ideal plant's shoot:root ratio at vegetative stage (-)">4.0  4.0  4.0</TargetShootRootRatio>
          <MaxRootAllocation description="Maximum fraction of DM growth that can be allocated to roots (0-1)">0.25  0.25  0.25</MaxRootAllocation>
@@ -109,25 +109,25 @@
          <FractionLeafDMFactor description="Shoot DM when allocation to leaves is midway maximum and minimum (kgDM/ha)">2000  2000  2000</FractionLeafDMFactor>
          <FractionLeafExponent description="Exponent of function describing DM allocation to leaves (>0.0)">3.0  3.0  3.0</FractionLeafExponent>
          <FractionToStolon description="Fraction of new growth to be allocated to stolon (0-1)">0.0  0.2  0.0</FractionToStolon>
-         <LiveLeavesPerTiller description="Number of live leaves per tiller">3.0  3.0  3.5</LiveLeavesPerTiller>
          <SpecificLeafArea description="Specific leaf area, per dry matter weight (m^2/kgDM)">25  30  20</SpecificLeafArea>
          <SpecificRootLength description="Specific root length, per dry matter weight (m/gDM)">100  45  75</SpecificRootLength>
          <StolonEffectOnLAI description="Fraction of stolon tissue used when computing green LAI (0-1)">0.0  0.3  0.0</StolonEffectOnLAI>
          <ShootMaxEffectOnLAI description="Maximum aboveground biomass for using stems when computing LAI (kg/ha)">1000  500  1000</ShootMaxEffectOnLAI>
          <MaxStemEffectOnLAI description="Maximum effect of stems when computing green LAI (0-1)">1.0  0.5  0.75</MaxStemEffectOnLAI>
 
-         <TissueTurnoverRateShoot description="Reference daily DM turnover rate for shoot tissues (0-1)">0.05  0.05  0.05</TissueTurnoverRateShoot>
+         <LiveLeavesPerTiller description="Number of live leaves per tiller">3.0  3.0  3.5</LiveLeavesPerTiller>
+         <TissueTurnoverRateShoot description="Reference daily DM turnover rate for shoot tissues (/day)">0.05  0.05  0.05</TissueTurnoverRateShoot>
+         <TissueTurnoverRateRoot description="Reference daily DM turnover rate for root tissues (/day)">0.02  0.02  0.02</TissueTurnoverRateRoot>
          <RelativeTurnoverEmerging description="Relative turnover rate for emerging tissues (>0.0)">2.0  2.0  2.0</RelativeTurnoverEmerging>
-         <DetachmentRateShoot description="Reference daily detachment rate for dead tissues (0-1)">0.08  0.08  0.07</DetachmentRateShoot>
-         <TissueTurnoverRateRoot description="Reference daily DM turnover rate for root tissues (0-1)">0.02  0.02  0.02</TissueTurnoverRateRoot>
+         <DetachmentRateShoot description="Reference daily detachment rate for dead tissues (/day)">0.08  0.08  0.07</DetachmentRateShoot>
          <TurnoverTemperatureMin description="Minimum temperature for tissue turnover (oC)">2.0  2.0  5.0</TurnoverTemperatureMin>
          <TurnoverTemperatureRef description="Reference temperature for tissue turnover (oC)">20.0  20.0  20.0</TurnoverTemperatureRef>
          <TurnoverTemperatureExponent description="Exponent of function for temperature effect on tissue turnover ()">1.0  1.0  1.0</TurnoverTemperatureExponent>
-         <TurnoverDroughtEffectMax description="Maximum increase in tissue turnover due to water deficit (>1.0)">2.0  2.0  2.0</TurnoverDroughtEffectMax>
+         <TurnoverDroughtEffectMax description="Maximum increase in tissue turnover due to water deficit ()">2.0  2.0  2.0</TurnoverDroughtEffectMax>
          <TurnoverDroughtThreshold description="Minimum GLFwater without effect on tissue turnover (0-1)">0.5  0.5  0.5</TurnoverDroughtThreshold>
-         <DetachmentDroughtCoefficient description="Coefficient controlling detachment rate as function of moisture ()>1.0">3.0  3.0  3.0</DetachmentDroughtCoefficient>
+         <DetachmentDroughtCoefficient description="Coefficient controlling detachment rate as function of moisture (>1.0)">3.0  3.0  3.0</DetachmentDroughtCoefficient>
          <DetachmentDroughtEffectMin description="Minimum effect of drought on detachment rate (0-1)">0.1  0.1  0.1</DetachmentDroughtEffectMin>
-         <TurnoverStockFactor description="Factor increasing tissue turnover rate due to stock trampling (0-1)">0.05  0.05  0.05</TurnoverStockFactor>
+         <TurnoverStockFactor description="Factor increasing tissue turnover rate due to stock trampling (0-1)">0.01  0.01  0.01</TurnoverStockFactor>
          <TurnoverDefoliationCoefficient description="Coefficient of function increasing the turnover rate due to defoliation (>0.0)">0.5  0.5  0.5</TurnoverDefoliationCoefficient>
          <TurnoverDefoliationEffectMin description="Minimum significant daily effect of defoliation on tissue turnover rate (>0.0)">0.025  0.025  0.025</TurnoverDefoliationEffectMin>        
          <TurnoverDefoliationRootEffect description="Effect of defoliation on root turnover relative to stolons (0-1)">0.1  0.2  0.1</TurnoverDefoliationRootEffect>        

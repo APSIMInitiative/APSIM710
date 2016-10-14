@@ -150,9 +150,6 @@ public class Species
     /// <summary>Growth respiration coefficient</summary>
     internal double myGrowthRespirationCoefficient;
 
-    /// <summary>0</summary>
-    internal double maxTempEffectResp = 1.25;
-
     /// <summary>Reference temperature for maintenance respiration</summary>
     internal double myRespirationTReference;
 
@@ -1550,10 +1547,10 @@ public class Species
 
         // Check for loss of mass balance of total plant
         if (Math.Abs(preTotalWt + dGrowth - dDMLitter - dDMRootSen - (AboveGroundWt + roots.DMTotal)) > Epsilon)
-            throw new Exception("  " + speciesName + " - Growth and tissue turnover resulted in loss of mass balance");
+            throw new Exception("  " + speciesName + " - Growth and tissue turnover resulted in loss of mass balance for DM");
 
         if (Math.Abs(preTotalN + newGrowthN - dNLitter - dNRootSen - NSenesced2NewGrowth - NLuxury2NewGrowth - (AboveGroundN + roots.NTotal)) > Epsilon)
-            throw new Exception("  " + speciesName + " - Growth and tissue turnover resulted in loss of mass balance");
+            throw new Exception("  " + speciesName + " - Growth and tissue turnover resulted in loss of mass balance for N");
 
         // update some aggregated variables (LAI, height, etc.)
         UpdateAggregatedVariables();
@@ -2295,7 +2292,7 @@ public class Species
             return 1.0;
 
         double factorCO2 = Math.Pow((myCO2EffectOffsetFactor - myReferenceCO2) / (CO2 - myReferenceCO2), myCO2EffectExponent);
-        double Fn = (myCO2EffectMinimum + factorCO2) / (1 + factorCO2);
+        double Fn = (myCO2EffectMinimum + factorCO2) / (1.0 + factorCO2);
         return Fn;
     }
 

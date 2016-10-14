@@ -122,7 +122,7 @@ public class AgPasture
 
     [Param]
     [Description("The index marking the method used for determining plant available water")]
-    [Units("0-3")]
+    [Units("0-2")]
     private double WaterAvailabilityMethod
     {
         get { return waterExtractabilityMethod; }
@@ -223,7 +223,7 @@ public class AgPasture
 
     [Param]
     [Description("Light extinction coefficient")]
-    [Units("")]
+    [Units("0-1")]
     private double[] LightExtinctionCoefficients;
 
     [Param]
@@ -253,37 +253,37 @@ public class AgPasture
 
     [Param]
     [Description("Minimum temperature for growth")]
-    [Units("")]
+    [Units("oC")]
     private double[] GrowthTminimum;
 
     [Param]
     [Description("Optimum temperature for growth")]
-    [Units("")]
+    [Units("oC")]
     private double[] GrowthToptimum;
 
     [Param]
     [Description("Curve parameter for growth response to temperature")]
-    [Units("")]
+    [Units(">1.0")]
     private double[] GrowthTEffectExponent;
 
     [Param]
     [Description("Whether heat damage stress is enabled")]
-    [Units("")]
+    [Units("yes/no")]
     private string[] UseHeatStressFactor;
 
     [Param]
     [Description("Onset temperature for heat effects on photosynthesis")]
-    [Units("")]
+    [Units("oC")]
     private double[] HeatOnsetTemperature;
 
     [Param]
     [Description("Temperature for full heat effect on photosynthesis")]
-    [Units("")]
+    [Units("oC")]
     private double[] HeatFullTemperature;
 
     [Param]
     [Description("Cumulative degrees-day for recovery from heat stress")]
-    [Units("")]
+    [Units("oCd")]
     private double[] HeatRecoverySumDD;
 
     [Param]
@@ -293,22 +293,22 @@ public class AgPasture
 
     [Param]
     [Description("Whether cold damage stress is enabled")]
-    [Units("")]
+    [Units("yes/no")]
     private string[] UseColdStressFactor;
 
     [Param]
     [Description("Onset temperature for cold effects on photosynthesis")]
-    [Units("")]
+    [Units("oC")]
     private double[] ColdOnsetTemperature;
 
     [Param]
     [Description("Temperature for full cold effect on photosynthesis")]
-    [Units("")]
+    [Units("oC")]
     private double[] ColdFullTemperature;
 
     [Param]
     [Description("Cumulative degrees for recovery from cold stress")]
-    [Units("")]
+    [Units("oCd")]
     private double[] ColdRecoverySumDD;
 
     [Param]
@@ -334,7 +334,7 @@ public class AgPasture
 
     [Param]
     [Description("Exponent controlling the effect of temperature on respiration")]
-    [Units("")]
+    [Units(">1.0")]
     private double[] RespirationExponent;
 
     ////- N concentrations thresholds >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -538,32 +538,32 @@ public class AgPasture
 
     [Param]
     [Description("Reference daily DM turnover rate for shoot tissues")]
-    [Units("")]
+    [Units("/day")]
     private double[] TissueTurnoverRateShoot;
 
     [Param]
     [Description("Reference daily DM turnover rate for root tissues")]
-    [Units("")]
+    [Units("/day")]
     private double[] TissueTurnoverRateRoot;
 
     [Param]
     [Description("Relative turnover rate for emerging tissues")]
-    [Units("<0.0")]
+    [Units(">0.0")]
     private double[] RelativeTurnoverEmerging;
 
     [Param]
     [Description("Reference daily detachment rate for dead tissues")]
-    [Units("")]
+    [Units("/day")]
     private double[] DetachmentRateShoot;
 
     [Param]
     [Description("Minimum temperature for tissue turnover")]
-    [Units("")]
+    [Units("oC")]
     private double[] TurnoverTemperatureMin;
 
     [Param]
     [Description("Reference temperature for tissue turnover")]
-    [Units("")]
+    [Units("oC")]
     private double[] TurnoverTemperatureRef;
 
     [Param]
@@ -571,24 +571,24 @@ public class AgPasture
     [Units("")]
     private double[] TurnoverTemperatureExponent;
 
-    [Param(MinVal = 1.0)]
+    [Param]
     [Description("Maximum increase in tissue turnover due to water deficit")]
     [Units("")]
     private double[] TurnoverDroughtEffectMax;
 
     [Param]
     [Description("Minimum GLFwater without effect on tissue turnover")]
-    [Units("")]
+    [Units("0-1")]
     private double[] TurnoverDroughtThreshold;
 
     [Param]
     [Description("Coefficient controlling detachment rate as function of moisture")]
-    [Units("")]
+    [Units(">1.0")]
     private double[] DetachmentDroughtCoefficient;
 
     [Param]
     [Description("Minimum effect of drought on detachment rate")]
-    [Units("")]
+    [Units("0-1")]
     private double[] DetachmentDroughtEffectMin;
 
     [Param]
@@ -748,7 +748,7 @@ public class AgPasture
     [Param]
     [Output]
     [Description("Exponent controlling the root distribution as function of depth")]
-    [Units("")]
+    [Units(">1.0")]
     private double[] RootDistributionExponent
     {
         get { return rootDistributionExponent; }
@@ -762,17 +762,17 @@ public class AgPasture
 
     ////- Digestibility and feed quality >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     [Param]
-    [Description("Digestibility of cell wall in live plant tissues (0-1)")]
-    [Units("")]
+    [Description("Digestibility of cell wall in live plant tissues")]
+    [Units("0-1")]
     private double[] DigestibilityCellWallLive;
 
     [Param]
-    [Description("Digestibility of cell wall in dead plant tissues (0-1)")]
-    [Units("")]
+    [Description("Digestibility of cell wall in dead plant tissues")]
+    [Units("0-1")]
     private double[] DigestibilityCellWallDead;
 
     [Param]
-    [Description("Fraction of soluble carbohydrates in newly grown tissues (0-1)")]
+    [Description("Fraction of soluble carbohydrates in newly grown tissues")]
     [Units("0-1")]
     private double[] SugarFractionNewGrowth;
 
@@ -2889,11 +2889,6 @@ public class AgPasture
                         myMPL += DUL_dep[layer] * layerFrac;
                 }
 
-                //if (mySW > myMPL)
-                //    effect = mySpecies[s].mySoilSaturationEffectMax * (mySW - myMPL) / (mySat - myMPL);
-                //else
-                //    effect = -mySpecies[s].mySoilSaturationRecoveryFactor;
-
                 if (mySW > myMPL)
                 {
                     todaysEffect = mySpecies[s].mySoilSaturationEffectMax * (mySW - myMPL) / (mySat - myMPL);
@@ -2902,7 +2897,6 @@ public class AgPasture
                 }
                 else
                     todaysEffect = -mySpecies[s].mySoilSaturationRecoveryFactor;
-
 
                 mySpecies[s].cumWaterLogging = MathUtility.Bound(mySpecies[s].cumWaterLogging + todaysEffect, 0.0, 1.0);
                 mySpecies[s].glfWLogging = 1.0 - mySpecies[s].cumWaterLogging;
@@ -2925,7 +2919,11 @@ public class AgPasture
             }
 
             if (mySW > myMPL)
+            {
                 todaysEffect = mySpecies[0].mySoilSaturationEffectMax * (mySW - myMPL) / (mySat - myMPL);
+                // allow some recovery of any water logging from yesterday is the soil is not fully saturated
+                todaysEffect -= mySpecies[0].mySoilSaturationRecoveryFactor * (mySat - mySW) / (mySat - myMPL) * mySpecies[0].cumWaterLogging;
+            }
             else
                 todaysEffect = -SoilSaturationRecoveryFactor[0];
 

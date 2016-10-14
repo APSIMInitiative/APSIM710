@@ -5676,8 +5676,8 @@ if ((today &gt;= date('[date1]')) and (today &lt;= date('[date2]')) then
    if (account = [interval]) then
       account = 0
       '[AgPasture]'  graze type = '[amount_type]', amount = [amount] (kg/ha)
-      removed_dm = [AgPasture].HarvestWt
-      removed_n = [AgPasture].HarvestN
+      removed_dm = [AgPasture].HarvestedWt
+      removed_n = [AgPasture].HarvestedN
    endif
 endif
 
@@ -5718,11 +5718,11 @@ if ((today &gt;= date('[date1]') and (today &lt;= date('[date2]')) then
    if (account = [interval]) then
       account = 0
       '[AgPasture]' graze type = '[amount_type]', amount = [amount] (kg/ha)
-      removed_dm = [AgPasture].HarvestWt * [AgPasture].DefoliatedDigestibility
-      returned_dm = [AgPasture].HarvestWt * (1.0 - [AgPasture].DefoliatedDigestibility)
+      removed_dm = [AgPasture].HarvestedWt * [AgPasture].HarvestedDigestibility
+      returned_dm = [AgPasture].HarvestedWt * (1.0 - [AgPasture].HarvestedDigestibility)
 
-      removed_n  = [AgPasture].HarvestN *(1.0 - [dm_frac])
-      returned_n = [AgPasture].HarvestN * [dm_frac]
+      removed_n  = [AgPasture].HarvestedN *(1.0 - [dm_frac])
+      returned_n = [AgPasture].HarvestedN * [dm_frac]
       n_som      = returned_n * (1.0 - [urine_n_frac])
       n_urine    = returned_n *  [urine_n_frac]
       n_urine1 = 0.7 * n_urine
@@ -5765,12 +5765,12 @@ returned_n =0
 removed_n =0
 
 if ((today &gt;= date('[date1]')) and (today &lt;= date('[date2]'))) then
-   if ([AgPasture].AboveGroundWt &gt; '[upper_amount]') then
+   if ([AgPasture].StandingHerbageWt &gt; '[upper_amount]') then
       continuegrazing = 1
    endif
 
    if (continuegrazing = 1) then
-      removable_amt  =  [AgPasture].AboveGroundWt - [lower_amount]
+      removable_amt  =  [AgPasture].StandingHerbageWt - [lower_amount]
       if ([amount] = -1 )  or ('[amount]' &gt; removable_amt ) then
          daily_amt =  removable_amt
          continuegrazing = 0
@@ -5779,8 +5779,8 @@ if ((today &gt;= date('[date1]')) and (today &lt;= date('[date2]'))) then
          continuegrazing = 1
       endif
       '[AgPasture]' graze type = 'SetRemoveAmount', amount = daily_amt (kg/ha)
-      removed_dm = [AgPasture].HarvestWt
-      removed_n = [AgPasture].HarvestN
+      removed_dm = [AgPasture].HarvestedWt
+      removed_n = [AgPasture].HarvestedN
    endif
 endif
      </text>
@@ -5820,8 +5820,8 @@ if (today = date('[date1]')) or (today = date('[date2]')) or (today = date('[dat
    (today = date('[date10]')) or (today = date('[date11]')) or (today = date('[date12]')) then
 
    '[AgPasture]'  graze type = '[amount_type]', amount = [amount] (kg/ha)
-   removed_dm = [AgPasture].HarvestWt
-   removed_n = [AgPasture].HarvestN
+   removed_dm = [AgPasture].HarvestedWt
+   removed_n = [AgPasture].HarvestedN
 endif
      </text>
           <event>start_of_day</event>
@@ -5865,10 +5865,10 @@ if (today = date('[date1]')) or (today = date('[date2]')) or (today = date('[dat
    (today = date('[date10]')) or (today = date('[date11]')) or (today = date('[date12]')) then
 
    '[AgPasture]'  graze type = '[amount_type]', amount = [amount] (kg/ha)
-   removed_dm = [AgPasture].HarvestWt * [AgPasture].DefoliatedDigestibility
-   returned_dm = [AgPasture].HarvestWt * (1.0 - [AgPasture].DefoliatedDigestibility)
-   removed_n  = [AgPasture].HarvestN *(1.0 - [dm_frac])
-   returned_n = [AgPasture].HarvestN * [dm_frac]
+   removed_dm = [AgPasture].HarvestedWt * [AgPasture].HarvestedDigestibility
+   returned_dm = [AgPasture].HarvestedWt * (1.0 - [AgPasture].HarvestedDigestibility)
+   removed_n  = [AgPasture].HarvestedN *(1.0 - [dm_frac])
+   returned_n = [AgPasture].HarvestedN * [dm_frac]
    n_som      = returned_n * (1.0 - [urine_n_frac])
    n_urine    = returned_n *  [urine_n_frac]
    n_urine1 = 0.7 * n_urine
@@ -6034,7 +6034,7 @@ public class Script
       GrowthRateCalc = 0.0;
       DaysAfterCut = DaysAfterCut + 1;
       CutInterval = Interval2Cut;
-      PreHarvestDM = MyAgPasture.StandingPlantWt;
+      PreHarvestDM = MyAgPasture.StandingHerbageWt;
       if (RemoveAmountType.Contains("residual"))
       {
          ResidualDM = HerbageAmount;
@@ -6078,7 +6078,7 @@ public class Script
                DaysAfterCut = 0;
                Has_Cut = "yes";
                GrowthRateCalc = harvested_dm / DaysAfterCut;
-               PostHarvestDM = MyAgPasture.StandingPlantWt;
+               PostHarvestDM = MyAgPasture.StandingHerbageWt;
             }
          }
          else
@@ -6099,8 +6099,8 @@ public class Script
       CutData.amount = (float) Amount2Harvest;
       CutData.type = "SetRemoveAmount";
       MyAgPasture.Graze(CutData);
-      harvested_dm = MyAgPasture.HarvestWt;
-      harvested_n = MyAgPasture.HarvestN;
+      harvested_dm = MyAgPasture.HarvestedWt;
+      harvested_n = MyAgPasture.HarvestedN;
 
       //Let user know (via summary) that a cut was made
       Console.WriteLine(Today.ToString("dd MMMM yyyy") + " (Day of year=" + Today.DayOfYear.ToString() + "), " + MySelf.Name + ":");
@@ -6202,7 +6202,7 @@ public class Script
       MinimumFraction = 0.5;  // assume that at least 50% of required amount should be available to trigger a harvest
 
       //Check the fractions of DM ad N to remove
-      FracDM2Remove = MyAgPasture.DefoliatedDigestibility;
+      FracDM2Remove = MyAgPasture.HarvestedDigestibility;
       if ((FracN2Remove &lt; 0.0) || (FracN2Remove &gt; 1.0))
       {
          throw new Exception("Fraction of N to remove is out of bounds");
@@ -6278,7 +6278,7 @@ public class Script
       NReturnedInUrine = 0.0;
       DaysAfterCut = DaysAfterCut + 1;
       CutInterval = Interval2Cut;
-      PreHarvestDM = MyAgPasture.StandingPlantWt;
+      PreHarvestDM = MyAgPasture.StandingHerbageWt;
       if (RemoveAmountType.Contains("residual"))
       {
          ResidualDM = HerbageAmount;
@@ -6323,7 +6323,7 @@ public class Script
                DaysAfterCut = 0;
                Has_Cut = "yes";
                GrowthRateCalc = harvested_dm / DaysAfterCut;
-               PostHarvestDM = MyAgPasture.StandingPlantWt;
+               PostHarvestDM = MyAgPasture.StandingHerbageWt;
             }
          }
          else
@@ -6344,8 +6344,8 @@ public class Script
       CutData.amount = (float) Amount2Harvest;
       CutData.type = "SetRemoveAmount";
       MyAgPasture.Graze(CutData);
-      harvested_dm = MyAgPasture.HarvestWt;
-      harvested_n = MyAgPasture.HarvestN;
+      harvested_dm = MyAgPasture.HarvestedWt;
+      harvested_n = MyAgPasture.HarvestedN;
 
       //Let user know (via summary) that a cut was made
       Console.WriteLine(Today.ToString("dd MMMM yyyy") + " (Day of year=" + Today.DayOfYear.ToString() + "), " + MySelf.Name + ":");
@@ -6357,7 +6357,7 @@ public class Script
    {
       // -- Residue management -------------------------------------------------------------------------
 
-      FracDM2Remove = MyAgPasture.DefoliatedDigestibility;
+      FracDM2Remove = MyAgPasture.HarvestedDigestibility;
       removed_dm = harvested_dm * FracDM2Remove;
       removed_n = harvested_n * FracN2Remove;
       returned_dm = harvested_dm - removed_dm;
@@ -6505,7 +6505,7 @@ public class Script
       returned_n = 0.0;
       GrowthRateCalc = 0.0;
       DaysAfterCut = DaysAfterCut + 1;
-      PreHarvestDM = MyAgPasture.StandingPlantWt;
+      PreHarvestDM = MyAgPasture.StandingHerbageWt;
       TriggerDM = UpperThreshold;
       ResidualDM = LowerThreshold;
       if (Amount2Cut &gt; 0.0)
@@ -6543,7 +6543,7 @@ public class Script
                DaysAfterCut = 0;
                Has_Cut = "yes";
                GrowthRateCalc = harvested_dm / DaysAfterCut;
-               PostHarvestDM = MyAgPasture.StandingPlantWt;
+               PostHarvestDM = MyAgPasture.StandingHerbageWt;
                if (PostHarvestDM - ResidualDM &lt;= AmountWanted * MinimumFraction)
                {
                   CutIsAllowed = false;
@@ -6569,8 +6569,8 @@ public class Script
       CutData.amount = (float) Amount2Harvest;
       CutData.type = "SetRemoveAmount";
       MyAgPasture.Graze(CutData);
-      harvested_dm = MyAgPasture.HarvestWt;
-      harvested_n = MyAgPasture.HarvestN;
+      harvested_dm = MyAgPasture.HarvestedWt;
+      harvested_n = MyAgPasture.HarvestedN;
 
       //Let user know (via summary) that a cut was made
       Console.WriteLine(Today.ToString("dd MMMM yyyy") + " (Day of year=" + Today.DayOfYear.ToString() + "), " + MySelf.Name + ":");
@@ -6694,7 +6694,7 @@ public class Script
       returned_n = 0.0;
       GrowthRateCalc = 0.0;
       DaysAfterCut = DaysAfterCut + 1;
-      PreHarvestDM = MyAgPasture.StandingPlantWt;
+      PreHarvestDM = MyAgPasture.StandingHerbageWt;
       if (RemoveAmountType.Contains("residual"))
       {
          ResidualDM = HerbageAmount;
@@ -6732,7 +6732,7 @@ public class Script
                DaysAfterCut = 0;
                Has_Cut = "yes";
                GrowthRateCalc = harvested_dm / DaysAfterCut;
-               PostHarvestDM = MyAgPasture.StandingPlantWt;
+               PostHarvestDM = MyAgPasture.StandingHerbageWt;
                CutIsAllowed = false;
                Can_Cut = "no";
                nCut += 1;
@@ -6756,8 +6756,8 @@ public class Script
       CutData.amount = (float) Amount2Harvest;
       CutData.type = "SetRemoveAmount";
       MyAgPasture.Graze(CutData);
-      harvested_dm = MyAgPasture.HarvestWt;
-      harvested_n = MyAgPasture.HarvestN;
+      harvested_dm = MyAgPasture.HarvestedWt;
+      harvested_n = MyAgPasture.HarvestedN;
 
       //Let user know (via summary) that a cut was made
       Console.WriteLine(Today.ToString("dd MMMM yyyy") + " (Day of year=" + Today.DayOfYear.ToString() + "), " + MySelf.Name + ":");
@@ -6861,7 +6861,7 @@ public class Script
       MinimumFraction = 0.5;  // assume that at least 50% of required amount should be available to trigger a harvest
 
       //Check the fractions of DM ad N to remove
-      FracDM2Remove = MyAgPasture.DefoliatedDigestibility;
+      FracDM2Remove = MyAgPasture.HarvestedDigestibility;
       if ((FracN2Remove &lt; 0.0) || (FracN2Remove &gt; 1.0))
       {
          throw new Exception("Fraction of N to remove is out of bounds");
@@ -6937,7 +6937,7 @@ public class Script
       NReturnedInDung = 0.0;
       NReturnedInUrine = 0.0;
       DaysAfterCut = DaysAfterCut + 1;
-      PreHarvestDM = MyAgPasture.StandingPlantWt;
+      PreHarvestDM = MyAgPasture.StandingHerbageWt;
       if (RemoveAmountType.Contains("residual"))
       {
          ResidualDM = HerbageAmount;
@@ -6976,7 +6976,7 @@ public class Script
                DaysAfterCut = 0;
                Has_Cut = "yes";
                GrowthRateCalc = harvested_dm / DaysAfterCut;
-               PostHarvestDM = MyAgPasture.StandingPlantWt;
+               PostHarvestDM = MyAgPasture.StandingHerbageWt;
                CutIsAllowed = false;
                Can_Cut = "no";
                nCut += 1;
@@ -7000,8 +7000,8 @@ public class Script
       CutData.amount = (float) Amount2Harvest;
       CutData.type = "SetRemoveAmount";
       MyAgPasture.Graze(CutData);
-      harvested_dm = MyAgPasture.HarvestWt;
-      harvested_n = MyAgPasture.HarvestN;
+      harvested_dm = MyAgPasture.HarvestedWt;
+      harvested_n = MyAgPasture.HarvestedN;
 
       //Let user know (via summary) that a cut was made
       Console.WriteLine(Today.ToString("dd MMMM yyyy") + " (Day of year=" + Today.DayOfYear.ToString() + "), " + MySelf.Name + ":");
@@ -7013,7 +7013,7 @@ public class Script
    {
       // -- Residue management -------------------------------------------------------------------------
 
-      FracDM2Remove = MyAgPasture.DefoliatedDigestibility;
+      FracDM2Remove = MyAgPasture.HarvestedDigestibility;
       removed_dm = harvested_dm * FracDM2Remove;
       removed_n = harvested_n * FracN2Remove;
       returned_dm = harvested_dm - removed_dm;
@@ -7242,7 +7242,7 @@ public class Script
 
    [EventHandler] public void OnPost()
    {
-      if(MyPasture.HarvestWt &gt; 0.0)
+      if(MyPasture.HarvestedWt &gt; 0.0)
       {
          DaysAfterGraze = 0;
       }
@@ -7444,7 +7444,7 @@ public class Script
       // - DMRemovalOption can be a value (0-1 = FracDM2Remove) or a string, which tell us that FracDM2Remove is based on digestibility
       if (DMRemovalOption.Contains("digestibility"))
       {
-         FracDM2Remove = MyAgPasture.DefoliatedDigestibility;
+         FracDM2Remove = MyAgPasture.HarvestedDigestibility;
       }
       else
       {
@@ -7626,7 +7626,7 @@ public class Script
       ResidualDM = InterpolateVals(Today.DayOfYear, LowerThresholdDays, LowerThresholds);
       TriggerDM = InterpolateVals(Today.DayOfYear, UpperThresholdDays, UpperThresholds);
       HarvestAmount = InterpolateVals(Today.DayOfYear, Amount2HarvestDays, Amounts2Cut);
-      PreHarvestDM = MyAgPasture.StandingPlantWt;
+      PreHarvestDM = MyAgPasture.StandingHerbageWt;
 
       //Decide whether cut is allowed:
       if ((Today.Date &gt;= CutPasture_StartDate.Date) &amp;&amp; (Today.Date &lt;= CutPasture_EndDate.Date))
@@ -7707,7 +7707,7 @@ public class Script
                DaysAfterCut = 0;
                Has_Cut = "yes";
                GrowthRateCalc = harvested_dm / DaysAfterCut;
-               PostHarvestDM = MyAgPasture.StandingPlantWt;
+               PostHarvestDM = MyAgPasture.StandingHerbageWt;
                if (RemoveAmountType.Contains("amount"))
                { // check whether remaining amount is significant
                   if (Math.Abs(PostHarvestDM - ResidualDM) &lt; MinimumFraction * HarvestAmount)
@@ -7746,8 +7746,8 @@ public class Script
       CutData.amount = (float) Amount2Harvest;
       CutData.type = "SetRemoveAmount";
       MyAgPasture.Graze(CutData);
-      harvested_dm = MyAgPasture.HarvestWt;
-      harvested_n = MyAgPasture.HarvestN;
+      harvested_dm = MyAgPasture.HarvestedWt;
+      harvested_n = MyAgPasture.HarvestedN;
 
       //Let user know (via summary) that a cut was made
       Console.WriteLine(Today.ToString("dd MMMM yyyy") + " (Day of year=" + Today.DayOfYear.ToString() + "), " + MySelf.Name + ":");
@@ -7761,7 +7761,7 @@ public class Script
 
       if (DMRemovalOption.Contains("digestibility"))
       {
-         FracDM2Remove = MyAgPasture.DefoliatedDigestibility;
+         FracDM2Remove = MyAgPasture.HarvestedDigestibility;
       }
       removed_dm = harvested_dm * FracDM2Remove;
       removed_n = harvested_n * FracN2Remove;

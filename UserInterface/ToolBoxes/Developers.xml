@@ -1,4 +1,4 @@
-<folder version="36" creator="Apsim 7.7-r3803" name="Developers">
+<folder version="36" creator="Apsim 7.8-r3984" name="Developers">
   <Plant2>
     <ini />
   </Plant2>
@@ -58,483 +58,277 @@
   <folder name="AgPasture">
     <AgPasture>
       <Dummy1 type="category" description="Initial values for each species to be simulated" />
-      <speciesToSimulate type="text" description="  Name of the species to be simulated:">Ryegrass    WhiteClover</speciesToSimulate>
-      <iniShootDM type="text" description="  Initial above ground dry matter weight (kgDM/ha):">1500   500</iniShootDM>
-      <iniRootDM type="text" description="  Initial root dry matter weight (kgDM/ha):">450     150</iniRootDM>
-      <iniRootDepth type="text" description="  Initial rooting depth (mm):">750     350</iniRootDepth>
+      <SpeciesToSimulate type="text" description="  Name of the species to be simulated:">Ryegrass    WhiteClover</SpeciesToSimulate>
+      <InitialShootDM type="text" description="  Initial above ground DM weight for each species (kg/ha):">1500    500</InitialShootDM>
+      <InitialRootDM type="text" description="  Initial below ground DM weight for each species (kg/ha):">450      150</InitialRootDM>
+      <InitialRootDepth type="text" description="  Initial rooting depth for each species (mm):">750      350</InitialRootDepth>
       <WaterUptakeSource type="list" listvalues="calc,apsim" description="  Water uptake done by AgPasture (calc) or by apsim?:">calc</WaterUptakeSource>
-      <NUptakeSource type="list" listvalues="calc" description="  N uptake done by AgPasture (calc) or by apsim?:">calc</NUptakeSource>
       <Dummy2 type="category" description="Detailed parameters for each species (overwrites the xml file)" />
       <speciesName type="text" description="  Name of each parameterised species:">ryegrass  whiteclover  paspalum</speciesName>
-      <micrometType type="text" description="  Plant type for MicroMet/SWIM:">grass  grass  grass</micrometType>
-      <photoPath type="text" description="  Photosynthesis pathway (C3=3, C4=4):">3  3  4</photoPath>
-      <isLegume type="text" description="  Is this a legume species? (no=0, yes=1):">0  1  0</isLegume>
-      <Pm type="text" description="  Reference photosynthesis rate - CO2 assimilation (mg CO2/m2.s):">1.0  1.0  1.5</Pm>
-      <growthEfficiency type="text" description="  Growth efficiency factor - photosynthesis minus growth respiration (0-1):">0.75  0.75  0.75</growthEfficiency>
-      <maintRespiration type="text" description="  Maintenance respiration coefficient (%):">3.0  3.0  3.0</maintRespiration>
-      <alphaPhoto type="text" description="  Leaf gross photosynthesis rate (mg CO2/J):">0.01  0.01  0.01</alphaPhoto>
-      <thetaPhoto type="text" description="  Photosynthesis curve parameter (J/kg.s):">0.8  0.8  0.8</thetaPhoto>
-      <fractionPAR type="text" description="  Fraction of radiation that is photosynthetic active (0-1):">0.5  0.5  0.5</fractionPAR>
-      <lightExtCoeff type="text" description="  Canopy light extinction coefficient (0-1):">0.5  0.8  0.6</lightExtCoeff>
-      <growthTmin type="text" description="  Minimum temperature for growth (oC):">2.0  4.0  10.0</growthTmin>
-      <growthTopt type="text" description="  Optimum temperature for growth (oC):">20.0  22.0  35.0</growthTopt>
-      <growthTq type="text" description="  Curve parameter for growth response to temperature:">1.5  1.5  1.2</growthTq>
-      <useHeatStress type="text" description="  Consider effects of high temperatures on photosynthesis? (yes/no):">no  no  no</useHeatStress>
-      <heatOnsetT type="text" description="  Onset temperature for heat effects on growth (oC):">26.0  27.0  35.0</heatOnsetT>
-      <heatFullT type="text" description="  Temperature for full heat effects on growth (oC):">35.0  35.0  42.0</heatFullT>
-      <heatSumT type="text" description="  Temperature sum for recovery from heat effects (oC):">30.0  30.0  30.0 </heatSumT>
-      <heatTq type="text" description="  Exponent for computing recovery from heat stress:">1.0  0.8  0.8</heatTq>
-      <heatRecoverT type="text" description="  Base temperature for recovery from heat stress (oC):">26.0  27.0  35.0</heatRecoverT>
-      <useColdStress type="text" description="  Consider effects of low temperatures on photosynthesis? (yes/no):">no  no  no</useColdStress>
-      <coldOnsetT type="text" description="  Onset temperature for cold effects on growth (oC):">2.0  3.0  8.0</coldOnsetT>
-      <coldFullT type="text" description="  Temperature for full cold effects on growth (oC):">-2.0  -1.0  3.0</coldFullT>
-      <coldSumT type="text" description="  Temperature sum for recovery from cold effects (oC):">20.0  20.0  40.0</coldSumT>
-      <coldTq type="text" description="  Exponent for computing recovery from cold stress:">0.8  1.0  1.0</coldTq>
-      <coldRecoverT type="text" description="  Base temperature for recovery from cold effects (oC):">0.0  1.0  5.0</coldRecoverT>
-      <respTref type="text" description="  Reference temperature for maintenance respiration (oC):">20.0  20.0  20.0</respTref>
-      <maxTeffectResp type="text" description="  Maximum effect of temperature on respiration (&gt;1.0):">1.25  1.25  1.25</maxTeffectResp>
-      <referenceCO2 type="text" description="  Reference atmospheric CO2 content for photosynthesis (ppm):">380  380  380</referenceCO2>
-      <CO2PmaxScale type="text" description="  Scale factor for CO2 effect on photosynthesis (ppm):">700  700  150</CO2PmaxScale>
-      <CO2NScale type="text" description="  Scale factor for CO2 effects on plant N concentration (ppm):">600  600  600</CO2NScale>
-      <CO2NMin type="text" description="  Minimum reduction of plant N concentration under elevated CO2 (0-1):">0.7  0.7  0.7</CO2NMin>
-      <CO2NCurvature type="text" description="  Curvature factor of CO2 effect on plant N concentration (&gt;1.0):">2.0  2.0  2.0</CO2NCurvature>
-      <maxRootFraction type="text" description="  Maximum biomass fraction allocated to roots (0-1):">0.25  0.25  0.25</maxRootFraction>
-      <targetSRratio type="text" description="  Target or ideal shoot:root ratio:">4.0  4.0  4.0</targetSRratio>
-      <allocationSeasonF type="text" description="  Factor for increasing DM allocation to shoot during reproductive growth (0-1):">0.25  0.25  0.25</allocationSeasonF>
-      <StartHighAllocation type="text" description="  Day for starting the period with higher DM allocation to shoot:">232  232  232</StartHighAllocation>
-      <DurationHighAllocation type="text" description="  Duration of main phase for higher DM allocation to shoot (days):">60  60  60</DurationHighAllocation>
-      <ShoulderHighAllocation type="text" description="  Relative duration of shoulder periods for higher shoot allocation (0-1):">0.5  0.5  0.5</ShoulderHighAllocation>
-      <useLatitudeFunction type="text" description="  Adjust DM allocation (shoot/root) using latitude? (yes/no):">no  no  no</useLatitudeFunction>
-      <ReferenceLatitude type="text" description="  Reference latitude, beyond which DM allocation is hardly affected (degrees):">60.0  60.0  60.0</ReferenceLatitude>
-      <paramALatFunction type="text" description="  Exponent of function for defining the start of period with high allocation to shoot (&gt;1.0):">5.0  5.0  5.0</paramALatFunction>
-      <onsetFacLatFunction type="text" description="  Define the duration of onset phase with high allocation, fraction of main phase (0-1):">0.5  0.5  0.5</onsetFacLatFunction>
-      <outsetFacLatFunction type="text" description="  Define the duration of outset phase with high allocation, fraction of main phase (0-1):">0.5  0.5  0.5</outsetFacLatFunction>
-      <maxShoulderLatFunction type="text" description="  Maximum duration of the shoulder phases with high DM allocation (days):">60  60  60</maxShoulderLatFunction>
-      <minPlateauLatFunction type="text" description="  Minimum duration of main phase (plateau) with high DM allocation (days):">15  15  15</minPlateauLatFunction>
-      <paramBLatFunction type="text" description="  Exponent of function defining the duration of main phase with high allocation (&gt;0.0):">2.75  2.75  2.75</paramBLatFunction>
-      <paramCLatFunction type="text" description="  Exponent of function for DM fraction allocated to shoot (&gt;1.0):">4.0  4.0  4.0</paramCLatFunction>
-      <allocationMax type="text" description="  Maximum increase in DM allocation to shoot during reproductive growth (0-1):">0.4  0.4  0.4</allocationMax>
-      <maxFLeaf type="text" description="  Maximum fraction of new shoot growth allocated to leaves (0-1):">0.70  0.56  0.60</maxFLeaf>
-      <minFLeaf type="text" description="  Minimum fraction of new shoot growth allocated to leaves (0-1):">0.70  0.28  0.60</minFLeaf>
-      <dmMaxFLeaf type="text" description="  Shoot DM for maximum leaf allocation, allocation decreases above that (kgDM/m2):">500  500  500</dmMaxFLeaf>
-      <dmReferenceFLeaf type="text" description="  Reference DM, when allocation to leaves is midway max and min (kgDM/m2):">2000  2000  2000</dmReferenceFLeaf>
-      <exponentFLeaf type="text" description="  Exponent of function describing DM allocation to leaves (&gt;0.0):">3.0  3.0  3.0</exponentFLeaf>
-      <fStolon type="text" description="  Fraction of new shoot growth allocated to stolons (0-1):">0.0  0.2  0.0</fStolon>
-      <liveLeavesPerTiller type="text" description="  Number of live leaves per tiller:">3.0  3.0  3.5</liveLeavesPerTiller>
-      <SpecificLeafArea type="text" description="  Specific leaf area, per dry matter weight (m2/kgDM):">20  20  20</SpecificLeafArea>
-      <SpecificRootLength type="text" description="  Specific root length, per dry matter weight (m/gDM):">75  75  75</SpecificRootLength>
-      <rateLive2Dead type="text" description="  Reference tissue turnover rate for shoot (0-1):">0.05  0.05  0.05</rateLive2Dead>
-      <facGrowingTissue type="text" description="  Factor for adjusting DM turnover of growing tissue (0-1):">2.0  2.0  2.0</facGrowingTissue>
-      <refTurnoverRateStolon type="text" description="  Reference tissue turnover rate for stolon (0-1):">0.00  0.05  0.00</refTurnoverRateStolon>
-      <rateDead2Litter type="text" description="  Reference littering rate - dead tissue to litter (0-1):">0.11  0.11  0.11</rateDead2Litter>
-      <rateRootSen type="text" description="  Reference senescence rate for roots (0-1):">0.02  0.02  0.02</rateRootSen>
-      <massFluxTmin type="text" description="  Minimum temperature for tissue turnover (oC):">2.0  2.0  5.0</massFluxTmin>
-      <massFluxTopt type="text" description="  Optimum temperature for tissue turnover (oC):">20.0  20.0  20.0</massFluxTopt>
-      <massFluxTq type="text" description="  Exponent of function for temperature effect on tissue turnover:">1.0  1.0  1.0</massFluxTq>
-      <massFluxW0 type="text" description="  Scale factor for GLFWater effect on DM turnover (&gt;1.0):">2.0  2.0  2.0</massFluxW0>
-      <massFluxWopt type="text" description="  Reference GLFwater for tissue turnover (0-1):">0.5  0.5  0.5</massFluxWopt>
-      <massFluxDeadWq type="text" description="  Exponent to adjust GLFWater for senescing tissue (&gt;1.0):">3.0  3.0  3.0</massFluxDeadWq>
-      <stockParameter type="text" description="  Parameter for stock influence on tissue senescence:">0.050  0.050  0.050</stockParameter>
-      <Kappa2_Remob type="text" description="  Coefficient for remobilisation of luxury N from tissue2 (0-1):">0.0  0.0  0.0</Kappa2_Remob>
-      <Kappa3_Remob type="text" description="  Coefficient for remobilisation of luxury N from tissue3 (0-1):">0.0  0.0  0.0</Kappa3_Remob>
-      <Kappa4_Remob type="text" description="  Coefficient for partitioning non-used Nremob into tissue4 (0-1):">0.0  0.0  0.0</Kappa4_Remob>
-      <digestLive type="text" description="  Digestibility of live plant material (0-1):">0.6  0.6  0.6</digestLive>
-      <digestDead type="text" description="  Digestibility of dead plant material (0-1):">0.2  0.2  0.2</digestDead>
-      <dmshoot type="text" description="  Default initial shoot dry matter weight (kgDM/ha):">1500  500  300</dmshoot>
-      <dmroot type="text" description="  Default initial root dry matter weight (kgDM/ha):">450  150  100</dmroot>
-      <dmgreenmin type="text" description="  Minimum allowable green dry matter weight (kgDM/ha):">120  40  25</dmgreenmin>
-      <dmdeadmin type="text" description="  Minimum allowable dead dry matter weight (kgDM/ha):">0  0  0</dmdeadmin>
-      <NconcOptimum_leaves type="text" description="  Optimum N concentration of young leaves (%):">4.0  4.5  3.0</NconcOptimum_leaves>
-      <NconcMaximum_leaves type="text" description="  Maximum N concentration in leaves, with luxury uptake (%):">5.0  5.5  3.5</NconcMaximum_leaves>
-      <NconcMinimum_leaves type="text" description="  Minimum N concentration in leaves, at senescence (%):">1.2  2.0  0.5</NconcMinimum_leaves>
-      <RelativeNconc_Stems type="text" description="  Relative N concentration in stems, fraction of leaf N (0-1):">0.5  0.5  0.5</RelativeNconc_Stems>
-      <RelativeNconc_Stolons type="text" description="  Relative N concentration in stolons, fraction of leaf N (0-1):">0.0  0.5  0.0</RelativeNconc_Stolons>
-      <RelativeNconc_Roots type="text" description="  Relative N concentration in roots, fraction of leaf N (0-1):">0.5  0.5  0.5</RelativeNconc_Roots>
-      <RelativeNconc_stage2 type="text" description="  Optimum N concentration for tissue2 (mature), relative to tissue1 (0-1):">1.0  1.0  1.0</RelativeNconc_stage2>
-      <RelativeNconc_stage3 type="text" description="  Optimum N concentration for tissue3 (senescing), relative to tissue1 (0-1):">1.0  1.0  1.0</RelativeNconc_stage3>
-      <NMinFix type="text" description="  Minimum N fixation, when soil N is sufficient (0-1):">0.0  0.2  0.0</NMinFix>
-      <NMaxFix type="text" description="  Maximum N fixation, when no soil N is available (0-1):">0.0  0.6  0.0</NMaxFix>
-      <NdilutCoeff type="text" description="  Coefficient for modifying the effect of N stress on plant growth (0-1):">0.5  1.0  0.5</NdilutCoeff>
-      <waterStressFactor type="text" description="  coefficient for modifying the effect of water stress on plant growth (0-1):">1.0  1.0  1.0</waterStressFactor>
-      <soilSatFactor type="text" description="  Coefficient for growth limitations due to soil moisture saturation (0-1):">0.1  0.1  0.1</soilSatFactor>
-      <MinMacroPorosity type="text" description="  Minimum soil macroporosity (pores&gt;30um) for optimum plant growth (0-1):">-1    -1    -1</MinMacroPorosity>
-      <GenericGLF type="text" description="  Generic relative growth limiting factor (0-1):">1.0  1.0  1.0</GenericGLF>
-      <SFertilityGLF type="text" description="  Soil related generic growth limiting factor (0-1):">1.0  1.0  1.0</SFertilityGLF>
-      <PreferenceForGreenDM type="text" description="  Weight factor defining the preference level for green DM (on removal):">1  1  1</PreferenceForGreenDM>
-      <PreferenceForDeadDM type="text" description="  Weight factor defining the preference level for dead DM (on removal):">1  1  1</PreferenceForDeadDM>
-      <PreferenceForLeaves type="text" description="  Weight factor defining the preference level for leaves over stems (on removal):">1  1  1</PreferenceForLeaves>
-      <rootDepth type="text" description="  Default rooting depth (mm):">750  350  850</rootDepth>
-      <ExpoLinearDepthParam type="text" description="  Depth from surface below which the proportion of roots starts to decrease (mm):">90  70  95</ExpoLinearDepthParam>
-      <ExpoLinearCurveParam type="text" description="  Exponent to determine the distribution of root DM in the soil profile:">3.20  2.50  3.20</ExpoLinearCurveParam>
-      <MaxPlantHeight type="text" description="  Maximum average height for each species in a sward (mm):">500  300  500</MaxPlantHeight>
-      <MassForMaxHeight type="text" description="  Mass above ground when maximum height is reached (kgDM/ha):">8000  6000  7000</MassForMaxHeight>
-      <ExponentHeightFromMass type="text" description="  Exponent of function describing plant height as function of DM weight (&gt;1.0):">3.00  1.75  2.50</ExponentHeightFromMass>
-      <MinimumHeight type="text" description="  Minimum plant height, for all species (mm):" />
-      <Dummy3 type="category" description="Generic parameters for initialising the sward, by species type" />
-      <initialDMFractions_grass type="text" description="  Fractions of initial dmshoot for each biomass pool, for grasses:">0.15  0.25  0.25  0.05  0.05  0.10  0.10  0.05  0.00  0.00  0.00</initialDMFractions_grass>
-      <initialDMFractions_legume type="text" description="  Fractions of initial dmshoot for each biomass pool, for legumes:">0.16  0.23  0.22  0.05  0.03  0.05  0.05  0.01  0.04  0.08  0.08</initialDMFractions_legume>
+      <micrometType type="text" description="  Plant type descriptor, for MicroMet/SWIM:">grass  grass  grass</micrometType>
+      <PhotosyntheticPathway type="text" description="  Metabolic pathway for C fixation during photosynthesis (C3 or C4):">3          3          4</PhotosyntheticPathway>
+      <isLegume type="text" description="  Whether the plant is a legume species (1=yes, 0=no):">0          1          0</isLegume>
+      <ReferencePhotosyntheticRate type="text" description="  Reference leaf CO2 assimilation rate for photosynthesis (mgCO2/m^2 leaf/s):">1.0      1.0      1.2</ReferencePhotosyntheticRate>
+      <LightExtinctionCoefficients type="text" description="  Light extinction coefficient (0-1):">0.5      0.8      0.6</LightExtinctionCoefficients>
+      <GrowthTminimum type="text" description="  Minimum temperature for growth (oC):">1.0      2.0      10.0</GrowthTminimum>
+      <GrowthToptimum type="text" description="  Optimum temperature for growth (oC):">20        22        32</GrowthToptimum>
+      <GrowthTEffectExponent type="text" description="  Curve parameter for growth response to temperature (&gt;1.0):">1.7      1.7      1.25</GrowthTEffectExponent>
+      <UseHeatStressFactor type="list" description="  Whether heat damage stress is enabled (yes/no):">yes      yes      yes</UseHeatStressFactor>
+      <HeatOnsetTemperature type="text" listvalues="yes      yes      yes,no        no        no" description="  Onset temperature for heat effects on photosynthesis (oC):">28        30        35</HeatOnsetTemperature>
+      <HeatFullTemperature type="text" description="  Temperature for full heat effect on photosynthesis (oC):">35        36        40</HeatFullTemperature>
+      <HeatRecoverySumDD type="text" description="  Cumulative degrees-day for recovery from heat stress (oCd):">30        20        20</HeatRecoverySumDD>
+      <HeatRecoveryTReference type="text" description="  Reference temperature for recovery from heat stress (oC):">25        25        30</HeatRecoveryTReference>
+      <UseColdStressFactor type="list" listvalues="yes      yes      yes,no        no        no" description="  Whether cold damage stress is enabled (yes/no):">yes      yes      yes</UseColdStressFactor>
+      <ColdOnsetTemperature type="text" description="  Onset temperature for cold effects on photosynthesis (oC):">1.0      2.0      8.0</ColdOnsetTemperature>
+      <ColdFullTemperature type="text" description="  Temperature for full cold effect on photosynthesis (oC):">-5.0    -5.0    0.0</ColdFullTemperature>
+      <ColdRecoverySumDD type="text" description="  Cumulative degrees for recovery from cold stress (oCd):">25        30        50</ColdRecoverySumDD>
+      <ColdRecoveryTReference type="text" description="  Reference temperature for recovery from cold stress (oC):">0.0      0.0      5.0</ColdRecoveryTReference>
+      <ReferenceCO2 type="text" description="  Reference CO2 concentration for photosynthesis (ppm):">380      380      380</ReferenceCO2>
+      <CO2EffectScaleFactor type="text" description="  Scaling parameter for the CO2 effect on photosynthesis (ppm):">700      700      150</CO2EffectScaleFactor>
+      <CO2EffectOffsetFactor type="text" description="  Scaling parameter for the CO2 effects on N requirements (ppm):">600      600      600</CO2EffectOffsetFactor>
+      <CO2EffectMinimum type="text" description="  Minimum value for the CO2 effect on N requirements (0-1):">0.7      0.7      0.7</CO2EffectMinimum>
+      <CO2EffectExponent type="text" description="  Exponent controlling the CO2 effect on N requirements (&gt;1.0):">2.0      2.0      2.0</CO2EffectExponent>
+      <GrowthRespirationCoefficient type="text" description="  Growth respiration coefficient (0-1):">3.0      4.0      3.0</GrowthRespirationCoefficient>
+      <MaintenanceRespirationCoefficient type="text" description="  Maintenance respiration coefficient (%):">0.75    0.75    0.75</MaintenanceRespirationCoefficient>
+      <RespirationTReference type="text" description="  Reference temperature for maintenance respiration (oC):">20        20        20</RespirationTReference>
+      <RespirationExponent type="text" description="  Exponent controlling the effect of temperature on respiration (&gt;1.0):">1.5      1.5      1.5</RespirationExponent>
+      <NconcOptimumForLeaves type="text" description="  Optimum N concentration of leaves (no stress) (%):">4.0      4.5      3.0</NconcOptimumForLeaves>
+      <NconcMaximumForLeaves type="text" description="  Maximum N concentration of leaves (luxury uptake) (%):">5.0      5.5      3.5</NconcMaximumForLeaves>
+      <NconcMinimumForLeaves type="text" description="  Minimum N concentration of leaves (dead leaves) (%):">1.2      2.0      0.5</NconcMinimumForLeaves>
+      <RelativeNconcForStems type="text" description="  N concentration for stems, relative to leaves (0-1):">0.5      0.5      0.5</RelativeNconcForStems>
+      <RelativeNconcForStolons type="text" description="  N concentration for stolons, relative to leaves (0-1):">0.0      0.5      0.0</RelativeNconcForStolons>
+      <RelativeNconcForRoots type="text" description="  N concentration for roots, relative to leaves (0-1):">0.5      0.5      0.5</RelativeNconcForRoots>
+      <DegreesDayForGermination type="text" description="  Cumulative degrees-day needed for seed germination (oCd):">125      120      150</DegreesDayForGermination>
+      <TargetShootRootRatio type="text" description="  Target or ideal plant's shoot:root ratio at vegetative stage:">4.0      4.0      4.0</TargetShootRootRatio>
+      <MaxRootAllocation type="text" description="  Maximum fraction of DM growth that can be allocated to roots (0-1):">0.25    0.25    0.25</MaxRootAllocation>
+      <ShootRootGlfFactor type="text" description="  Maximum effect that soil GLFs have on Shoot-Root ratio (0-1):">0.5      0.5      0.6</ShootRootGlfFactor>
+      <UseReproSeasonFactor type="list" listvalues="yes      yes      yes,no        no        no" description="  Whether Shoot:Root ratio is adjusted mimicking reproductive season (yes/no):">yes      yes      yes</UseReproSeasonFactor>
+      <FractionToStolon type="text" description="  Fraction of new growth to be allocated to stolon (0-1):">0.0      0.2      0.0</FractionToStolon>
+      <LiveLeavesPerTiller type="text" description="  Number of live leaves per tiller:">3.0      3.0      3.5</LiveLeavesPerTiller>
+      <SpecificLeafArea type="text" description="  Specific leaf area, per dry matter weight (m^2/kgDM):">25        30        20</SpecificLeafArea>
+      <SpecificRootLength type="text" description="  Specific root length, per dry matter weight (m/gDM):">100      45        75</SpecificRootLength>
+      <TissueTurnoverRateShoot type="text" description="  Reference daily DM turnover rate for shoot tissues (/day):">0.05    0.05    0.05</TissueTurnoverRateShoot>
+      <TissueTurnoverRateRoot type="text" description="  Reference daily DM turnover rate for root tissues (/day):">0.02    0.02    0.02</TissueTurnoverRateRoot>
+      <RelativeTurnoverEmerging type="text" description="  Relative turnover rate for emerging tissues (&gt;0.0):">2.0      2.0      2.0</RelativeTurnoverEmerging>
+      <DetachmentRateShoot type="text" description="  Reference daily detachment rate for dead tissues (/day):">0.08    0.08    0.07</DetachmentRateShoot>
+      <TurnoverTemperatureMin type="text" description="  Minimum temperature for tissue turnover (oC):">2.0      2.0      5.0</TurnoverTemperatureMin>
+      <TurnoverTemperatureRef type="text" description="  Reference temperature for tissue turnover (oC):">20        20        20</TurnoverTemperatureRef>
+      <TurnoverTemperatureExponent type="text" description="  Exponent of function for temperature effect on tissue turnover:">1.0      1.0      1.0</TurnoverTemperatureExponent>
+      <TurnoverDroughtEffectMax type="text" description="  Maximum increase in tissue turnover due to water deficit:">2.0      2.0      2.0</TurnoverDroughtEffectMax>
+      <TurnoverDroughtThreshold type="text" description="  Minimum GLFwater without effect on tissue turnover (0-1):">0.5      0.5      0.5</TurnoverDroughtThreshold>
+      <DetachmentDroughtCoefficient type="text" description="  Coefficient controlling detachment rate as function of moisture (&gt;1.0):">3.0      3.0      3.0</DetachmentDroughtCoefficient>
+      <DetachmentDroughtEffectMin type="text" description="  Minimum effect of drought on detachment rate (0-1):">0.1      0.1      0.1</DetachmentDroughtEffectMin>
+      <TurnoverDefoliationCoefficient type="text" description="  Coefficient of function increasing the turnover rate due to defoliation:">0.5      0.5      0.5</TurnoverDefoliationCoefficient>
+      <TurnoverDefoliationEffectMin type="text" description="  Minimum significant daily effect of defoliation on tissue turnover rate:">0.025  0.025  0.025</TurnoverDefoliationEffectMin>
+      <FractionNLuxuryRemobStage1 type="text" description="  Fraction of luxury N remobilisable from tissue 1 each day (0-1):">0.1      0.1      0.1</FractionNLuxuryRemobStage1>
+      <FractionNLuxuryRemobStage2 type="text" description="  Fraction of luxury N remobilisable from tissue 2 each day (0-1):">0.1      0.1      0.1</FractionNLuxuryRemobStage2>
+      <FractionNLuxuryRemobStage3 type="text" description="  Fraction of luxury N remobilisable from tissue 3 each day (0-1):">0.1      0.1      0.1</FractionNLuxuryRemobStage3>
+      <MinimumNFixation type="text" description="  Minimum fraction of N demand supplied by biologic N fixation (0-1):">0.0      0.2      0.0</MinimumNFixation>
+      <MaximumNFixation type="text" description="  Maximum fraction of N demand supplied by biologic N fixation (0-1):">0.0      0.6      0.0</MaximumNFixation>
+      <SoilSaturationEffectMax type="text" description="  Maximum reduction in plant growth due to water logging (saturated soil) (0-1):">0.1      0.1      0.2</SoilSaturationEffectMax>
+      <MinimumWaterFreePorosity type="text" description="  Minimum water-free pore space for growth with no limitations (0-1):">-1        -1        -1</MinimumWaterFreePorosity>
+      <SoilSaturationRecoveryFactor type="text" description="  Daily recovery rate from water logging (0-1):">0.25    0.25    0.2</SoilSaturationRecoveryFactor>
+      <NDillutionCoefficient type="text" description="  Exponent for modifying the effect of N deficiency on plant growth:">0.5      1.0      0.5</NDillutionCoefficient>
+      <GenericGLF type="text" description="  Generic factor affecting potential plant growth (0-1):">1.0      1.0      1.0</GenericGLF>
+      <SoilFertilityGLF type="text" description="  Generic growth limiting factor due to soil fertility (0-1):">1.0      1.0      1.0</SoilFertilityGLF>
+      <PlantHeightMinimum type="text" description="  Minimum plant height, for each species in the sward (mm):">600      350      750</PlantHeightMinimum>
+      <PlantHeightMassForMax type="text" description="  DM weight above ground for maximum plant height (kgDM/ha):">10000  7500    12000</PlantHeightMassForMax>
+      <PlantHeightExponent type="text" description="  Exponent controlling shoot height as function of DM weight (&gt;1.0):">2.8      2.5      2.6</PlantHeightExponent>
+      <PlantHeightMaximum type="text" description="  Maximum plant height, for each species in the sward (mm):">25        25        25</PlantHeightMaximum>
+      <rootDistributionDepthParam type="text" description="  Depth from surface where root proportion starts to decrease (mm):">90        70        95</rootDistributionDepthParam>
+      <rootDistributionExponent type="text" description="  Exponent controlling the root distribution as function of depth (&gt;1.0):">3.2      2.5      3.2</rootDistributionExponent>
+      <DigestibilityCellWallLive type="text" description="  Digestibility of cell wall in live plant tissues (0-1) (0-1):">0.6      0.6      0.6</DigestibilityCellWallLive>
+      <DigestibilityCellWallDead type="text" description="  Digestibility of cell wall in dead plant tissues (0-1) (0-1):">0.2      0.2      0.2</DigestibilityCellWallDead>
+      <MinimumGreenWt type="text" description="  Minimum above ground green DM (kgDM/ha):">100      50        50</MinimumGreenWt>
+      <FractionStolonsStanding type="text" description="  Proportion of stolon DM standing, available for removal (0-1):">0.0      0.0      0.0</FractionStolonsStanding>
+      <PreferenceForGreenOverDead type="text" description="  Relative preference for live over dead material during graze:">1          1          1</PreferenceForGreenOverDead>
+      <PreferenceForLeafOverStems type="text" description="  Relative preference for leaf over stem-stolon material during graze:">1          1          1</PreferenceForLeafOverStems>
     </AgPasture>
     <AgPasture name="Ryegrass">
       <Dummy1 type="category" description="Initial values for each species to be simulated" />
-      <speciesToSimulate type="text" description="  Name of the species to be simulated:">Ryegrass</speciesToSimulate>
-      <iniShootDM type="text" description="  Initial above ground dry matter weight (kgDM/ha):">1500</iniShootDM>
-      <iniRootDM type="text" description="  Initial root dry matter weight (kgDM/ha):">450</iniRootDM>
-      <iniRootDepth type="text" description="  Initial rooting depth (mm):">750</iniRootDepth>
+      <SpeciesToSimulate type="text" description="  Name of the species to be simulated:">Ryegrass</SpeciesToSimulate>
+      <InitialShootDM type="text" description="  Initial above ground DM weight for each species (kg/ha):">2000</InitialShootDM>
+      <InitialRootDM type="text" description="  Initial below ground DM weight for each species (kg/ha):">500</InitialRootDM>
+      <InitialRootDepth type="text" description="  Initial rooting depth for each species (mm):">750</InitialRootDepth>
       <WaterUptakeSource type="list" listvalues="calc,apsim" description="  Water uptake done by AgPasture (calc) or by apsim?:">calc</WaterUptakeSource>
-      <NUptakeSource type="list" listvalues="calc" description="  N uptake done by AgPasture (calc) or by apsim?:">calc</NUptakeSource>
       <Dummy2 type="category" description="Detailed parameters for each species (overwrites the xml file)" />
       <speciesName type="text" description="  Name of each parameterised species:">ryegrass</speciesName>
-      <micrometType type="text" description="  Plant type for MicroMet/SWIM:">grass</micrometType>
-      <photoPath type="text" description="  Photosynthesis pathway (C3=3, C4=4):">3</photoPath>
-      <isLegume type="text" description="  Is this a legume species? (no=0, yes=1):">0</isLegume>
-      <Pm type="text" description="  Reference photosynthesis rate - CO2 assimilation (mg CO2/m2.s):">1.0</Pm>
-      <growthEfficiency type="text" description="  Growth efficiency factor - photosynthesis minus growth respiration (0-1):">0.75</growthEfficiency>
-      <maintRespiration type="text" description="  Maintenance respiration coefficient (%):">3.0</maintRespiration>
-      <alphaPhoto type="text" description="  Leaf gross photosynthesis rate (mg CO2/J):">0.01</alphaPhoto>
-      <thetaPhoto type="text" description="  Photosynthesis curve parameter (J/kg.s):">0.8</thetaPhoto>
-      <fractionPAR type="text" description="  Fraction of radiation that is photosynthetic active (0-1):">0.5</fractionPAR>
-      <lightExtCoeff type="text" description="  Canopy light extinction coefficient (0-1):">0.5</lightExtCoeff>
-      <growthTmin type="text" description="  Minimum temperature for growth (oC):">2.0</growthTmin>
-      <growthTopt type="text" description="  Optimum temperature for growth (oC):">20.0</growthTopt>
-      <growthTq type="text" description="  Curve parameter for growth response to temperature:">1.5</growthTq>
-      <useHeatStress type="text" description="  Consider effects of high temperatures on photosynthesis? (yes/no):">no</useHeatStress>
-      <heatOnsetT type="text" description="  Onset temperature for heat effects on growth (oC):">26.0</heatOnsetT>
-      <heatFullT type="text" description="  Temperature for full heat effects on growth (oC):">35.0</heatFullT>
-      <heatSumT type="text" description="  Temperature sum for recovery from heat effects (oC):">30.0</heatSumT>
-      <heatTq type="text" description="  Exponent for computing recovery from heat stress:">1.0</heatTq>
-      <heatRecoverT type="text" description="  Base temperature for recovery from heat stress (oC):">26.0</heatRecoverT>
-      <useColdStress type="text" description="  Consider effects of low temperatures on photosynthesis? (yes/no):">no</useColdStress>
-      <coldOnsetT type="text" description="  Onset temperature for cold effects on growth (oC):">2.0</coldOnsetT>
-      <coldFullT type="text" description="  Temperature for full cold effects on growth (oC):">-2.0</coldFullT>
-      <coldSumT type="text" description="  Temperature sum for recovery from cold effects (oC):">20.0</coldSumT>
-      <coldTq type="text" description="  Exponent for computing recovery from cold stress:">0.8</coldTq>
-      <coldRecoverT type="text" description="  Base temperature for recovery from cold effects (oC):">0.0</coldRecoverT>
-      <referenceCO2 type="text" description="  Reference atmospheric CO2 content for photosynthesis (ppm):">380</referenceCO2>
-      <respTref type="text" description="  Reference temperature for maintenance respiration (oC):">20.0</respTref>
-      <maxTeffectResp type="text" description="  Maximum effect of temperature on respiration (&gt;1.0):">1.25</maxTeffectResp>
-      <CO2PmaxScale type="text" description="  Scale factor for CO2 effect on photosynthesis (ppm):">700</CO2PmaxScale>
-      <CO2NScale type="text" description="  Scale factor for CO2 effects on plant N concentration (ppm):">600</CO2NScale>
-      <CO2NMin type="text" description="  Minimum reduction of plant N concentration under elevated CO2 (0-1):">0.7</CO2NMin>
-      <CO2NCurvature type="text" description="  Curvature factor of CO2 effect on plant N concentration (&gt;1.0):">2.0</CO2NCurvature>
-      <maxRootFraction type="text" description="  Maximum biomass fraction allocated to roots (0-1):">0.25</maxRootFraction>
-      <targetSRratio type="text" description="  Target or ideal shoot:root ratio:">4.0</targetSRratio>
-      <allocationSeasonF type="text" description="  Factor for increasing DM allocation to shoot during reproductive growth (0-1):">0.25</allocationSeasonF>
-      <StartHighAllocation type="text" description="  Day for starting the period with higher DM allocation to shoot:">232</StartHighAllocation>
-      <DurationHighAllocation type="text" description="  Duration of main phase for higher DM allocation to shoot (days):">60</DurationHighAllocation>
-      <ShoulderHighAllocation type="text" description="  Relative duration of shoulder periods for higher shoot allocation (0-1):">0.5</ShoulderHighAllocation>
-      <useLatitudeFunction type="text" description="  Adjust DM allocation (shoot/root) using latitude? (yes/no):">no</useLatitudeFunction>
-      <ReferenceLatitude type="text" description="  Reference latitude, beyond which DM allocation is hardly affected (degrees):">60.0</ReferenceLatitude>
-      <paramALatFunction type="text" description="  Exponent of function for defining the start of period with high allocation to shoot (&gt;1.0):">5.0</paramALatFunction>
-      <onsetFacLatFunction type="text" description="  Define the duration of onset phase with high allocation, fraction of main phase (0-1):">0.5</onsetFacLatFunction>
-      <outsetFacLatFunction type="text" description="  Define the duration of outset phase with high allocation, fraction of main phase (0-1):">0.5</outsetFacLatFunction>
-      <maxShoulderLatFunction type="text" description="  Maximum duration of the shoulder phases with high DM allocation (days):">60</maxShoulderLatFunction>
-      <minPlateauLatFunction type="text" description="  Minimum duration of main phase (plateau) with high DM allocation (days):">15</minPlateauLatFunction>
-      <paramBLatFunction type="text" description="  Exponent of function defining the duration of main phase with high allocation (&gt;0.0):">2.75</paramBLatFunction>
-      <paramCLatFunction type="text" description="  Exponent of function for DM fraction allocated to shoot (&gt;1.0):">4.0</paramCLatFunction>
-      <allocationMax type="text" description="  Maximum increase in DM allocation to shoot during reproductive growth (0-1):">0.4</allocationMax>
-      <maxFLeaf type="text" description="  Maximum fraction of new shoot growth allocated to leaves (0-1):">0.70</maxFLeaf>
-      <minFLeaf type="text" description="  Minimum fraction of new shoot growth allocated to leaves (0-1):">0.70</minFLeaf>
-      <dmMaxFLeaf type="text" description="  Shoot DM for maximum leaf allocation, allocation decreases above that (kgDM/m2):">500</dmMaxFLeaf>
-      <dmReferenceFLeaf type="text" description="  Reference DM, when allocation to leaves is midway max and min (kgDM/m2):">2000</dmReferenceFLeaf>
-      <exponentFLeaf type="text" description="  Exponent of function describing DM allocation to leaves (&gt;0.0):">3.0</exponentFLeaf>
-      <fStolon type="text" description="  Fraction of new shoot growth allocated to stolons (0-1):">0.0</fStolon>
-      <liveLeavesPerTiller type="text" description="  Number of live leaves per tiller:">3.0</liveLeavesPerTiller>
-      <SpecificLeafArea type="text" description="  Specific leaf area, per dry matter weight (m2/kgDM):">20</SpecificLeafArea>
-      <SpecificRootLength type="text" description="  Specific root length, per dry matter weight (m/gDM):">75</SpecificRootLength>
-      <rateLive2Dead type="text" description="  Reference tissue turnover rate for shoot (0-1):">0.05</rateLive2Dead>
-      <facGrowingTissue type="text" description="  Factor for adjusting DM turnover of growing tissue (0-1):">2.0</facGrowingTissue>
-      <refTurnoverRateStolon type="text" description="  Reference tissue turnover rate for stolon (0-1):">0.0</refTurnoverRateStolon>
-      <rateDead2Litter type="text" description="  Reference littering rate - dead tissue to litter (0-1):">0.11</rateDead2Litter>
-      <rateRootSen type="text" description="  Reference senescence rate for roots (0-1):">0.02</rateRootSen>
-      <massFluxTmin type="text" description="  Minimum temperature for tissue turnover (oC):">2.0</massFluxTmin>
-      <massFluxTopt type="text" description="  Optimum temperature for tissue turnover (oC):">20.0</massFluxTopt>
-      <massFluxTq type="text" description="  Exponent of function for temperature effect on tissue turnover:">1.0</massFluxTq>
-      <massFluxW0 type="text" description="  Scale factor for GLFWater effect on DM turnover (&gt;1.0):">2.0</massFluxW0>
-      <massFluxWopt type="text" description="  Reference GLFwater for tissue turnover (0-1):">0.5</massFluxWopt>
-      <massFluxDeadWq type="text" description="  Exponent to adjust GLFWater for senescing tissue (&gt;1.0):">3.0</massFluxDeadWq>
-      <stockParameter type="text" description="  Parameter for stock influence on tissue senescence:">0.05</stockParameter>
-      <Kappa2_Remob type="text" description="  Coefficient for remobilisation of luxury N from tissue2 (0-1):">0.0</Kappa2_Remob>
-      <Kappa3_Remob type="text" description="  Coefficient for remobilisation of luxury N from tissue3 (0-1):">0.0</Kappa3_Remob>
-      <Kappa4_Remob type="text" description="  Coefficient for partitioning non-used Nremob into tissue4 (0-1):">0.0</Kappa4_Remob>
-      <digestLive type="text" description="  Digestibility of live plant material (0-1):">0.6</digestLive>
-      <digestDead type="text" description="  Digestibility of dead plant material (0-1):">0.2</digestDead>
-      <dmshoot type="text" description="  Default initial shoot dry matter weight (kgDM/ha):">1500</dmshoot>
-      <dmroot type="text" description="  Default initial root dry matter weight (kgDM/ha):">450</dmroot>
-      <dmgreenmin type="text" description="  Minimum allowable green dry matter weight (kgDM/ha):">120</dmgreenmin>
-      <dmdeadmin type="text" description="  Minimum allowable dead dry matter weight (kgDM/ha):">0</dmdeadmin>
-      <NconcOptimum_leaves type="text" description="  Optimum N concentration of young leaves (%):">4.0</NconcOptimum_leaves>
-      <NconcMaximum_leaves type="text" description="  Maximum N concentration in leaves, with luxury uptake (%):">5.0</NconcMaximum_leaves>
-      <NconcMinimum_leaves type="text" description="  Minimum N concentration in leaves, at senescence (%):">1.2</NconcMinimum_leaves>
-      <RelativeNconc_Stems type="text" description="  Relative N concentration in stems, fraction of leaf N (0-1):">0.5</RelativeNconc_Stems>
-      <RelativeNconc_Stolons type="text" description="  Relative N concentration in stolons, fraction of leaf N (0-1):">0.0</RelativeNconc_Stolons>
-      <RelativeNconc_Roots type="text" description="  Relative N concentration in roots, fraction of leaf N (0-1):">0.5</RelativeNconc_Roots>
-      <RelativeNconc_stage2 type="text" description="  Optimum N concentration for tissue2 (mature), relative to tissue1 (0-1):">1.0</RelativeNconc_stage2>
-      <RelativeNconc_stage3 type="text" description="  Optimum N concentration for tissue3 (senescing), relative to tissue1 (0-1):">1.0</RelativeNconc_stage3>
-      <NMinFix type="text" description="  Minimum N fixation, when soil N is sufficient (0-1):">0.0</NMinFix>
-      <NMaxFix type="text" description="  Maximum N fixation, when no soil N is available (0-1):">0.0</NMaxFix>
-      <NdilutCoeff type="text" description="  Coefficient for modifying the effect of N stress on plant growth (0-1):">0.5</NdilutCoeff>
-      <waterStressFactor type="text" description="  coefficient for modifying the effect of water stress on plant growth (0-1):">1.0</waterStressFactor>
-      <soilSatFactor type="text" description="  Coefficient for growth limitations due to soil moisture saturation (0-1):">0.1</soilSatFactor>
-      <MinMacroPorosity type="text" description="  Minimum soil macroporosity (pores&gt;30um) for optimum plant growth (0-1):">-1</MinMacroPorosity>
-      <GenericGLF type="text" description="  Generic relative growth limiting factor (0-1):">1.0</GenericGLF>
-      <SFertilityGLF type="text" description="  Soil related generic growth limiting factor (0-1):">1.0</SFertilityGLF>
-      <PreferenceForGreenDM type="text" description="  Weight factor defining the preference level for green DM (on removal):">1</PreferenceForGreenDM>
-      <PreferenceForDeadDM type="text" description="  Weight factor defining the preference level for dead DM (on removal):">1</PreferenceForDeadDM>
-      <PreferenceForLeaves type="text" description="  Weight factor defining the preference level for leaves over stems (on removal):">1</PreferenceForLeaves>
-      <rootDepth type="text" description="  Default rooting depth (mm):">750</rootDepth>
-      <ExpoLinearDepthParam type="text" description="  Depth from surface below which the proportion of roots starts to decrease (mm):">90</ExpoLinearDepthParam>
-      <ExpoLinearCurveParam type="text" description="  Exponent to determine the distribution of root DM in the soil profile:">3.2</ExpoLinearCurveParam>
-      <MaxPlantHeight type="text" description="  Maximum average height for each species in a sward (mm):">500</MaxPlantHeight>
-      <MassForMaxHeight type="text" description="  Mass above ground when maximum height is reached (kgDM/ha):">8000</MassForMaxHeight>
-      <ExponentHeightFromMass type="text" description="  Exponent of function describing plant height as function of DM weight (&gt;1.0):">3.00</ExponentHeightFromMass>
-      <MinimumHeight type="text" description="  Minimum plant height, for all species (mm):" />
-      <Dummy3 type="category" description="Generic parameters for initialising the sward, by species type" />
-      <initialDMFractions_grass type="text" description="  Fractions of initial dmshoot for each biomass pool, for grasses:">0.15  0.25  0.25  0.05  0.05  0.10  0.10  0.05  0.00  0.00  0.00</initialDMFractions_grass>
+      <micrometType type="text" description="  Plant type descriptor, for MicroMet/SWIM:">grass</micrometType>
+      <PhotosyntheticPathway type="text" description="  Metabolic pathway for C fixation during photosynthesis (C3 or C4):">3</PhotosyntheticPathway>
+      <isLegume type="text" description="  Whether the plant is a legume species (1=yes, 0=no):">0</isLegume>
+      <ReferencePhotosyntheticRate type="text" description="  Reference leaf CO2 assimilation rate for photosynthesis (mgCO2/m^2 leaf/s):">1</ReferencePhotosyntheticRate>
+      <LightExtinctionCoefficients type="text" description="  Light extinction coefficient (0-1):">0.5</LightExtinctionCoefficients>
+      <GrowthTminimum type="text" description="  Minimum temperature for growth (oC):">1</GrowthTminimum>
+      <GrowthToptimum type="text" description="  Optimum temperature for growth (oC):">20</GrowthToptimum>
+      <GrowthTEffectExponent type="text" description="  Curve parameter for growth response to temperature (&gt;1.0):">1.7</GrowthTEffectExponent>
+      <UseHeatStressFactor type="list" description="  Whether heat damage stress is enabled (yes/no):">yes</UseHeatStressFactor>
+      <HeatOnsetTemperature type="text" listvalues="yes      yes      yes,no        no        no" description="  Onset temperature for heat effects on photosynthesis (oC):">28</HeatOnsetTemperature>
+      <HeatFullTemperature type="text" description="  Temperature for full heat effect on photosynthesis (oC):">35</HeatFullTemperature>
+      <HeatRecoverySumDD type="text" description="  Cumulative degrees-day for recovery from heat stress (oCd):">30</HeatRecoverySumDD>
+      <HeatRecoveryTReference type="text" description="  Reference temperature for recovery from heat stress (oC):">25</HeatRecoveryTReference>
+      <UseColdStressFactor type="list" listvalues="yes      yes      yes,no        no        no" description="  Whether cold damage stress is enabled (yes/no):">yes</UseColdStressFactor>
+      <ColdOnsetTemperature type="text" description="  Onset temperature for cold effects on photosynthesis (oC):">1</ColdOnsetTemperature>
+      <ColdFullTemperature type="text" description="  Temperature for full cold effect on photosynthesis (oC):">-5</ColdFullTemperature>
+      <ColdRecoverySumDD type="text" description="  Cumulative degrees for recovery from cold stress (oCd):">25</ColdRecoverySumDD>
+      <ColdRecoveryTReference type="text" description="  Reference temperature for recovery from cold stress (oC):">0</ColdRecoveryTReference>
+      <ReferenceCO2 type="text" description="  Reference CO2 concentration for photosynthesis (ppm):">380</ReferenceCO2>
+      <CO2EffectScaleFactor type="text" description="  Scaling parameter for the CO2 effect on photosynthesis (ppm):">700</CO2EffectScaleFactor>
+      <CO2EffectOffsetFactor type="text" description="  Scaling parameter for the CO2 effects on N requirements (ppm):">600</CO2EffectOffsetFactor>
+      <CO2EffectMinimum type="text" description="  Minimum value for the CO2 effect on N requirements (0-1):">0.7</CO2EffectMinimum>
+      <CO2EffectExponent type="text" description="  Exponent controlling the CO2 effect on N requirements (&gt;1.0):">2</CO2EffectExponent>
+      <GrowthRespirationCoefficient type="text" description="  Growth respiration coefficient (0-1):">3</GrowthRespirationCoefficient>
+      <MaintenanceRespirationCoefficient type="text" description="  Maintenance respiration coefficient (%):">0.75</MaintenanceRespirationCoefficient>
+      <RespirationTReference type="text" description="  Reference temperature for maintenance respiration (oC):">20</RespirationTReference>
+      <RespirationExponent type="text" description="  Exponent controlling the effect of temperature on respiration (&gt;1.0):">1.5</RespirationExponent>
+      <NconcOptimumForLeaves type="text" description="  Optimum N concentration of leaves (no stress) (%):">4</NconcOptimumForLeaves>
+      <NconcMaximumForLeaves type="text" description="  Maximum N concentration of leaves (luxury uptake) (%):">5</NconcMaximumForLeaves>
+      <NconcMinimumForLeaves type="text" description="  Minimum N concentration of leaves (dead leaves) (%):">1.2</NconcMinimumForLeaves>
+      <RelativeNconcForStems type="text" description="  N concentration for stems, relative to leaves (0-1):">0.5</RelativeNconcForStems>
+      <RelativeNconcForStolons type="text" description="  N concentration for stolons, relative to leaves (0-1):">0</RelativeNconcForStolons>
+      <RelativeNconcForRoots type="text" description="  N concentration for roots, relative to leaves (0-1):">0.5</RelativeNconcForRoots>
+      <DegreesDayForGermination type="text" description="  Cumulative degrees-day needed for seed germination (oCd):">125</DegreesDayForGermination>
+      <TargetShootRootRatio type="text" description="  Target or ideal plant's shoot:root ratio at vegetative stage:">4</TargetShootRootRatio>
+      <MaxRootAllocation type="text" description="  Maximum fraction of DM growth that can be allocated to roots (0-1):">0.25</MaxRootAllocation>
+      <ShootRootGlfFactor type="text" description="  Maximum effect that soil GLFs have on Shoot-Root ratio (0-1):">0.5</ShootRootGlfFactor>
+      <UseReproSeasonFactor type="list" listvalues="yes      yes      yes,no        no        no" description="  Whether Shoot:Root ratio is adjusted mimicking reproductive season (yes/no):">yes</UseReproSeasonFactor>
+      <FractionToStolon type="text" description="  Fraction of new growth to be allocated to stolon (0-1):">0</FractionToStolon>
+      <LiveLeavesPerTiller type="text" description="  Number of live leaves per tiller:">3</LiveLeavesPerTiller>
+      <SpecificLeafArea type="text" description="  Specific leaf area, per dry matter weight (m^2/kgDM):">25</SpecificLeafArea>
+      <SpecificRootLength type="text" description="  Specific root length, per dry matter weight (m/gDM):">100</SpecificRootLength>
+      <TissueTurnoverRateShoot type="text" description="  Reference daily DM turnover rate for shoot tissues (/day):">0.05</TissueTurnoverRateShoot>
+      <TissueTurnoverRateRoot type="text" description="  Reference daily DM turnover rate for root tissues (/day):">0.02</TissueTurnoverRateRoot>
+      <RelativeTurnoverEmerging type="text" description="  Relative turnover rate for emerging tissues (&gt;0.0):">2</RelativeTurnoverEmerging>
+      <DetachmentRateShoot type="text" description="  Reference daily detachment rate for dead tissues (/day):">0.08</DetachmentRateShoot>
+      <TurnoverTemperatureMin type="text" description="  Minimum temperature for tissue turnover (oC):">2</TurnoverTemperatureMin>
+      <TurnoverTemperatureRef type="text" description="  Reference temperature for tissue turnover (oC):">20</TurnoverTemperatureRef>
+      <TurnoverTemperatureExponent type="text" description="  Exponent of function for temperature effect on tissue turnover:">1</TurnoverTemperatureExponent>
+      <TurnoverDroughtEffectMax type="text" description="  Maximum increase in tissue turnover due to water deficit:">2</TurnoverDroughtEffectMax>
+      <TurnoverDroughtThreshold type="text" description="  Minimum GLFwater without effect on tissue turnover (0-1):">0.5</TurnoverDroughtThreshold>
+      <DetachmentDroughtCoefficient type="text" description="  Coefficient controlling detachment rate as function of moisture (&gt;1.0):">3</DetachmentDroughtCoefficient>
+      <DetachmentDroughtEffectMin type="text" description="  Minimum effect of drought on detachment rate (0-1):">0.1</DetachmentDroughtEffectMin>
+      <TurnoverDefoliationCoefficient type="text" description="  Coefficient of function increasing the turnover rate due to defoliation:">0.5</TurnoverDefoliationCoefficient>
+      <TurnoverDefoliationEffectMin type="text" description="  Minimum significant daily effect of defoliation on tissue turnover rate:">0.025</TurnoverDefoliationEffectMin>
+      <FractionNLuxuryRemobStage1 type="text" description="  Fraction of luxury N remobilisable from tissue 1 each day (0-1):">0.1</FractionNLuxuryRemobStage1>
+      <FractionNLuxuryRemobStage2 type="text" description="  Fraction of luxury N remobilisable from tissue 2 each day (0-1):">0.1</FractionNLuxuryRemobStage2>
+      <FractionNLuxuryRemobStage3 type="text" description="  Fraction of luxury N remobilisable from tissue 3 each day (0-1):">0.1</FractionNLuxuryRemobStage3>
+      <MinimumNFixation type="text" description="  Minimum fraction of N demand supplied by biologic N fixation (0-1):">0</MinimumNFixation>
+      <MaximumNFixation type="text" description="  Maximum fraction of N demand supplied by biologic N fixation (0-1):">0</MaximumNFixation>
+      <SoilSaturationEffectMax type="text" description="  Maximum reduction in plant growth due to water logging (saturated soil) (0-1):">0.1</SoilSaturationEffectMax>
+      <MinimumWaterFreePorosity type="text" description="  Minimum water-free pore space for growth with no limitations (0-1):">-1</MinimumWaterFreePorosity>
+      <SoilSaturationRecoveryFactor type="text" description="  Daily recovery rate from water logging (0-1):">0.25</SoilSaturationRecoveryFactor>
+      <NDillutionCoefficient type="text" description="  Exponent for modifying the effect of N deficiency on plant growth:">0.5</NDillutionCoefficient>
+      <GenericGLF type="text" description="  Generic factor affecting potential plant growth (0-1):">1</GenericGLF>
+      <SoilFertilityGLF type="text" description="  Generic growth limiting factor due to soil fertility (0-1):">1</SoilFertilityGLF>
+      <PlantHeightMinimum type="text" description="  Minimum plant height, for each species in the sward (mm):">600</PlantHeightMinimum>
+      <PlantHeightMassForMax type="text" description="  DM weight above ground for maximum plant height (kgDM/ha):">10000</PlantHeightMassForMax>
+      <PlantHeightExponent type="text" description="  Exponent controlling shoot height as function of DM weight (&gt;1.0):">2.8</PlantHeightExponent>
+      <PlantHeightMaximum type="text" description="  Maximum plant height, for each species in the sward (mm):">25</PlantHeightMaximum>
+      <rootDistributionDepthParam type="text" description="  Depth from surface where root proportion starts to decrease (mm):">90</rootDistributionDepthParam>
+      <rootDistributionExponent type="text" description="  Exponent controlling the root distribution as function of depth (&gt;1.0):">3.2</rootDistributionExponent>
+      <DigestibilityCellWallLive type="text" description="  Digestibility of cell wall in live plant tissues (0-1) (0-1):">0.6</DigestibilityCellWallLive>
+      <DigestibilityCellWallDead type="text" description="  Digestibility of cell wall in dead plant tissues (0-1) (0-1):">0.2</DigestibilityCellWallDead>
+      <MinimumGreenWt type="text" description="  Minimum above ground green DM (kgDM/ha):">100</MinimumGreenWt>
+      <FractionStolonsStanding type="text" description="  Proportion of stolon DM standing, available for removal (0-1):">0</FractionStolonsStanding>
+      <PreferenceForGreenOverDead type="text" description="  Relative preference for live over dead material during graze:">1</PreferenceForGreenOverDead>
+      <PreferenceForLeafOverStems type="text" description="  Relative preference for leaf over stem-stolon material during graze:">1</PreferenceForLeafOverStems>
     </AgPasture>
     <AgPasture name="WhiteClover">
       <Dummy1 type="category" description="Initial values for each species to be simulated" />
-      <speciesToSimulate type="text" description="  Name of the species to be simulated:">WhiteClover</speciesToSimulate>
-      <iniShootDM type="text" description="  Initial above ground dry matter weight (kgDM/ha):">500</iniShootDM>
-      <iniRootDM type="text" description="  Initial root dry matter weight (kgDM/ha):">150</iniRootDM>
-      <iniRootDepth type="text" description="  Initial rooting depth (mm):">350</iniRootDepth>
+      <SpeciesToSimulate type="text" description="  Name of the species to be simulated:">WhiteClover</SpeciesToSimulate>
+      <InitialShootDM type="text" description="  Initial above ground DM weight for each species (kg/ha):">2000</InitialShootDM>
+      <InitialRootDM type="text" description="  Initial below ground DM weight for each species (kg/ha):">500</InitialRootDM>
+      <InitialRootDepth type="text" description="  Initial rooting depth for each species (mm):">350</InitialRootDepth>
       <WaterUptakeSource type="list" listvalues="calc,apsim" description="  Water uptake done by AgPasture (calc) or by apsim?:">calc</WaterUptakeSource>
-      <NUptakeSource type="list" listvalues="calc" description="  N uptake done by AgPasture (calc) or by apsim?:">calc</NUptakeSource>
       <Dummy2 type="category" description="Detailed parameters for each species (overwrites the xml file)" />
       <speciesName type="text" description="  Name of each parameterised species:">whiteclover</speciesName>
-      <micrometType type="text" description="  Plant type for MicroMet/SWIM:">grass</micrometType>
-      <photoPath type="text" description="  Photosynthesis pathway (C3=3, C4=4):">3</photoPath>
-      <isLegume type="text" description="  Is this a legume species? (no=0, yes=1):">1</isLegume>
-      <Pm type="text" description="  Reference photosynthesis rate - CO2 assimilation (mg CO2/m2.s):">1.0</Pm>
-      <growthEfficiency type="text" description="  Growth efficiency factor - photosynthesis minus growth respiration (0-1):">0.75</growthEfficiency>
-      <maintRespiration type="text" description="  Maintenance respiration coefficient (%):">3.0</maintRespiration>
-      <alphaPhoto type="text" description="  Leaf gross photosynthesis rate (mg CO2/J):">0.01</alphaPhoto>
-      <thetaPhoto type="text" description="  Photosynthesis curve parameter (J/kg.s):">0.8</thetaPhoto>
-      <fractionPAR type="text" description="  Fraction of radiation that is photosynthetic active (0-1):">0.5</fractionPAR>
-      <lightExtCoeff type="text" description="  Canopy light extinction coefficient (0-1):">0.8</lightExtCoeff>
-      <growthTmin type="text" description="  Minimum temperature for growth (oC):">4.0</growthTmin>
-      <growthTopt type="text" description="  Optimum temperature for growth (oC):">22.0</growthTopt>
-      <growthTq type="text" description="  Curve parameter for growth response to temperature:">1.5</growthTq>
-      <useHeatStress type="text" description="  Consider effects of high temperatures on photosynthesis? (yes/no):">no</useHeatStress>
-      <heatOnsetT type="text" description="  Onset temperature for heat effects on growth (oC):">27.0</heatOnsetT>
-      <heatFullT type="text" description="  Temperature for full heat effects on growth (oC):">35.0</heatFullT>
-      <heatSumT type="text" description="  Temperature sum for recovery from heat effects (oC):">30.0</heatSumT>
-      <heatTq type="text" description="  Exponent for computing recovery from heat stress:">0.8</heatTq>
-      <heatRecoverT type="text" description="  Base temperature for recovery from heat stress (oC):">27.0</heatRecoverT>
-      <useColdStress type="text" description="  Consider effects of low temperatures on photosynthesis? (yes/no):">no</useColdStress>
-      <coldOnsetT type="text" description="  Onset temperature for cold effects on growth (oC):">3.0</coldOnsetT>
-      <coldFullT type="text" description="  Temperature for full cold effects on growth (oC):">-1.0</coldFullT>
-      <coldSumT type="text" description="  Temperature sum for recovery from cold effects (oC):">20.0</coldSumT>
-      <coldTq type="text" description="  Exponent for computing recovery from cold stress:">1.0</coldTq>
-      <coldRecoverT type="text" description="  Base temperature for recovery from cold effects (oC):">1.0</coldRecoverT>
-      <referenceCO2 type="text" description="  Reference atmospheric CO2 content for photosynthesis (ppm):">380</referenceCO2>
-      <respTref type="text" description="  Reference temperature for maintenance respiration (oC):">20.0</respTref>
-      <maxTeffectResp type="text" description="  Maximum effect of temperature on respiration (&gt;1.0):">1.25</maxTeffectResp>
-      <CO2PmaxScale type="text" description="  Scale factor for CO2 effect on photosynthesis (ppm):">700</CO2PmaxScale>
-      <CO2NScale type="text" description="  Scale factor for CO2 effects on plant N concentration (ppm):">600</CO2NScale>
-      <CO2NMin type="text" description="  Minimum reduction of plant N concentration under elevated CO2 (0-1):">0.7</CO2NMin>
-      <CO2NCurvature type="text" description="  Curvature factor of CO2 effect on plant N concentration (&gt;1.0):">2.0</CO2NCurvature>
-      <maxRootFraction type="text" description="  Maximum biomass fraction allocated to roots (0-1):">0.25</maxRootFraction>
-      <targetSRratio type="text" description="  Target or ideal shoot:root ratio:">4.0</targetSRratio>
-      <allocationSeasonF type="text" description="  Factor for increasing DM allocation to shoot during reproductive growth (0-1):">0.25</allocationSeasonF>
-      <StartHighAllocation type="text" description="  Day for starting the period with higher DM allocation to shoot:">232</StartHighAllocation>
-      <DurationHighAllocation type="text" description="  Duration of main phase for higher DM allocation to shoot (days):">60</DurationHighAllocation>
-      <ShoulderHighAllocation type="text" description="  Relative duration of shoulder periods for higher shoot allocation (0-1):">0.5</ShoulderHighAllocation>
-      <useLatitudeFunction type="text" description="  Adjust DM allocation (shoot/root) using latitude? (yes/no):">no</useLatitudeFunction>
-      <ReferenceLatitude type="text" description="  Reference latitude, beyond which DM allocation is hardly affected (degrees):">60.0</ReferenceLatitude>
-      <paramALatFunction type="text" description="  Exponent of function for defining the start of period with high allocation to shoot (&gt;1.0):">5.0</paramALatFunction>
-      <onsetFacLatFunction type="text" description="  Define the duration of onset phase with high allocation, fraction of main phase (0-1):">0.5</onsetFacLatFunction>
-      <outsetFacLatFunction type="text" description="  Define the duration of outset phase with high allocation, fraction of main phase (0-1):">0.5</outsetFacLatFunction>
-      <maxShoulderLatFunction type="text" description="  Maximum duration of the shoulder phases with high DM allocation (days):">60</maxShoulderLatFunction>
-      <minPlateauLatFunction type="text" description="  Minimum duration of main phase (plateau) with high DM allocation (days):">15</minPlateauLatFunction>
-      <paramBLatFunction type="text" description="  Exponent of function defining the duration of main phase with high allocation (&gt;0.0):">2.75</paramBLatFunction>
-      <paramCLatFunction type="text" description="  Exponent of function for DM fraction allocated to shoot (&gt;1.0):">4.0</paramCLatFunction>
-      <allocationMax type="text" description="  Maximum increase in DM allocation to shoot during reproductive growth (0-1):">0.4</allocationMax>
-      <maxFLeaf type="text" description="  Maximum fraction of new shoot growth allocated to leaves (0-1):">0.56</maxFLeaf>
-      <minFLeaf type="text" description="  Minimum fraction of new shoot growth allocated to leaves (0-1):">0.28</minFLeaf>
-      <dmMaxFLeaf type="text" description="  Shoot DM for maximum leaf allocation, allocation decreases above that (kgDM/m2):">500</dmMaxFLeaf>
-      <dmReferenceFLeaf type="text" description="  Reference DM, when allocation to leaves is midway max and min (kgDM/m2):">2000</dmReferenceFLeaf>
-      <exponentFLeaf type="text" description="  Exponent of function describing DM allocation to leaves (&gt;0.0):">3.0</exponentFLeaf>
-      <fStolon type="text" description="  Fraction of new shoot growth allocated to stolons (0-1):">0.2</fStolon>
-      <liveLeavesPerTiller type="text" description="  Number of live leaves per tiller:">3.0</liveLeavesPerTiller>
-      <SpecificLeafArea type="text" description="  Specific leaf area, per dry matter weight (m2/kgDM):">20</SpecificLeafArea>
-      <SpecificRootLength type="text" description="  Specific root length, per dry matter weight (m/gDM):">75</SpecificRootLength>
-      <rateLive2Dead type="text" description="  Reference tissue turnover rate for shoot (0-1):">0.05</rateLive2Dead>
-      <facGrowingTissue type="text" description="  Factor for adjusting DM turnover of growing tissue (0-1):">2.0</facGrowingTissue>
-      <refTurnoverRateStolon type="text" description="  Reference tissue turnover rate for stolon (0-1):">0.05</refTurnoverRateStolon>
-      <rateDead2Litter type="text" description="  Reference littering rate - dead tissue to litter (0-1):">0.11</rateDead2Litter>
-      <rateRootSen type="text" description="  Reference senescence rate for roots (0-1):">0.02</rateRootSen>
-      <massFluxTmin type="text" description="  Minimum temperature for tissue turnover (oC):">2.0</massFluxTmin>
-      <massFluxTopt type="text" description="  Optimum temperature for tissue turnover (oC):">20.0</massFluxTopt>
-      <massFluxTq type="text" description="  Exponent of function for temperature effect on tissue turnover:">1.0</massFluxTq>
-      <massFluxW0 type="text" description="  Scale factor for GLFWater effect on DM turnover (&gt;1.0):">2.0</massFluxW0>
-      <massFluxWopt type="text" description="  Reference GLFwater for tissue turnover (0-1):">0.5</massFluxWopt>
-      <massFluxDeadWq type="text" description="  Exponent to adjust GLFWater for senescing tissue (&gt;1.0):">3.0</massFluxDeadWq>
-      <stockParameter type="text" description="  Parameter for stock influence on tissue senescence:">0.05</stockParameter>
-      <Kappa2_Remob type="text" description="  Coefficient for remobilisation of luxury N from tissue2 (0-1):">0.0</Kappa2_Remob>
-      <Kappa3_Remob type="text" description="  Coefficient for remobilisation of luxury N from tissue3 (0-1):">0.0</Kappa3_Remob>
-      <Kappa4_Remob type="text" description="  Coefficient for partitioning non-used Nremob into tissue4 (0-1):">0.0</Kappa4_Remob>
-      <digestLive type="text" description="  Digestibility of live plant material (0-1):">0.6</digestLive>
-      <digestDead type="text" description="  Digestibility of dead plant material (0-1):">0.2</digestDead>
-      <dmshoot type="text" description="  Default initial shoot dry matter weight (kgDM/ha):">500</dmshoot>
-      <dmroot type="text" description="  Default initial root dry matter weight (kgDM/ha):">150</dmroot>
-      <dmgreenmin type="text" description="  Minimum allowable green dry matter weight (kgDM/ha):">40</dmgreenmin>
-      <dmdeadmin type="text" description="  Minimum allowable dead dry matter weight (kgDM/ha):">0</dmdeadmin>
-      <NconcOptimum_leaves type="text" description="  Optimum N concentration of young leaves (%):">4.5</NconcOptimum_leaves>
-      <NconcMaximum_leaves type="text" description="  Maximum N concentration in leaves, with luxury uptake (%):">5.5</NconcMaximum_leaves>
-      <NconcMinimum_leaves type="text" description="  Minimum N concentration in leaves, at senescence (%):">2.0</NconcMinimum_leaves>
-      <RelativeNconc_Stems type="text" description="  Relative N concentration in stems, fraction of leaf N (0-1):">0.5</RelativeNconc_Stems>
-      <RelativeNconc_Stolons type="text" description="  Relative N concentration in stolons, fraction of leaf N (0-1):">0.5</RelativeNconc_Stolons>
-      <RelativeNconc_Roots type="text" description="  Relative N concentration in roots, fraction of leaf N (0-1):">0.5</RelativeNconc_Roots>
-      <RelativeNconc_stage2 type="text" description="  Optimum N concentration for tissue2 (mature), relative to tissue1 (0-1):">1.0</RelativeNconc_stage2>
-      <RelativeNconc_stage3 type="text" description="  Optimum N concentration for tissue3 (senescing), relative to tissue1 (0-1):">1.0</RelativeNconc_stage3>
-      <NMinFix type="text" description="  Minimum N fixation, when soil N is sufficient (0-1):">0.2</NMinFix>
-      <NMaxFix type="text" description="  Maximum N fixation, when no soil N is available (0-1):">0.6</NMaxFix>
-      <NdilutCoeff type="text" description="  Coefficient for modifying the effect of N stress on plant growth (0-1):">1.0</NdilutCoeff>
-      <waterStressFactor type="text" description="  coefficient for modifying the effect of water stress on plant growth (0-1):">1.0</waterStressFactor>
-      <soilSatFactor type="text" description="  Coefficient for growth limitations due to soil moisture saturation (0-1):">0.1</soilSatFactor>
-      <MinMacroPorosity type="text" description="  Minimum soil macroporosity (pores&gt;30um) for optimum plant growth (0-1):">-1</MinMacroPorosity>
-      <GenericGLF type="text" description="  Generic relative growth limiting factor (0-1):">1.0</GenericGLF>
-      <SFertilityGLF type="text" description="  Soil related generic growth limiting factor (0-1):">1.0</SFertilityGLF>
-      <PreferenceForGreenDM type="text" description="  Weight factor defining the preference level for green DM (on removal):">1</PreferenceForGreenDM>
-      <PreferenceForDeadDM type="text" description="  Weight factor defining the preference level for dead DM (on removal):">1</PreferenceForDeadDM>
-      <PreferenceForLeaves type="text" description="  Weight factor defining the preference level for leaves over stems (on removal):">1</PreferenceForLeaves>
-      <rootDepth type="text" description="  Default rooting depth (mm):">350</rootDepth>
-      <ExpoLinearDepthParam type="text" description="  Depth from surface below which the proportion of roots starts to decrease (mm):">70</ExpoLinearDepthParam>
-      <ExpoLinearCurveParam type="text" description="  Exponent to determine the distribution of root DM in the soil profile:">2.5</ExpoLinearCurveParam>
-      <MaxPlantHeight type="text" description="  Maximum average height for each species in a sward (mm):">300</MaxPlantHeight>
-      <MassForMaxHeight type="text" description="  Mass above ground when maximum height is reached (kgDM/ha):">6000</MassForMaxHeight>
-      <ExponentHeightFromMass type="text" description="  Exponent of function describing plant height as function of DM weight (&gt;1.0):">1.75</ExponentHeightFromMass>
-      <MinimumHeight type="text" description="  Minimum plant height, for all species (mm):" />
-      <Dummy3 type="category" description="Generic parameters for initialising the sward, by species type" />
-      <initialDMFractions_legume type="text" description="  Fractions of initial dmshoot for each biomass pool, for legumes:">0.16  0.23  0.22  0.05  0.03  0.05  0.05  0.01  0.04  0.08  0.08</initialDMFractions_legume>
+      <micrometType type="text" description="  Plant type descriptor, for MicroMet/SWIM:">grass</micrometType>
+      <PhotosyntheticPathway type="text" description="  Metabolic pathway for C fixation during photosynthesis (C3 or C4):">3</PhotosyntheticPathway>
+      <isLegume type="text" description="  Whether the plant is a legume species (1=yes, 0=no):">1</isLegume>
+      <ReferencePhotosyntheticRate type="text" description="  Reference leaf CO2 assimilation rate for photosynthesis (mgCO2/m^2 leaf/s):">1</ReferencePhotosyntheticRate>
+      <LightExtinctionCoefficients type="text" description="  Light extinction coefficient (0-1):">0.8</LightExtinctionCoefficients>
+      <GrowthTminimum type="text" description="  Minimum temperature for growth (oC):">2</GrowthTminimum>
+      <GrowthToptimum type="text" description="  Optimum temperature for growth (oC):">22</GrowthToptimum>
+      <GrowthTEffectExponent type="text" description="  Curve parameter for growth response to temperature (&gt;1.0):">1.7</GrowthTEffectExponent>
+      <UseHeatStressFactor type="list" description="  Whether heat damage stress is enabled (yes/no):">yes</UseHeatStressFactor>
+      <HeatOnsetTemperature type="text" listvalues="yes      yes      yes,no        no        no" description="  Onset temperature for heat effects on photosynthesis (oC):">30</HeatOnsetTemperature>
+      <HeatFullTemperature type="text" description="  Temperature for full heat effect on photosynthesis (oC):">36</HeatFullTemperature>
+      <HeatRecoverySumDD type="text" description="  Cumulative degrees-day for recovery from heat stress (oCd):">20</HeatRecoverySumDD>
+      <HeatRecoveryTReference type="text" description="  Reference temperature for recovery from heat stress (oC):">25</HeatRecoveryTReference>
+      <UseColdStressFactor type="list" listvalues="yes      yes      yes,no        no        no" description="  Whether cold damage stress is enabled (yes/no):">yes</UseColdStressFactor>
+      <ColdOnsetTemperature type="text" description="  Onset temperature for cold effects on photosynthesis (oC):">2</ColdOnsetTemperature>
+      <ColdFullTemperature type="text" description="  Temperature for full cold effect on photosynthesis (oC):">-5</ColdFullTemperature>
+      <ColdRecoverySumDD type="text" description="  Cumulative degrees for recovery from cold stress (oCd):">30</ColdRecoverySumDD>
+      <ColdRecoveryTReference type="text" description="  Reference temperature for recovery from cold stress (oC):">0</ColdRecoveryTReference>
+      <ReferenceCO2 type="text" description="  Reference CO2 concentration for photosynthesis (ppm):">380</ReferenceCO2>
+      <CO2EffectScaleFactor type="text" description="  Scaling parameter for the CO2 effect on photosynthesis (ppm):">700</CO2EffectScaleFactor>
+      <CO2EffectOffsetFactor type="text" description="  Scaling parameter for the CO2 effects on N requirements (ppm):">600</CO2EffectOffsetFactor>
+      <CO2EffectMinimum type="text" description="  Minimum value for the CO2 effect on N requirements (0-1):">0.7</CO2EffectMinimum>
+      <CO2EffectExponent type="text" description="  Exponent controlling the CO2 effect on N requirements (&gt;1.0):">2</CO2EffectExponent>
+      <GrowthRespirationCoefficient type="text" description="  Growth respiration coefficient (0-1):">4</GrowthRespirationCoefficient>
+      <MaintenanceRespirationCoefficient type="text" description="  Maintenance respiration coefficient (%):">0.75</MaintenanceRespirationCoefficient>
+      <RespirationTReference type="text" description="  Reference temperature for maintenance respiration (oC):">20</RespirationTReference>
+      <RespirationExponent type="text" description="  Exponent controlling the effect of temperature on respiration (&gt;1.0):">1.5</RespirationExponent>
+      <NconcOptimumForLeaves type="text" description="  Optimum N concentration of leaves (no stress) (%):">4.5</NconcOptimumForLeaves>
+      <NconcMaximumForLeaves type="text" description="  Maximum N concentration of leaves (luxury uptake) (%):">5.5</NconcMaximumForLeaves>
+      <NconcMinimumForLeaves type="text" description="  Minimum N concentration of leaves (dead leaves) (%):">2</NconcMinimumForLeaves>
+      <RelativeNconcForStems type="text" description="  N concentration for stems, relative to leaves (0-1):">0.5</RelativeNconcForStems>
+      <RelativeNconcForStolons type="text" description="  N concentration for stolons, relative to leaves (0-1):">0.5</RelativeNconcForStolons>
+      <RelativeNconcForRoots type="text" description="  N concentration for roots, relative to leaves (0-1):">0.5</RelativeNconcForRoots>
+      <DegreesDayForGermination type="text" description="  Cumulative degrees-day needed for seed germination (oCd):">120</DegreesDayForGermination>
+      <TargetShootRootRatio type="text" description="  Target or ideal plant's shoot:root ratio at vegetative stage:">4</TargetShootRootRatio>
+      <MaxRootAllocation type="text" description="  Maximum fraction of DM growth that can be allocated to roots (0-1):">0.25</MaxRootAllocation>
+      <ShootRootGlfFactor type="text" description="  Maximum effect that soil GLFs have on Shoot-Root ratio (0-1):">0.5</ShootRootGlfFactor>
+      <UseReproSeasonFactor type="list" listvalues="yes      yes      yes,no        no        no" description="  Whether Shoot:Root ratio is adjusted mimicking reproductive season (yes/no):">yes</UseReproSeasonFactor>
+      <FractionToStolon type="text" description="  Fraction of new growth to be allocated to stolon (0-1):">0.2</FractionToStolon>
+      <LiveLeavesPerTiller type="text" description="  Number of live leaves per tiller:">3</LiveLeavesPerTiller>
+      <SpecificLeafArea type="text" description="  Specific leaf area, per dry matter weight (m^2/kgDM):">30</SpecificLeafArea>
+      <SpecificRootLength type="text" description="  Specific root length, per dry matter weight (m/gDM):">45</SpecificRootLength>
+      <TissueTurnoverRateShoot type="text" description="  Reference daily DM turnover rate for shoot tissues (/day):">0.05</TissueTurnoverRateShoot>
+      <TissueTurnoverRateRoot type="text" description="  Reference daily DM turnover rate for root tissues (/day):">0.02</TissueTurnoverRateRoot>
+      <RelativeTurnoverEmerging type="text" description="  Relative turnover rate for emerging tissues (&gt;0.0):">2</RelativeTurnoverEmerging>
+      <DetachmentRateShoot type="text" description="  Reference daily detachment rate for dead tissues (/day):">0.08</DetachmentRateShoot>
+      <TurnoverTemperatureMin type="text" description="  Minimum temperature for tissue turnover (oC):">2</TurnoverTemperatureMin>
+      <TurnoverTemperatureRef type="text" description="  Reference temperature for tissue turnover (oC):">20</TurnoverTemperatureRef>
+      <TurnoverTemperatureExponent type="text" description="  Exponent of function for temperature effect on tissue turnover:">1</TurnoverTemperatureExponent>
+      <TurnoverDroughtEffectMax type="text" description="  Maximum increase in tissue turnover due to water deficit:">2</TurnoverDroughtEffectMax>
+      <TurnoverDroughtThreshold type="text" description="  Minimum GLFwater without effect on tissue turnover (0-1):">0.5</TurnoverDroughtThreshold>
+      <DetachmentDroughtCoefficient type="text" description="  Coefficient controlling detachment rate as function of moisture (&gt;1.0):">3</DetachmentDroughtCoefficient>
+      <DetachmentDroughtEffectMin type="text" description="  Minimum effect of drought on detachment rate (0-1):">0.1</DetachmentDroughtEffectMin>
+      <TurnoverDefoliationCoefficient type="text" description="  Coefficient of function increasing the turnover rate due to defoliation:">0.5</TurnoverDefoliationCoefficient>
+      <TurnoverDefoliationEffectMin type="text" description="  Minimum significant daily effect of defoliation on tissue turnover rate:">0.025</TurnoverDefoliationEffectMin>
+      <FractionNLuxuryRemobStage1 type="text" description="  Fraction of luxury N remobilisable from tissue 1 each day (0-1):">0.1</FractionNLuxuryRemobStage1>
+      <FractionNLuxuryRemobStage2 type="text" description="  Fraction of luxury N remobilisable from tissue 2 each day (0-1):">0.1</FractionNLuxuryRemobStage2>
+      <FractionNLuxuryRemobStage3 type="text" description="  Fraction of luxury N remobilisable from tissue 3 each day (0-1):">0.1</FractionNLuxuryRemobStage3>
+      <MinimumNFixation type="text" description="  Minimum fraction of N demand supplied by biologic N fixation (0-1):">0.2</MinimumNFixation>
+      <MaximumNFixation type="text" description="  Maximum fraction of N demand supplied by biologic N fixation (0-1):">0.6</MaximumNFixation>
+      <SoilSaturationEffectMax type="text" description="  Maximum reduction in plant growth due to water logging (saturated soil) (0-1):">0.1</SoilSaturationEffectMax>
+      <MinimumWaterFreePorosity type="text" description="  Minimum water-free pore space for growth with no limitations (0-1):">-1</MinimumWaterFreePorosity>
+      <SoilSaturationRecoveryFactor type="text" description="  Daily recovery rate from water logging (0-1):">0.25</SoilSaturationRecoveryFactor>
+      <NDillutionCoefficient type="text" description="  Exponent for modifying the effect of N deficiency on plant growth:">1</NDillutionCoefficient>
+      <GenericGLF type="text" description="  Generic factor affecting potential plant growth (0-1):">1</GenericGLF>
+      <SoilFertilityGLF type="text" description="  Generic growth limiting factor due to soil fertility (0-1):">1</SoilFertilityGLF>
+      <PlantHeightMinimum type="text" description="  Minimum plant height, for each species in the sward (mm):">350</PlantHeightMinimum>
+      <PlantHeightMassForMax type="text" description="  DM weight above ground for maximum plant height (kgDM/ha):">7500</PlantHeightMassForMax>
+      <PlantHeightExponent type="text" description="  Exponent controlling shoot height as function of DM weight (&gt;1.0):">2.5</PlantHeightExponent>
+      <PlantHeightMaximum type="text" description="  Maximum plant height, for each species in the sward (mm):">25</PlantHeightMaximum>
+      <rootDistributionDepthParam type="text" description="  Depth from surface where root proportion starts to decrease (mm):">70</rootDistributionDepthParam>
+      <rootDistributionExponent type="text" description="  Exponent controlling the root distribution as function of depth (&gt;1.0):">2.5</rootDistributionExponent>
+      <DigestibilityCellWallLive type="text" description="  Digestibility of cell wall in live plant tissues (0-1) (0-1):">0.6</DigestibilityCellWallLive>
+      <DigestibilityCellWallDead type="text" description="  Digestibility of cell wall in dead plant tissues (0-1) (0-1):">0.2</DigestibilityCellWallDead>
+      <MinimumGreenWt type="text" description="  Minimum above ground green DM (kgDM/ha):">50</MinimumGreenWt>
+      <FractionStolonsStanding type="text" description="  Proportion of stolon DM standing, available for removal (0-1):">0</FractionStolonsStanding>
+      <PreferenceForGreenOverDead type="text" description="  Relative preference for live over dead material during graze:">1</PreferenceForGreenOverDead>
+      <PreferenceForLeafOverStems type="text" description="  Relative preference for leaf over stem-stolon material during graze:">1</PreferenceForLeafOverStems>
     </AgPasture>
     <AgPasture name="AgPastureSimple">
       <Dummy1 type="category" description="Initial values for each species to be simulated" />
-      <speciesToSimulate type="text" description="  Name of the species to be simulated:">Ryegrass    WhiteClover</speciesToSimulate>
-      <iniShootDM type="text" description="  Initial above ground dry matter weight (kgDM/ha):">1500   500</iniShootDM>
-      <iniRootDM type="text" description="  Initial root dry matter weight (kgDM/ha):">450     150</iniRootDM>
-      <iniRootDepth type="text" description="  Initial rooting depth (mm):">750     350</iniRootDepth>
+      <SpeciesToSimulate type="text" description="  Name of the species to be simulated:">Ryegrass    WhiteClover</SpeciesToSimulate>
+      <InitialShootDM type="text" description="  Initial above ground DM weight for each species (kg/ha):">1500    500</InitialShootDM>
+      <InitialRootDM type="text" description="  Initial below ground DM weight for each species (kg/ha):">450      150</InitialRootDM>
+      <InitialRootDepth type="text" description="  Initial rooting depth for each species (mm):">750      350</InitialRootDepth>
       <iniRootDepthParam type="text" description="  Depth from surface below which the proportion of roots starts to decrease (mm):">90        70</iniRootDepthParam>
       <iniRootCurveParam type="text" description="  Exponent to determine the distribution of root DM in the soil profile:">3.2       2.5</iniRootCurveParam>
       <WaterUptakeSource type="list" listvalues="calc,apsim" description="  Water uptake done by AgPasture (calc) or by apsim?:">calc</WaterUptakeSource>
-    </AgPasture>
-    <AgPasture name="AgPastureNewSpecies">
-      <Dummy1 type="category" description="Initial values for each species to be simulated" />
-      <speciesToSimulate type="text" description="  Name of the species to be simulated:">Ryegrass    WhiteClover</speciesToSimulate>
-      <iniShootDM type="text" description="  Initial above ground dry matter weight (kgDM/ha):">1500   500</iniShootDM>
-      <iniRootDM type="text" description="  Initial root dry matter weight (kgDM/ha):">450     150</iniRootDM>
-      <iniRootDepth type="text" description="  Initial rooting depth (mm):">750     350</iniRootDepth>
-      <WaterUptakeSource type="list" listvalues="calc,apsim" description="  Water uptake done by AgPasture (calc) or by apsim?:">calc</WaterUptakeSource>
-      <NUptakeSource type="list" listvalues="calc" description="  N uptake done by AgPasture (calc) or by apsim?:">calc</NUptakeSource>
-      <Dummy2 type="category" description="Detailed parameters for each species (overwrites the xml file)" />
-      <speciesName type="text" description="  Name of each parameterised species:">Ryegrass  Whiteclover  Paspalum  Kikuyu  Rhodes  Phalaris  Lucerne  TallFescue  BrownTop  Cocksfoot  RedClover</speciesName>
-      <micrometType type="text" description="  Plant type for MicroMet/SWIM:">grass  grass  grass  grass  grass  grass  grass  grass  grass  grass  grass</micrometType>
-      <photoPath type="text" description="  Photosynthesis pathway (C3=3, C4=4):">3  3  4  4  4  3  3  3  3  3  3</photoPath>
-      <isLegume type="text" description="  Is this a legume species? (no=0, yes=1):">0  1  0  0  0  0  1  0  0  0  1</isLegume>
-      <Pm type="text" description="  Reference photosynthesis rate - CO2 assimilation (mg CO2/m2.s):">1.0  1.0  1.5  1.5  1.5  1.0  1.0  1.0  1.0  1.0  1.0</Pm>
-      <growthEfficiency type="text" description="  Growth efficiency factor - photosynthesis minus growth respiration (0-1):">0.75  0.75  0.75  0.75  0.75  0.75  0.75  0.75  0.75  0.75  0.75</growthEfficiency>
-      <maintRespiration type="text" description="  Maintenance respiration coefficient (%):">3.0  3.0  3.0  3.0  3.0  3.0  3.0  3.0  3.0  3.0  3.0</maintRespiration>
-      <alphaPhoto type="text" description="  Leaf gross photosynthesis rate (mg CO2/J):">0.01  0.01  0.01  0.01  0.01  0.01  0.01  0.01  0.01  0.01  0.01</alphaPhoto>
-      <thetaPhoto type="text" description="  Photosynthesis curve parameter (J/kg.s):">0.8  0.8  0.8  0.8  0.8  0.8  0.8  0.8  0.8  0.8  0.8</thetaPhoto>
-      <fractionPAR type="text" description="  Fraction of radiation that is photosynthetic active (0-1):">0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5</fractionPAR>
-      <lightExtCoeff type="text" description="  Canopy light extinction coefficient (0-1):">0.5  0.8  0.6  0.5  0.7  0.5  0.8  0.5  0.5  0.5  0.8</lightExtCoeff>
-      <growthTmin type="text" description="  Minimum temperature for growth (oC):">2.0  4.0  10.0  10.0  10.0  2.0  2.0  2.0  2.0  2.0  4.0</growthTmin>
-      <growthTopt type="text" description="  Optimum temperature for growth (oC):">20.0  22.0  35.0  21.0  35.0  20.0  25.0  20.0  20.0  20.0  22.0</growthTopt>
-      <growthTq type="text" description="  Curve parameter for growth response to temperature:">1.5  1.5  1.2  1.2  1.2  1.5  1.5  1.5  1.5  1.5  1.5</growthTq>
-      <useHeatStress type="text" description="  Consider effects of high temperatures on photosynthesis? (yes/no):">no  no  no  no  no  no  no  no  no  no  no</useHeatStress>
-      <heatOnsetT type="text" description="  Onset temperature for heat effects on growth (oC):">26.0  27.0  35.0  38.0  35.0  28.0  28.0  28.0  26.0  26.0  30.0</heatOnsetT>
-      <heatFullT type="text" description="  Temperature for full heat effects on growth (oC):">35.0  35.0  42.0  48.0  42.0  35.0  35.0  35.0  35.0  35.0  37.0</heatFullT>
-      <heatSumT type="text" description="  Temperature sum for recovery from heat effects (oC):">30.0  30.0  30.0  30.0  30.0  30.0  25.0  20.0  30.0  30.0  20.0</heatSumT>
-      <heatTq type="text" description="  Exponent for computing recovery from heat stress:">1.0  0.8  0.8  0.8  1.0  1.0  1.0  0.8  1.0  1.0  1.0</heatTq>
-      <heatRecoverT type="text" description="  Base temperature for recovery from heat stress (oC):">26.0  27.0  35.0  38.0  35.0  30.0  30.0  28.0  26.0  26.0  30.0</heatRecoverT>
-      <useColdStress type="text" description="  Consider effects of low temperatures on photosynthesis? (yes/no):">no  no  no  no  no  no  no  no  no  no  no</useColdStress>
-      <coldOnsetT type="text" description="  Onset temperature for cold effects on growth (oC):">2.0  3.0  8.0  6.0  8.0  3.0  6.0  2.0  1.0  1.0  3.0</coldOnsetT>
-      <coldFullT type="text" description="  Temperature for full cold effects on growth (oC):">-2.0  -1.0  3.0  2.0  3.0  -1.0  2.0  -1.0  -3.0  -3.0  -1.0</coldFullT>
-      <coldSumT type="text" description="  Temperature sum for recovery from cold effects (oC):">20.0  20.0  40.0  35.0  40.0  20.0  20.0  30.0  20.0  20.0  30.0</coldSumT>
-      <coldTq type="text" description="  Exponent for computing recovery from cold stress:">0.8  1.0  1.0  1.0  1.0  1.0  1.0  0.8  0.8  1.0  1.0</coldTq>
-      <coldRecoverT type="text" description="  Base temperature for recovery from cold effects (oC):">0.0  1.0  5.0  4.0  5.0  1.0  4.0  0.0  0.0  0.0  0.0</coldRecoverT>
-      <referenceCO2 type="text" description="  Reference atmospheric CO2 content for photosynthesis (ppm):">380  380  380  380  380  380  380  380  380  380  380</referenceCO2>
-      <respTref type="text" description="  Reference temperature for maintenance respiration (oC):">20.0  20.0  20.0  20.0  20.0  20.0  20.0  20.0  20.0  20.0  20.0</respTref>
-      <maxTeffectResp type="text" description="  Maximum effect of temperature on respiration (&gt;1.0):">1.25  1.25  1.25  1.25  1.25  1.25  1.25  1.25  1.25  1.25  1.25</maxTeffectResp>
-      <CO2PmaxScale type="text" description="  Scale factor for CO2 effect on photosynthesis (ppm):">700  700  150  150  150  700  700  700  700  700  700</CO2PmaxScale>
-      <CO2NScale type="text" description="  Scale factor for CO2 effects on plant N concentration (ppm):">600  600  600  600  600  600  600  600  600  600  600</CO2NScale>
-      <CO2NMin type="text" description="  Minimum reduction of plant N concentration under elevated CO2 (0-1):">0.7  0.7  0.7  0.6  0.6  0.6  0.6  0.6  0.7  0.7  0.7</CO2NMin>
-      <CO2NCurvature type="text" description="  Curvature factor of CO2 effect on plant N concentration (&gt;1.0):">2.0  2.0  2.0  2.0  2.0  2.0  2.0  2.0  2.0  2.0  2.0</CO2NCurvature>
-      <maxRootFraction type="text" description="  Maximum biomass fraction allocated to roots (0-1):">0.25  0.25  0.25  0.25  0.25  0.25  0.25  0.25  0.25  0.25  0.25</maxRootFraction>
-      <targetSRratio type="text" description="  Target or ideal shoot:root ratio:">4.0  4.0  4.0  4.0  4.0  4.0  4.0  4.0  4.0  4.0  4.0</targetSRratio>
-      <allocationSeasonF type="text" description="  Factor for increasing DM allocation to shoot during reproductive growth (0-1):">0.25  0.25  0.25  0.25  0.25  0.25  0.25  0.25  0.25  0.25  0.25</allocationSeasonF>
-      <StartHighAllocation type="text" description="  Day for starting the period with higher DM allocation to shoot:">232  232  232  232  232  232  232  232  232  232  232</StartHighAllocation>
-      <DurationHighAllocation type="text" description="  Duration of main phase for higher DM allocation to shoot (days):">60  60  60  60  60  60  60  60  60  60  60</DurationHighAllocation>
-      <ShoulderHighAllocation type="text" description="  Relative duration of shoulder periods for higher shoot allocation (0-1):">0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5</ShoulderHighAllocation>
-      <useLatitudeFunction type="text" description="  Adjust DM allocation (shoot/root) using latitude? (yes/no):">no  no  no  no  no  no  no  no  no  no  no</useLatitudeFunction>
-      <ReferenceLatitude type="text" description="  Reference latitude, beyond which DM allocation is hardly affected (degrees):">60.0  60.0  60.0  60.0  60.0  60.0  60.0  60.0  60.0  60.0  60.0</ReferenceLatitude>
-      <paramALatFunction type="text" description="  Exponent of function for defining the start of period with high allocation to shoot (&gt;1.0):">5.0  5.0  5.0  5.0  5.0  5.0  5.0  5.0  5.0  5.0  5.0</paramALatFunction>
-      <onsetFacLatFunction type="text" description="  Define the duration of onset phase with high allocation, fraction of main phase (0-1):">0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5</onsetFacLatFunction>
-      <outsetFacLatFunction type="text" description="  Define the duration of outset phase with high allocation, fraction of main phase (0-1):">0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5</outsetFacLatFunction>
-      <maxShoulderLatFunction type="text" description="  Maximum duration of the shoulder phases with high DM allocation (days):">60  60  60  60  60  60  60  60  60  60  60</maxShoulderLatFunction>
-      <minPlateauLatFunction type="text" description="  Minimum duration of main phase (plateau) with high DM allocation (days):">15  15  15  15  15  15  15  15  15  15  15</minPlateauLatFunction>
-      <paramBLatFunction type="text" description="  Exponent of function defining the duration of main phase with high allocation (&gt;0.0):">2.75  2.75  2.75  2.75  2.75  2.75  2.75  2.75  2.75  2.75  2.75</paramBLatFunction>
-      <paramCLatFunction type="text" description="  Exponent of function for DM fraction allocated to shoot (&gt;1.0):">4.0  4.0  4.0  4.0  4.0  4.0  4.0  4.0  4.0  4.0  4.0</paramCLatFunction>
-      <allocationMax type="text" description="  Maximum increase in DM allocation to shoot during reproductive growth (0-1):">0.4  0.4  0.4  0.4  0.4  0.4  0.4  0.4  0.4  0.4  0.4</allocationMax>
-      <maxFLeaf type="text" description="  Maximum fraction of new shoot growth allocated to leaves (0-1):">0.70  0.56  0.60  0.60  0.60  0.60  0.70  0.70  0.70  0.70  0.56</maxFLeaf>
-      <minFLeaf type="text" description="  Minimum fraction of new shoot growth allocated to leaves (0-1):">0.70  0.28  0.60  0.60  0.60  0.60  0.70  0.70  0.70  0.70  0.28</minFLeaf>
-      <dmMaxFLeaf type="text" description="  Shoot DM for maximum leaf allocation, allocation decreases above that (kgDM/m2):">500  500  500  500  500  500  500  500  500  500  500</dmMaxFLeaf>
-      <dmReferenceFLeaf type="text" description="  Reference DM, when allocation to leaves is midway max and min (kgDM/m2):">2000  2000  2000  2000  2000  2000  2000  2000  2000  2000  2000</dmReferenceFLeaf>
-      <exponentFLeaf type="text" description="  Exponent of function describing DM allocation to leaves (&gt;0.0):">3.0  3.0  3.0  3.0  3.0  3.0  3.0  3.0  3.0  3.0  3.0</exponentFLeaf>
-      <fStolon type="text" description="  Fraction of new shoot growth allocated to stolons (0-1):">0.0  0.2  0.0  0.0  0.0  0.0  0.1  0.0  0.0  0.0  0.2</fStolon>
-      <liveLeavesPerTiller type="text" description="  Number of live leaves per tiller:">3.0  3.0  3.5  6.0  3.5  4.0  5.0  3.0  3.0  3.0  3.0</liveLeavesPerTiller>
-      <SpecificLeafArea type="text" description="  Specific leaf area, per dry matter weight (m2/kgDM):">20  20  20  20  20  20  20  20  20  20  20</SpecificLeafArea>
-      <SpecificRootLength type="text" description="  Specific root length, per dry matter weight (m/gDM):">75  75  75  75  75  75  75  75  75  75  75</SpecificRootLength>
-      <rateLive2Dead type="text" description="  Reference tissue turnover rate for shoot (0-1):">0.05  0.05  0.05  0.04  0.05  0.05  0.03  0.05  0.05  0.05  0.05</rateLive2Dead>
-      <facGrowingTissue type="text" description="  Factor for adjusting DM turnover of growing tissue (0-1):">2.0  2.0  2.0  2.0  2.0  2.0  2.0  2.0  2.0  2.0  2.0</facGrowingTissue>
-      <refTurnoverRateStolon type="text" description="  Reference tissue turnover rate for stolon (0-1):">0.00  0.05  0.00  0.00  0.00  0.00  0.05  0.00  0.00  0.00  0.05</refTurnoverRateStolon>
-      <rateDead2Litter type="text" description="  Reference littering rate - dead tissue to litter (0-1):">0.11  0.11  0.11  0.10  0.05  0.01  0.01  0.05  0.11  0.11  0.11</rateDead2Litter>
-      <rateRootSen type="text" description="  Reference senescence rate for roots (0-1):">0.02  0.02  0.02  0.02  0.02  0.02  0.02  0.02  0.02  0.02  0.02</rateRootSen>
-      <massFluxTmin type="text" description="  Minimum temperature for tissue turnover (oC):">2.0  2.0  5.0  5.0  5.0  0.0  0.0  0.0  2.0  2.0  2.0</massFluxTmin>
-      <massFluxTopt type="text" description="  Optimum temperature for tissue turnover (oC):">20.0  20.0  20.0  20.0  20.0  20.0  20.0  20.0  20.0  20.0  20.0</massFluxTopt>
-      <massFluxTq type="text" description="  Exponent of function for temperature effect on tissue turnover:">1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0</massFluxTq>
-      <massFluxW0 type="text" description="  Scale factor for GLFWater effect on DM turnover (&gt;1.0):">2.0  2.0  2.0  2.0  2.0  2.0  2.0  2.0  2.0  2.0  2.0</massFluxW0>
-      <massFluxWopt type="text" description="  Reference GLFwater for tissue turnover (0-1):">0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5</massFluxWopt>
-      <massFluxDeadWq type="text" description="  Exponent to adjust GLFWater for senescing tissue (&gt;1.0):">3.0  3.0  3.0  3.0  3.0  3.0  3.0  3.0  3.0  3.0  3.0</massFluxDeadWq>
-      <stockParameter type="text" description="  Parameter for stock influence on tissue senescence:">0.050  0.050  0.050  0.002  0.002  0.002  0.002  0.002  0.050  0.050  0.050</stockParameter>
-      <Kappa2_Remob type="text" description="  Coefficient for remobilisation of luxury N from tissue2 (0-1):">0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0</Kappa2_Remob>
-      <Kappa3_Remob type="text" description="  Coefficient for remobilisation of luxury N from tissue3 (0-1):">0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0</Kappa3_Remob>
-      <Kappa4_Remob type="text" description="  Coefficient for partitioning non-used Nremob into tissue4 (0-1):">0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0  0.0</Kappa4_Remob>
-      <digestLive type="text" description="  Digestibility of live plant material (0-1):">0.6  0.6  0.6  0.6  0.6  0.6  0.7  0.6  0.6  0.6  0.6</digestLive>
-      <digestDead type="text" description="  Digestibility of dead plant material (0-1):">0.2  0.2  0.2  0.2  0.2  0.2  0.2  0.2  0.2  0.2  0.2</digestDead>
-      <dmshoot type="text" description="  Default initial shoot dry matter weight (kgDM/ha):">1500  500  300  1500  1500  1500  1500  1500  1500  1500  500</dmshoot>
-      <dmroot type="text" description="  Default initial root dry matter weight (kgDM/ha):">450  150  100  450  450  450  450  450  450  450  150</dmroot>
-      <dmgreenmin type="text" description="  Minimum allowable green dry matter weight (kgDM/ha):">120  40  25  120  120  120  120  120  120  120  40</dmgreenmin>
-      <dmdeadmin type="text" description="  Minimum allowable dead dry matter weight (kgDM/ha):">0  0  0  0  0  0  0  0  0  0  0</dmdeadmin>
-      <NconcOptimum_leaves type="text" description="  Optimum N concentration of young leaves (%):">4.0  4.5  3.0  4.0  4.0  4.0  4.0  4.0  4.0  4.0  4.5</NconcOptimum_leaves>
-      <NconcMaximum_leaves type="text" description="  Maximum N concentration in leaves, with luxury uptake (%):">5.0  5.5  3.5  5.0  5.0  5.0  5.0  5.0  5.0  5.0  5.5</NconcMaximum_leaves>
-      <NconcMinimum_leaves type="text" description="  Minimum N concentration in leaves, at senescence (%):">1.2  2.0  0.5  1.2  1.2  1.2  1.2  1.2  1.2  1.2  2.0</NconcMinimum_leaves>
-      <RelativeNconc_Stems type="text" description="  Relative N concentration in stems, fraction of leaf N (0-1):">0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5</RelativeNconc_Stems>
-      <RelativeNconc_Stolons type="text" description="  Relative N concentration in stolons, fraction of leaf N (0-1):">0.0  0.5  0.0  0.0  0.0  0.0  0.5  0.0  0.0  0.0  0.5</RelativeNconc_Stolons>
-      <RelativeNconc_Roots type="text" description="  Relative N concentration in roots, fraction of leaf N (0-1):">0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5</RelativeNconc_Roots>
-      <RelativeNconc_stage2 type="text" description="  Optimum N concentration for tissue2 (mature), relative to tissue1 (0-1):">1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0</RelativeNconc_stage2>
-      <RelativeNconc_stage3 type="text" description="  Optimum N concentration for tissue3 (senescing), relative to tissue1 (0-1):">1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0</RelativeNconc_stage3>
-      <NMinFix type="text" description="  Minimum N fixation, when soil N is sufficient (0-1):">0.0  0.2  0.0  0.0  0.0  0.0  0.4  0.0  0.0  0.0  0.2</NMinFix>
-      <NMaxFix type="text" description="  Maximum N fixation, when no soil N is available (0-1):">0.0  0.6  0.0  0.0  0.0  0.0  0.6  0.0  0.0  0.0  0.6</NMaxFix>
-      <NdilutCoeff type="text" description="  Coefficient for modifying the effect of N stress on plant growth (0-1):">0.5  1.0  0.5  0.5  0.5  0.5  0.5  0.5  0.5  0.5  1.0</NdilutCoeff>
-      <waterStressFactor type="text" description="  coefficient for modifying the effect of water stress on plant growth (0-1):">1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0</waterStressFactor>
-      <soilSatFactor type="text" description="  Coefficient for growth limitations due to soil moisture saturation (0-1):">0.1  0.1  0.1  0.2  0.2  0.2  0.2  0.2  0.1  0.1  0.1</soilSatFactor>
-      <MinMacroPorosity type="text" description="  Minimum soil macroporosity (pores&gt;30um) for optimum plant growth (0-1):">-1    -1    -1   -1    -1    -1   -1    -1    -1   -1    -1</MinMacroPorosity>
-      <GenericGLF type="text" description="  Generic relative growth limiting factor (0-1):">1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0</GenericGLF>
-      <SFertilityGLF type="text" description="  Soil related generic growth limiting factor (0-1):">1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0  1.0</SFertilityGLF>
-      <PreferenceForGreenDM type="text" description="  Weight factor defining the preference level for green DM (on removal):">1  1  1  1  1  1  1  1  1  1  1</PreferenceForGreenDM>
-      <PreferenceForDeadDM type="text" description="  Weight factor defining the preference level for dead DM (on removal):">1  1  1  1  1  1  1  1  1  1  1</PreferenceForDeadDM>
-      <PreferenceForLeaves type="text" description="  Weight factor defining the preference level for leaves over stems (on removal):">1  1  1  1  1  1  1  1  1  1  1</PreferenceForLeaves>
-      <rootDepth type="text" description="  Default rooting depth (mm):">750  350  850  2000  1000  1500  2000  1200  750  750  350</rootDepth>
-      <ExpoLinearDepthParam type="text" description="  Depth from surface below which the proportion of roots starts to decrease (mm):">90.0  70.0  95.0  100.0  80.0  75.0  100.0  72.0  90.0  90.0  70.0</ExpoLinearDepthParam>
-      <ExpoLinearCurveParam type="text" description="  Exponent to determine the distribution of root DM in the soil profile:">3.20  2.50  3.20  3.70  3.50  3.70  3.70  3.60  3.20  3.20  2.50</ExpoLinearCurveParam>
-      <MaxPlantHeight type="text" description="  Maximum average height for each species in a sward (mm):">500  300  500  500  500  500  500  500  500  500  300</MaxPlantHeight>
-      <MassForMaxHeight type="text" description="  Mass above ground when maximum height is reached (kgDM/ha):">8000  6000  7000  8000  8000  8000  8000  8000  8000  8000  6000</MassForMaxHeight>
-      <ExponentHeightFromMass type="text" description="  Exponent of function describing plant height as function of DM weight (&gt;1.0):">3.00  1.75  2.50  3.00  3.00  3.00  3.00  3.00  3.00  3.00  1.75</ExponentHeightFromMass>
-      <MinimumHeight type="text" description="  Minimum plant height, for all species (mm):" />
-      <Dummy3 type="category" description="Generic parameters for initialising the sward, by species type" />
-      <initialDMFractions_grass type="text" description="  Fractions of initial dmshoot for each biomass pool, for grasses:">0.15  0.25  0.25  0.05  0.05  0.10  0.10  0.05  0.00  0.00  0.00</initialDMFractions_grass>
-      <initialDMFractions_legume type="text" description="  Fractions of initial dmshoot for each biomass pool, for legumes:">0.16  0.23  0.22  0.05  0.03  0.05  0.05  0.01  0.04  0.08  0.08</initialDMFractions_legume>
     </AgPasture>
   </folder>
   <folder name="Plant2 developers graph suite">
@@ -928,9 +722,9 @@ endif
       <nh4ppm type="text" description="   Initial concentration of NH4 in the soil (ppm):">1.667  1.667  1.667  1.667  1.667  1.667  1.667  1.449  1.449  1.449  0.667  0.667  0.667  0.667  0.667  0.641  0.641  0.641  0.641  0.617  0.617</nh4ppm>
       <ureappm type="text" description="   Initial concentration of urea in the soil (ppm):">0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000  0.000</ureappm>
       <dummy3 type="category" description=" Parameters for computing Nitrification" />
-      <Nitrification_pot type="text" description="   Potential nitrification rate (mg NH4/kg soil/day):">80</Nitrification_pot>
+      <Nitrification_pot type="text" description="   Potential nitrification rate (mg NH4/kg soil/day):">40</Nitrification_pot>
       <nh4_at_half_pot type="text" description="   NH4 concentration at half of nitrification rate (ppm):">90</nh4_at_half_pot>
-      <opt_temp type="text" description="   Optimal temperature for nitrification, at aerobic and anaerobic conditions (oC):">28  28</opt_temp>
+      <stf_Nitrif_Topt type="text" description="   Optimal temperature for nitrification, at aerobic and anaerobic conditions (oC):">32  32</stf_Nitrif_Topt>
     </SoilNitrogen>
     <SoilTemperature2>
       <dummy1 type="category" description=" Basic parameters for SoilTemperature" />
@@ -996,7 +790,7 @@ endif
       <category type="category" description="Other parameters" />
       <nitrification_pot type="text" description="Maximum potential nitrification rate (ug NH4/g soil/day):">40</nitrification_pot>
       <nh4_at_half_pot type="text" description="NH4 concentration at half of nitrification rate (ppm):">90</nh4_at_half_pot>
-      <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">28</opt_temp>
+      <opt_temp type="text" description="Optimal temperatures for mineralis. and nitrif. (oC):">32</opt_temp>
     </SoilNui>
   </folder>
   <folder name="Solute2">
