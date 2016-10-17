@@ -12,6 +12,7 @@ module Registrations
       integer :: externalmassflow
       integer :: nitrogenchanged
       integer :: tillage
+      integer :: tillage_single
       integer :: sysinit
       integer :: reset
       integer :: create
@@ -63,6 +64,7 @@ module Registrations
          id%externalmassflow = add_registration(eventReg, 'externalmassflow', ExternalMassFlowTypeDDML, '')
          id%nitrogenchanged = add_registration(eventReg, 'nitrogenchanged', NitrogenChangedTypeDDML, '')			
          id%tillage = add_registration(respondToEventReg, 'tillage', TillageTypeDDML, '')
+         id%tillage_single = add_registration(respondToEventReg, 'tillage_single', TillageTypeDDML, '')
          id%sysinit = add_registration(respondToEventReg, 'sysinit', nullTypeDDML, '')
          id%reset = add_registration(respondToEventReg, 'reset', nullTypeDDML, '')
          id%create = add_registration(respondToEventReg, 'create', nullTypeDDML, '')

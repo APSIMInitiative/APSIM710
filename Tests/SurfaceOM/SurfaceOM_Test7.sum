@@ -1,0 +1,524 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.8
+Title                  = SurfaceOM_Test7
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                       "report" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "irrigation" = %apsim%\Model\Irrigation.dll
+   Component                      "manager" = %apsim%\Model\Manager.dll
+   Component                   "soil Water" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                         "pond" = %apsim%\Model\Pond.dll
+   Component                "soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                         "rice" = %apsim%\Model\Oryza.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/01/2005
+     Simulation end date   = 31/12/2005
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\Bhola.met
+
+------- report Initialisation -------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy
+        day
+        year
+        rice.wagt as rice_biomass
+        rice.wrr as rice_yield
+        pond.PAB_mass as algal_biomass
+        pond.algal_turnover as algal_turnover
+        surfaceom.surfaceom_wt
+        surfaceom.surfaceom_wt_rice
+        surfaceom.surfaceom_wt_algae
+        surfaceom.surfaceom_cover
+        surfaceom.surfaceom_cover_rice
+        surfaceom.surfaceom_cover_algae
+        pond
+
+     Output file = SurfaceOM_Test7 report.out
+     Format = normal
+
+------- paddock.accum Initialisation ------------------------------------------
+     Initialising
+
+------- paddock.irrigation Initialisation -------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- paddock.manager Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if day = 152 and year = 2005 then
+        max_pond = 200
+     endif
+     if day = 163 and year = 2005 then
+        rice sow cultivar = ir72, establishment = transplant, sbdur = 25, nplh = 2, nh = 25, nplsb = 1000
+        fertiliser apply amount = 5, depth = 50, type = urea_n
+     endif
+     if day = 188 and year = 2005 then
+          fertiliser apply amount = 40, depth = 50, type = urea_n
+     endif
+     if day > 163 and rice.dvs < 2.2 and year = 2005 then
+          if pond = 0 then
+             irrigation apply amount = 60
+             count = 0
+          endif
+       endif
+     if day = 209 and year = 2005 then
+        fertiliser apply amount = 40, depth = 0, type = urea_n
+     endif
+     if day = 244 and year = 2005 then
+        fertiliser apply amount = 40, depth = 0, type = urea_n
+     endif
+     if rice.dvs > 2.2 then
+        max_pond = 0
+     endif
+     if dvs > 2.4 and year = 2005 then
+          rice end_crop
+     endif
+     if day = 293 and year = 2005 then
+          surfaceom tillage_single name = rice, type = burn
+     endif
+     END of rules
+     
+
+------- paddock.soil Water Initialisation -------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.100  0.230  0.450  0.500  0.280  1.300  0.762  0.200 20.000
+          150.-  300.  0.200  0.240  0.459  0.509  0.364  1.300  0.190  0.050  3.000
+          300.-  600.  0.200  0.240  0.450  0.510  0.430  1.290  0.048  0.200 20.000
+          600.-  900.  0.200  0.250  0.440  0.505  0.430  1.310  0.000  0.200 20.000
+          900.- 1200.  0.200  0.260  0.420  0.490  0.400  1.350  0.000  0.200 20.000
+         1200.- 1500.  0.200  0.270  0.410  0.480  0.410  1.360  0.000  0.200 20.000
+         1500.- 1800.  0.200  0.280  0.410  0.480  0.410  1.360  0.000  0.200 20.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      34.50       7.50      33.00       7.50
+          150.-  300.      36.00      18.60      32.85       7.50
+          300.-  600.      72.00      57.00      63.00      18.00
+          600.-  900.      75.00      54.00      57.00      19.50
+          900.- 1200.      78.00      42.00      48.00      21.00
+         1200.- 1500.      81.00      42.00      42.00      21.00
+         1500.- 1800.      84.00      39.00      39.00      21.00
+          ---------------------------------------------------------
+               Totals     460.50     260.10     314.85     115.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              80.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            4.00 (mm^0.5)
+            CONA:                     2.50 ()
+            Eo from priestly-taylor
+
+------- paddock.SurfaceOM Initialisation --------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          rice      rice             0.0     0.0     0.0     0.0   0.000     0.0
+          algae     algae            0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- paddock.pond Initialisation -------------------------------------------
+     
+        - Reading Pond Parameters
+     
+         - Reading Pond constants
+     
+     
+      Pond Module Operational
+
+------- paddock.soil Nitrogen Initialisation ----------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.20  1.00   17.94    0.58    0.00
+             2     8.50  0.84   14.82    0.58    0.00
+             3     8.60  0.77   18.96    1.16    0.00
+             4     8.60  0.65   10.61    1.18    0.00
+             5     7.40  0.54    6.07    1.22    0.00
+             6     5.30  0.48    7.34    2.04    0.00
+             7     5.00  0.43    5.71    2.04    0.00
+          ------------------------------------------------
+           Totals               81.46    8.81    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      19038.4  1313.0   461.6    57.7   138.9     6.9
+             2      16180.2  1115.9   199.8    25.0   108.1     5.4
+             3      29622.8  2043.0   176.2    22.0    65.6     3.3
+             4      25481.8  1757.4    63.2     7.9    39.8     2.0
+             5      21848.3  1506.8    21.7     2.7    24.1     1.2
+             6      19582.1  1350.5     1.9     0.2    14.6     0.7
+             7      17542.3  1209.8     1.7     0.2     8.9     0.4
+          ---------------------------------------------------------
+           Totals  149295.9 10296.3   926.1   115.8   400.0    20.0
+          ---------------------------------------------------------
+
+------- paddock.rice Initialisation -------------------------------------------
+        - Initialising
+------- Start of simulation  --------------------------------------------------
+12 June 2005(Day of year=163), paddock.manager: 
+     Manager sending message :- rice sow  cultivar = ir72, establishment = transplant, sbdur = 25, nplh = 2, nh = 25, nplsb = 1000
+12 June 2005(Day of year=163), paddock.rice: 
+        - Reading Parameters
+        - Reading ir72 Cultivar Parameters
+     Manager sending message :- fertiliser apply  amount = 5, depth = 50, type = urea_n
+12 June 2005(Day of year=163), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         5.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+13 June 2005(Day of year=164), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+     Manager creating a new local real variable : count = 0.00000
+21 June 2005(Day of year=172), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+7 July 2005(Day of year=188), paddock.manager: 
+     Manager sending message :- fertiliser apply  amount = 40, depth = 50, type = urea_n
+7 July 2005(Day of year=188), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        40.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+28 July 2005(Day of year=209), paddock.manager: 
+     Manager sending message :- fertiliser apply  amount = 40, depth = 0, type = urea_n
+28 July 2005(Day of year=209), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        40.00 of N as urea (urea_n)
+                                         added at depth    0.00 (layer   1)
+1 September 2005(Day of year=244), paddock.manager: 
+     Manager sending message :- fertiliser apply  amount = 40, depth = 0, type = urea_n
+1 September 2005(Day of year=244), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        40.00 of N as urea (urea_n)
+                                         added at depth    0.00 (layer   1)
+25 September 2005(Day of year=268), paddock.rice: 
+     Maturity
+26 September 2005(Day of year=269), paddock.rice: 
+     Maturity
+27 September 2005(Day of year=270), paddock.rice: 
+     Maturity
+28 September 2005(Day of year=271), paddock.rice: 
+     Maturity
+29 September 2005(Day of year=272), paddock.rice: 
+     Maturity
+30 September 2005(Day of year=273), paddock.rice: 
+     Maturity
+1 October 2005(Day of year=274), paddock.rice: 
+     Maturity
+2 October 2005(Day of year=275), paddock.rice: 
+     Maturity
+3 October 2005(Day of year=276), paddock.rice: 
+     Maturity
+4 October 2005(Day of year=277), paddock.rice: 
+     Maturity
+5 October 2005(Day of year=278), paddock.rice: 
+     Maturity
+6 October 2005(Day of year=279), paddock.rice: 
+     Maturity
+7 October 2005(Day of year=280), paddock.manager: 
+     Manager sending message :- rice end_crop
+7 October 2005(Day of year=280), paddock.rice: 
+         Crop ended. Rough Rice Yield (dw) =  6548.2 (kg/ha)
+                             straw residue =  4921.1 (kg/ha)
+                             straw N       =    34.3 (kg/ha)
+                             root residue  =   812.6 (kg/ha)
+                             root N        =     7.0 (kg/ha)
+8 October 2005(Day of year=281), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+9 October 2005(Day of year=282), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+10 October 2005(Day of year=283), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+11 October 2005(Day of year=284), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+12 October 2005(Day of year=285), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+13 October 2005(Day of year=286), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+14 October 2005(Day of year=287), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+15 October 2005(Day of year=288), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+16 October 2005(Day of year=289), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+17 October 2005(Day of year=290), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+18 October 2005(Day of year=291), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+19 October 2005(Day of year=292), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+20 October 2005(Day of year=293), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+     Manager sending message :- surfaceom tillage_single  name = rice, type = burn
+20 October 2005(Day of year=293), paddock.SurfaceOM: 
+     
+         - Reading residue tillage info
+     rice residue removed using burn
+                                             Fraction Incorporated =     1.00
+                                             Incorporated Depth    =     0.00
+21 October 2005(Day of year=294), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+22 October 2005(Day of year=295), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+23 October 2005(Day of year=296), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+24 October 2005(Day of year=297), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+25 October 2005(Day of year=298), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+26 October 2005(Day of year=299), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+27 October 2005(Day of year=300), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+28 October 2005(Day of year=301), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+29 October 2005(Day of year=302), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+30 October 2005(Day of year=303), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+31 October 2005(Day of year=304), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+1 November 2005(Day of year=305), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+2 November 2005(Day of year=306), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+3 November 2005(Day of year=307), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+4 November 2005(Day of year=308), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+5 November 2005(Day of year=309), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+6 November 2005(Day of year=310), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+7 November 2005(Day of year=311), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+8 November 2005(Day of year=312), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+9 November 2005(Day of year=313), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+10 November 2005(Day of year=314), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+11 November 2005(Day of year=315), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+12 November 2005(Day of year=316), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+13 November 2005(Day of year=317), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+14 November 2005(Day of year=318), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+15 November 2005(Day of year=319), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+16 November 2005(Day of year=320), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+17 November 2005(Day of year=321), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+18 November 2005(Day of year=322), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+19 November 2005(Day of year=323), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+20 November 2005(Day of year=324), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+21 November 2005(Day of year=325), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+22 November 2005(Day of year=326), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+23 November 2005(Day of year=327), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+24 November 2005(Day of year=328), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+25 November 2005(Day of year=329), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+26 November 2005(Day of year=330), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+27 November 2005(Day of year=331), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+28 November 2005(Day of year=332), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+29 November 2005(Day of year=333), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+30 November 2005(Day of year=334), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+1 December 2005(Day of year=335), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+2 December 2005(Day of year=336), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+3 December 2005(Day of year=337), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+4 December 2005(Day of year=338), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+5 December 2005(Day of year=339), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+6 December 2005(Day of year=340), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+7 December 2005(Day of year=341), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+8 December 2005(Day of year=342), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+9 December 2005(Day of year=343), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+10 December 2005(Day of year=344), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+11 December 2005(Day of year=345), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+12 December 2005(Day of year=346), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+13 December 2005(Day of year=347), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+14 December 2005(Day of year=348), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+15 December 2005(Day of year=349), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+16 December 2005(Day of year=350), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+17 December 2005(Day of year=351), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+18 December 2005(Day of year=352), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+19 December 2005(Day of year=353), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+20 December 2005(Day of year=354), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+21 December 2005(Day of year=355), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+22 December 2005(Day of year=356), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+23 December 2005(Day of year=357), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+24 December 2005(Day of year=358), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+25 December 2005(Day of year=359), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+26 December 2005(Day of year=360), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+27 December 2005(Day of year=361), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+28 December 2005(Day of year=362), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+29 December 2005(Day of year=363), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+30 December 2005(Day of year=364), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+31 December 2005(Day of year=365), paddock.manager: 
+     Manager sending message :- irrigation apply  amount = 60
+31 December 2005(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.
+

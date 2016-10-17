@@ -1841,7 +1841,89 @@ subroutine surfom_incorp (action_type, F_incorp, Tillage_depth)
 end subroutine
 
 !================================================================
-subroutine surfom_incorp_single (surfom_name, action_type, F_incorp, Tillage_depth)
+subroutine surfom_ONTillageSingle (variant)
+!================================================================
+
+   implicit none
+   integer, intent(in) :: variant
+
+!+  Purpose
+!   Calculates surfom incorporation as a result of tillage operations.
+
+!+  Constant Values
+   character*(*) my_name             ! name of current procedure
+   parameter (my_name = 'surfom_ontillagesingle')
+!
+   character*(*) Tillage_section    ! section name for tillage info in
+   parameter (Tillage_section = 'tillage') ! lookup file
+
+!+  Local Variables
+   type(TillageType) :: tillage
+   character String*300             ! message string
+   real      type_info(2)           ! Array containing information about
+                                    ! a certain type (from table)
+   integer   Numvals                ! Number of values found in data string
+
+!- Implementation Section ----------------------------------
+   call push_routine (my_name)
+
+   call unpack_tillage(variant, tillage)
+
+   ! ----------------------------------------------------------
+   !       Get User defined tillage effects on residue
+   !    If no user defined characteristics then use the
+   !      lookup table compiled from expert knowledge
+   ! ----------------------------------------------------------
+   If (tillage%type .ne. ' ' .and. tillage%type .ne. 'user_defined') then
+      call write_string (new_line//'    - Reading residue tillage info')
+
+      call read_real_array_optional (tillage_section, tillage%type, 2, '()', type_info, numvals, 0.0, 1000.0)
+
+      ! If we still have no values then ignore it
+      If (numvals.ne.2) then
+         ! We have an unspecified tillage type
+         tillage%f_incorp = 0.0
+         tillage%tillage_depth = 0.0
+         string = 'Cannot find info for tillage:- '//trim(tillage%type)
+         call WARNING_ERROR (ERR_user, string)
+
+      Else
+         if (.not. reals_are_equal(tillage%f_incorp, 0.0) .and. .not. reals_are_equal( tillage%f_incorp ,type_info(1))) then
+           write(string,*) ' Tillage f_incorp specified (',tillage%f_incorp,') differs from default',type_info(1)
+           call WARNING_ERROR (ERR_user, string)
+         else
+         endif
+         tillage%f_incorp = type_info(1)
+         
+         if (.not. reals_are_equal(tillage%tillage_depth, 0.0) .and. .not. reals_are_equal( tillage%tillage_depth ,type_info(2))) then
+           string = ' Tillage tillage_depth specified differs from default'
+           call WARNING_ERROR (ERR_user, string)
+         else
+         endif
+         tillage%tillage_depth = type_info(2)
+
+      Endif
+   Else
+   Endif
+
+   ! ----------------------------------------------------------
+   !              Now incorporate the residues
+   ! ----------------------------------------------------------
+   Call surfom_incorp_single (tillage%name, tillage%f_incorp, tillage%tillage_depth)
+
+   Write (string, '(3a,40x,a,f8.2,a,40x,a, f8.2)' )   &
+        trim(tillage%name) // ' residue removed using ', tillage%type, New_Line   &
+        ,'Fraction Incorporated = ', tillage%f_incorp, New_Line   &
+        ,'Incorporated Depth    = ', tillage%tillage_depth
+
+   call Write_string (string)
+
+   call pop_routine (my_name)
+   return
+end subroutine
+
+!================================================================
+subroutine surfom_incorp_single (surfom_name, F_incorp, Tillage_depth)
 !================================================================
 
    implicit none
@@ -1906,9 +1988,12 @@ subroutine surfom_incorp_single (surfom_name, action_type, F_incorp, Tillage_dep
 
 ! dsg 170310  Get the array integer corresponding to the single residue we are planning to incorporate
    surfom_nmb = surfom_number (surfom_name)
-   Write (string, * )'The GREAT surfom_nmb ',surfom_name,' = ',surfom_nmb
-   call Write_string (string)
-
+   if (surfom_nmb .eq. 0) then
+        string = 'SurfaceOM residue name ' // trim(surfom_name) // ' unknown. Cannot do tillage_single'
+        call Fatal_ERROR (ERR_user, string)
+   else
+      ! nothing
+   endif
    do layer = 1, Deepest_Layer
 
          depth_to_go = tillage_depth - cum_depth
@@ -1956,7 +2041,7 @@ subroutine surfom_incorp_single (surfom_name, action_type, F_incorp, Tillage_dep
 
       call publish_FOMPool(id%IncorpFOMPool, FPoolProfile)
       ! dsg 160104  Keep this event for the time being - will be replaced by ResidueChanged
-      call residue2_Send_Res_removed_Event(action_type, F_incorp, residue_incorp_fraction, deepest_layer)
+      call residue2_Send_Res_removed_Event('tillage_single', F_incorp, residue_incorp_fraction, deepest_layer)
 
    else
       ! no residue incorporated
@@ -3466,6 +3551,8 @@ subroutine respondToEvent(fromID, eventID, variant)
       call SurfOMOnAddFaeces(variant)
    elseif (eventID  .eq. id%tillage) then
       call SurfOM_OnTillage(variant)
+   elseif (eventID  .eq. id%tillage_single) then
+      call SurfOM_OnTillageSingle(variant)
    elseif (eventID .eq. id%add_surfaceom) then
       call surfom_Add_surfom (variant)
    endif
