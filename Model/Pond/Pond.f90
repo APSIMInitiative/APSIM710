@@ -2,7 +2,7 @@ module PondModule
    use ComponentInterfaceModule
    use registrations
    use DataTypes
-   use infrastructure
+   use infrastructure       
       
 !  ====================================================================
 !  Pond constants
@@ -11,7 +11,7 @@ module PondModule
 !  Short Description:
 !  Constant values
 
-!  Notes:
+!  Notes:          
 
 !  attributes:
 
@@ -103,6 +103,7 @@ module PondModule
       integer num_residues
       integer ponded_days                          ! consecutive ponded days (ie g%pond_depth > 0)
       integer kill                                 !
+      integer count_dry                            ! count of the number of dry days since pond dry-down
       character   pond_active*10                   ! variable = yes or no depending on whether a pond is present in simulation
       character   residue_name(max_residues)*(Max_module_name_size)
       character   residue_type(max_residues)*(Max_module_name_size)
@@ -1045,7 +1046,7 @@ subroutine pond_ActiveCheck ()
    real         temp
    real         pond_yesterday 
    real         old_pab  
-   real         count_dry           ! number of consecutive days with no ponding    
+!   real         count_dry           ! number of consecutive days with no ponding    
 
 !- Implementation Section ----------------------------------
 
@@ -1061,7 +1062,7 @@ subroutine pond_ActiveCheck ()
    if (temp.gt.0.0) then
         g%pond_active = 'yes'
         g%ponded_days = g%ponded_days + 1
-        count_dry = 0
+        g%count_dry = 0
    else 
         g%pond_active = 'no'
 !        g%ftmax = 0.0
@@ -1077,14 +1078,18 @@ subroutine pond_ActiveCheck ()
    endif    
 
    if (temp.le.0.0) then
-       count_dry = count_dry + 1
+       g%count_dry = g%count_dry + 1
+!       Write (Err_string,*)' **** HOOPLY POND IS DRY **** count_dry =',g%count_dry
+!       call Write_string (Err_string)
+
    endif
 
-   if (count_dry.ge.5.and.g%pab_mass.ge.0.0) then
+   if (g%count_dry.ge.5.and.g%pab_mass.ge.0.0) then
 !     Dryup, so add all algae to surface organic matter - only after it has been sitting dry for (arbitrary) 5 days
-      call Pond_send_cropchopped_event(g%pab_mass)
+      call Pond_send_cropchopped_event(g%pab_mass) 
       g%pab_mass = 0.0
       g%ponded_days = 0
+	  g%algal_turnover = 0.0
    endif      
 
    g%pond_depth = temp
@@ -2080,8 +2085,12 @@ subroutine Pond_get_daily_variables ()
    parameter (my_name = 'Pond_get_daily_variables')
 
 !+  Local Variables
-    integer numvals                      ! simple counters
+    integer numvals, max_crops, crop     ! simple counters
     real temp(max_layer)                 ! temporary variable
+    real rlai                            ! temporary variable for rice crop LAI
+    real rep                             ! temporary variable for rice crop evapotranspiration
+    real local_rlai(3)                   ! local array for holding the value of 3 potential rice crop lai's
+    real local_rep(3)                    ! local array for holding the value of 3 potential rice ep's
     character*200  err_string
       
 !+  Initial Data Values
@@ -2098,17 +2107,47 @@ subroutine Pond_get_daily_variables ()
 ! determine the runoff over the bund, needed by subroutine Pond_check_N_runoff
        call get_real_var (unknown_module, 'runoff', '()', g%runoff, numvals, 0.0, 1000.0)
       
+       
 ! determine the rice lai - required by the pond_pab_rcf function to determine growth factor for algae
-       call get_real_var_optional (unknown_module, 'rlai', '()', g%rlai, numvals, 0.0, 30.0)
-          if (numvals.eq.0) then
-              g%rlai = 0.0
-          endif
-      
 ! determine the actual rice evapotranspiration - required by the pond_temperature_balance subroutine 
-       call get_real_var_optional (unknown_module, 'trw', '()', g%rep, numvals, 0.0, 20.0)
-          if (numvals.eq.0) then
-              g%rep = 0.0
-          endif
+       
+   
+      crop = 0
+      max_crops = 3
+      local_rlai(:) = 0.0
+      local_rep(:) = 0.0
+1000  continue
+
+         call get_real_vars (crop+1, 'rlai', '()', rlai, numvals, 0.0, 30.0)
+         call get_real_vars (crop+1, 'trw', '()', rep, numvals, 0.0, 20.0)
+         if (numvals.ne.0) then
+            if (crop+1.le.max_crops) then
+               crop = crop + 1
+               local_rlai(crop) = rlai
+               local_rep(crop) = rep
+               goto 1000
+            else
+               call fatal_error (err_user, 'More than three rice crops with rlai.')
+            endif
+         else
+         endif
+! short logic loop to determine which of the 3 potential rice crops is in the field, criteria: which rlai is largest.  Others in nursery.        
+      if (local_rlai(1).gt.local_rlai(2)) then
+           g%rlai = local_rlai(1)
+           g%rep = local_rep(1)
+      else
+           g%rlai = local_rlai(2)
+           g%rep = local_rep (2)
+      endif
+      
+      if (local_rlai(3).gt.g%rlai) then
+            g%rlai = local_rlai(3)
+            g%rep = local_rep(3)
+      endif
+
+
+
+
 
 ! determine the organic carbon in soil layer 1 - required to calculate potential urea hydrolysis in pond (kg/ha) 
        call get_real_array (unknown_module, 'oc', max_layer, '(%)', temp, numvals, 0.0, 100.0)
@@ -2454,7 +2493,7 @@ subroutine Pond_send_cropchopped_event (amount)
       chopped%fraction_to_residue(1:max_part) = fraction_to_residue
       chopped%num_fraction_to_residue = max_part
       call publish_BiomassRemoved(id%biomassremoved, chopped)
-         
+   
    call pop_routine (my_name)
    return
 end subroutine
@@ -2533,11 +2572,11 @@ end subroutine
 
 ! use the temperature factor suggested by Godwin & Singh 1998
 !
-!            1 |            /\               |
-!              |           / .\              |
-!              |          /  . \             |
-!              |         /   .  \            | 
-!              |        /    .   \           | 
+!            1 |            /\
+!              |           / .\    
+!              |          /  . \   
+!              |         /   .  \  
+!              |        /    .   \
 !            0 ------------------------------ temp
 !              0       15    30   45   
 
