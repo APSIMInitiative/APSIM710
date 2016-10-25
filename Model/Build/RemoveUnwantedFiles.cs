@@ -1,6 +1,9 @@
-﻿//css_import CSGeneral/Utility.cs
-//css_import CSGeneral/StringManip.cs
-//css_import CSGeneral/MathUtility.cs
+//css_ref System;
+//css_ref System.Core;
+//css_ref System.Xml;
+//css_include CSGeneral/Utility.cs
+//css_include CSGeneral/StringManip.cs
+//css_include CSGeneral/MathUtility.cs
 using System;
 using System.Collections.Generic;
 using System.Linq;

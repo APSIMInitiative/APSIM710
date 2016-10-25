@@ -470,11 +470,11 @@ void Computation::CreateManagedInstance(const std::string& filename,
 			classInstance = mono_object_new (domain, klass);
 
 			// "Pin" the class instance to keep the garbage collector from discarding it.
-			uint32_t handle = mono_gchandle_new (classInstance, true);
+			uint64_t handle = mono_gchandle_new (classInstance, true);
 			classInstance = mono_gchandle_get_target (handle);
 
 			MonoMethod* ctor_method = GetMonoMethod(classInstance, "CMPComp.TGCComponent:.ctor");
-	        handleMsgMethod = GetMonoMethod(classInstance, "CMPComp.TGCComponent:handleMessage");
+	                handleMsgMethod = GetMonoMethod(classInstance, "CMPComp.TGCComponent:handleMessage");
 
 			/* execute the component constructor that takes three arguments */
 			unsigned compId = componentId;
