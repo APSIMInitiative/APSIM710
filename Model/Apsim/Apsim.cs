@@ -77,6 +77,8 @@ public class Apsim
 
 			Run.Start(allRuns, doAllFactors);
             Run.WaitUntilFinished();
+            return(Run.HasErrors ? 1 : 0);
+            /* notreached */
         }
         catch (Exception err)
         {
@@ -91,10 +93,8 @@ public class Apsim
 			Console.WriteLine("  ... MaxOutputLines=n (write at most n lines in summary file)");
 			Console.WriteLine("  ... doAllFactors=true|false (run, or not all factors in factorials)");
 			Console.WriteLine("  ... SaveProfileOutput=filename (write detailed timings to filename)");
-
-            return 1;
         }
-        return 0;
+		return 1;
     }
     /// <summary>
     /// Parses an argument on the command line
