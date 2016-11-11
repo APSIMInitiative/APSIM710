@@ -306,6 +306,8 @@ namespace ManagedComponent.MvOZCOT
         private const int PROP_stage = PROP_START_INDEX + 192;        //crop development stage (numeric value: 1 - 7)
         private const int PROP_stageName = PROP_START_INDEX + 193;    //crop development stage name (string)
 
+        private const int PROP_biomass = PROP_START_INDEX + 194;      //total biomass produced dry wt (kg/ha)
+
 
         // end of owned properties list
 
@@ -512,51 +514,19 @@ namespace ManagedComponent.MvOZCOT
         private const int firstFlower = 4;    //period from FF to FOB
         private const int firstOpenBoll = 5;  //period from FOB to %OpenBolls marking maturity (default= 60% open)
         private const int mature = 6;         //period from defined %OpenBolls to end of leaf drop  (defoliation period)
-        private const int harvest_ripe = 7;    //period from crop ready for harvest to being harvested
+        private const int harvest_ripe = 7;   //period from crop ready for harvest to being harvested
+        private const int end_crop = 8;       //period from crop harvested to crop out
         // number of crop stages
-        private const int max_stage = 7;
+        private const int max_stage = 8;
 
-        private readonly string[] stageName = new string[] { "","germination", "presquaring", "squaring", "flowering", "openbolls", "mature", "harvest_ripe" };
+        private readonly string[] stageName = new string[] { "","germination", "presquaring", "squaring", "flowering", "openbolls", "mature", "harvest_ripe", "end_crop" };
 
-
-
-        //!  crop parts constant values
-        private const int root = 1;
-        private const int leaf = 2;
-        private const int stem = 3;
-        private const int pod  = 4;  // pod or green bolls
-        private const int meal = 5;  // 'meal' or seed in open bolls 
-        private const int lint = 6;  // lint in open bolls
-        private const int oil  = 7;  // seed oil
-        // number of plant parts
-        private const int max_part = 7;
-
-        private readonly string[] part_name = new string[] { "", "root", "leaf", "stem", "pod", "meal", "lint", "oil" };  //zero based array
 
         // default values for planting
         private const double ppm_row_default = 10.0;            // plants per metre row
         private const double sowing_depth_default = 50.0;       // sowing depth mm
         private const double row_spacing_default = 1000.0;      // row spacing mm
         private const int skiprow_default = 0;                  // 0 = solid, 1 = single skip,  2 = double skip
-
-        // arrays for dry matter accounting
-        private double[] dm_green = new double[max_part + 1];       // dry matter of green (growing) crop (g/m2))
-        private double[] dm_senesced = new double[max_part + 1];    // dry matter of senesced (dead) crop (g/m2))
-        private double[] dm_shed = new double[max_part + 1];        // dry matter of shed (removed/lost) crop (g/m2))
-        private double[] dm_harvested = new double[max_part + 1];   // dry matter of harvested crop (g/m2))
-
-        // N concentration of crop components for dry matter and N accounting purposes (shedding and harvesting)
-        private const double root_res_n_conc = 0.02;  // N concentration of root residue
-        //private const double leaf_res_n_conc = 0.025;  // N concentration of leaf residue
-        private double leaf_res_n_conc;  // N concentration of leaf residue  (init variable - user definable)
-        private const double stem_res_n_conc = 0.015;  // N concentration of stem residue 
-        private const double pod_res_n_conc = 0.02;   // avg N concentration of squares and green bolls (small)
-        private const double meal_res_n_conc = 0.04;  // N concentration of cotton seed 
-        private const double lint_res_n_conc = 0.02;  // N concentration of lint 
-
-        // working arrays for reporting  (1 based arrays)
-        private double[] dm_crop = new double[max_part + 1];    // dry matter of crop (g/m2) converted and reported as kg/ha
-        private double[] dm_N = new double[max_part + 1];       // N content of dry matter (g/m2)
 
 
 
@@ -609,20 +579,6 @@ namespace ManagedComponent.MvOZCOT
         private double open_def;
 
 
-
-        // dry matter production calculation factors
-        private double a_root_leaf;
-        private double a_stem_leaf;
-        private double specific_lw;
-        private double t_opt;
-        private double t_base;
-        private double embryo;
-        private double f_leaf;
-        private double f_stem;
-        private double f_root;
-        private double wt_area_max;
-        //jh         real    wt_area_min
-        private double e_par;
         private double elevation_default;
 
         private double watlog_c;
@@ -633,7 +589,7 @@ namespace ManagedComponent.MvOZCOT
         private double smi_affect_wlog;	        // level of water stress below which could affect waterlogging
         private double days_relief_wlog;	    // number of days of stress relief after which has no effect on waterlogging
 
-        private int deadFlagCnt;                // count of days that the crop is effectively dead. After 5 days set cropStatus to 'status_dead'.
+        private int deadFlagCnt;                // count of days that the crop is effectively dead. After 10 days set cropStatus to 'status_dead'.
 
         private double frost_kill_immediate;	// min temperature below which immediate kill
         private double rtdep_max;
@@ -847,6 +803,56 @@ namespace ManagedComponent.MvOZCOT
         private double res_cap;
         private double root_feedback;
 
+        //
+        // Dry Matter and Dry Weights
+        //
+        //  crop parts constant values
+        private const int root = 1;
+        private const int leaf = 2;
+        private const int stem = 3;
+        private const int pod = 4;  // pod or green bolls
+        private const int meal = 5;  // 'meal' or seed in open bolls 
+        private const int lint = 6;  // lint in open bolls
+        private const int oil = 7;  // seed oil
+        // number of plant parts
+        private const int max_part = 7;
+
+        private readonly string[] part_name = new string[] { "", "root", "leaf", "stem", "pod", "meal", "lint", "oil" };  //zero based array
+
+        // N concentration of crop components for dry matter and N accounting purposes (shedding and harvesting)
+        private const double root_res_n_conc = 0.02;  // N concentration of root residue
+        //private const double leaf_res_n_conc = 0.025;  // N concentration of leaf residue
+        private double leaf_res_n_conc;  // N concentration of leaf residue  (init variable - user definable)
+        private const double stem_res_n_conc = 0.015;  // N concentration of stem residue 
+        private const double pod_res_n_conc = 0.02;   // avg N concentration of squares and green bolls (small)
+        private const double meal_res_n_conc = 0.04;  // N concentration of cotton seed 
+        private const double lint_res_n_conc = 0.02;  // N concentration of lint 
+
+        // working arrays for reporting  (1 based arrays)
+        private double[] dm_crop = new double[max_part + 1];    // dry matter of crop (g/m2) converted and reported as kg/ha
+        private double[] dm_N = new double[max_part + 1];       // N content of dry matter (g/m2)
+
+        // arrays for dry matter accounting
+        private double[] dm_green = new double[max_part + 1];       // dry matter of green (growing) crop (g/m2))
+        private double[] dm_senesced = new double[max_part + 1];    // dry matter of senesced (dead) crop (g/m2))
+        private double[] dm_shed = new double[max_part + 1];        // dry matter of shed (removed/lost) crop (g/m2))
+        private double[] dm_harvested = new double[max_part + 1];   // dry matter of harvested crop (g/m2))
+
+        // dry matter production calculation factors
+        private double a_root_leaf;
+        private double a_stem_leaf;
+        private double specific_lw;
+        private double t_opt;
+        private double t_base;
+        private double embryo;
+        private double f_leaf;
+        private double f_stem;
+        private double f_root;
+        private double wt_area_max;
+        //jh         real    wt_area_min
+        private double e_par;
+
+
         //Dry Matter and Dry Weights
         //  internal storage 'dm' as g/m2 ,  reported 'wt' as kg/ha
         private double dm_fruShedTot;     //dry weight of shed fruit whole of crop  (g/m2)
@@ -882,6 +888,8 @@ namespace ManagedComponent.MvOZCOT
         private double total_n;
         private double dn_plant;
 
+
+        // Soil Nitrogen
         private double tsno3;
         private double tsnh4;
         private double[] no3mn = new double[max_layers + 1];
@@ -1002,7 +1010,7 @@ namespace ManagedComponent.MvOZCOT
         {
 
             //add subscribed events
-            addEvent("sow", EVENT_SOW, TypeSpec.KIND_SUBSCRIBEDEVENT, typeSow, "Sow Event (APSIM)", "Sow Event with parameters", 0);
+            addEvent("sow", EVENT_SOW, TypeSpec.KIND_SUBSCRIBEDEVENT, typeSow, "Sow Event ", "Sow Event with parameters", 0);
             defineEventState(EVENT_SOW, SOW_STATE_ACQUIRE, TStateMachine.NONLOGIC);
             defineEventState(EVENT_SOW, SOW_STATE_EXECUTE, TStateMachine.LOGIC);
             defineEventTransition(EVENT_SOW, TStateMachine.IDLE, 0, SOW_STATE_ACQUIRE, true);   //idle -> acquire
@@ -1360,7 +1368,7 @@ namespace ManagedComponent.MvOZCOT
 
 
             // root expansion delay
-            addProperty("rootExpansionDelay", PROP_rootExpansionDelay, true, false, true, "-", false, "integer4", "delay days for root expansion", "delay days after sowing until roots rapidly expand - default = 33 ");
+            addProperty("rootExpansionDelay", PROP_rootExpansionDelay, true, false, true, "days", false, "integer4", "delay days for root expansion", "delay days after sowing until roots rapidly expand - default = 33 ");
             setPropertyRange(PROP_rootExpansionDelay, 33, 0, 100);
 
             // use sum of DayDegrees to 1st Square flag
@@ -1401,7 +1409,7 @@ namespace ManagedComponent.MvOZCOT
             addProperty("vnstrs", PROP_vnstrs, true, false, false, "-", false, "double", "vegetative nitrogen stress", "stress indicator based on vegetative demand for Nitrogen");
             addProperty("fnstrs", PROP_fnstrs, true, false, false, "-", false, "double", "fruit nitrogen stress", "stress indicator based on fruit demand for Nitrogen");
             
-            addProperty("dw_total", PROP_dw_total, true, false, false, "kg/ha", false, "double", "total crop dry wt", "dry wt of the complete crop");  //TODO: check units???
+            addProperty("dw_total", PROP_dw_total, true, false, false, "kg/ha", false, "double", "total crop dry wt", "dry wt of the complete crop");  
             addProperty("dw_boll", PROP_dw_boll, true, false, false, "kg/ha", false, "double", "dry wt bolls", "dry wt bolls");
             addProperty("dn_plant", PROP_dn_plant, true, false, false, "kg/ha", false, "double", "daily increment of plant n to system", "daily increment of plant n to system");
             addProperty("assimilate", PROP_assimilate, true, false, false, "g/m2", false, "double", "new dry matter passed daily from s/r assimilation", "new dry matter passed daily from s/r assimilation");
@@ -1417,6 +1425,7 @@ namespace ManagedComponent.MvOZCOT
             addProperty("dw_root", PROP_dw_root, true, false, false, "kg/ha", false, "double", "dry wt roots", "dry wt roots");
             addProperty("dw_leaf", PROP_dw_leaf, true, false, false, "kg/ha", false, "double", "dry wt leaf", "dry wt leaf");
             addProperty("dw_stem", PROP_dw_stem, true, false, false, "kg/ha", false, "double", "dry wt stem", "dry wt stem");
+            addProperty("biomass", PROP_biomass, true, false, false, "kg/ha", false, "double", "dry wt total", "dry wt total biomass");
             //addProperty("totnup", PROP_totnup, true, false, false, "kg/ha", false, "double", "total Nitrogen uptake", "total Nitrogen uptake");
             addProperty("yield", PROP_yield, true, false, false, "kg/ha", false, "double", "lint yield kg/ha", "lint yield kg/ha");
             addProperty("lint_yield", PROP_lint_yield, true, false, false, "kg/ha", false, "double", "lint yield kg/ha", "lint yield kg/ha");
@@ -2735,12 +2744,6 @@ namespace ManagedComponent.MvOZCOT
                 case PROP_lai: aValue.setValue(laiField);
                     break;
 
-                case PROP_dw_total: aValue.setValue(dm_total * 10.0);  // g/m2  --> kg/ha
-                    break;
-
-                case PROP_dw_boll: aValue.setValue(dm_allBolls * 10.0);   // g/m2  --> kg/ha
-                    break;
-
                 case PROP_dn_plant: aValue.setValue(dn_plant * 10.0);  // g/m2  --> kg/ha
                     break;
 
@@ -2963,7 +2966,21 @@ namespace ManagedComponent.MvOZCOT
                 case PROP_dw_stem: aValue.setValue(dm_stem * 10.0);    //internal storage as g/m2 ,  reported as kg/ha
                     break;
 
-                
+                case PROP_dw_boll:
+                    aValue.setValue(dm_allBolls * 10.0);   // g/m2  --> kg/ha
+                    break;
+
+                case PROP_dw_total:
+                    aValue.setValue(dm_total * 10.0);  // g/m2  --> kg/ha
+                    break;
+
+                case PROP_biomass:
+                    double dm_all = 0.0;
+                    dm_all = dm_green.Sum() + dm_senesced.Sum() + dm_shed.Sum() + dm_harvested.Sum();
+                    aValue.setValue(dm_all * 10.0);    //dm as g/m2 ,  reported as kg/ha
+                    break;
+
+
                 //case PROP_totnup: aValue.setValue(total_n * 10.0);    //internal storage as g/m2 ,  reported as kg/ha
                 //  duplicate of PROP_nuptake "NUptake_total"
                 //    break;
@@ -3285,7 +3302,7 @@ namespace ManagedComponent.MvOZCOT
                     }
                     else if (iState == GROWTH_STATE_EXECUTE) 
                     {
-                        if ((crop_in) & (plant_status == status_alive))
+                        if (crop_in) 
                         {
                             if (jdate != isow)
                             {
@@ -3296,12 +3313,18 @@ namespace ManagedComponent.MvOZCOT
                         {
                         }
 
-                        ozcot2();                        // CALL OZCOT GROWTH MODEL
+                        ozcot2();               // CALL OZCOT GROWTH MODEL
+
+                        //if (plant_status == status_alive)
+                        //    {
+                        //        ozcot2();                        
+                        //    }
+                        //}
 
                         if ( DAS == max_cohort)   //
                         {
                             terminateCropError(" ***  Crop remains unterminated at 300 DAS. Check that manager harvest criteria contains an 'end_crop' event.");
-                            // force a call of end_crop
+                            // force a call of end_crop  for unterminated crop  - 'alive' or 'dead' status
                             ozcot_end_crop();
                         }
                         else
@@ -4606,7 +4629,7 @@ namespace ManagedComponent.MvOZCOT
             // allow sowing density in plant/m2  instead of plants per metre row.
             if (plants > 0.0 && ppm_row == 0.0)
             {
-                ppm_row = plants / (row_space_mm * 1000);
+                ppm_row = plants / (row_space_mm / 1000);
                 // skiprow adjustment needed?  depends on what value is entered as plants.
             }
            
@@ -4622,7 +4645,8 @@ namespace ManagedComponent.MvOZCOT
             }
             else   // Cultivar not found  -  Report error and use Defaults
             {
-                Console.WriteLine("Sowing Cultivar '{0}' not found. Using default cultivar '{1}' parameters.", cultivar, cultivar_default);
+                Console.WriteLine("\n    *** Cotton Warning ***");
+                Console.WriteLine("  Sowing Cultivar '{0}' not found. Using default cultivar '{1}' parameters.", cultivar, cultivar_default);
 
                 sowCultivar = ozcotCultivars.getCultivar(cultivar_default);
             }
@@ -4839,6 +4863,16 @@ namespace ManagedComponent.MvOZCOT
 
                 //place holders - kill_crop parameters not implemented in Cotton - kill_crop kills entire crop
                 double killCropFraction = Parameters.member("KillFraction").asDouble();  //fraction of crop to be removed
+
+
+                //report warning in summary file if any parameters values are set
+                if (killCropFraction > 0.0 )
+                {
+                    Console.WriteLine("\n    *** Cotton Warning ***");
+                    Console.WriteLine("    Parameters set with the KillCrop event type are not implemented in the Cotton component. Values will be ignored.");
+                    Console.WriteLine("\n");
+                }
+
 
                 // needs coding enhancements
                 plant_status = status_dead;
@@ -5071,9 +5105,17 @@ namespace ManagedComponent.MvOZCOT
 
                 //place holders - harvest parameters not implemented in Cotton - all open bolls are harvested
                 double harvestPlants = Parameters.member("Plants").asDouble();  //fraction of plants to remove from population
-                double harvestRemove = Parameters.member("Remove").asDouble();  //fraction of stover to move to remove from dry matter pool
+                double harvestRemove = Parameters.member("Remove").asDouble();  //fraction of stover to remove from dry matter pool
                 double harvestHeight = Parameters.member("Height").asDouble();  //height at which to cut crop
                 string harvestReport = Parameters.member("Report").asString();  //report harvest parameters
+
+                //report warning in summary file if any parameters values are set
+                if (harvestPlants > 0.0 || harvestRemove > 0.0 || harvestHeight > 0.0 || harvestReport != "")
+                {
+                    Console.WriteLine("\n    *** Cotton Warning ***");
+                    Console.WriteLine("    Parameters set with the Harvest event type are not implemented in the Cotton component. Values will be ignored.");
+                    Console.WriteLine("\n");
+                }
 
                 ozcot_harvest_report();
                 ozcot_harvest_update();
@@ -5190,7 +5232,7 @@ namespace ManagedComponent.MvOZCOT
             sendPublishEvent(evtHarvested, false);
 
 
-           // Console.WriteLine("      Total assimilate (g/m2) =  {0}", total_assimilate.ToString("#####0.0"));
+            // Console.WriteLine("      Total assimilate (g/m2) =  {0}", total_assimilate.ToString("#####0.0"));
             Console.WriteLine("      Total green biomass (g/m2) =  {0}", dm_green.Sum().ToString("#####0.0"));
             Console.WriteLine("      Total sensced biomass (g/m2) =  {0}", dm_senesced.Sum().ToString("#####0.0"));
             Console.WriteLine("      Total shed biomass (g/m2) =  {0}", dm_shed.Sum().ToString("#####0.0"));
@@ -5198,6 +5240,14 @@ namespace ManagedComponent.MvOZCOT
             Console.WriteLine("      Total harvested biomass (g/m2) =  {0}", dm_harvested.Sum().ToString("#####0.0"));
             Console.WriteLine("\n");
 
+
+            // Update crop stage only if harvest was performed on 'harvest_ripe' crop
+            //    alternatively, it could have been a hand harvest on a still growing crop, 
+            //    in which case it will not change to an end_crop stage
+            if (cropStage == harvest_ripe)
+            {
+                cropStage = end_crop;
+            }
 
 
             return; // ozcot_harvest_update
@@ -5591,25 +5641,12 @@ namespace ManagedComponent.MvOZCOT
                 ozcot_metdat2();
                 ozcot_solwat();
             }
-            //             if(defirr(2).ne.0.) call decide_irg       ! irrigated crop?
-            //             if(isow.le.0)then           ! crop sown yet?
-            //                  call sowday (i,iend)    ! sow tomorrow?
-            //                  call sowday             ! sow tomorrow?
-            //                  if(iend.ge.3) go to 32  ! passed sowing window or fallow
-            //              elseif(i.gt.isow .and. iemerle.0)then     ! crop emerged yet?
-            //jh v2001              if(iemrle.0) then
-            //                  call emerg (i)          ! emerge today?
-            //jh v2001                  call ozcot_emerg              ! emerge today?
-            //jh v2001              endif
+
             else
             {
             }
-            //              call snbal(i)               ! soil n balance
-            ozcot_snbal();
-            // soil n balance
-            //              if(isow.gt.0 .and. i.gt.isow) call pltgrw (i,iend,nszn)
-            //              if(openz.gt.0.0) call harvest(iend)
-            //      print*, crop_in, DAS, isow, openz, iend
+
+            ozcot_snbal();    //soil n balance
 
             if (crop_in & (plant_status == status_alive))
             {
@@ -5662,12 +5699,12 @@ namespace ManagedComponent.MvOZCOT
                 cropStage = mature;
                 maturityDAS = DAS;
                 Console.WriteLine("{0} {1} {2} (Day of year={3}), cotton: ", Today.Day, Today.ToString("MMMM"), Today.Year, DOY);
-                Console.WriteLine("   *** season at 300 days:  crop stage forced to 'maturity'.");
+                Console.WriteLine("   *** season at 300 days:  crop stage set to 'mature'.");
                 return; 
 			}
 
 			//---- crop development complete? ---------------------------------------------
-			//   error trap: Open bolls with nothing more growing ==> force stage to maturity
+			//   error trap: Open bolls with nothing more growing ==> set crop stage to mature
 			if ((openz > 0.0)  &  (bollz * effectiveRowSpacing < 1.0) )
 			{
                 if ((iend == 0) & (cropStage < mature))
@@ -5676,7 +5713,7 @@ namespace ManagedComponent.MvOZCOT
                     cropStage = mature;
                     maturityDAS = DAS;
                     Console.WriteLine("{0} {1} {2} (Day of year={3}), cotton: ", Today.Day, Today.ToString("MMMM"), Today.Year, DOY);
-                    Console.WriteLine("   *** crop has open bolls but no more green bolls:  crop stage forced to 'maturity'.");
+                    Console.WriteLine("   *** crop has open bolls but no more green bolls:  crop stage set to 'mature'.");
                 }
             }
 
@@ -5733,12 +5770,12 @@ namespace ManagedComponent.MvOZCOT
                 // This was noted as water stressed seedlings in simulation, but no stress in reality. Root development was too slow in model.
                 // This may be due to different climate, soil type or an interaction of both. 
                 // Adjustment means that default delay period is actually 33 days for ACRI - translates to model delay of about 37 days as per original response.
+                //   (rtdep2 = 0 @ 33 days ;  rtdep2 > rtdep1 @~ 37-40 days)
                 // A delay of 0 days causes rtdep values to be skipped and rtdep2 values to be used from day 1 - rapid root expansion.
                 // Rooting depth limited to rtdep_max as a max (profile depth).  (rtdep_max is init variable)
                 //
                 //rtdep2 = profileDepth * (1.0 - 2.65 * Math.Exp(-0.03 * (double)(iday + 33 - 33)));
-                //rtdep2 = profileDepth * (1.0 - 2.65 * Math.Exp(-0.03 * (double)(iday + 33 - rootExpansionDelay)));
-                rtdep2 = profileDepth * (1.0 - 2.65 * Math.Exp(-0.03 * (double)(DAS + rootExpansionDelay)));
+                rtdep2 = profileDepth * (1.0 - 2.65 * Math.Exp(-0.03 * (double)(DAS + (33 - rootExpansionDelay))));
 
                 rtdep = Math.Max(rtdep1, rtdep2);
 
@@ -5747,27 +5784,27 @@ namespace ManagedComponent.MvOZCOT
 
                 //---- check if frost terminates crop -----------------------------------------
                 //
-                // TODO: DBJ Review frost rules
-                //       Frost is killing and terminating a mature crop --> NO YIELD, which is in error ??
-                //       (early frost might kill a crop if severe enough, otherwise it should mature bolls and 
-                //        reduce functioning leaves  ???  but leave the crop to be harvested)
-                //        iend is used in ozcot_harvest() and also reported as ozcot-status and status
-                //        thus terminating the crop when manager script is looking for status > 0.
+                //       Frost kills and terminates a pre-flowering crop --> NO YIELD.
+                //       (early frost kills a crop if severe enough, otherwise it should mature bolls and 
+                //        reduce functioning leaves, but leave the crop to be harvested).
+                //        iend is used in ozcot_harvest() and also reported as ozcot-status
+                //         (thus terminating the crop when manager script is looking for status > 0)
+                //        plant_status also added for 'dead' crop to allow standard manager scripts to test for 'dead' crop.
                 //
                 if (tempmn <= frost_kill_immediate & (iemrg > 0.0))   // frost after emergence?
                 {
                     if ((iend == 0) & (bollz == 0) & (cropStage < firstFlower))           // pre-fruiting?   green bolls yet?
                     {
                         iend = 3;               // flag for frost killing young crop 
-                                                //write#1,//format(' *** crop killed by frost before fruiting')
+                        plant_status = status_dead;
                         Console.WriteLine("{0} {1} {2} (Day of year={3}), cotton: ", Today.Day, Today.ToString("MMMM"), Today.Year, DOY);
                         Console.WriteLine("   *** crop killed by frost before fruiting.");
+                        Console.WriteLine("   *** plant_status = 'dead' ");
                     }
                     else if ((iend == 0) & (openz == 0.0) & (cropStage < firstOpenBoll))    // open bolls yet?   None - immature crop
                     {
                         iend = 4;               // flag for frost on immature crop - try to force open bolls > 80. mature
-                                                //write#1,//format(' *** crop killed by frost during fruiting, before open bolls')
-                                                //                                    ??  should this kill the crop?  or some other stress effect?
+                                                //  ??  should this kill the crop?  or induce some other stress effect?
                         Console.WriteLine("{0} {1} {2} (Day of year={3}), cotton: ", Today.Day, Today.ToString("MMMM"), Today.Year, DOY);
                         Console.WriteLine("   *** crop encounter frost during fruiting, before open bolls.");
                     }
@@ -5806,12 +5843,30 @@ namespace ManagedComponent.MvOZCOT
                 //----- test for a 'dead' crop -----------------------------------
                 if (iemrg > 0)
                 {
-                    if (laiField < 0.1  &  smi < 0.2  &  defol1DAS == 0)
+                    if (skiprow > 0) laiRow = laiField * effectiveRowSpacing;       // lai in hedgerow
+                    if ((smi < 0.2 & defol1DAS == 0) & 
+                          ((cropStage < firstSquare  &  laiRow < 0.01 ) | (cropStage >= firstSquare  &   laiRow < 0.1)))
                     {
                         deadFlagCnt ++ ;
-                        if (deadFlagCnt > 5) plant_status = status_dead;
-                        Console.WriteLine("{0} {1} {2} (Day of year={3}), cotton: ", Today.Day, Today.ToString("MMMM"), Today.Year, DOY);
-                        Console.WriteLine("         Crop failed - status 'dead'.");
+                        if (deadFlagCnt > 10 & plant_status != status_dead)
+                        {
+                            plant_status = status_dead;
+                            if (cropStage < firstFlower)
+                            {
+                                Console.WriteLine("{0} {1} {2} (Day of year={3}), cotton: ", Today.Day, Today.ToString("MMMM"), Today.Year, DOY);
+                                Console.WriteLine("         Crop failed to establish - plant_status 'dead'. ");
+                            }
+                            else if (cropStage >= firstFlower & cropStage < mature)
+                            {
+                                Console.WriteLine("{0} {1} {2} (Day of year={3}), cotton: ", Today.Day, Today.ToString("MMMM"), Today.Year, DOY);
+                                Console.WriteLine("         Crop failed - plant_status 'dead'. ");
+                            }
+                            else
+                            {
+                                Console.WriteLine("{0} {1} {2} (Day of year={3}), cotton: ", Today.Day, Today.ToString("MMMM"), Today.Year, DOY);
+                                Console.WriteLine("         Crop mature but status evaluated as 'dead'.");
+                            }
+                        }
                     }
                     else
                     {
@@ -5866,7 +5921,7 @@ namespace ManagedComponent.MvOZCOT
                 //----------- final test to see if the crop has been defoliated and is ready for harvest
                 if ((defoliationCnt > 0) & (laiField < 0.1) & (cropStage < harvest_ripe))
                 {
-                    iend = 6;               // crop finished - from this point on NO further fruit development should happen.
+                    iend = 7;               // crop finished - from this point on NO further fruit development should happen.
                     cropStage = harvest_ripe;
 
                     Console.WriteLine("{0} {1} {2} (Day of year={3}), cotton: ", Today.Day, Today.ToString("MMMM"), Today.Year, DOY);
@@ -5905,6 +5960,7 @@ namespace ManagedComponent.MvOZCOT
 
             //- implementation section ----------------------------------
 
+            // called for each cohort of fruit  but  only do calculations once per day 
             if (idayx == 0 | iday == idayx + 1) // 1st call for this day?
             {
                 idayx = iday;                // if so, set flag to exit sub more calls
@@ -5912,6 +5968,8 @@ namespace ManagedComponent.MvOZCOT
                 if ((bload > 0.0)) fbcstr = carcap_c / bload;     // supply/demand ratio for when
                 if ((fbcstr > 1.0)) fbcstr = 1.0;                 // boll growth limited by cc supply
                 fbwstr = ozcot_stress(fbwstr_low, fbwstr_high, fbwstr_a, smi);
+                
+                //Console.WriteLine("Cotton: DAS= {0}, fbcstr= {1}, carcap_c= {2}, bload= {3}, ", DAS, fbcstr, carcap_c, bload);
                 // water stress on bolls         'const  sw_stress_boll_min, sw_stress_boll_max, sw_stress_boll_pwr
                 //jh v2001 deleted        fbwstr = 1.                          ! try no direct stress - 24/4/92
                 if ((bollz + openz < carcap_n))    // final boll req < uptake
@@ -5949,6 +6007,8 @@ namespace ManagedComponent.MvOZCOT
                 bollgr = bollgr * strsbl;              // todays actual rate per boll
                 if (bollgr < 0.0) bollgr = 0.0;
 
+                //Console.WriteLine("Cotton: DAS= {0}, bollgr= {1}, bollz= {2}, openz= {3}, fbnstr= {4}, strsbl= {5}, fnstrs= {6}, ", DAS, bollgr, bollz, openz, fbnstr, strsbl, fnstrs);
+
             }
 
             return; 
@@ -5976,6 +6036,9 @@ namespace ManagedComponent.MvOZCOT
             double templf;
             double rfac;
             double rm;
+            //debug variables
+            //double carcapC_preWatLog, carcapC_postWatLog;
+
 
 
             //      data from "siratac" - 1987-88  hearn (pers. comm.)
@@ -5994,7 +6057,7 @@ namespace ManagedComponent.MvOZCOT
 
             //psc      if(smi.gt.0.75 .and. istress.gt.0) then
 
-            if (bload > cutout & smi < smi_affect_wlog) istress = 1;    // 0.25 replaced 0.75 - abh 5/11/96    'const  wlog_relief_smi
+            if ((bload > cutout) & (cutout > 0.0) & (smi < smi_affect_wlog)) istress = 1;    // 0.25 replaced 0.75 - abh 5/11/96    'const  wlog_relief_smi
             if (smi > smi_affect_wlog & istress > 0)                    // 0.25 replaced 0.75 - abh 5/11/96
             {
                 ireliefco = ireliefco + 1;                // count days since relief of stress
@@ -6004,6 +6067,7 @@ namespace ManagedComponent.MvOZCOT
                     ireliefco = 0;                  // reset counter
                 }
             }
+            //Console.WriteLine("Cotton: DAS= {0}, bload= {1}, cutout= {2}, smi= {3}, smi_affect_wlog= {4}", DAS, bload, cutout, smi, smi_affect_wlog);
             //      istress = 0  !debug
             //----photosynthetic capacity --------------------------------------------------
             //-----light interception modified to give hedgerow effect with skip row - abh 5/11/96 ------
@@ -6076,6 +6140,8 @@ namespace ManagedComponent.MvOZCOT
             //----- waterlogging effect additional to n uptake - hearn & constable 1984 eqn 4
             //jh      print*, 'DAS, caracp_c, wli, rm, istress, bload, cutout,smi'
             //jh      print*,DAS,carcap_c,wli,rm,istress,bload,cutout,smi
+            //carcapC_preWatLog = carcap_c;  //debug
+
             if (istress > 0)
             {
                 //jh v2001 deleted         if(sw/ul.gt.watlog_c)
@@ -6087,7 +6153,10 @@ namespace ManagedComponent.MvOZCOT
                 if (wli > watlog_c) carcap_c = carcap_c * wlog_carcap_red;        // carrying capacity reduced 
             }
             cutout = carcap_c * fcutout;              // boll load for cutout, sq prodn exit subs
-            
+
+            //carcapC_postWatLog = carcap_c;  // debug
+           // Console.WriteLine("Cotton: DAS= {0}, carcapC_preWatLog= {1}, carcapC_postWatLog= {2}, pn= {3}, rm= {4}, bgrvar= {5}, istress= {6}, wlog_carcap_red_stress= {7},wlog_carcap_red= {8}, bload= {9}", DAS, carcapC_preWatLog, carcapC_postWatLog, pn, rm, bgrvar, istress, wlog_carcap_red_stress, wlog_carcap_red, bload);
+
 
             return; 
         }
@@ -6312,6 +6381,7 @@ namespace ManagedComponent.MvOZCOT
 			if ((establish < 25.0))
 			{
 				iend = 2;				// flag to terminate season
+                plant_status = status_dead;
 
                 // report failed establishment
                 Console.WriteLine("{0} {1} {2} (Day of year={3}), cotton:", Today.Day, Today.ToString("MMMM"), Today.Year, DOY);
@@ -6745,7 +6815,6 @@ namespace ManagedComponent.MvOZCOT
             Array.Clear(sfmcat, 0, sfmcat.Length);
             Array.Clear(fmkcat, 0, fmkcat.Length);
             
-            bollz = 0.0;            // Clear the green boll count (used in bollwt() to calc boll stress)
             dm_fruShedToday = 0.0;  //clear accumultion of shed fruit weights for today
             dm_fruWtToday = 0.0;    // clear accumulation of dry weight added by growing bolls
 
@@ -6762,6 +6831,9 @@ namespace ManagedComponent.MvOZCOT
             // Calculate the nominal(reference)(bgrvar) and actual (bollgr) boll growth rates for today 
             // Note: this is based on the existing fruit load and carrying capacities (from yesterday) 
             ozcot_bollwt();
+
+            // Clear the green boll count (used in bollwt() to calc boll stress)
+            bollz = 0.0;            
 
             //-----------------------------------------------------------------------------
             //     The next loop ( Main Cohort Loop ) goes through the fruit arrays
@@ -7085,9 +7157,6 @@ namespace ManagedComponent.MvOZCOT
             //     logic removed from old ozcot_harvest() that tested for defoliation conditions
             //
 
-            // setting of iend = 6 "Crop ready to Harvest"  moved to end of ozcot_pltgrw()  dbj Nov 2015
-            // and is dependant upon defoliationCnt and fieldlai < 0.1
-
             if (cropStage >= mature)
             {
                 return;
@@ -7097,7 +7166,7 @@ namespace ManagedComponent.MvOZCOT
             {
                 cropStage = mature;
                 maturityDAS = DAS;
-               // iend = 6;  don't set this here as APSIM will see it as 'harvest'
+                iend = 6;   // setting this here allows APSIM will see it as mature.  It should still be defoliated before 'harvest'
                 Console.WriteLine("{0} {1} {2} (Day of year={3}), cotton: ", Today.Day, Today.ToString("MMMM"), Today.Year, DOY);
                 Console.WriteLine("   Crop has reached the percent open bolls as defined for maturity. Crop mature.");
             }
@@ -7539,7 +7608,7 @@ namespace ManagedComponent.MvOZCOT
                 actrgr = rlai;             // actual rgr
                   //jh           actrgr=actrgr*flfsmi          ! water stress
                 alaix = laiField;              // save previous lai
-                //index = ifix(dd);          // index for do loop below to grow leaf
+                
                 index = (int)Math.Truncate(dd);          // index for do loop below to grow leaf
 
                 for (lin = 1; lin <= index; lin++)
