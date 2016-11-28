@@ -824,6 +824,16 @@ c$$$     :     g%crop_cover * p%crop_cover_wtg, 0.0, 1.0)
      :      , -1.0
      :      , 1.0)
 
+      elseif (variable_name .eq. 'slope') then
+
+         call collect_real_var (
+     :       variable_name      ! Name of Variable  (not used)
+     :      , units             ! Units of variable (not used)
+     :      , p%slope           ! Variable
+     :      , numvals
+     :      , 0.0
+     :      , 100.0)
+
       else
              ! nothing
          call Message_unused ()
@@ -978,6 +988,11 @@ c$$$     :     g%crop_cover * p%crop_cover_wtg, 0.0, 1.0)
          call respond2get_real_var (variable_name
      :                             , '()'
      :                             , g%cover_extra)
+
+      else if (Variable_name .eq. 'slope') then
+         call respond2get_real_var (variable_name
+     :                             , '()'
+     :                             , p%slope)
 
       else
             ! nothing
