@@ -1141,6 +1141,12 @@
       g%amax1 = 0.0   !! XXnot used anywhere??
       g%eff1=0.0      !! XXnot used anywhere??
       g%fnlv=0.0
+      g%NMAXL = 0.0
+      g%NMINL = 0.0
+      g%NMINSO = 0.0
+      g%fnst = 0.0
+      g%fvpd = 0.0
+      g%rain = 0.0
 
       ! dsg 030809 rat grazing work with Peter Brown
       g%rat_graze_perc=0.0
@@ -5911,6 +5917,13 @@
          p%vpd(:) = 0.0
          p%fvpd(:) = 0.0
          p%numvpd = 0
+		 ! And these may come from on_newProfile
+         p%tkl(:) = 0.0
+         p%WCST(:) = 0.0
+         p%WCFC(:) = 0.0
+         p%WCWP(:) = 0.0
+         p%WCAD(:) = 0.0
+         g%TKLT = 0.0
       else
          deallocate(g)
          deallocate(p)

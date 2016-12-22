@@ -165,11 +165,7 @@ void testWrite(void)
    string xml = rootNode.write();
    replaceAll(xml, " ", "");
    replaceAll(xml, "\n", "");
-#ifdef __WIN32__
-   CPPUNIT_ASSERT(xml == "<root><newNode1></newNode1><newNode2></newNode2><newNode2></newNode2></root>");
-#else
    CPPUNIT_ASSERT(xml == "<root><newNode1/><newNode2/><newNode2/></root>");
-#endif   
    }
 };
 
