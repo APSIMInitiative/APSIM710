@@ -1355,8 +1355,21 @@
 
       call push_routine (my_name)
 
-      
   
+      g%co2 = 0
+      g%co2_exists = 0
+      g%rue_co2_fact = 0.0
+      g%transp_eff_cf_fact = 0.0
+      g%rue_leaf_no_fact = 0.0
+      g%sucrose_respiration = 0.0
+      g%HourlyMetExists = 0.0
+      g%RadnHourly(:) = 0.0
+      g%TempHourly(:) = 0.0
+      g%VPDHourly(:) = 0.0
+      g%sw_demand_hourly(:) = 0.0
+      g%ep_hourly(:) = 0.0
+      g%dlt_dm_pot_rue_hourly(:) = 0.0
+      g%dlt_dm_pot_rue_pot_hourly(:) = 0.0
       g%crop_status           = blank
       g%crop_cultivar         = blank
       g%plant_status_out_today = .false.
@@ -1464,6 +1477,7 @@
       g%dlt_dm_pot_rue_pot                  = 0.0
       g%radn_int                            = 0.0
       g%transp_eff                          = 0.0
+      g%transp_eff_cf                       = 0.0
       g%min_sstem_sucrose                   = 0.0
       g%dlt_min_sstem_sucrose               = 0.0
       g%slai                                = 0.0
@@ -1647,6 +1661,25 @@
       c%NH4_lb                           = 0.0
       c%NH4_min_ub                       = 0.0
       c%NH4_min_lb                       = 0.0
+      c%x_swdef_photo(:)                 = 0.0
+      c%y_transp_eff_cf(:)               = 0.0
+      c%te_by_stress_numvals             = 0
+      c%x_swdef_photo2(:)                = 0.0
+      c%y_sw_demand_hourly_max(:)        = 0.0
+      c%sw_demand_hourly_max_numvals     = 0
+      c%sw_supply_per_root_length        = 0.0
+      c%x_co2(:)                         = 0.0
+      c%y_transp_eff_cf_fact(:)          = 0.0
+      c%transp_eff_cf_fact_numvals       = 0
+      c%x2_co2(:)                        = 0.0
+      c%y_rue_co2_fact(:)                = 0.0
+      c%rue_co2_fact_numvals             = 0
+      c%x_leaf_no(:)                     = 0.0
+      c%y_rue_leaf_no_fact(:)            = 0.0
+      c%rue_leaf_no_fact_numvals         = 0
+      c%x_tmean(:)                       = 0.0
+      c%y_suc_resp_fr(:)                 = 0.0
+      c%suc_resp_fr_numvals              = 0
       c%leaf_no_min                      = 0.0
       c%leaf_no_max                      = 0.0
       c%latitude_ub                         = 0.0
