@@ -582,7 +582,7 @@ namespace CMPServices
         /// </summary>
         // N.Herrmann Apr 2002
         //======================================================================
-        protected void getDescription()
+        protected virtual void getDescription()
         {
             FName = parser.Name;
             FUnit = parser.Units;
@@ -1270,6 +1270,7 @@ namespace CMPServices
             getDescription();                  //set the description fields from the parser
 
             parseType();                       //do the parsing of this type 
+            parser = null;
         }
         //======================================================================
         /// <summary>

@@ -111,7 +111,6 @@ namespace CMPServices
 
             if (isArray())                        // default array length is zero
                 setElementCount(0);
-            FDescr = parser.getAttrValue(parser.rootNode(), "description"); //APSIM descriptions here
         }
 
         //============================================================================
@@ -136,7 +135,6 @@ namespace CMPServices
 
             if (isArray())                        // default array length is zero
                 setElementCount(0);
-            FDescr = parentParser.getAttrValue(baseNode, "description"); //APSIM descriptions here
         }
 
         //============================================================================
@@ -176,7 +174,6 @@ namespace CMPServices
             //add array elements which are scalars
             addScalar("", aBaseType);     //calls suitable virtual function
             setElementCount((uint)iNoElements);
-            FDescr = parser.getAttrValue(parser.rootNode(), "description"); //APSIM descriptions here
         }
         //============================================================================
         /// <summary>
@@ -194,7 +191,6 @@ namespace CMPServices
             FDefault = null;
             newMember(baseValue);
             setElementCount((uint)iNoElements);
-            FDescr = parser.getAttrValue(parser.rootNode(), "description"); //APSIM descriptions here
         }
         //============================================================================
         /// <summary>
@@ -250,6 +246,17 @@ namespace CMPServices
             //FMin = null;
             FDefault = null;
             FDescr = "";
+        }
+
+        //============================================================================
+        /// <summary>
+        /// Override the TTypedValue call and get the specialised description.
+        /// </summary>
+        //============================================================================
+        protected override void getDescription()
+        {
+            base.getDescription();
+            FDescr = parser.getAttrValue(parser.rootNode(), "description"); //APSIM descriptions here
         }
 
         //============================================================================
