@@ -29,6 +29,7 @@ module Registrations
       integer :: add_faeces
       integer :: add_surfaceom
       integer :: dummy
+      integer :: prop_up
 
    end type IDsType
 
@@ -80,6 +81,7 @@ module Registrations
          id%post = add_registration(respondToEventReg, 'post', nullTypeDDML, '')
          id%actualresiduedecompositioncalculated = add_registration(respondToEventReg, 'actualresiduedecompositioncalculated', SurfaceOrganicMatterDecompTypeDDML, '')
          id%add_faeces = add_registration(respondToEventReg, 'AddFaeces', AddFaecesTypeDDML, '')
+         id%prop_up = add_registration(respondToEventReg, 'prop_up', AddFaecesTypeDDML, '')
 	 end subroutine
 end module Registrations
 
