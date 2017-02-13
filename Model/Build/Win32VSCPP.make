@@ -1,5 +1,5 @@
 ###########################################
-# make file for MS VS2010
+# make file for MS VS2015 (and some earlier versions)
 ###########################################
 
 ######uncomment for debug everything###
@@ -21,7 +21,7 @@ endif
 RC=rc
 
 CPPUNIT = $(APSIM)\..\BuildLibraries\cppunit-1.13.2
-LIBXML = $(APSIM)\..\BuildLibraries\libxml2-2.7.8.win32
+LIBXML = $(APSIM)\..\BuildLibraries\libxml2-2.9.4.win32
 ICONV = $(APSIM)\..\BuildLibraries\libiconv-1.11.1.win32
 
 DEFINES := /D "__WIN32__" /D "WIN32" /D "_WINDOWS" /D "_USRDLL" $(DEFINES)
