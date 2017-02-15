@@ -43,26 +43,22 @@ public class Target
                     return(Status_t.Fail);
                 //{ anyRunning = false; anyStarted = true; } // If there's been a failed dependency, we won't bother finishing the others
 
+                // Go through the list of jobs
                 foreach (IJob J in Jobs)
                 {
                     Status_t jStatus = J.Status;
                     if (jStatus != Status_t.Waiting)
                         anyStarted = true;
-                    if (J.CanRun)
-                    {
-                        anyWaiting = true;
-                        return Status_t.Running;
-                    }
                     if (J.IsRunning)
                     {
                         anyRunning = true;
-                        return Status_t.Running;
+                        if (jStatus == Status_t.Running)
+                           return Status_t.Running;
                     }
+                    else if (J.CanRun)
+                        anyWaiting = true;
                     if (jStatus == Status_t.Fail)
-                    {
                         allPassed = false;
-                        return Status_t.Fail;
-                    }
                 }
                 return (!anyStarted ? Status_t.Waiting :
                         (anyRunning | anyWaiting ? Status_t.Running :
