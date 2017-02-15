@@ -49,11 +49,20 @@ public class Target
                     if (jStatus != Status_t.Waiting)
                         anyStarted = true;
                     if (J.CanRun)
+                    {
                         anyWaiting = true;
+                        return Status_t.Running;
+                    }
                     if (J.IsRunning)
+                    {
                         anyRunning = true;
+                        return Status_t.Running;
+                    }
                     if (jStatus == Status_t.Fail)
+                    {
                         allPassed = false;
+                        return Status_t.Fail;
+                    }
                 }
                 return (!anyStarted ? Status_t.Waiting :
                         (anyRunning | anyWaiting ? Status_t.Running :
