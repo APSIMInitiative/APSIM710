@@ -78,7 +78,10 @@ class ApsimToSimExe
         else
             {
             bool factorialActive = XmlHelper.Value(Apsim.FactorComponent.ContentsAsXML, "active") == "1";
-            if (factorialActive)
+            if (SimName.Contains("@factorial="))
+                foreach (string simFileName in Factor.CreateSimFiles(Apsim, new string[] { SimName }, Directory.GetCurrentDirectory()))
+                    Console.Error.WriteLine("Written " + simFileName);
+            else if (factorialActive)
             {
                 List<string> simulationPaths = new List<string>();
                 ApsimFile.ApsimFile.ExpandSimsToRun(Apsim.RootComponent, ref simulationPaths);
@@ -110,9 +113,6 @@ class ApsimToSimExe
                     }
                 }
             }
-            else if (SimName.Contains("@factorial="))
-                foreach (string simFileName in Factor.CreateSimFiles(Apsim, new string[] { SimName }, Directory.GetCurrentDirectory()))
-                    Console.Error.WriteLine("Written " + simFileName);
             else
                 FindSimsAndConvert(Apsim.RootComponent, SimName);
         } 
