@@ -2326,27 +2326,50 @@ subroutine surfom_prop_up ()
    new_standing = tot_mass * standing_fract
    new_lying = tot_mass - new_standing
 
-   if(old_standing .gt. 0.0 .and. old_lying .gt. 0) then
+   if(old_standing .gt. 0.0 .and. old_lying .gt. 0.0) then
       standing_change_fract = divide(new_standing, old_standing, 0.0)
       lying_change_fract = divide(new_lying, old_lying, 0.0)
-   elseif (old_standing .le. 0.0) then
-      lying_change_fract = divide(new_lying, old_lying, 0.0)
-      standing_change_fract = 1- lying_change_fract
-   elseif (old_lying .le. 0.0) then
-      standing_change_fract = divide(new_standing, old_standing, 0.0)
-      lying_change_fract = 1- standing_change_fract
-   endif
+      
+      g%SurfOM(SOMNo)%Standing(1:MaxFr)%amount = (g%SurfOM(SOMNo)%Standing(1:MaxFr)%amount) * standing_change_fract
+      g%SurfOM(SOMNo)%Standing(1:MaxFr)%C = (g%SurfOM(SOMNo)%Standing(1:MaxFr)%C) * standing_change_fract
+      g%SurfOM(SOMNo)%Standing(1:MaxFr)%N = (g%SurfOM(SOMNo)%Standing(1:MaxFr)%N) * standing_change_fract
+      g%SurfOM(SOMNo)%Standing(1:MaxFr)%P = (g%SurfOM(SOMNo)%Standing(1:MaxFr)%P) * standing_change_fract
+      g%SurfOM(SOMNo)%Standing(1:MaxFr)%AshAlk = (g%SurfOM(SOMNo)%Standing(1:MaxFr)%AshAlk) * standing_change_fract
+      g%SurfOM(SOMNo)%Lying(1:MaxFr)%amount = (g%SurfOM(SOMNo)%Lying(1:MaxFr)%amount) * lying_change_fract
+      g%SurfOM(SOMNo)%Lying(1:MaxFr)%C = (g%SurfOM(SOMNo)%Lying(1:MaxFr)%C) * lying_change_fract
+      g%SurfOM(SOMNo)%Lying(1:MaxFr)%N = (g%SurfOM(SOMNo)%Lying(1:MaxFr)%N) * lying_change_fract
+      g%SurfOM(SOMNo)%Lying(1:MaxFr)%P = (g%SurfOM(SOMNo)%Lying(1:MaxFr)%P) * lying_change_fract
+      g%SurfOM(SOMNo)%Lying(1:MaxFr)%AshAlk = (g%SurfOM(SOMNo)%Lying(1:MaxFr)%AshAlk) * lying_change_fract
 
-   g%SurfOM(SOMNo)%Standing(1:MaxFr)%amount = (g%SurfOM(SOMNo)%Standing(1:MaxFr)%amount) * standing_change_fract
-   g%SurfOM(SOMNo)%Standing(1:MaxFr)%C = (g%SurfOM(SOMNo)%Standing(1:MaxFr)%C) * standing_change_fract
-   g%SurfOM(SOMNo)%Standing(1:MaxFr)%N = (g%SurfOM(SOMNo)%Standing(1:MaxFr)%N) * standing_change_fract
-   g%SurfOM(SOMNo)%Standing(1:MaxFr)%P = (g%SurfOM(SOMNo)%Standing(1:MaxFr)%P) * standing_change_fract
-   g%SurfOM(SOMNo)%Standing(1:MaxFr)%AshAlk = (g%SurfOM(SOMNo)%Standing(1:MaxFr)%AshAlk) * standing_change_fract
-   g%SurfOM(SOMNo)%Lying(1:MaxFr)%amount = (g%SurfOM(SOMNo)%Lying(1:MaxFr)%amount) * lying_change_fract
-   g%SurfOM(SOMNo)%Lying(1:MaxFr)%C = (g%SurfOM(SOMNo)%Lying(1:MaxFr)%C) * lying_change_fract
-   g%SurfOM(SOMNo)%Lying(1:MaxFr)%N = (g%SurfOM(SOMNo)%Lying(1:MaxFr)%N) * lying_change_fract
-   g%SurfOM(SOMNo)%Lying(1:MaxFr)%P = (g%SurfOM(SOMNo)%Lying(1:MaxFr)%P) * lying_change_fract
-   g%SurfOM(SOMNo)%Lying(1:MaxFr)%AshAlk = (g%SurfOM(SOMNo)%Lying(1:MaxFr)%AshAlk) * lying_change_fract
+   elseif(old_lying .eq. 0.0) then
+      standing_change_fract = divide(new_standing, old_standing, 0.0)
+      
+      g%SurfOM(SOMNo)%Standing(1:MaxFr)%amount = (g%SurfOM(SOMNo)%Standing(1:MaxFr)%amount) * standing_change_fract
+      g%SurfOM(SOMNo)%Standing(1:MaxFr)%C = (g%SurfOM(SOMNo)%Standing(1:MaxFr)%C) * standing_change_fract
+      g%SurfOM(SOMNo)%Standing(1:MaxFr)%N = (g%SurfOM(SOMNo)%Standing(1:MaxFr)%N) * standing_change_fract
+      g%SurfOM(SOMNo)%Standing(1:MaxFr)%P = (g%SurfOM(SOMNo)%Standing(1:MaxFr)%P) * standing_change_fract
+      g%SurfOM(SOMNo)%Standing(1:MaxFr)%AshAlk = (g%SurfOM(SOMNo)%Standing(1:MaxFr)%AshAlk) * standing_change_fract
+      g%SurfOM(SOMNo)%Lying(1:MaxFr)%amount = (g%SurfOM(SOMNo)%Standing(1:MaxFr)%amount) * (1-standing_change_fract)
+      g%SurfOM(SOMNo)%Lying(1:MaxFr)%C = (g%SurfOM(SOMNo)%Standing(1:MaxFr)%C) * (1-standing_change_fract)
+      g%SurfOM(SOMNo)%Lying(1:MaxFr)%N = (g%SurfOM(SOMNo)%Standing(1:MaxFr)%N) * (1-standing_change_fract)
+      g%SurfOM(SOMNo)%Lying(1:MaxFr)%P = (g%SurfOM(SOMNo)%Standing(1:MaxFr)%P) * (1-standing_change_fract)
+      g%SurfOM(SOMNo)%Lying(1:MaxFr)%AshAlk = (g%SurfOM(SOMNo)%Standing(1:MaxFr)%AshAlk) * (1-standing_change_fract)
+
+   else
+      lying_change_fract = divide(new_lying, old_lying, 0.0)
+      
+      g%SurfOM(SOMNo)%Standing(1:MaxFr)%amount = (g%SurfOM(SOMNo)%Lying(1:MaxFr)%amount) * (1-lying_change_fract)
+      g%SurfOM(SOMNo)%Standing(1:MaxFr)%C = (g%SurfOM(SOMNo)%Lying(1:MaxFr)%C) * (1-lying_change_fract)
+      g%SurfOM(SOMNo)%Standing(1:MaxFr)%N = (g%SurfOM(SOMNo)%Lying(1:MaxFr)%N) * (1-lying_change_fract)
+      g%SurfOM(SOMNo)%Standing(1:MaxFr)%P = (g%SurfOM(SOMNo)%Lying(1:MaxFr)%P) * (1-lying_change_fract)
+      g%SurfOM(SOMNo)%Standing(1:MaxFr)%AshAlk = (g%SurfOM(SOMNo)%Lying(1:MaxFr)%AshAlk) * (1-lying_change_fract)
+      g%SurfOM(SOMNo)%Lying(1:MaxFr)%amount = (g%SurfOM(SOMNo)%Lying(1:MaxFr)%amount) * lying_change_fract
+      g%SurfOM(SOMNo)%Lying(1:MaxFr)%C = (g%SurfOM(SOMNo)%Lying(1:MaxFr)%C) * lying_change_fract
+      g%SurfOM(SOMNo)%Lying(1:MaxFr)%N = (g%SurfOM(SOMNo)%Lying(1:MaxFr)%N) * lying_change_fract
+      g%SurfOM(SOMNo)%Lying(1:MaxFr)%P = (g%SurfOM(SOMNo)%Lying(1:MaxFr)%P) * lying_change_fract
+      g%SurfOM(SOMNo)%Lying(1:MaxFr)%AshAlk = (g%SurfOM(SOMNo)%Lying(1:MaxFr)%AshAlk) * lying_change_fract
+               
+   endif
 
    ! Report Additions
    if (p%report_additions .eq. 'yes') then
