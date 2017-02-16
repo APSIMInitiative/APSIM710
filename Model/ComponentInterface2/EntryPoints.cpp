@@ -11,15 +11,15 @@
 
 using namespace std;
 
-unsigned CreateComponent(ScienceAPI2* scienceAPI, CMPComponentInterface* componentInterface, const char* dllFileName, void* dllHandle);
-void DeleteComponent(unsigned component, void* dllHandle);
+uintptr_t CreateComponent(ScienceAPI2* scienceAPI, CMPComponentInterface* componentInterface, const char* dllFileName, void* dllHandle);
+void DeleteComponent(uintptr_t component, void* dllHandle);
 
 struct Bit
    {
    CMPComponentInterface* componentInterface;
    ScienceAPI2Impl* scienceAPI;
    void* dllHandle;
-   unsigned component;
+   uintptr_t component;
 
    ~Bit()
       {
