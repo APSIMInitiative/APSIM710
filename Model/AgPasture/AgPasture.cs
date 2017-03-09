@@ -7381,6 +7381,14 @@ public class AgPasture
                 result[s] = mySpecies[s].myGlfGeneric;
             return result;
         }
+        set
+        {
+            if (value.Length != NumSpecies)
+                throw new Exception(" Number of values given for GlfGeneric do not match the number of species");
+
+            for (int s = 0; s < NumSpecies; s++)
+                mySpecies[s].myGlfGeneric = value[s];
+        }
     }
 
     /// <summary>Growth limiting factor due to water deficit, for each species</summary>
@@ -7440,6 +7448,14 @@ public class AgPasture
             for (int s = 0; s < NumSpecies; s++)
                 result[s] = mySpecies[s].myGlfSoilFertility;
             return result;
+        }
+        set
+        {
+            if (value.Length != NumSpecies)
+                throw new Exception(" Number of values given for GlfSoilFertility do not match the number of species");
+
+            for (int s = 0; s < NumSpecies; s++)
+                mySpecies[s].myGlfSoilFertility = value[s];
         }
     }
 

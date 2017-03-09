@@ -2667,21 +2667,25 @@ public class Species
         double[] result = new double[nLayers];
 
         // Get the total weight over the root zone, first layers totally within the root zone
-        for (int layer = 0; layer < layerBottomRootZone; layer++)
-        {
-            cumProportion += targetRootAllocation[layer];
-            topLayersDepth += dlayer[layer];
-        }
-        // Then consider layer at the bottom of the root zone
-        double layerFrac = Math.Min(1.0, (myRootDepthMaximum - topLayersDepth) / (rootDepth - topLayersDepth));
-        cumProportion += targetRootAllocation[layerBottomRootZone] * Math.Min(1.0, Math.Max(0.0, layerFrac));
-
-        // Normalise the weights to be a fraction, adds up to one
-        if (cumProportion > Epsilon)
+        if (layerBottomRootZone >= 0)
         {
             for (int layer = 0; layer < layerBottomRootZone; layer++)
-                result[layer] = targetRootAllocation[layer] / cumProportion;
-            result[layerBottomRootZone] = targetRootAllocation[layerBottomRootZone] * layerFrac / cumProportion;
+            {
+                cumProportion += targetRootAllocation[layer];
+                topLayersDepth += dlayer[layer];
+            }
+
+            // Then consider layer at the bottom of the root zone
+            double layerFrac = Math.Min(1.0, (myRootDepthMaximum - topLayersDepth) / (rootDepth - topLayersDepth));
+            cumProportion += targetRootAllocation[layerBottomRootZone] * Math.Min(1.0, Math.Max(0.0, layerFrac));
+
+            // Normalise the weights to be a fraction, adds up to one
+            if (cumProportion > Epsilon)
+            {
+                for (int layer = 0; layer < layerBottomRootZone; layer++)
+                    result[layer] = targetRootAllocation[layer] / cumProportion;
+                result[layerBottomRootZone] = targetRootAllocation[layerBottomRootZone] * layerFrac / cumProportion;
+            }
         }
 
         return result;
