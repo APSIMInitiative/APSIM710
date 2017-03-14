@@ -1,4 +1,37 @@
-<folder version="36" creator="Apsim 7.5-r3212" name="untitled">
+<folder version="36" creator="Apsim 7.8-r4013" name="untitled">
+  <RegressionGraph name="Predicted vs Observed Biomass">
+    <Legend>
+      <CheckedTitles> Predicted/Observed</CheckedTitles>
+      <CheckedTitles>Regression line</CheckedTitles>
+      <CheckedTitles>1:1 line</CheckedTitles>
+    </Legend>
+    <memo>
+	
+	
+	Note: If you have Observered data for some samplings but not others, then in the .out file (for the observations) you can use * or ?  for those missing values instead of using 0
+	
+	This allows you to tell the difference between data you did not collect, and data that actually had a value of 0
+	
+	Data with a * or ? is not plotted on the graph (hence neither is its predicted value) whereas data with 0 is.
+	</memo>
+    <Plot>
+      <SeriesType>No line</SeriesType>
+      <PointType>Circle</PointType>
+      <colour>
+      </colour>
+      <X>Observed Biomass</X>
+      <Y>Predicted Biomass</Y>
+      <GDPredObs name="PredictedObserved">
+        <FieldsToMatch>Date</FieldsToMatch>
+        <FieldsToMatch>Title</FieldsToMatch>
+        <GDApsimFileReader name="Observed">
+          <FileName>Observed\Gatton2006.txt</FileName>
+          <FileName>Observed\Gatton2009Biomass.txt</FileName>
+        </GDApsimFileReader>
+        <GDApsimFileReader name="Predicted" />
+      </GDPredObs>
+    </Plot>
+  </RegressionGraph>
   <folder name="Lawes2006">
     <simulation name="Lawes06P1Wet">
       <clock>
@@ -499,36 +532,6 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
           </Graph>
         </outputfile>
         <broccoli />
-        <outputfile name="Final">
-          <filename name="filename" output="yes">Lawes06P1Wet Final.out</filename>
-          <title>Lawes06P1Wet Final</title>
-          <variables name="FinalVariables">
-            <variable array="?" description="sowing date">broccoli.sowing_date</variable>
-            <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy</variable>
-            <variable array="?" description="Days from sowing to floral initiation">broccoli.floral_initiation_das</variable>
-            <variable array="?" description="Days from sowing to maturity">broccoli.maturity_das</variable>
-            <variable array="?" description="Green Biomass weight">broccoli.green_biomass_wt</variable>
-            <variable array="?" description="Weight of pods">broccoli.FloretGreenWt</variable>
-            <variable array="?" description="leaf areas">broccoli.leaf_area_max</variable>
-            <variable>broccoli.stage</variable>
-            <variable>broccoli.cumvd</variable>
-            <variable>broccoli.TTAfterSowing</variable>
-            <variable array="?" description="Plant stage">broccoli.swdef_photo</variable>
-            <variable array="?" description="Cumulative vernalisation">broccoli.nfact_photo</variable>
-            <variable array="?" description="Thermal time spent in each crop stage">broccoli.temp_stress_photo</variable>
-            <variable array="?" description="Soil water deficit in photosynthesis">Irrigation.irrigation</variable>
-            <variable array="?" description="N factor for photosynthesis">broccoli.dlt_leaf_no</variable>
-            <variable array="?" description="Temperature Stress in photosynthesis">broccoli.dlt_node_no</variable>
-            <variable array="?" description="Irrigation entering the profile (mm)">broccoli.final_leaf_no</variable>
-            <variable array="?" description="Change in number of leaves">broccoli.emergence_das</variable>
-            <variable array="?" description="Change in number of nodes">broccoli.node_no_sen</variable>
-            <variable array="?" description="Final number of leaves on main stem">broccoli.node_no_fx</variable>
-            <variable array="?" description="Days from sowing to emergence">sw_dep()</variable>
-          </variables>
-          <events name="FinalVariables Events">
-            <event>broccoli.harvesting</event>
-          </events>
-        </outputfile>
         <Soil name="DPIGatton">
           <Comment type="multiedit" description="Comments">oc and ph estimated</Comment>
           <irrigation_layer>2</irrigation_layer>
@@ -1138,12 +1141,6 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
           <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/outputfile/My Variables Events" />
         </outputfile>
         <broccoli shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/broccoli" />
-        <outputfile name="Final">
-          <filename output="yes">Lawes06P1Mild Final.out</filename>
-          <title>Lawes06P1Mild Final</title>
-          <variables name="FinalVariables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final/FinalVariables" />
-          <events name="FinalVariables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final/FinalVariables Events" />
-        </outputfile>
         <Soil name="DPIGatton" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/DPIGatton">
           <Water shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/DPIGatton/Water">
             <SoilCrop name="SweetCorn" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/DPIGatton/Water/SweetCorn" />
@@ -1520,12 +1517,6 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
           <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/outputfile/My Variables Events" />
         </outputfile>
         <broccoli shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/broccoli" />
-        <outputfile name="Final">
-          <filename output="yes">Lawes06P1Severe Final.out</filename>
-          <title>Lawes06P1Severe Final</title>
-          <variables name="FinalVariables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final/FinalVariables" />
-          <events name="FinalVariables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final/FinalVariables Events" />
-        </outputfile>
         <Soil name="DPIGatton" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/DPIGatton">
           <Water shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/DPIGatton/Water">
             <SoilCrop name="SweetCorn" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/DPIGatton/Water/SweetCorn" />
@@ -1930,12 +1921,6 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
           <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/outputfile/My Variables Events" />
         </outputfile>
         <broccoli shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/broccoli" />
-        <outputfile name="Final">
-          <filename output="yes">Lawes06P2Wet Final.out</filename>
-          <title>Lawes06P2Wet Final</title>
-          <variables name="FinalVariables" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final/FinalVariables" />
-          <events name="FinalVariables Events" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/Final/FinalVariables Events" />
-        </outputfile>
         <Soil name="DPIGatton" shortcut="/untitled/Lawes2006/Lawes06P1Wet/Paddock/DPIGatton">
           <Sample name="Initial water">
             <Date type="date" description="Sample date:" />
@@ -2320,12 +2305,6 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
           <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/outputfile/My Variables Events" />
         </outputfile>
         <broccoli shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/broccoli" />
-        <outputfile name="Final">
-          <filename output="yes">Lawes06P2Mild Final.out</filename>
-          <title>Lawes06P2Mild Final</title>
-          <variables name="FinalVariables" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Final/FinalVariables" />
-          <events name="FinalVariables Events" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Final/FinalVariables Events" />
-        </outputfile>
         <Soil name="DPIGatton" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/DPIGatton">
           <Water shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/DPIGatton/Water">
             <SoilCrop name="SweetCorn" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/DPIGatton/Water/SweetCorn" />
@@ -2694,12 +2673,6 @@ SW60 = sw_dep(1) + sw_dep(2) + sw_dep(3)
           <events name="My Variables Events" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/outputfile/My Variables Events" />
         </outputfile>
         <broccoli shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/broccoli" />
-        <outputfile name="Final">
-          <filename output="yes">Lawes06P2Severe Final.out</filename>
-          <title>Lawes06P2Severe Final</title>
-          <variables name="FinalVariables" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Final/FinalVariables" />
-          <events name="FinalVariables Events" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/Final/FinalVariables Events" />
-        </outputfile>
         <Soil name="DPIGatton" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/DPIGatton">
           <Water shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/DPIGatton/Water">
             <SoilCrop name="SweetCorn" shortcut="/untitled/Lawes2006/Lawes06P2Wet/Paddock/DPIGatton/Water/SweetCorn" />

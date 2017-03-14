@@ -1,4 +1,4 @@
-<folder version="36" creator="Apsim 7.8-r3981" name="Simulations">
+<folder version="36" creator="Apsim 7.8-r3918" name="Simulations">
   <simulation name="No2DairyNZ8292">
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">30/06/1982</start_date>
@@ -5005,4 +5005,36 @@ elseif (year &gt;= 2001) and (year &lt;= 2004) then
       </outputfile>
     </area>
   </simulation>
+  <RegressionGraph name="Predicted vs Observed HarvestedWt">
+    <Legend>
+      <CheckedTitles> Predicted/Observed</CheckedTitles>
+      <CheckedTitles>Regression line</CheckedTitles>
+      <CheckedTitles>1:1 line</CheckedTitles>
+    </Legend>
+    <memo>
+	
+	
+	Note: If you have Observered data for some samplings but not others, then in the .out file (for the observations) you can use * or ?  for those missing values instead of using 0
+	
+	This allows you to tell the difference between data you did not collect, and data that actually had a value of 0
+	
+	Data with a * or ? is not plotted on the graph (hence neither is its predicted value) whereas data with 0 is.
+	</memo>
+    <Plot>
+      <SeriesType>No line</SeriesType>
+      <PointType>Circle</PointType>
+      <colour>
+      </colour>
+      <X>Observed HarvestedWt</X>
+      <Y>Predicted HarvestedWt</Y>
+      <GDPredObs name="PredictedObserved">
+        <FieldsToMatch>Date</FieldsToMatch>
+        <FieldsToMatch>treat</FieldsToMatch>
+        <GDApsimFileReader name="Observed">
+          <FileName>WinchHarvest1966_Obs.txt</FileName>
+        </GDApsimFileReader>
+        <GDApsimFileReader name="Predicted" />
+      </GDPredObs>
+    </Plot>
+  </RegressionGraph>
 </folder>

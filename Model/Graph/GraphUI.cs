@@ -767,6 +767,11 @@ namespace Graph
             Chart.Export.Data.Text.IncludeHeader = true;
             Chart.Export.Data.Text.CopyToClipboard();
         }
+        public override void ExportData(string exportFolder)
+        {
+            Chart.Export.Data.Excel.IncludeHeader = true;
+            Chart.Export.Data.Text.Save(Path.Combine(exportFolder, Chart.Text + ".txt"));
+        }
 
         private void FormatDateAxis(bool Normal)
         {

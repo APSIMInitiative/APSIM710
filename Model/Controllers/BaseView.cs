@@ -140,5 +140,9 @@ namespace Controllers
 		{
 		}
 
-	}
+        public virtual void ExportData(string exportFolder)
+        {
+        }
+
+    }
 }

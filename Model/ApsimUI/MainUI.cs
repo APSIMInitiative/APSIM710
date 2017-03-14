@@ -35,6 +35,8 @@ namespace APSIMUI
         private ExplorerUI ToolboxExplorer;
         private int ToolBoxSplitterPoint;
         private ToolStripButton CurrentToolBoxButton = null;
+        bool DoPredictedObserved = false;
+
         #region "Constructor / Destructor / Main"
 
         [System.STAThread()]
@@ -203,7 +205,13 @@ namespace APSIMUI
                                 ExportDirectory = Args[2];
                                 ExportExtension = Args[3];
                                 SimulationController.isExporting = true;
-                                break; 
+                                break;
+                            }
+                            else if (Arg == "PredictedObserved")
+                            {
+                                ExportDirectory = Args[2];
+                                DoPredictedObserved = true;
+                                break;
                             }
                             else
                             {
@@ -233,9 +241,14 @@ namespace APSIMUI
                     }
 
                     // If we have an export file name then do an export.
-                    if (!string.IsNullOrEmpty(ExportDirectory))
+                    if (!string.IsNullOrEmpty(ExportDirectory) && ExportExtension != string.Empty)
                     {
                         Actions.BaseActions.ExportAll(SimulationController, SimulationController.ApsimData.RootComponent, ExportDirectory, ExportExtension);
+                        Close();
+                    }
+                    else if (DoPredictedObserved)
+                    {
+                        Actions.BaseActions.DoPredictedObserved(SimulationController, SimulationController.ApsimData.RootComponent, ExportDirectory);
                         Close();
                     }
                     else
@@ -287,37 +300,40 @@ namespace APSIMUI
 
         private void OnMainFormClosing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            // User is closing down - save our work.
-            e.Cancel = !SimulationController.FileSaveAfterPrompt();
-            if (!e.Cancel)
+            if (!DoPredictedObserved)
             {
-                //on closing save the current window state (normal, minimised, maximized) and save the position and height and width of window, 
-                //to apsim.xml (see between <ApsimUI> tags)
-                try
+                // User is closing down - save our work.
+                e.Cancel = !SimulationController.FileSaveAfterPrompt();
+                if (!e.Cancel)
                 {
-                    //don't save the state if the window was minimised when it was closed. 
-                    if (!(this.WindowState == (FormWindowState)1))
+                    //on closing save the current window state (normal, minimised, maximized) and save the position and height and width of window, 
+                    //to apsim.xml (see between <ApsimUI> tags)
+                    try
                     {
-                        Configuration.Instance.SetSetting("windowstate", Convert.ToString((int)this.WindowState));
+                        //don't save the state if the window was minimised when it was closed. 
+                        if (!(this.WindowState == (FormWindowState)1))
+                        {
+                            Configuration.Instance.SetSetting("windowstate", Convert.ToString((int)this.WindowState));
+                        }
+                        //must be sensible values (non negative)    
+                        if ((this.Top >= 0) && (this.Left >= 0) && (this.Width > 0) && (this.Height > 0))
+                        {
+                            Configuration.Instance.SetSetting("top", Convert.ToString(this.Top));
+                            Configuration.Instance.SetSetting("left", Convert.ToString(this.Left));
+                            Configuration.Instance.SetSetting("width", Convert.ToString(this.Width));
+                            Configuration.Instance.SetSetting("height", Convert.ToString(this.Height));
+                        }
                     }
-                    //must be sensible values (non negative)    
-                    if ((this.Top >= 0) && (this.Left >= 0) && (this.Width > 0) && (this.Height > 0))
+                    catch (System.Exception)
                     {
-                        Configuration.Instance.SetSetting("top", Convert.ToString(this.Top));
-                        Configuration.Instance.SetSetting("left", Convert.ToString(this.Left));
-                        Configuration.Instance.SetSetting("width", Convert.ToString(this.Width));
-                        Configuration.Instance.SetSetting("height", Convert.ToString(this.Height));
                     }
-                }
-                catch (System.Exception)
-                {
-                }
 
-                if ((ToolboxExplorer != null) && ToolboxExplorer.Visible && !ToolboxController.ApsimData.IsReadOnly)
-                {
-                    ToolboxController.ApsimData.Save();
+                    if ((ToolboxExplorer != null) && ToolboxExplorer.Visible && !ToolboxController.ApsimData.IsReadOnly)
+                    {
+                        ToolboxController.ApsimData.Save();
+                    }
+                    ApsimRunToolStrip.Instance.OnStop();
                 }
-                ApsimRunToolStrip.Instance.OnStop();
             }
         }
         private void OnDirtyChanged(bool IsDirty)

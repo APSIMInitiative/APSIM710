@@ -335,10 +335,24 @@ namespace Actions
             graphOrder.Add(NewFileName);
         }
 
-		#endregion
+        #endregion
 
+        public static void DoPredictedObserved(BaseController controller, Component rootComponent, string exportFolder)
+        {
+            Contr = controller;
 
-		public static void Cut(BaseController Controller)
+            Application.DoEvents();
+
+            foreach (ApsimFile.Component child in rootComponent.ChildNodes)
+            {
+                if (child.Enabled && child.Type == "RegressionGraph")
+                {
+                    controller.SelectedPath = child.FullPath;
+                    controller.Explorer.CurrentView.ExportData(exportFolder);
+                }
+            }
+        }
+        public static void Cut(BaseController Controller)
 		{
 			// --------------------------------------------------------
 			// Perform a clipboard cut operation
