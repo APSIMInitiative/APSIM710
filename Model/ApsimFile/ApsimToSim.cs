@@ -16,14 +16,14 @@ public class ApsimToSim
     /// .sim file that was written. Will throw on error.
     /// </summary>
     /// 
-    public static string WriteSimFile(Component Child)
+    public static string WriteSimFile(Component Child, bool dontWriteSimFiles)
     {
-        return WriteSimFile(Child, Directory.GetCurrentDirectory(), Configuration.getArchitecture());
+        return WriteSimFile(Child, Directory.GetCurrentDirectory(), Configuration.getArchitecture(), dontWriteSimFiles);
     }
 
-    public static string WriteSimFile(Component Child, Configuration.architecture arch)
+    public static string WriteSimFile(Component Child, Configuration.architecture arch, bool dontWriteSimFiles)
     {
-        return WriteSimFile(Child, Directory.GetCurrentDirectory(), arch);
+        return WriteSimFile(Child, Directory.GetCurrentDirectory(), arch, dontWriteSimFiles);
     }
 
     public static string GetSimText(Component Child, Configuration.architecture arch)
@@ -56,12 +56,15 @@ public class ApsimToSim
         return SimXML;
     }
 
-    private static string WriteSimFile(Component Child, string FolderName, Configuration.architecture arch)
+    private static string WriteSimFile(Component Child, string FolderName, Configuration.architecture arch, bool dontWriteSimFiles)
     {
         string SimFileName = FolderName + Path.DirectorySeparatorChar + Child.Name + ".sim";
-        StreamWriter fp = new StreamWriter(SimFileName);
-        GetSimDoc(Child, arch).Save(fp);
-        fp.Close();
+        if (!dontWriteSimFiles)
+        {
+            StreamWriter fp = new StreamWriter(SimFileName);
+            GetSimDoc(Child, arch).Save(fp);
+            fp.Close();
+        }
         return Path.GetFullPath(SimFileName);
     }
 

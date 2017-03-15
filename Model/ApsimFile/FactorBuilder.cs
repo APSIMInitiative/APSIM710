@@ -589,13 +589,14 @@ namespace ApsimFile
 
         private static ApsimFile CreateCopy(ApsimFile apsimfile)
         {
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(apsimfile.RootComponent.FullXML());
-            XmlHelper.SetAttribute(doc.DocumentElement, "version", APSIMChangeTool.CurrentVersion.ToString());
+            return apsimfile.Clone();
+            //XmlDocument doc = new XmlDocument();
+            //doc.LoadXml(apsimfile.RootComponent.FullXML());
+            //XmlHelper.SetAttribute(doc.DocumentElement, "version", APSIMChangeTool.CurrentVersion.ToString());
 
-            ApsimFile tmpFile = new ApsimFile();
-            tmpFile.New(doc.OuterXml);
-            return tmpFile;
+            //ApsimFile tmpFile = new ApsimFile();
+            //tmpFile.New(doc.OuterXml);
+            //return tmpFile;
         }
         public static List<string> CalcFactorialList(ApsimFile _F, string SimulationPath)
         {
@@ -812,7 +813,7 @@ namespace ApsimFile
             if (destFolder != "" && Directory.Exists(destFolder))
                 Directory.SetCurrentDirectory(destFolder);
 
-            string SimFileName = ApsimToSim.WriteSimFile(Simulation, Configuration.getArchitecture());
+            string SimFileName = ApsimToSim.WriteSimFile(Simulation, Configuration.getArchitecture(), false);
 
             Directory.SetCurrentDirectory(currDirectory);
 

@@ -9,6 +9,7 @@ using CSGeneral;
 using System.Xml;
 using ApsimFile;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 class ApsimToSimExe
 {
@@ -41,9 +42,10 @@ class ApsimToSimExe
 
             if (Macros.ContainsKey("Simulation"))
                 simName = Macros["Simulation"];
+            bool dontWriteSimFiles = Macros.ContainsKey("DontWriteSimFiles");
 
             ApsimToSimExe SimCreator = new ApsimToSimExe();
-            SimCreator.ConvertApsimToSim(ApsimFileName, simName);
+            SimCreator.ConvertApsimToSim(ApsimFileName, simName, dontWriteSimFiles);
         }
         catch (Exception err)
         {
@@ -53,7 +55,7 @@ class ApsimToSimExe
         return 0;
     }
 
-    private void ConvertApsimToSim(string ApsimFileName, string SimName)
+    private void ConvertApsimToSim(string ApsimFileName, string SimName, bool dontWriteSimFiles)
     {
         //if the filename is not 'rooted' then assume that the user intends to use the current working directory as the root
         ApsimFileName = ApsimFileName.Replace("\"", "");
@@ -74,7 +76,7 @@ class ApsimToSimExe
         Apsim.OpenFile(ApsimFileName);
 
         if (Apsim.FactorComponent == null )
-			FindSimsAndConvert(Apsim.RootComponent, SimName);
+			FindSimsAndConvert(Apsim.RootComponent, SimName, dontWriteSimFiles);
         else
             {
             bool factorialActive = XmlHelper.Value(Apsim.FactorComponent.ContentsAsXML, "active") == "1";
@@ -91,34 +93,38 @@ class ApsimToSimExe
                     Component Simulation = Apsim.Find(simXmlPath);
                     List<string> allFactorials = Factor.CalcFactorialList(Apsim, simXmlPath);
                     int totalCount = allFactorials.Count;
-                    for (int instanceCount = 1; instanceCount <= totalCount; instanceCount++)
-                    {
-                        string rootName = Simulation.Name;
-                        if (b.SaveExtraInfoInFilename)
-                            rootName += ";" + allFactorials[instanceCount - 1];
-                        else
+                    Parallel.For(1, totalCount, instanceCount =>
+                    //for (int instanceCount = 1; instanceCount < totalCount; instanceCount++)
                         {
-                            //write a spacer to list sims in order eg: 01 or 001 or 0001 depending on count
-                            string sPad = "";
-                            double tot = Math.Floor(Math.Log10(totalCount) + 1);
-                            double file = Math.Floor(Math.Log10(instanceCount) + 1);
-                            for (int i = 0; i < (int)(tot - file); ++i)
-                                sPad += "0";
+                            string rootName = Simulation.Name;
+                            if (b.SaveExtraInfoInFilename)
+                                rootName += ";" + allFactorials[instanceCount - 1];
+                            else
+                            {
+                                //write a spacer to list sims in order eg: 01 or 001 or 0001 depending on count
+                                string sPad = "";
+                                double tot = Math.Floor(Math.Log10(totalCount) + 1);
+                                double file = Math.Floor(Math.Log10(instanceCount) + 1);
+                                for (int i = 0; i < (int)(tot - file); ++i)
+                                    sPad += "0";
 
-                            rootName += "_" + sPad + instanceCount;
-                        }
+                                rootName += "_" + sPad + instanceCount;
+                            }
 
-                        string fullSimPath = simXmlPath + "@factorial=" + allFactorials[instanceCount - 1];
-                        Factor.CreateSimFiles(Apsim, new string[] { fullSimPath }, Directory.GetCurrentDirectory());
-                    }
+                            string fullSimPath = simXmlPath + "@factorial=" + allFactorials[instanceCount - 1];
+                            if (dontWriteSimFiles)
+                                Console.WriteLine("Written " + fullSimPath);
+                            else
+                                Factor.CreateSimFiles(Apsim, new string[] { fullSimPath }, Directory.GetCurrentDirectory());
+                        });
                 }
             }
             else
-                FindSimsAndConvert(Apsim.RootComponent, SimName);
+                FindSimsAndConvert(Apsim.RootComponent, SimName, dontWriteSimFiles);
         } 
     }
 
-    private void FindSimsAndConvert(ApsimFile.Component Apsim, string SimPath)
+    private void FindSimsAndConvert(ApsimFile.Component Apsim, string SimPath, bool dontWriteSimFiles)
     {
         // Iterate through all nested simulations and convert them to
         // .sim format if necessary.
@@ -128,11 +134,11 @@ class ApsimToSimExe
             {
 				if (SimPath == "" || string.Equals(Child.FullPath, SimPath, StringComparison.CurrentCultureIgnoreCase))
                 {
-                    string SimFileName = ApsimToSim.WriteSimFile(Child);
+                    string SimFileName = ApsimToSim.WriteSimFile(Child, dontWriteSimFiles);
 					Console.Error.WriteLine("Written " + SimFileName);
                 }
             } else if (Child.Type.ToLower() == "folder") 
-                FindSimsAndConvert(Child, SimPath);
+                FindSimsAndConvert(Child, SimPath, dontWriteSimFiles);
         }
     }
 }

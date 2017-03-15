@@ -70,6 +70,7 @@ namespace ApsimFile
                     return i;
             return -1;
         }
+        internal Component() { }
         internal Component(ApsimFile File, Component Parent)
         {
             this.MyFile = File;
@@ -124,7 +125,7 @@ namespace ApsimFile
             // this recursively for all children.
             //  Some "compound" objects shouldnt be resolved - eg. outputfile, area, but their children should be
             // ------------------------------------------------------
-            if (TempShortCutName != "") 
+            if (TempShortCutName != "")
             {
                 MyShortCutTo = MyFile.Find(TempShortCutName);
                 TempShortCutName = "";
@@ -152,6 +153,23 @@ namespace ApsimFile
                 XmlNode NewNode = Node.AppendChild(Node.OwnerDocument.CreateElement(Child.Type));
                 Child.Write(NewNode);
             }
+        }
+        public Component Clone(ApsimFile file, Component parent)
+        {
+            Component newComponent = new Component();
+            newComponent.MyName = MyName;
+            newComponent.MyType = MyType;
+            newComponent.MyContents = MyContents;
+            newComponent.MyDescription = MyDescription;
+            newComponent.MyEnabled = MyEnabled;
+            newComponent.MyShortCutTo = MyShortCutTo;
+            newComponent.MyFile = file;
+            newComponent.MyParent = parent;
+            newComponent.TempShortCutName = TempShortCutName;
+
+            foreach (Component child in MyChildNodes)
+                newComponent.MyChildNodes.Add(child.Clone(file, newComponent));
+            return newComponent;
         }
 
         // Public properties and methods.
@@ -376,7 +394,7 @@ namespace ApsimFile
                         if (ThicknessNode == null && WaterNode != null)
                             ThicknessNode = XmlHelper.Find(WaterNode, "Thickness");
                         if (ThicknessNode != null)
-                           Thickness = ThicknessNode.OuterXml;
+                            Thickness = ThicknessNode.OuterXml;
 
                         InitNitrogenNode.InnerXml = "<Date type=\"date\" description=\"Sample date:\" />" +
                                                      Thickness +
@@ -794,11 +812,11 @@ namespace ApsimFile
                 }
             }
         }
-        
+
         public bool IsAncestorOf(Component comp)
         // Returns true if comp is this component, or one of its ancestors
         {
-            Component ancestor = comp; 
+            Component ancestor = comp;
             while (ancestor != null)
             {
                 if (ancestor == this)
