@@ -75,9 +75,12 @@
      :                              nullTypeDDML, '')
       id%process = add_registration(respondToEventReg, 'process',
      :                              nullTypeDDML, '')
-      id%newcrop = add_registration(eventReg, 'newcrop',
-     :              nullTypeDDML, '')
-
+      id%newcrop = add_registration(eventReg, 'newcrop', 
+     :              nullTypeDDML, '')	 
+      id%BiocharDecomposed = add_registration(respondToEventReg, 
+     :                          'BiocharDecomposed', 
+     :                          BiocharDecomposedTypeDDML, '')
+	 
       dummy = add_registration_with_units(respondToGetReg, 'crop_type',
      :                                    stringTypeDDML, '')
       dummy = add_registration_with_units(respondToGetReg,
@@ -527,6 +530,14 @@
      :              'p_uptake_stover', floatTypeDDML, 'g/m^2')
       dummy = add_registration_with_units(respondToGetReg,
      :              'grain_p_demand', floatTypeDDML, 'g/m^2')
+	  dummy = add_registration_with_units(respondToGetReg,
+     :              'shoot_lag', floatTypeDDML, 'oCd')
+	  dummy = add_registration_with_units(respondToGetReg,
+     :              'root_depth_rate', floatarrayTypeDDML, 'g/m^2')
+	  dummy = add_reg(respondToSetReg,
+     :              'shoot_lag', floatTypeDDML, '', 'shoot lag')
+	  dummy = add_reg(respondToSetReg,
+     :              'root_depth_rate', floatarrayTypeDDML, '', 'dlt_rd')
 
       end subroutine doInit1
 
@@ -804,6 +815,9 @@ c        if (TestTrue)   close (1)
      .          g%cnd_grain_conc,
      .          c%stage_names,
      .          real(harvest%remove))
+     
+      else if (eventID .EQ. id%BiocharDecomposed) then
+         call OnBiocharDecomposed(variant)
       endif
 
       return

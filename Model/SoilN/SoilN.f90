@@ -101,6 +101,7 @@ module Soiln2Module
       real         hum_C(max_layer)       ! Humic C (kg/ha)
       real         hum_N(max_layer)       ! Humic N (kg/ha)
       real         inert_C(max_layer)     ! humic C that is not subject to
+      real         biochar_c(max_layer)   ! Ammount of biochar C that is in soil 
                                           ! mineralization (kg/ha)
       real         NH4(max_layer)         ! ammonium nitrogen(kg/ha)
       real         NO3(max_layer)         ! nitrate nitrogen (kg/ha) 
@@ -239,6 +240,12 @@ module Soiln2Module
       logical   use_organic_solutes       ! flag for FOM leaching
 
       real         nitrification_inhibition(max_layer)  ! nitrification inhibition -VOS added 13 Dec 09
+      real         NH4_absorbed(max_layer) ! biochar related
+      real         dlt_biochar_c_co2(max_layer)
+      real         dlt_n_min_bc_tot(max_layer)
+      real         dlt_bc_hum(max_layer)
+      real         dlt_bc_biom(max_layer)
+      real         bc_wfps_factor(max_layer)
 
    end type Soiln2Globals
 ! ====================================================================
@@ -330,8 +337,14 @@ module Soiln2Module
       real         rd_hum(2)              ! potential rate of humus
                                           ! mineralization (per day)
       real      fraction_urine_added
-     
-      
+      real rd_biom_old(2)                 !store the old decomposition rates
+      real rd_hum_old(2)
+      real rd_fom_old(nfract,2)
+      real ef_biom_old
+      real fr_biom_biom_old
+      real ef_fom_old
+      real fr_fom_biom_old
+	  
    end type Soiln2Constants
 ! ====================================================================
    type IDsType
@@ -350,6 +363,9 @@ module Soiln2Module
       integer :: process
       integer :: NitrogenChanged
       integer :: AddUrine
+      integer :: BiocharDecomposed
+      integer :: BiocharApplied
+      integer :: BulkDensityChangeTillage
    end type IDsType
 
 
@@ -777,6 +793,12 @@ subroutine soiln2_zero_all_globals ()
    g%biom_C(:)        = 0.0
    g%biom_N(:)        = 0.0
    g%fom_N(:)         = 0.0
+   g%biochar_c(:)	  = 0.0
+   g%dlt_biochar_c_co2(:) = 0.0
+   g%dlt_n_min_bc_tot(:) = 0.0
+   g%dlt_bc_hum(:) = 0.0
+   g%dlt_bc_biom(:) = 0.0
+   g%bc_wfps_factor(:) = 0.0
    g%fom_c_pool(:, :)   = 0.0
    g%dlt_fom_c_pool1(:) = 0.0
    g%dlt_fom_c_pool2(:) = 0.0
@@ -873,6 +895,7 @@ subroutine soiln2_zero_all_globals ()
    g%dlt_urea_hydrol(:)   = 0.0
    g%excess_nh4(:)        = 0.0
    g%nitrification_inhibition(:) = 0.0 ! nitrification inhibition - default to no effect - VOS added 13 Dec 09, reviewed by RCichota (9/feb/2010)
+   g%NH4_absorbed(:)     = 0.0
 
 
 
@@ -916,6 +939,13 @@ subroutine soiln2_zero_all_globals ()
    c%rd_biom(:)            = 0.0
    c%rd_fom(:,:)           = 0.0
    c%rd_hum(:)             = 0.0
+   c%rd_hum_old(:)         = 0.0
+   c%rd_biom_old(:)        = 0.0
+   c%rd_fom_old(:,:)       = 0.0
+   c%ef_biom_old           = 0.0
+   c%fr_biom_biom_old      = 0.0
+   c%ef_fom_old 	   = 0.0
+   c%fr_fom_biom_old	   = 0.0
 
    call pop_routine (my_name)
    return
@@ -1003,6 +1033,7 @@ subroutine soiln2_zero_variables ()
    g%hum_C(:)           = 0.0
    g%hum_N(:)           = 0.0
    g%inert_C(:)         = 0.0
+   g%biochar_c(:)       = 0.0
    g%NH4(:)             = 0.0
    g%NO3(:)             = 0.0
    g%NH4_yesterday(:)   = 0.0
@@ -1062,6 +1093,11 @@ subroutine soiln2_zero_variables ()
    c%rd_biom(:)        = 0.0
    c%rd_fom(:,:)       = 0.0
    c%rd_hum(:)         = 0.0
+   c%rd_biom_old(:)    = 0.0
+   c%rd_hum_old(:)     = 0.0
+   c%rd_fom_old(:,:)   = 0.0
+   c%ef_biom_old       = 0.0
+   c%fr_biom_biom_old  = 0.0
 
    g%residue_name = ' '
    g%residue_type  = ' '
@@ -1303,6 +1339,9 @@ subroutine soiln2_send_my_variable (variable_name)
    real       temp(max_layer)
    real       CarbonBalance
    real 	  NitrogenBalance
+   real       soiln_factor(max_layer)
+   real       hum_c_conc(max_layer)
+   real 	  wf_dnit(max_layer)
 !- Implementation Section ----------------------------------
    call push_routine (my_name)
 
@@ -1701,6 +1740,37 @@ subroutine soiln2_send_my_variable (variable_name)
    !                           ----
       num_layers = count_of_real_vals (g%dlayer, max_layer)
       call respond2get_real_array (variable_name,'(kg/ha)', g%N2O_atm, num_layers)
+
+   elseif (variable_name .eq. 'ph') then
+   !                           ----
+      num_layers = count_of_real_vals (g%dlayer, max_layer)
+      call respond2get_real_array (variable_name,'pH', g%ph, num_layers)
+	  
+	  
+   elseif (variable_name .eq. 'wf_dnit') then
+	!
+	  num_layers = count_of_real_vals (g%dlayer, max_layer)
+	  do layer = 1, num_layers
+		wf_dnit(layer) = soiln2_wf_denit(layer)
+	  end do
+	  call respond2get_real_array (variable_name, 'gmm/cm3', wf_dnit, num_layers)
+		
+	  
+   elseif (variable_name .eq. 'soiln2_fac') then
+   !
+	  num_layers = count_of_real_vals (g%dlayer, max_layer)
+	  do layer = 1, num_layers
+		soiln_factor(layer) = soiln2_fac(layer)
+	  end do
+	  call respond2get_real_array (variable_name, 'gmm/cm3', soiln_factor, num_layers)
+	  
+   elseif (variable_name .eq. 'hum_c_conc') then
+	!
+		num_layers = count_of_real_vals (g%dlayer, max_layer)
+		do layer = 1, num_layers
+			hum_c_conc(layer) = g%hum_c(layer) * soiln2_fac(layer)
+		end do
+		call respond2get_real_array (variable_name, 'mgC/kg', hum_c_conc, num_layers)
 
 
    elseif (variable_name .eq. 'n2o_atm_nitrification') then
@@ -2233,28 +2303,46 @@ subroutine soiln2_read_constants ()
    endif
    
    call read_real_var (section_name, 'ef_fom', '()', c%ef_fom, numvals, 0.0, 1.0)
+   
+   call read_real_var (section_name, 'ef_fom', '()', c%ef_fom_old, numvals, 0.0, 1.0)
 
    call read_real_var (section_name, 'fr_fom_biom', '()', c%fr_fom_biom, numvals, 0.0, 1.0)
+   
+   call read_real_var (section_name, 'fr_fom_biom', '()', c%fr_fom_biom_old, numvals, 0.0, 1.0)
 
    call read_real_var (section_name, 'ef_biom', '()', c%ef_biom, numvals, 0.0, 1.0)
+   
+   call read_real_var (section_name, 'ef_biom', '()', c%ef_biom_old, numvals, 0.0, 1.0) !mod
 
    call read_real_var (section_name, 'fr_biom_biom', '()', c%fr_biom_biom, numvals, 0.0, 1.0)
+   
+   call read_real_var (section_name, 'fr_biom_biom', '()', c%fr_biom_biom_old, numvals, 0.0, 1.0) !mod
 
    call read_real_var (section_name, 'ef_hum', '()', c%ef_hum, numvals, 0.0, 1.0)
 
    call read_real_array (section_name, 'rd_biom', 2, '()', c%rd_biom(:), numvals, 0.0, 1.0)
+   
+    call read_real_array (section_name, 'rd_biom', 2, '()', c%rd_biom_old(:), numvals, 0.0, 1.0) !mod
 
    call read_real_array (section_name, 'rd_hum', 2, '()', c%rd_hum(:), numvals, 0.0, 1.0)
+   
+   call read_real_array (section_name, 'rd_hum', 2, '()', c%rd_hum_old(:), numvals, 0.0, 1.0) !mod
 
    call read_real_var (section_name, 'ef_res', '()', c%ef_res, numvals, 0.0, 1.0)
 
    call read_real_var (section_name, 'fr_res_biom', '()', c%fr_res_biom, numvals, 0.0, 1.0)
 
    call read_real_array (section_name, 'rd_carb', 2, '()', c%rd_fom(1,:), numvals, 0.0, 1.0)
+   
+   call read_real_array (section_name, 'rd_carb', 2, '()', c%rd_fom_old(1,:), numvals, 0.0, 1.0) !mod
 
    call read_real_array (section_name, 'rd_cell', 2, '()', c%rd_fom(2,:), numvals, 0.0, 1.0)
+   
+   call read_real_array (section_name, 'rd_cell', 2, '()', c%rd_fom_old(2,:), numvals, 0.0, 1.0) !mod
 
    call read_real_array (section_name, 'rd_lign', 2, '()', c%rd_fom(3,:), numvals, 0.0, 1.0)
+   
+   call read_real_array (section_name, 'rd_lign', 2, '()', c%rd_fom_old(3,:), numvals, 0.0, 1.0) !mod
 
    call read_char_array (section_name, 'fom_type', max_fom_type, '()', g%fom_types, g%num_fom_types)
 
@@ -2394,6 +2482,7 @@ subroutine soiln2_init_calc ()
    call soiln2_soil_temp (g%soil_temp)
 
    call fill_real_array (root_distrib, 0.0, max_layer)
+   call fill_real_array (g%biochar_c, 0.0, max_layer)
 
    num_layers = count_of_real_vals (g%dlayer, max_layer)
    deepest_layer = get_cumulative_index_real (g%root_depth, g%dlayer, max_layer)
@@ -3450,6 +3539,7 @@ subroutine soiln2_process ()
    real       fom_cn                ! CN ratio of fom
    real       dlt_pond_c_hum        ! humic material from breakdown of residues in pond (if present)
    real       dlt_pond_c_biom       ! biom material from breakdown of residues in pond (if present)
+   !real 	  bc_nh4_fac            ! the biochar related factor by which nh4 is multiplied !MODIFICATION!
 
 !- Implementation Section ----------------------------------
 
@@ -3592,6 +3682,9 @@ subroutine soiln2_process ()
 
        g%no3(layer) = g%no3(layer) + dlt_rntrf_eff
        g%nh4(layer) = g%nh4(layer) - dlt_rntrf
+	   
+	   !bc_nh4_fac = min(1.0, g%NH4_absorbed(layer) * g%biochar_c(layer))
+	   !g%nh4(layer) = g%nh4(layer) * (1- bc_nh4_fac)
 
        call bound_check_real_var (g%no3(layer), g%no3_min(layer), 9000.0, 'NO3(layer)')
        call bound_check_real_var (g%nh4(layer), g%nh4_min(layer), 9000.0, 'NH4(layer)')
@@ -3899,6 +3992,7 @@ subroutine soiln2_min_fom (layer, dlt_c_biom, dlt_c_hum, dlt_c_atm, dlt_fom_n, d
 
 
       ! calculate potential transfers to biom and humic pools
+      ! we added biochar N immobilization effects on soil N avail. Aug 2014. 
 
       dlt_c_biom_tot = dlt_fom_c_min_tot * c%ef_fom * c%fr_fom_biom
       dlt_c_hum_tot = dlt_fom_c_min_tot * c%ef_fom* (1.0 - c%fr_fom_biom)
@@ -3934,7 +4028,7 @@ subroutine soiln2_min_fom (layer, dlt_c_biom, dlt_c_hum, dlt_c_atm, dlt_fom_n, d
          dlt_fom_n(fractn) = round_to_zero (dlt_fom_n(fractn))
       end do
 
-      dlt_n_min = (dlt_fom_n_min_tot - n_demand) * scale_of
+      dlt_n_min = (dlt_fom_n_min_tot - n_demand) * scale_of + g%dlt_n_min_bc_tot(layer)
 
    else
       call fill_real_array (dlt_c_hum, 0.0, nfract)
@@ -4032,7 +4126,7 @@ subroutine soiln2_nitrification (layer, dlt_rntrf, dlt_rntrf_eff, dlt_nh4_dnit, 
    !--------------------------------------------------------------------------------
 
 
-   dlt_rntrf = pni * opt_rate
+   dlt_rntrf = pni * opt_rate !* (1.0 - g%NH4_absorbed(layer))
    nh4_avail = l_bound (g%nh4(layer) - g%nh4_min(layer), 0.0)
    dlt_rntrf = bound (dlt_rntrf, 0.0, nh4_avail)
    
@@ -4151,8 +4245,9 @@ subroutine soiln2_denitrification (layer, dlt_n_atm, n2o_atm)
       no3_avail = g%no3(layer) - g%no3_min(layer)
       dlt_n_atm = bound (dlt_n_atm, 0.0, no3_avail)
 
-      WFPS = g%sw_dep(layer)/g%sat_dep(layer) * 100
-      CO2 = (sum(g%dlt_fom_c_atm(:,layer)) + g%dlt_biom_c_atm(layer) + g%dlt_hum_c_atm(layer))/(g%bd(layer)*g%dlayer(layer))*100
+      !HERE WFPS MODS - must do 1 - factor since it defaults to 0
+      WFPS = g%sw_dep(layer)/g%sat_dep(layer) * 100 
+      CO2 = (sum(g%dlt_fom_c_atm(:,layer)) + g%dlt_biom_c_atm(layer) + g%dlt_hum_c_atm(layer) + g%dlt_biochar_c_co2(layer))/(g%bd(layer)*g%dlayer(layer))*100
       RtermA = 0.16*c%dnit_k1
       if (CO2.gt.0) then
          RtermB = c%dnit_k1 * (exp(-0.8*(g%no3(layer)*soiln2_fac (layer)/CO2)))
@@ -4268,8 +4363,8 @@ real function soiln2_wf_denit (layer)
 
    if (g%sw_dep(layer).gt.g%dul_dep(layer)) then
 
-     ! saturated
-      wfd = divide (g%sw_dep(layer) - g%dul_dep(layer), g%sat_dep(layer) - g%dul_dep(layer), 0.0)**c%dnit_wf_power
+     ! saturated bc
+      wfd =  (1 - g%bc_wfps_factor(layer)) * divide (g%sw_dep(layer) - g%dul_dep(layer), g%sat_dep(layer) - g%dul_dep(layer), 0.0)**c%dnit_wf_power
    else
 
      ! unsaturated
@@ -5059,7 +5154,7 @@ subroutine soiln2_OC_percent (oc_percent)
    num_layers = count_of_real_vals (g%dlayer, max_layer)
 
    do layer = 1, num_layers
-      oc_ppm = (g%hum_c(layer) + g%biom_c(layer))* soiln2_fac (layer)
+      oc_ppm = (g%hum_c(layer) + g%biom_c(layer) + g%biochar_c(layer))* soiln2_fac (layer)
       oc_percent(layer) = oc_ppm * ppm2fract * fract2pcnt
    end do
 
@@ -5150,6 +5245,106 @@ subroutine OnNitrogenChanged (variant)
       call bound_check_real_var (g%urea(layer), 0.0, g%urea(layer), 'g%Urea(layer)')
    enddo
    return
+end subroutine
+
+
+!  ===========================================================
+subroutine OnBiocharDecomposed (variant)
+!  ===========================================================
+	
+	implicit none
+	
+	!Biochar is decomposing 
+	
+	integer, intent(in) :: variant
+	type(BiocharDecomposedType) :: biochar
+	integer :: layer
+	
+	call unpack_BiocharDecomposed(variant, biochar)
+	do layer = 1,biochar%num_hum_c !TODO - Make this work even better or something
+		g%hum_C(layer) = g%hum_C(layer) + biochar%hum_c(layer)
+		g%biom_C(layer) = g%biom_C(layer) + biochar%biom_c(layer)
+		g%dlt_bc_hum(layer) = biochar%hum_c(layer)
+		g%dlt_bc_biom(layer) = biochar%biom_c(layer)
+		g%biochar_c(layer) = g%biochar_c(layer) - biochar%dlt_biochar_c(layer) !Remove the decomposed biochar carbon from the local pool
+		g%dlt_biochar_c_co2(layer) = biochar%dlt_biochar_c_co2(layer)
+		g%dlt_n_min_bc_tot(layer) = biochar%dlt_n_biochar(layer)
+		g%ph(layer) = g%ph(layer) + biochar%dlt_ph(layer)
+		g%nh4(layer) = g%nh4(layer) + biochar%bc_nh4_change(layer)
+		
+		!Note, dlt_bd here refers simply to bd and not the daily change in BD. This avoids an error in the model 
+		!
+		if ( biochar%dlt_bd(layer) .lt. 1.85) then
+			g%bd(layer) = biochar%dlt_bd(layer)
+		else
+			g%bd(layer) =1.85
+		endif
+		!Suspicion of floating point errors
+		
+		if (g%biochar_c(layer) .gt. 0.0) then
+			g%bc_wfps_factor(layer) = biochar%bc_wfps_factor
+		else
+			g%bc_wfps_factor(layer) = 0.0
+		endif
+		
+		 
+	enddo
+	
+	do layer=1,2
+		c%rd_hum(layer) = c%rd_hum_old(layer) * (1.0 + biochar%dlt_rd_hum)
+		c%rd_biom(layer) = c%rd_biom_old(layer) * (1.0 + biochar%dlt_rd_biom)
+		c%rd_fom(1,layer) = c%rd_fom_old(1,layer) * (1.0 + biochar%dlt_rd_carb)
+		c%rd_fom(2,layer) = c%rd_fom_old(2,layer) * (1.0 + biochar%dlt_rd_cell)
+		c%rd_fom(3,layer) = c%rd_fom_old(3,layer) * (1.0 + biochar%dlt_rd_lign)
+	enddo
+	
+	c%ef_biom = c%ef_biom_old * (1.0 + biochar%dlt_rd_ef)
+	c%fr_biom_biom = c%fr_biom_biom_old * (1.0 + biochar%dlt_rd_fr)
+	c%ef_fom = c%ef_fom_old * (1.0 + biochar%dlt_rd_ef_fom)
+	c%fr_fom_biom = c%fr_fom_biom_old * (1.0 + biochar%dlt_rd_fr_fom)
+	return
+end subroutine
+		
+!  ===========================================================
+subroutine OnBiocharApplied (variant)
+!  ===========================================================
+	
+	implicit none
+	
+	!Biochar has been applied
+	
+	integer, intent(in) :: variant
+	type(BiocharAppliedType) :: biochar
+	integer :: layer
+	
+	call unpack_BiocharApplied(variant, biochar)
+	do layer = 1,biochar%num_bc_carbon_ammount
+		g%biochar_c(layer) = g%biochar_c(layer) + biochar%bc_carbon_ammount(layer)
+	enddo
+	
+	return
+	
+end subroutine
+
+!  ===========================================================
+subroutine OnBulkDensityChangeTillage (variant)
+!  ===========================================================
+	
+	implicit none
+	
+	!Tillage is changing bulk density
+	
+	integer, intent(in) :: variant
+	type(BulkDensityChangeTillageType) :: till
+	integer :: layer
+	
+	call unpack_BulkDensityChangeTillage(variant, till)
+	do layer = 1,till%num_bd
+		g%bd(layer) = till%bd(layer)
+	enddo
+	
+	return
+	
 end subroutine
 
 !  ===========================================================
@@ -5291,6 +5486,9 @@ subroutine doInit1()
    id%new_profile = add_registration(respondToEventReg, 'new_profile', newprofileTypeDDML, '')
    id%NitrogenChanged = add_registration(respondToEventReg, 'NitrogenChanged', NitrogenChangedTypeDDML, '')
    id%AddUrine = add_registration(respondToEventReg, 'AddUrine', AddUrineTypeDDML, '')
+   id%BiocharDecomposed = add_registration(respondToEventReg, 'BiocharDecomposed', BiocharDecomposedTypeDDML, '')
+   id%BiocharApplied = add_registration(respondToEventReg, 'BiocharApplied', BiocharAppliedTypeDDML, '')
+   id%BulkDensityChangeTillage = add_registration(respondToEventReg, 'BulkDensityChangeTillage', BulkDensityChangeTillageTypeDDML, '')
 
    ! variables we get from other modules.
    dummy = add_registration_with_units(getVariableReg, 'amp', floatTypeDDML, 'oC')
@@ -5378,6 +5576,9 @@ subroutine doInit1()
    dummy = add_reg(respondToGetReg, 'soilp_dlt_res_c_hum', floatarrayTypeDDML, 'kg/ha', 'Carbon from all residues to humic')
    dummy = add_reg(respondToGetReg, 'soilp_dlt_res_c_biom', floatarrayTypeDDML, 'kg/ha', 'Carbon from all residues to biomass')
    dummy = add_reg(respondToGetReg, 'soilp_dlt_org_p', floatarrayTypeDDML, 'kg/ha', 'variable needed by soilp in its calculations')
+   dummy = add_reg(respondToGetReg, 'ph', floatarrayTypeDDML, 'pH', 'Soil pH')
+   dummy = add_reg(respondToGetReg, 'soiln2_fac', floatarrayTypeDDML, 'gmm/cm3', 'Soil nitrogen factor')
+   dummy = add_reg(respondToGetReg, 'hum_c_conc', floatarrayTypeDDML, 'mgC/kg', 'Humic c soil concentration')
 
    ! settable variables
    dummy = add_registration_with_units(respondToSetReg, 'dlt_no3', floatarrayTypeDDML, 'kg/ha')
@@ -5434,6 +5635,17 @@ subroutine respondToEvent(fromID, eventID, variant)
 
    else if (eventID .eq. id%AddUrine) then
       call soiln2_OnAddUrine(variant)
+	  
+   else if (eventID .eq. id%BiocharDecomposed) then
+      call OnBiocharDecomposed(variant)
+	  
+   else if (eventID .eq. id%BiocharApplied) then
+      call OnBiocharApplied(variant)
+	  
+   else if (eventID .eq. id%BulkDensityChangeTillage) then
+	  call OnBulkDensityChangeTillage(variant)
+	
+
    endif
    return
 end subroutine respondToEvent

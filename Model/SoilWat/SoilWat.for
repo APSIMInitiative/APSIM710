@@ -285,6 +285,8 @@
           integer :: WaterChanged
           integer :: NitrogenChanged
           integer :: RunoffEvent
+	  integer :: BiocharDecomposed
+	  integer :: BulkDensityChangeTillage
       end type IDsType
 
       ! instance variables.
@@ -7152,6 +7154,54 @@ c dsg 070302 added runon
       enddo
       return
       end subroutine
+	  
+* 	  ===========================================================
+	  subroutine OnBiocharDecomposed (variant)
+*	  ===========================================================
+
+	  implicit none
+	  
+	  integer, intent(in) :: variant
+	  type(BiocharDecomposedType) :: b
+	  integer :: l
+	  
+	  call unpack_BiocharDecomposed(variant, b)
+	  do l = 1,b%num_hum_c ! TODO - change this to something better
+			g%dul_dep(l) = g%dul_dep(l) + b%dlt_dul(l) * p%dlayer(l)
+			p%ks(l) = p%ks(l) + b%dlt_ks(l)
+			g%sat_dep(l) = g%sat_dep(l) +b%dlt_sat(l) * p%dlayer(l)
+			if (b%dlt_bd(l) .lt. 1.85) then
+				g%bd(l) = b%dlt_bd(l) !+ b%dlt_bd(l)/p%dlayer(l)
+			else
+				g%bd(l) = 1.85
+			endif
+			g%ll15_dep(l) = g%ll15_dep(l) + b%dlt_ll(l) * p%dlayer(l)
+	  enddo
+	  return
+	  end subroutine
+	  
+	  
+	  !  ===========================================================
+		subroutine OnBulkDensityChangeTillage (variant)
+	   !  ===========================================================
+	
+		implicit none
+	
+		!Tillage is changing bulk density
+	
+		integer, intent(in) :: variant
+		type(BulkDensityChangeTillageType) :: till
+		integer :: l
+	
+		call unpack_BulkDensityChangeTillage(variant, till)
+		do l = 1,till%num_bd
+			g%bd(l) = till%bd(l) 
+			g%sat_dep(l) = g%sat_dep(l) + till%sat(l)*p%dlayer(l)
+		enddo
+	
+		return
+	
+		end subroutine
 
 *     ===========================================================
       subroutine soilwat2_New_Profile_Event ()
@@ -7620,6 +7670,10 @@ c
          call OnWaterChanged(variant)
       else if (eventID .eq. id%New_Solute) then
          call soilwat2_on_new_solute (variant, fromID)
+	  else if (eventID .eq. id%BiocharDecomposed) then
+		 call OnBiocharDecomposed (variant)
+	  else if (eventID .eq. id%BulkDensityChangeTillage) then
+		 call OnBulkDensityChangeTillage (variant)
       endif
       return
       end subroutine respondToEvent
@@ -7673,6 +7727,13 @@ c
       id%WaterChanged = add_registration(respondToEventReg,
      .                                   'WaterChanged',
      .                                   WaterChangedTypeDDML, '')
+	  id%BiocharDecomposed = add_registration(respondToEventReg,
+     .                                   'BiocharDecomposed',
+     .                                   BiocharDecomposedTypeDDML, '')
+	 
+	 id%BulkDensityChangeTillage = add_registration(respondToEventReg,
+     .                                   'BulkDensityChangeTillage',
+     .                           BulkDensityChangeTillageTypeDDML, '')											
 
       ! variables we own and make gettable
       dummy = add_reg(respondToGetReg, 'es',

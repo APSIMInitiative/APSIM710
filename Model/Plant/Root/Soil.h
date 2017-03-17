@@ -8,6 +8,7 @@ class Soil
       Soil(ScienceAPI& scienceAPI, plantInterface& plant);
       void onInit1(protocol::Component *system);
       void onNewProfile(protocol::NewProfileType &v);
+	  void onBiocharDecomposed(protocol::BiocharDecomposedType &b);
       void ZeroDeltas(void);
       void Read(void);
       void write();
@@ -123,6 +124,7 @@ class Soil
 
 
       vector<float> kl;                                // root length density factor for water
+	  vector<float> kl_old;							   // Biochar related !modification!
       vector<float> cl;
       vector<float> esp;
       vector<float> ec;

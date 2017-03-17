@@ -42,6 +42,9 @@
      :                              nullTypeDDML, '')
       id%newcrop = add_registration(eventReg, 'newcrop',
      :              nullTypeDDML, '')
+      id%BiocharDecomposed = add_registration(respondToEventReg, 
+     :                                'BiocharDecomposed',
+     :                                BiocharDecomposedTypeDDML, '')
 
       dummy = add_registration_with_units(respondToGetReg, 'crop_type',
      :                                    stringTypeDDML, '')

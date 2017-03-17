@@ -120,6 +120,7 @@ void Soil::Read(void)
        }
 
    scienceAPI.read("kl", kl, 0.0f, kl_ub);
+   scienceAPI.read("kl", kl_old, 0.0f, kl_ub);
    if (kl.size() != (unsigned) num_layers)
       throw std::runtime_error  ("Size of KL array doesn't match soil profile.");
 
@@ -229,6 +230,30 @@ void Soil::onNewProfile(protocol::NewProfileType &v)
 
    }
 
+void Soil::onBiocharDecomposed(protocol::BiocharDecomposedType &b)
+//=======================================================================================
+// Handles changes to KL and XF due to biochar !MOD!
+	{
+
+		vector<double> scratch = b.dlt_ll;
+		//LL effects
+		for (int i = 0; i < scratch.size(); i++)
+			ll15_dep[i] = ll15_dep[i] + scratch[i];
+		scratch = b.dlt_kl;
+		//KL effects
+		for (int i = 0; i < scratch.size(); i++)
+			kl[i] = kl_old[i] * scratch[i];
+
+		scratch = b.dlt_xf;
+		//XF effects (untested) 
+		for (int i = 0; i < scratch.size(); i++)
+			xf[i] = xf[i] + scratch[i];
+
+		
+
+
+	}
+
 void Soil::zero(void)
 //=======================================================================================
 // Zero everything
@@ -254,6 +279,7 @@ void Soil::zero(void)
       fill_real_array (sw_dep , 0.0, max_layer);
       ll_dep.clear();
       kl.clear();
+	  kl_old.clear();
       kl_ub = 0.0;
 
       xf.clear();

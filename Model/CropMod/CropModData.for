@@ -1671,6 +1671,7 @@
           integer :: prepare
           integer :: process
 		  integer :: newcrop
+          integer :: BiocharDecomposed
       end type IDsType
 
 !=================== instance variables ========================================

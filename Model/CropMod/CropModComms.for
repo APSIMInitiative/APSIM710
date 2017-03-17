@@ -354,6 +354,11 @@ cjh      endif
      :                     , 'kl', max_layer, '()'
      :                     , p%kl, num_layers
      :                     , 0.0, c%kl_ub)
+	 
+	 call read_real_array (section_name
+     :                     , 'kl', max_layer, '()'
+     :                     , g%kl, num_layers
+     :                     , 0.0, c%kl_ub) !MOD!
 
       call read_real_array (section_name
      :                     , 'xf', max_layer, '()'
@@ -2323,6 +2328,20 @@ c      end if
 
 
 
+	  !---------------------------------------------------
+	  ! Allelopathy variables
+	  !---------------------------------------------------
+	  elseif (variable_name .eq. 'shoot_lag') then
+         call respond2get_real_var (variable_name
+     :                             , '(oCd)'
+     :                             , c%shoot_lag)
+	 
+	 
+	  elseif (variable_name .eq. 'root_depth_rate') then
+         call respond2get_real_array (variable_name
+     :                             , '(oCd)'
+     :                             , c%root_depth_rate
+     :                             , max_stage)
 !!      !---------------------------------------------------
 !!      ! Crop Phosphorus Variables
 !!      ! -------------------------
@@ -2563,6 +2582,15 @@ c      end if
      :                                    , '(0-1)'
      :                                    , p%xf, numvals
      :                                    , 0.0, 1.0)
+	  else if (variable_name .eq. 'shoot_lag') then
+         call collect_real_var (variable_name, '()'
+     :                             ,c%shoot_lag, numvals
+     :                             , 0.0, 2000.0)
+	  else if (variable_name .eq. 'root_depth_rate') then
+      call collect_real_array (variable_name, max_stage
+     :                                    , '()'
+     :                                    , c%root_depth_rate, numvals
+     :                                    , 0.0, 2000.0)
       else
          ! don't know this variable name
          call Message_Unused()
@@ -5258,6 +5286,31 @@ c in maize
 
 
 
+*     ===========================================================
+      subroutine OnBiocharDecomposed(variant)
+*     ===========================================================
+      implicit none
+
+      ! Biochar is doing stuff
+
+      integer, intent(in) :: variant
+      type(BiocharDecomposedType) :: b
+      integer :: l
+	  character string*20
+	  
+      call unpack_BiocharDecomposed(variant, b)
+      do l = 1,b%num_hum_c
+         p%xf(l) = p%xf(l) + b%dlt_xf(l)
+         p%ll_dep(l) = p%ll_dep(l) + b%dlt_ll(l) !I worry about the dlayer effect here
+         p%kl(l) = g%kl(l) * b%dlt_kl(l)
+      enddo
+	  
+	  
+      !if (c%shoot_rate .NE. 1.5) then
+      !   c%shoot_rate = 1.5
+      !endif
+      return
+      end subroutine
 
 
 
@@ -5836,6 +5889,7 @@ c      g%dlt_n_uptake_stover=0.0
       call fill_real_array(p%kl,    0.0, max_layer)
       call fill_real_array(p%ll_dep,0.0, max_layer)
       call fill_real_array(p%xf,    0.0, max_layer)
+      call fill_real_array(g%kl,    0.0, max_layer)
 
       !swim
       p%uptake_source = " "

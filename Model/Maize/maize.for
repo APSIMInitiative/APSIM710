@@ -6429,6 +6429,8 @@ c     :               )
      .          g%cnd_grain_conc,
      .          c%stage_names,
      .          real(harvest%remove))
+      else if (eventID .eq. id%BiocharDecomposed) then
+         call OnBiocharDecomposed(variant)
 
       endif
 
