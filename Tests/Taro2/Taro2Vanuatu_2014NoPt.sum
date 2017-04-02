@@ -1,0 +1,664 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.8
+Title                  = Taro2Vanuatu_2014NoPt
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component               "ClimateControl" = %apsim%\Model\Manager.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component        "outputfileLeafCohorts" = %apsim%\Model\Report.dll
+   Component                      "Outputs" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component          "Operations Schedule" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component        "Harvesting rule Taro2" = %apsim%\Model\Manager.dll
+   Component                     "Taro2_FW" = %apsim%\Model\Manager.dll
+   Component                     "Taro2_DW" = %apsim%\Model\Manager.dll
+   Component         "Diagnostic variables" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "Taro2" = %apsim%\Model\Plant2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  7/04/2014
+     Simulation end date   = 31/01/2015
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: VARTC_Trial.met
+
+------- ClimateControl Initialisation -----------------------------------------
+     Manager rules:
+     
+     SECTION:- prenewmet
+     if (date_within('1-jan, 31-dec') = 1) then
+        maxt = maxt + 0
+        mint = mint + 0
+        rain = rain + rain * 0 / 100
+        radn = radn + radn * 0 / 100
+        co2 = 350
+      endif
+     
+     SECTION:- init
+     co2 = 350
+     tav = tav + (0 + 0) / 2
+     END of rules
+     
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mm/yyyy as Date
+        day
+        DaysAfterSowing
+        StageCodeValue
+        PhenologyCurrentPhaseName
+        PhenologyCurrentStageName
+        Taro2.LeafLAI
+        AboveGroundWt
+        sw_dep()
+        WaterDemand
+        LeafFw
+        LeafTranspiration
+        LeafWaterDemand
+        RootWaterUptake
+        surfaceom_wt
+        no3()
+        StructureMainStemNodeNo
+        LeafExpandedNodeNo
+        LeafExpandedCohortNo
+        LeafThermalTimeValue
+        CormLiveWt
+        BelowGroundWt
+        TotalWt
+        LeafLiveWt
+        RootLiveWt
+        Taro2.LeafLiveN
+        LeafAppearedCohortNo
+        LeafDeadWt
+        LeafDMSupplyPhotosynthesis
+        LeafExpandedCohortNo
+        LeafExpandedNodeNo
+        LeafExpandingCohortNo
+        LeafExpansionStressValue
+        LeafExtinctionCoeffValue
+        LeafGreenCohortNo
+        LeafLiveNonStructuralWt
+        LeafLivePotentialDMAllocation
+        LeafPlantAppearedGreenLeafNo
+        LeafPotentialGrowth
+        LeafSenescingCohortNo
+        TotalPotentialDMAllocation
+        Cover_green
+        cormSenescenceRateValue
+        CormDeadWt
+        leaffn
+        LeafPhotosynthesisFNValue
+        LeafSpecificLeafAreaMaxValue
+        LeafSpecificLeafAreaMinValue
+        LeafSpecificArea
+        RootWaterSupply
+        RootWaterUptake
+        Rain
+        es
+        sw_dep
+        flow
+        flow_water
+        flux
+        LeafPhotosynthesisFVPDValue
+        LeafPhotosynthesisFWValue
+        yield as CormYieldFW
+        biomass
+        biomass_N
+
+     Output file = Taro2Vanuatu_2014NoPt.out
+     Format = normal
+
+------- outputfileLeafCohorts Initialisation ----------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mm/yyyy as Date
+        StageCodeValue
+        PhenologyCurrentPhaseName
+        PhenologyCurrentStageName
+        LeafLAI
+        LeafFw
+        LeafTranspiration
+        LeafWaterDemand
+        LeafExpandedNodeNo
+        LeafExpandedCohortNo
+        LeafThermalTimeValue
+        LeafLiveWt
+        Taro2.LeafLiveN
+        LeafAppearedCohortNo
+        LeafDeadWt
+        LeafDMSupplyPhotosynthesis
+        LeafExpandedCohortNo
+        LeafExpandedNodeNo
+        LeafExpandingCohortNo
+        LeafExpansionStressValue
+        LeafExtinctionCoeffValue
+        LeafGreenCohortNo
+        LeafLiveNonStructuralWt
+        LeafLivePotentialDMAllocation
+        LeafMaxAreaValue
+        LeafMaxCover
+        LeafMaxLeafArea
+        LeafPlantAppearedGreenLeafNo
+        LeafPotentialGrowth
+        LeafSenescingCohortNo
+        RadIntTot
+        TotalPotentialDMAllocation
+
+     Output file = Taro2Vanuatu_2014NoPt outputfileLeafCohorts.out
+     Format = normal
+
+------- Outputs Initialisation ------------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy
+        no3()
+        nh4()
+        urea()
+        surfaceom_n
+        biom_n()
+        fom_n()
+        hum_n()
+        dnit()
+        leach_no3
+        AccumPlantN
+        AccumMineralisation
+        AccumDenit
+        AccumFert
+        AccumLeach
+        AccumDetach
+        DeltaSoilMineralN
+        RootNSupplyUptake
+        eo
+        es
+        sw_dep()
+        dul_dep()
+        drain
+        runoff
+        outflow_lat()
+        pond
+        AccumEO
+        AccumEP
+        AccumES
+        AccumDrainage
+        AccumRunoff
+        AccumRainfall
+        AccumIrrigation
+        AccumOutflowLat
+        SoilWaterDeficit
+        LeafDeadWt
+        LeafLiveWt
+        CormDeadWt
+        CormLiveWt
+        RootDeadWt
+        RootLiveWt
+        RootLiveN
+        RootDeadN
+        LeafDeadN
+        LeafLiveN
+        CormDeadN
+        CormLiveN
+        RootWaterSupply
+        RootWaterUptake
+        LeafTranspiration
+        LeafWaterDemand
+        RootDepth
+        Cover_green
+        Cover_tot
+        Cover_dead
+        LeafLAI
+        LeafLAIDead
+        Height
+        LeafFn
+        LeafFw
+        LeafFrgr
+        LeafPhotosynthesisFtValue
+        LeafPhotosynthesisFvpdValue
+        LeafAppearedCohortNo
+        LeafExpandingCohortNo
+        LeafGreenCohortNo
+        LeafDeadCohortNo
+        LeafSenescingCohortNo
+        LeafPlantAppearedGreenLeafNo
+        RootLiveNConc
+        RootDeadNConc
+        LeafCohortSize()
+        RootMaximumNConcValue
+        TotalLiveNonStructuralN
+        TotalStructuralN
+        TotalWt
+        RadIntTot
+        RootMinimumNConcValue
+        irrigation
+        dlayer
+        flow_no3
+        flow
+        flux
+        no3
+        nh4
+        dd/mmm/yyyy as date
+        rain
+        surfaceom_wt
+        surfaceom_cover
+        wf
+        rain
+        LeafLiveNConc
+        LeafMaxAreaValue
+        LeafMinimumNConcValue
+        LeafMaximumNConcValue
+        LeafDeadNConc
+        RootWaterSupply
+        StageCodeValue
+        PhenologyCurrentStageName
+        CormMaximumNConcValue
+        CormMinimumNConcValue
+        CormLiveNConc
+
+     Output file = Taro2Vanuatu_2014NoPt Outputs.out
+     Format = normal
+
+------- paddock.accum Initialisation ------------------------------------------
+     Initialising
+
+------- paddock.Operations Schedule Initialisation ----------------------------
+     Operations Schedule
+     ===================
+       17/4/2014  Prepare      fertiliser apply amount = 138 (kg/ha), depth = 50 (mm), type = UREA_N ()
+      10/07/2014  Prepare      fertiliser apply amount = 32.5 (kg/ha), depth = 50 (mm), type = NO3_N ()
+       21/1/2015  Prepare
+       21/1/2015  Prepare
+
+------- paddock.Irrigation Initialisation -------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.80
+           depth for calculating available soil water =     150.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- paddock.Sow on a fixed date Initialisation ----------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+             if (today = date('07/04/2014') then
+       taro2 sow population =1, depth = 1, cultivar = tarapatan, maxcover = 1.0, budnumber = 1, row_spacing = 1000, crop_class =
+              endif
+     END of rules
+     
+
+------- paddock.Harvesting rule Taro2 Initialisation --------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if (taro2.plant_status <> 'out') then
+       if (taro2.phenologycurrentstagename = 'harvestready' or taro2.plant_status = 'dead') then
+          taro2 harvest
+          taro2 endcrop
+       endif
+                endif
+     END of rules
+     
+
+------- paddock.Taro2_FW Initialisation ---------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+        yield = 0.0
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     if (taro2.plant_status <> 'out') then
+        yield = taro2.cormlivewt * 30.0
+     else
+        yield = 0.0
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : yield = 0.00000
+
+------- paddock.Taro2_DW Initialisation ---------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+        biomass = 0.0
+        biomass_n = 0.0
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     if (taro2.plant_status <> 'out') then
+        biomass = taro2.abovegroundwt * 10.0
+        biomass_n = taro2.abovegroundn * 10.0
+     else
+        biomass = 0.0
+        biomass_n = 0.0
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : biomass = 0.00000
+     Manager creating a new local real variable : biomass_n = 0.00000
+
+------- paddock.Diagnostic variables Initialisation ---------------------------
+     Manager rules:
+     
+     SECTION:- init
+     simday = 1
+     accumplantn = 0
+     accummineralisation = 0
+     accumdenit = 0
+     accumfert = 0
+     accumleach = 0
+     accumdetach = 0
+     deltasoilomn = 0
+     deltasurfaceomn = 0
+     deltasoilmineraln = 0
+     accumeo = 0
+     accumep = 0
+     accumes = 0
+     accumdrainage = 0
+     accumrunoff = 0
+     accumoutflowlat = 0
+     accumirrigation = 0
+     accumrainfall = 0
+     soilwaterdeficit = 0
+     accumttemerg = 0
+     
+     SECTION:- start_of_day
+     if simday = 1 then
+     initialsoilomn = biom_n() + fom_n() + hum_n()
+     initialsurfaceomn = surfaceom_n
+     initialmineraln = no3() + nh4() + urea()
+     endif
+     if (taro2.plant_status <> 'out') then
+        accumplantn =  accumplantn - taro2.rootnuptake
+     endif
+     accummineralisation = accummineralisation + dlt_n_min() + dlt_n_min_res()
+     accumdenit = accumdenit - dnit()
+     accumfert = accumfert + fertiliser
+     accumleach = accumleach - leach_urea - leach_no3 - leach_nh4
+     accumdetach = 0
+     deltasoilomn = (biom_n() + fom_n() + hum_n()) - initialsoilomn
+     deltasurfaceomn = surfaceom_n - initialsurfaceomn
+     deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
+     accumeo = accumeo - eo
+     if (taro2.plant_status <> 'out') then
+        accumep = accumep - taro2.leaftranspiration
+     endif
+     accumes = accumes - es
+     accumdrainage = accumdrainage - drain
+     accumrunoff = accumrunoff - runoff
+     accumoutflowlat = accumoutflowlat - outflow_lat()
+     accumirrigation = accumirrigation + irrigation
+     accumrainfall = accumrainfall + rain
+     soilwaterdeficit =  sw_dep() - dul_dep()
+     if (taro2.plant_status <> 'out') then
+        if taro2.stagecodevalue >= 3 then
+           accumttemerg = accumttemerg + taro2.phenologythermaltimevalue
+        endif
+     endif
+     
+     SECTION:- end_of_day
+     if simday = 1 then
+     simday = 2
+     else simday = 2
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : simday = 1.00000
+     Manager creating a new local real variable : accumplantn = 0.00000
+     Manager creating a new local real variable : accummineralisation = 0.00000
+     Manager creating a new local real variable : accumdenit = 0.00000
+     Manager creating a new local real variable : accumfert = 0.00000
+     Manager creating a new local real variable : accumleach = 0.00000
+     Manager creating a new local real variable : accumdetach = 0.00000
+     Manager creating a new local real variable : deltasoilomn = 0.00000
+     Manager creating a new local real variable : deltasurfaceomn = 0.00000
+     Manager creating a new local real variable : deltasoilmineraln = 0.00000
+     Manager creating a new local real variable : accumeo = 0.00000
+     Manager creating a new local real variable : accumep = 0.00000
+     Manager creating a new local real variable : accumes = 0.00000
+     Manager creating a new local real variable : accumdrainage = 0.00000
+     Manager creating a new local real variable : accumrunoff = 0.00000
+     Manager creating a new local real variable : accumoutflowlat = 0.00000
+     Manager creating a new local real variable : accumirrigation = 0.00000
+     Manager creating a new local real variable : accumrainfall = 0.00000
+     Manager creating a new local real variable : soilwaterdeficit = 0.00000
+     Manager creating a new local real variable : accumttemerg = 0.00000
+
+------- paddock.Micromet Initialisation ---------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- paddock.Soil Water Initialisation -------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.113  0.227  0.529  0.627  0.529  0.860  0.762  0.700  0.000
+          150.-  300.  0.189  0.270  0.556  0.632  0.556  0.840  0.190  0.700  0.000
+          300.-  600.  0.254  0.254  0.512  0.626  0.512  0.860  0.048  0.700  0.000
+          600.-  900.  0.243  0.243  0.525  0.656  0.525  0.780  0.000  0.700  0.000
+          900.- 1200.  0.284  0.284  0.593  0.628  0.593  0.850  0.000  0.700  0.000
+         1200.- 1500.  0.319  0.319  0.591  0.616  0.591  0.890  0.000  0.700  0.000
+         1500.- 1800.  0.271  0.271  0.551  0.642  0.551  0.820  0.000  0.700  0.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      34.05      45.30      45.30      14.70
+          150.-  300.      40.50      42.90      42.90      11.40
+          300.-  600.      76.20      77.40      77.40      34.20
+          600.-  900.      72.90      84.60      84.60      39.30
+          900.- 1200.      85.20      92.70      92.70      10.50
+         1200.- 1500.      95.70      81.60      81.60       7.50
+         1500.- 1800.      81.30      84.00      84.00      27.30
+          ---------------------------------------------------------
+               Totals     485.85     508.50     508.50     144.90
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.12       54.00       28.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            9.00 (mm^0.5)
+            CONA:                     5.00 ()
+            Eo from priestly-taylor
+
+------- paddock.SurfaceOrganicMatter Initialisation ---------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat_stubwheat            0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- paddock.Soil Nitrogen Initialisation ----------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.00  2.80   10.00    3.00    0.00
+             2     7.00  2.40    6.00    2.00    0.00
+             3     7.00  2.40    4.00    1.00    0.00
+             4     7.00  2.40    2.00    0.50    0.00
+             5     7.00  2.10    1.00    0.50    0.00
+             6     7.00  1.20    1.00    0.20    0.00
+             7     7.00  0.70    1.00    0.10    0.00
+          ------------------------------------------------
+           Totals               25.00    7.30    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      35286.5  2822.9   833.5   104.2    27.8     0.7
+             2      29831.0  2386.5   409.0    51.1    21.6     0.5
+             3      61618.0  4929.4   302.0    37.8    13.1     0.3
+             4      56049.9  4484.0   110.1    13.8     8.0     0.2
+             5      53510.4  4280.8    39.6     4.9     4.8     0.1
+             6      32024.1  2561.9    15.9     2.0     2.9     0.1
+             7      17211.5  1376.9     8.5     1.1     1.8     0.0
+          ---------------------------------------------------------
+           Totals  285531.3 22842.5  1718.7   214.8    80.0     2.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+7 April 2014(Day of year=97), paddock.Sow on a fixed date: 
+     Manager sending message :- taro2 sow  population = 1, depth = 1, cultivar = tarapatan, maxcover = 1.0, budnumber = 1, row_spacing = 1000, crop_class =
+7 April 2014(Day of year=97), paddock.Diagnostic variables: 
+     Manager creating a new local real variable : initialsoilomn = 23059.33984
+     Manager creating a new local real variable : initialsurfaceomn = 0.00000
+     Manager creating a new local real variable : initialmineraln = 32.30484
+8 April 2014 - Germination
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+11 April 2014 - Peeping
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+15 April 2014 - FirstLeafUnfurled
+                            LAI = 0.05 (m^2/m^2)
+           Above Ground Biomass = 1.92 (g/m^2)
+17 April 2014(Day of year=107), paddock.Operations Schedule: 
+      Sending apply message to fertiliser
+17 April 2014(Day of year=107), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       138.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+22 May 2014 - StartRapidGrowth
+                            LAI = 0.54 (m^2/m^2)
+           Above Ground Biomass = 33.96 (g/m^2)
+10 July 2014(Day of year=191), paddock.Operations Schedule: 
+      Sending apply message to fertiliser
+10 July 2014(Day of year=191), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        32.50 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+13 July 2014 - StartCormGrowth
+                            LAI = 1.24 (m^2/m^2)
+           Above Ground Biomass = 131.48 (g/m^2)
+21 January 2015(Day of year=21), paddock.Operations Schedule: 
+      Sending  message to
+      Sending  message to
+23 January 2015 - PlateauCormGrowth
+                            LAI = 4.40 (m^2/m^2)
+           Above Ground Biomass = 810.77 (g/m^2)
+24 January 2015 - HarvestReady
+                            LAI = 4.19 (m^2/m^2)
+           Above Ground Biomass = 810.38 (g/m^2)
+24 January 2015(Day of year=24), paddock.Harvesting rule Taro2: 
+     Manager sending message :- taro2 harvest
+     Manager sending message :- taro2 endcrop
+31 January 2015(Day of year=31), clock: 
+     Simulation is terminating due to end criteria being met.
+

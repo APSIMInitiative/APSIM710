@@ -1,4 +1,4 @@
-<Type version="36" creator="Apsim 7.8-r3974" name="Taro2">
+<Type version="36" creator="Apsim 7.8-r3988" name="Taro2">
   <MetaData>
     <UItype>CSUserInterface.EmptyUI</UItype>
     <IsCrop>Yes</IsCrop>
@@ -514,16 +514,6 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           <Value type="text" description="Value">.8</Value>
           <Memo>This sets the proportion of NonStructural Wt that can be remobilised each day.</Memo>
         </Constant>
-        <LinearInterpolationFunction name="yHeight">
-          <XProperty type="text" description="XProperty">ThermalTime</XProperty>
-          <Memo>This function defines the potential hight of the canopy<Memo>This function defines the potential hight of the canopy</Memo></Memo>
-          <XYPairs>
-            <XY>0 0</XY>
-            <XY>1880 1100</XY>
-            <XY>3470 1160</XY>
-            <XY>4100 930</XY>
-          </XYPairs>
-        </LinearInterpolationFunction>
         <LinearInterpolationFunction name="FrostFraction">
           <XProperty>Met.MinT</XProperty>
           <XYPairs>
@@ -543,47 +533,6 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         <Constant name="InitialNConc">
           <Value type="text" description="Value">0.063</Value>
         </Constant>
-        <LinearInterpolationFunction name="xSpecificLeafAreaMax1">
-          <XProperty type="text" description="XProperty">Leaf.LAI</XProperty>
-          <XYPairs>
-            <XY>0 13100</XY>
-            <XY>30 200000</XY>
-          </XYPairs>
-          <Memo>The Maximum SLA set the lowest density the leaves can become and is used to calculate Structural DM demand as DeltaPotentialArea / SpecificLeafAreaMax.  </Memo>
-        </LinearInterpolationFunction>
-        <LinearInterpolationFunction name="SxpecificLeafAreaMin1">
-          <XProperty type="text" description="XProperty">Structure.MainStemNodeNo</XProperty>
-          <XYPairs>
-            <XY>0 12000</XY>
-            <XY>30 190000</XY>
-          </XYPairs>
-          <Memo>sets the maximum density that leaves can obtain and sets up the potential size of the Non-Structural pool.  If leaf is partitioned enough DM to meet Structural and Metabolic Demands its SLA will be (DeltaStructuralWt * SpecificLeafAreaMax)/(DeltaStructuralWt* 1/StructuralFraction).  However, if there is surpless DM after all organs are allocated their DM demands it will be partitioned back to the leaf (assuming this would actually be stored as sugar of starch in such a situation) and the leaves can become more dense until they reach SpecificLeafAreaMin.  If leaf area expansion is constrained by water stress leaves will also get more dense until they reach SpecificLeafAreaMin.  Once leaves reach SpecificLeafAreaMin they can not absorb any further excess DM and if there are no other DM sinks available the leaf will discard potential biomass production, assuming that in this situation the leaf would down regulate photosynthesis due to source limitation.</Memo>
-          <LinearInterpolationFunction name="SpecificLeafAreaMin">
-            <XProperty type="text" description="XProperty">Structure.MainStemNodeNo</XProperty>
-            <XYPairs>
-              <XY>0 12000</XY>
-              <XY>30 190000</XY>
-            </XYPairs>
-            <Memo>sets the maximum density that leaves can obtain and sets up the potential size of the Non-Structural pool.  If leaf is partitioned enough DM to meet Structural and Metabolic Demands its SLA will be (DeltaStructuralWt * SpecificLeafAreaMax)/(DeltaStructuralWt* 1/StructuralFraction).  However, if there is surpless DM after all organs are allocated their DM demands it will be partitioned back to the leaf (assuming this would actually be stored as sugar of starch in such a situation) and the leaves can become more dense until they reach SpecificLeafAreaMin.  If leaf area expansion is constrained by water stress leaves will also get more dense until they reach SpecificLeafAreaMin.  Once leaves reach SpecificLeafAreaMin they can not absorb any further excess DM and if there are no other DM sinks available the leaf will discard potential biomass production, assuming that in this situation the leaf would down regulate photosynthesis due to source limitation.</Memo>
-          </LinearInterpolationFunction>
-        </LinearInterpolationFunction>
-        <StageBasedInterpolation name="MinimumNConc1">
-          <Stages type="text" description="Stages">Germination Peeping FirstLeafUnfurled StartRapidGrowth StartCormGrowth PlateauCormGrowth HarvestReady</Stages>
-          <Values type="text" description="Values">   0.025      0.025     0.021            0.016    0.010       0.0075       0.005 </Values>
-          <Memo>The MinimumNconc determins the organs essential N demand.  Essential N Demand is N is set by Live.Wt * MinimumNConc and is N the organ must take up to achieve its potential growth.  If the organ is not supplied with sufficient N to maintain MinimunNConc its growth will be constrained by the arbitrator.  All N taken up to MinimunNConc is placed in the StructuralPool and is not mobile</Memo>
-        </StageBasedInterpolation>
-        <StageBasedInterpolation name="CriticalNConc1">
-          <Stages type="text" description="Stages">Germination Peeping FirstLeafUnfurled StartRapidGrowth StartCormGrowth PlateauCormGrowth HarvestReady</Stages>
-          <Values type="text" description="Values">    0.063     0.063     0.037     0.037       0.037     0.037       0.037</Values>
-          <Memo>Returns value interpolated between the specified values depending on the progress between phases </Memo>
-          <Memo name="Memo1">The CriticalNconc determins the leaves essential N demand for metabolic N.  MetabolicN is essential for leaf growth and is N the leaves must take up this N to achieve its potential growth.  If the leaf is not supplied with sufficient N to achieve CriticalNConc its growth will be constrained.  N taken up between CriticalNConc and MinimumNConc is placed in the MetabolicPool and is may be remobolised or reallocated</Memo>
-          <Memo name="Memo2">Sets the amount of Metabolic N that is required.  MetabolicN conc = ((CritNC - (MinNC * StructuralFraction)) * (1 / (1 - StructuralFraction)).  The value of MetabolicNConc will change with structural fraction so that the leaf aims to reach its critical N concentration.  If the arbitrator does not partition the leaf enough N to reach CriticalNConc the biomass growth of the leaf will be constrained.  MetabolicN is available for retranslocation to other growing organs.  This only occurs under sever N shortage and begins with the oldest cohorts.  This N is also available of reallocation when the leaf is senesing from age or shading.</Memo>
-        </StageBasedInterpolation>
-        <StageBasedInterpolation name="MaximumNConc1">
-          <Stages type="text" description="Stages">Germination Peeping FirstLeafUnfurled StartRapidGrowth StartCormGrowth PlateauCormGrowth HarvestReady </Stages>
-          <Values type="text" description="Values">    0.063     0.063     0.037     0.037       0.037     0.037       0.037</Values>
-          <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the MinimumNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - MinimumNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation.</Memo>
-        </StageBasedInterpolation>
       </Leaf>
       <GenericAboveGroundOrgan name="Corm">
         <Memo>The generic organ has 6 optional paramaters.  If you wish to override the defaults values specified below drop a function onto this organ and name and set accordingly
@@ -608,12 +557,6 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           <StageBasedInterpolation name="PartitionFraction">
             <Stages type="text" description="Stages">Germination Peeping FirstLeafUnfurled StartRapidGrowth StartCormGrowth PlateauCormGrowth HarvestReady </Stages>
             <Values type="text" description="Values">    0.0           0.015        0.015                    0.1                     0.1                     0.3                              0.015 </Values>
-            <Memo>Returns value interpolated between the specified values depending on the progress between phases </Memo>
-            <Memo name="Memo1"> DMDemandFunction sets demand for structural DM.  This is passed to the arbitrator which determines the eventual allocation</Memo>
-          </StageBasedInterpolation>
-          <StageBasedInterpolation name="OriginalPartitionFraction1">
-            <Stages type="text" description="Stages">Germination Peeping FirstLeafUnfurled StartRapidGrowth StartCormGrowth PlateauCormGrowth HarvestReady </Stages>
-            <Values type="text" description="Values">    0.0           0.015        0.015                    0.1                     0.1                      0.1                               0.015 </Values>
             <Memo>Returns value interpolated between the specified values depending on the progress between phases </Memo>
             <Memo name="Memo1"> DMDemandFunction sets demand for structural DM.  This is passed to the arbitrator which determines the eventual allocation</Memo>
           </StageBasedInterpolation>
@@ -713,14 +656,412 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
         <Property>Organs[].Dead</Property>
       </CompositeBiomass>
     </Plant>
-    <Cultivar name="Tarapatan">
+    <Cultivar name="Tausala">    
+    <Memo>Fiji</Memo>	
       <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
-    <Cultivar name="Tausala">
-      <Construct type="text" description="Construct">Plant</Construct>
-    </Cultivar>
+      <Override name="Phenology.ThermalTime">
+        <XYPairs>
+          <XY type="text" description="XY">10 0</XY>
+          <XY type="text" description="XY">34 24</XY>
+          <XY type="text" description="XY">42 0</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Phenology.FirstLeafEmergence.Target">
+        <Value type="text" description="Value">155</Value>
+      </Override>
+      <Override name="Phenology.Establishment.Target">
+        <Value type="text" description="Value">323</Value>
+      </Override>
+      <Override name="Phenology.RapidVegGrowth.Target">
+        <Value type="text" description="Value">677</Value>
+      </Override>
+      <Override name="Phenology.RapidCormGrowth.Target">
+        <Value type="text" description="Value">2184</Value>
+      </Override>
+      <Override name="Phenology.Maturation.Target">
+        <Value type="text" description="Value">1333</Value>
+      </Override>
+      <Override name="Structure.MainStemPrimordiaInitiationRate.Function">
+        <Value type="text" description="Value">136</Value>
+      </Override>
+      <Override name="Structure.MainStemNodeAppearanceRate.Phyllochron">
+        <XYPairs>
+          <XY type="text" description="XY">1 136</XY>
+          <XY type="text" description="XY">30 136</XY>
+        </XYPairs>
+      </Override>      
+      <Override name="Structure.MainStemFinalNodeNumber">
+        <Value type="text" description="Value">32</Value>
+      </Override>
+      <Override name="Structure.Height">
+        <XYPairs>
+          <XY type="text" description="XY">3 100</XY>
+          <XY type="text" description="XY">6 1150</XY>
+        </XYPairs>
+      </Override>      
+      <Override name="Structure.BranchingRate.Potential_Branching_Rate">
+        <XYPairs>
+          <XY type="text" description="XY">0 0</XY>
+          <XY type="text" description="XY">15 0.1</XY>
+          <XY type="text" description="XY">16 0</XY>
+          <XY type="text" description="XY">19 0</XY>
+          <XY type="text" description="XY">20 0</XY>
+          <XY type="text" description="XY">32 0</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Structure.BranchingRate.Cover_response">
+        <XYPairs>
+          <XY type="text" description="XY">0 1</XY>
+          <XY type="text" description="XY">0.17 1</XY>
+          <XY type="text" description="XY">0.25 1</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.InitialLeaves[2]">
+        <Area type="text" description="Area">30000</Area>
+      </Override>
+      <Override name="Leaf.InitialLeaves[3]">
+        <Area type="text" description="Area">90000</Area>
+      </Override>
+      <Override name="Leaf.MaxArea">
+        <XYPairs>
+          <XY type="text" description="XY">4 120000</XY>
+          <XY type="text" description="XY">9 220000</XY>
+          <XY type="text" description="XY">12 320000</XY>
+          <XY type="text" description="XY">20 1220000</XY>
+          <XY type="text" description="XY">24 1220000</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.LagDuration">
+        <XYPairs>
+          <XY type="text" description="XY">1 558</XY>
+          <XY type="text" description="XY">32 267</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.SenescenceDuration">
+        <XYPairs>
+          <XY type="text" description="XY">5 150</XY>
+          <XY type="text" description="XY">30 150</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.Photosynthesis.RUE">
+        <Value type="text" description="Value">1.2</Value>
+      </Override>
+      <Override name="Leaf.SpecificLeafAreaMax">
+        <XYPairs>
+          <XY type="text" description="XY">0 32000</XY>
+          <XY type="text" description="XY">4 32000</XY>
+          <XY type="text" description="XY">9 32000</XY>
+          <XY type="text" description="XY">12 32000</XY>
+          <XY type="text" description="XY">20 42000</XY>
+          <XY type="text" description="XY">24 36000</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.SpecificLeafAreaMin">
+        <XYPairs>
+          <XY type="text" description="XY">0 15000</XY>
+          <XY type="text" description="XY">4 15000</XY>
+          <XY type="text" description="XY">9 15000</XY>
+          <XY type="text" description="XY">12 15000</XY>
+          <XY type="text" description="XY">20 15000</XY>
+          <XY type="text" description="XY">24 15000</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Corm.SenescenceRateFunction.PostPeeping.Function">
+        <Value type="text" description="Value">0.0</Value>
+      </Override>
+      <Override name="Corm.SenescenceRateFunction.PostPlateauCormGrowth.Function">
+        <Value type="text" description="Value">0.0</Value>
+      </Override>
+    </Cultivar>    
     <Cultivar name="Lauila">
+    <Memo> Tonga </Memo>
       <Construct type="text" description="Construct">Plant</Construct>
+      <Override name="Phenology.RootFormation">
+        <ShootRate type="text" description="ShootRate">83</ShootRate>
+      </Override>
+      <Override name="Phenology.FirstLeafEmergence.Target">
+        <Value type="text" description="Value">71</Value>
+      </Override>
+      <Override name="Phenology.Establishment.Target">
+        <Value type="text" description="Value">496</Value>
+      </Override>
+      <Override name="Phenology.RapidVegGrowth.Target">
+        <Value type="text" description="Value">420</Value>
+      </Override>
+      <Override name="Phenology.RapidCormGrowth.Target">
+        <Value type="text" description="Value">2730</Value>
+      </Override>
+      <Override name="Structure.MainStemPrimordiaInitiationRate.Function">
+        <Value type="text" description="Value">105</Value>
+      </Override>
+      <Override name="Structure.MainStemNodeAppearanceRate.Phyllochron">
+        <XYPairs>
+          <XY type="text" description="XY">1 105</XY>
+          <XY type="text" description="XY">30 105</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Structure.MainStemFinalNodeNumber">
+        <Value type="text" description="Value">47</Value>
+      </Override>
+      <Override name="Structure.BranchingRate.Potential_Branching_Rate">
+        <XYPairs>
+          <XY type="text" description="XY">0 0</XY>
+          <XY type="text" description="XY">36 1</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.InitialLeaves[1]">
+        <Area type="text" description="Area">14000</Area>
+      </Override>
+      <Override name="Leaf.GrowthDuration">
+        <XYPairs>
+          <XY type="text" description="XY">1 79</XY>
+          <XY type="text" description="XY">10 79</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.MaxArea">
+        <XYPairs>
+          <XY type="text" description="XY">1 14600</XY>
+          <XY type="text" description="XY">8 140000</XY>
+          <XY type="text" description="XY">16 282160</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.LagDuration">
+        <XYPairs>
+          <XY type="text" description="XY">1 338</XY>
+          <XY type="text" description="XY">30 338</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.SenescenceDuration">
+        <XYPairs>
+          <XY type="text" description="XY">5 97</XY>
+          <XY type="text" description="XY">30 97</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.DetachmentLagDuration">
+        <value type="text" description="value">120</value>
+      </Override>
+      <Override name="Leaf.ExtinctionCoeff">
+        <XYPairs>
+          <XY type="text" description="XY">0 0.83</XY>
+          <XY type="text" description="XY">0.45 0.83</XY>
+          <XY type="text" description="XY">1 0.83</XY>
+          <XY type="text" description="XY">4.5 0.83</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.Photosynthesis.RUE">
+        <value type="text" description="value">1.7</value>
+      </Override>
+      <Override name="Leaf.Photosynthesis.FW">
+        <XYPairs>
+          <XY type="text" description="XY">0 0</XY>
+          <XY type="text" description="XY">0.7 1</XY>
+          <XY type="text" description="XY">1.5 1</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.SpecificLeafAreaMax">
+        <XYPairs>
+          <XY type="text" description="XY">0 9000</XY>
+          <XY type="text" description="XY">4 9000</XY>
+          <XY type="text" description="XY">9 9000</XY>
+          <XY type="text" description="XY">12 9000</XY>
+          <XY type="text" description="XY">20 9000</XY>
+          <XY type="text" description="XY">24 9000</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.SpecificLeafAreaMin">
+        <XYPairs>
+          <XY type="text" description="XY">0 5551</XY>
+          <XY type="text" description="XY">4 5551</XY>
+          <XY type="text" description="XY">9 5551</XY>
+          <XY type="text" description="XY">12 5551</XY>
+          <XY type="text" description="XY">20 5551</XY>
+          <XY type="text" description="XY">24 5551</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.MinimumNConc">
+        <Values type="text" description="Values">0.035  0.035  0.035  0.035  0.035  0.035  0.035</Values>
+      </Override>
+      <Override name="Leaf.CriticalNConc">
+        <Values type="text" description="Values">0.063  0.063  0.047  0.047  0.047  0.047  0.047</Values>
+      </Override>
+      <Override name="Leaf.MaximumNConc">
+        <Values type="text" description="Values">0.063  0.063  0.055  0.055  0.055  0.055  0.055</Values>
+      </Override>
+      <Override name="Corm.DMDemandFunction.PartitionFraction">
+        <Values type="text" description="Values">0.0  0.015  0.015  0.1  0.1  0.3  0.015</Values>
+      </Override>
+      <Override name="Corm.MaximumNConc">
+        <Values type="text" description="Values">0.05  0.05  0.022  0.022  0.022  0.022  0.022</Values>
+      </Override>
+      <Override name="Corm.MinimumNConc">
+        <Values type="text" description="Values">0.005  0.005  0.005  0.005</Values>
+      </Override>
+      <Override name="Corm.StructuralFraction.Early.Function">
+        <Value type="text" description="Value">0</Value>
+      </Override>
+      <Override name="Corm.StructuralFraction.Middle.Function">
+        <Value type="text" description="Value">0.1</Value>
+      </Override>
+      <Override name="Corm.StructuralFraction.Late.Function">
+        <Value type="text" description="Value">0.1</Value>
+      </Override>
+      <Override name="Corm.DMRetranslocationFactor">
+        <Value type="text" description="Value">0.5</Value>
+      </Override>
     </Cultivar>
+    <Cultivar name="Tarapatan">    
+    <Memo> Vanuatu </Memo>
+      <Construct type="text" description="Construct">Plant</Construct>
+      <Override name="Phenology.RootFormation">
+        <ShootRate type="text" description="ShootRate">50</ShootRate>
+      </Override>
+      <Override name="Phenology.FirstLeafEmergence.Target">
+        <Value type="text" description="Value">67</Value>
+      </Override>
+      <Override name="Phenology.Establishment.Target">
+        <Value type="text" description="Value">583</Value>
+      </Override>
+      <Override name="Phenology.RapidVegGrowth.Target">
+        <Value type="text" description="Value">800</Value>
+      </Override>
+      <Override name="Phenology.RapidCormGrowth.Target">
+        <Value type="text" description="Value">3000</Value>
+      </Override>
+      <Override name="Structure.MainStemPrimordiaInitiationRate.Function">
+        <Value type="text" description="Value">128</Value>
+      </Override>
+      <Override name="Structure.MainStemNodeAppearanceRate.Phyllochron">
+        <XYPairs>
+          <XY type="text" description="XY">1 128</XY>
+          <XY type="text" description="XY">30 128</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Structure.MainStemFinalNodeNumber">
+        <Value type="text" description="Value">40</Value>
+      </Override>
+      <Override name="Structure.BranchingRate.Potential_Branching_Rate">
+        <XYPairs>
+          <XY type="text" description="XY">0 0</XY>
+          <XY type="text" description="XY">4 0</XY>
+          <XY type="text" description="XY">5 0</XY>
+          <XY type="text" description="XY">6 0</XY>
+          <XY type="text" description="XY">7 0</XY>
+          <XY type="text" description="XY">34 0</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.InitialLeaves[1]">
+        <Area type="text" description="Area">10000</Area>
+      </Override>
+      <Override name="Leaf.GrowthDuration">
+        <XYPairs>
+          <XY type="text" description="XY">1 67</XY>
+          <XY type="text" description="XY">10 67</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.MaxArea">
+        <XYPairs>
+          <XY type="text" description="XY">4 120000</XY>
+          <XY type="text" description="XY">9 220000</XY>
+          <XY type="text" description="XY">12 320000</XY>
+          <XY type="text" description="XY">20 1220000</XY>
+          <XY type="text" description="XY">24 1220000</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.LagDuration">
+        <XYPairs>
+          <XY type="text" description="XY">1 572</XY>
+          <XY type="text" description="XY">30 572</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.SenescenceDuration">
+        <XYPairs>
+          <XY type="text" description="XY">5 150</XY>
+          <XY type="text" description="XY">30 150</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.DetachmentLagDuration">
+        <value type="text" description="value">45</value>
+      </Override>
+      <Override name="Leaf.ExtinctionCoeff">
+        <XYPairs>
+          <XY type="text" description="XY">0 0.68</XY>
+          <XY type="text" description="XY">0.45 0.68</XY>
+          <XY type="text" description="XY">1 0.68</XY>
+          <XY type="text" description="XY">4.5 0.68</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.Photosynthesis.RUE">
+        <value type="text" description="value">1.5</value>
+      </Override>
+      <Override name="Leaf.Photosynthesis.FW">
+        <XYPairs>
+          <XY type="text" description="XY">0 0</XY>
+          <XY type="text" description="XY">0.4 1</XY>
+          <XY type="text" description="XY">1.5 1</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.SpecificLeafAreaMax">
+        <XYPairs>
+          <XY type="text" description="XY">0 32000</XY>
+          <XY type="text" description="XY">4 32000</XY>
+          <XY type="text" description="XY">9 24000</XY>
+          <XY type="text" description="XY">12 18000</XY>
+          <XY type="text" description="XY">20 42000</XY>
+          <XY type="text" description="XY">24 36000</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.SpecificLeafAreaMin">
+        <XYPairs>
+          <XY type="text" description="XY">0 15000</XY>
+          <XY type="text" description="XY">4 15000</XY>
+          <XY type="text" description="XY">9 15000</XY>
+          <XY type="text" description="XY">12 15000</XY>
+          <XY type="text" description="XY">20 15000</XY>
+          <XY type="text" description="XY">24 15000</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.MinimumNConc">
+        <Values type="text" description="Values">0.025  0.025  0.021  0.016  0.010  0.0075  0.005</Values>
+      </Override>
+      <Override name="Leaf.CriticalNConc">
+        <Values type="text" description="Values">0.063  0.063  0.037  0.037  0.037  0.037  0.037</Values>
+      </Override>
+      <Override name="Leaf.MaximumNConc">
+        <Values type="text" description="Values">0.063  0.063  0.037  0.037  0.037  0.037  0.037</Values>
+      </Override>
+      <Override name="Corm.DMDemandFunction.PartitionFraction">
+        <Values type="text" description="Values">0.0  0.015  0.015  0.1  0.1  0.1  0.015</Values>
+      </Override>
+      <Override name="Corm.MaximumNConc">
+        <Values type="text" description="Values">0.05  0.05  0.02  0.02  0.015  0.015  0.014</Values>
+      </Override>
+      <Override name="Corm.MinimumNConc">
+        <Values type="text" description="Values">0.003  0.003  0.003  0.003</Values>
+      </Override>
+      <Override name="Corm.StructuralFraction.Early.Function">
+        <Value type="text" description="Value">0.5</Value>
+      </Override>
+      <Override name="Corm.StructuralFraction.Middle.Function">
+        <Value type="text" description="Value">0.5</Value>
+      </Override>
+      <Override name="Corm.StructuralFraction.Late.Function">
+        <Value type="text" description="Value">0.5</Value>
+      </Override>
+      <Override name="Corm.DMRetranslocationFactor">
+        <Value type="text" description="Value">0</Value>
+      </Override>
+      <Override name="Root.SenescenceRateFunction.PostPeeping.Function">
+        <Value type="text" description="Value">0</Value>
+      </Override>
+      <Override name="Root.SenescenceRateFunction.PostPlateauCormGrowth.Function">
+        <Value type="text" description="Value">0</Value>
+      </Override>
+      <Override name="Corm.SenescenceRateFunction.PostPeeping.Function">
+        <Value type="text" description="Value">0</Value>
+      </Override>
+      <Override name="Corm.SenescenceRateFunction.PostPlateauCormGrowth.Function">
+        <Value type="text" description="Value">0</Value>
+      </Override>	
+    </Cultivar>    
   </Model>
 </Type>
