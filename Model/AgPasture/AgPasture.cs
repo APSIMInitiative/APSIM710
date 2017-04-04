@@ -1638,7 +1638,13 @@ public class AgPasture
 
         ////- Root depth and distribution >>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         if (rootDepth.Length < NumSpecies)
-            breakCode("rootDepth");
+        {
+            // Assume a minimum dm root in case the initial DM is not supplied (usefull when user defines 'extra species')
+            int baseLength = rootDepth.Length;
+            Array.Resize(ref rootDepth, NumSpecies);
+            for (int i = baseLength - 1; i < NumSpecies; i++)
+                rootDepth[i] = 500.0;
+        }
         if (RootDistributionDepthParam.Length < NumSpecies)
             breakCode("ExpoLinearDepthParam");
         if (RootDistributionExponent.Length < NumSpecies)
@@ -1662,9 +1668,21 @@ public class AgPasture
 
         ////- Harvest limits and preferences >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         if (dmshoot.Length < NumSpecies)
-            breakCode("dmshoot");
+        {
+            // Assume a minimum dm shoot in case the initial DM is not supplied (usefull when user defines 'extra species')
+            int baseLength = dmshoot.Length;
+            Array.Resize(ref dmshoot, NumSpecies);
+            for (int i = baseLength - 1; i < NumSpecies; i++)
+                dmshoot[i] = 500.0;
+        }
         if (dmroot.Length < NumSpecies)
-            breakCode("dmroot");
+        {
+            // Assume a minimum dm root in case the initial DM is not supplied (usefull when user defines 'extra species')
+            int baseLength = dmroot.Length;
+            Array.Resize(ref dmroot, NumSpecies);
+            for (int i = baseLength - 1; i < NumSpecies; i++)
+                dmroot[i] = 100.0;
+        }
         if (MinimumGreenWt.Length < NumSpecies)
             breakCode("MinimumGreenWt");
         if (FractionStolonsStanding.Length < NumSpecies)
@@ -1865,7 +1883,7 @@ public class AgPasture
         mySpecies[s1].roots.MinimumGreenDM = MinimumGreenWt[s2] * 0.50;
         mySpecies[s1].stolons.FractionStanding = FractionStolonsStanding[s2];
         mySpecies[s1].myPreferenceForGreenOverDead = PreferenceForGreenOverDead[s2];
-        mySpecies[s2].myPreferenceForLeafOverStems = PreferenceForLeafOverStems[s2];
+        mySpecies[s1].myPreferenceForLeafOverStems = PreferenceForLeafOverStems[s2];
         if ((mySpecies[s1].myPreferenceForGreenOverDead < Epsilon) || (mySpecies[s1].myPreferenceForGreenOverDead < Epsilon))
             throw new Exception("Relative preferences for green or leaf DM cannot be set to zero");
 

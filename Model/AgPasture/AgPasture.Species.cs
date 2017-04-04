@@ -953,6 +953,12 @@ public class Species
         dmdefoliated = 0.0;
         Ndefoliated = 0.0;
         digestDefoliated = 0.0;
+
+        dDMLitter = 0.0;
+        dNLitter = 0.0;
+        dDMRootSen = 0.0;
+        dNRootSen = 0.0;
+
         leaves.DoCleanTransferAmounts();
         stems.DoCleanTransferAmounts();
         stolons.DoCleanTransferAmounts();
@@ -1465,9 +1471,6 @@ public class Species
     /// <summary>Partition DM from new growth</summary>
     internal void EvaluateAllocationNewGrowth()
     {
-        if (double.IsNaN(dGrowth))
-            System.Diagnostics.Debugger.Break();
-
         if (dGrowth > Epsilon) // if no net growth, then skip "partition" part
         {
             // fShoot and fLeaf were calculated on CalcNdemand()
@@ -1860,19 +1863,21 @@ public class Species
             // compute new target fLeaf
             double fLeafAux = (AboveGroundLiveWt - myFractionLeafDMThreshold) / (myFractionLeafDMFactor - myFractionLeafDMThreshold);
             fLeafAux = Math.Pow(fLeafAux, myFractionLeafExponent);
-            targetFLeaf = myFractionLeafMinimum + (myFractionLeafMaximum - myFractionLeafMinimum) / (1 + fLeafAux);
+            targetFLeaf = myFractionLeafMinimum + (myFractionLeafMaximum - myFractionLeafMinimum) / (1.0 + fLeafAux);
         }
 
         // get today's target leaf:stem ratio
-        double targetLS = targetFLeaf / (1 - targetFLeaf);
+        double targetLS = targetFLeaf / (1.0 - targetFLeaf);
 
         // get current leaf:stem ratio
         double currentLS = leaves.DMGreen / (stems.DMGreen + stolons.DMGreen);
+        if (leaves.DMGreen < Epsilon)
+            currentLS = 0.0;
 
         // adjust leaf:stem ratio, to avoid excess allocation to stem/stolons
-        double newLS = targetLS * targetLS / currentLS;
+        double newLS = Math.Min(1.0 / Epsilon, targetLS * targetLS / currentLS);
 
-        LeafAllocationFactor = newLS / (1 + newLS);
+        LeafAllocationFactor = newLS / (1.0 + newLS);
     }
 
     /// <summary>Calculates variations in root growth and distribution</summary>

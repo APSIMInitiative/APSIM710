@@ -1,0 +1,850 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.8
+Title                  = TestSim
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component       "LightGenericSoil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component    "LightGenericSoil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+   Component                      "Grazing" = %apsim%\Model\Manager2.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component       "LightGenericSoil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component    "LightGenericSoil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                    "AgPasture" = %apsim%\Model\AgPasture.dll
+   Component                      "Grazing" = %apsim%\Model\Manager2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/07/1980
+     Simulation end date   = 30/06/1981
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\lincoln.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        Species_name
+        TotalWt
+        StandingHerbageWt
+        HerbageGrowthWt
+        HarvestedWt
+        SpeciesProportionStanding
+
+     Output file = TestSim Paddock1.out
+     Format = normal
+
+------- Paddock1.accum Initialisation -----------------------------------------
+     Initialising
+
+------- Paddock1.Irrigation Initialisation ------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Paddock1.Micromet Initialisation --------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Paddock1.LightGenericSoil Water Initialisation ------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     12000.00
+             exceeds upper limit of    7200.000
+     Component name: Paddock1.LightGenericSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     18000.00
+             exceeds upper limit of    7200.000
+     Component name: Paddock1.LightGenericSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     24000.00
+             exceeds upper limit of    7200.000
+     Component name: Paddock1.LightGenericSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.050  0.135  0.300  0.420  0.300  1.200  0.762  0.450*******
+          150.-  350.  0.120  0.125  0.275  0.380  0.275  1.150  0.214  0.500*******
+          350.-  550.  0.075  0.075  0.175  0.265  0.175  0.850  0.024  0.450*******
+          550.-  800.  0.013  0.013  0.060  0.150  0.060  0.450  0.000  0.600*******
+          800.- 1100.  0.003  0.003  0.030  0.120  0.030  0.350  0.000  0.650*******
+         1100.- 1500.  0.002  0.002  0.025  0.100  0.025  0.250  0.000  0.650*******
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      20.25      24.75      24.75      18.00
+          150.-  350.      25.00      30.00      30.00      21.00
+          350.-  550.      15.00      20.00      20.00      18.00
+          550.-  800.       3.25      11.75      11.75      22.50
+          800.- 1100.       0.90       8.10       8.10      27.00
+         1100.- 1500.       0.80       9.20       9.20      30.00
+          ---------------------------------------------------------
+               Totals      65.20     103.80     103.80     136.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        9.00 (mm)
+                                  Winter        6.00 (mm)
+            Stage 2       (CONA): Summer        4.40 (mm^0.5)
+                                  Winter        3.00 (mm^0.5)
+            Critical Dates:       Summer        1-Oct
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- Paddock1.SurfaceOrganicMatter Initialisation --------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          AgPasture grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Paddock1.LightGenericSoil Nitrogen Initialisation ---------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type NZ_Sedimentary, Silt Loam
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  3.50    9.00    1.80    0.00
+             2     6.00  1.75   11.50    2.30    0.00
+             3     6.00  0.75    3.40    0.85    0.00
+             4     6.00  0.50    2.25    0.56    0.00
+             5     6.00  0.20    1.05    0.11    0.00
+             6     6.00  0.10    1.00    0.10    0.00
+          ------------------------------------------------
+           Totals               28.20    5.72    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      60666.7  5055.6  2333.3   291.7   153.3     3.8
+             2      39898.3  3324.9   351.7    44.0   102.8     2.6
+             3      12731.1  1060.9    18.9     2.4    68.9     1.7
+             4       5620.5   468.4     4.5     0.6    41.8     1.0
+             5       2099.2   174.9     0.8     0.1    22.9     0.6
+             6        999.8    83.3     0.2     0.0    10.3     0.3
+          ---------------------------------------------------------
+           Totals  122015.6 10168.0  2709.4   338.7   400.0    10.0
+          ---------------------------------------------------------
+
+------- AgPasture Initialisation ----------------------------------------------
+
+
+           AgPature Properties
+         -----------------------------------------------------------------------------
+          Species        TotalWt  ShootWt  RootWt   LAI  TotalC   TotalN   RootDepth
+                         (kg/ha)  (kg/ha)  (kg/ha)   () (kg/ha)   (kg/ha)       (mm)
+         -----------------------------------------------------------------------------
+          Ryegrass        1350.0   1000.0   350.0  1.90   540.0     32.9       750.0
+          Whiteclover      400.0    300.0   100.0  0.69   160.0     11.1       350.0
+          TallFescue       400.0    300.0   100.0  0.52   160.0      9.8       550.0
+          Cocksfoot        400.0    300.0   100.0  0.52   160.0      9.8       450.0
+         -----------------------------------------------------------------------------
+          Totals          2550.0   1900.0   650.0  3.62  1020.0     63.5       750.0
+         -----------------------------------------------------------------------------
+
+          - N uptake controlled by AgPasture
+          - Water uptake controlled by AgPasture
+
+
+          Root distribution
+         -----------------------------
+          Layer     Depth  FractionWt
+         -----------------------------
+            0       0-150      0.670
+            1     150-350      0.286
+            2     350-550      0.042
+            3     550-800      0.002
+            4    800-1100      0.000
+            5   1100-1500      0.000
+         -----------------------------
+
+------- Grazing Initialisation ------------------------------------------------
+
+   Harvest rotation for AgPasture initialised
+     rotation rule valid between 01/01/1900 and 31/12/2100
+     rotation type: harvest at regular intervals, every 21 days
+     remove all biomass down to residual DM (1500 kgDM/ha)
+     fraction of harvested DM to return as dung: based on herbage digestibility
+     fraction of harvested N to return as dung & urine: 85.0% (60.0% of it as urine)
+     proportion of urine N to be added in each layer:
+      0.750, 0.250, 0.000, 0.000, 0.000, 0.000
+
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mmm/yyyy as Date
+        Species_name
+        TotalWt
+        StandingHerbageWt
+        HerbageGrowthWt
+        HarvestedWt
+        SpeciesProportionStanding
+
+     Output file = TestSim Paddock2.out
+     Format = normal
+
+------- Paddock2.accum Initialisation -----------------------------------------
+     Initialising
+
+------- Paddock2.Irrigation Initialisation ------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- Paddock2.Micromet Initialisation --------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- Paddock2.LightGenericSoil Water Initialisation ------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     12000.00
+             exceeds upper limit of    7200.000
+     Component name: Paddock2.LightGenericSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     18000.00
+             exceeds upper limit of    7200.000
+     Component name: Paddock2.LightGenericSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     ks =     24000.00
+             exceeds upper limit of    7200.000
+     Component name: Paddock2.LightGenericSoil Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  150.  0.050  0.135  0.300  0.420  0.300  1.200  0.762  0.450*******
+          150.-  350.  0.120  0.125  0.275  0.380  0.275  1.150  0.214  0.500*******
+          350.-  550.  0.075  0.075  0.175  0.265  0.175  0.850  0.024  0.450*******
+          550.-  800.  0.013  0.013  0.060  0.150  0.060  0.450  0.000  0.600*******
+          800.- 1100.  0.003  0.003  0.030  0.120  0.030  0.350  0.000  0.650*******
+         1100.- 1500.  0.002  0.002  0.025  0.100  0.025  0.250  0.000  0.650*******
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      20.25      24.75      24.75      18.00
+          150.-  350.      25.00      30.00      30.00      21.00
+          350.-  550.      15.00      20.00      20.00      18.00
+          550.-  800.       3.25      11.75      11.75      22.50
+          800.- 1100.       0.90       8.10       8.10      27.00
+         1100.- 1500.       0.80       9.20       9.20      30.00
+          ---------------------------------------------------------
+               Totals      65.20     103.80     103.80     136.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        9.00 (mm)
+                                  Winter        6.00 (mm)
+            Stage 2       (CONA): Summer        4.40 (mm^0.5)
+                                  Winter        3.00 (mm^0.5)
+            Critical Dates:       Summer        1-Oct
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- Paddock2.SurfaceOrganicMatter Initialisation --------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          AgPasture grass         1000.0   400.0    26.7     0.0   0.330     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.3
+     
+
+------- Paddock2.LightGenericSoil Nitrogen Initialisation ---------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type NZ_Sedimentary, Silt Loam
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  3.50    9.00    1.80    0.00
+             2     6.00  1.75   11.50    2.30    0.00
+             3     6.00  0.75    3.40    0.85    0.00
+             4     6.00  0.50    2.25    0.56    0.00
+             5     6.00  0.20    1.05    0.11    0.00
+             6     6.00  0.10    1.00    0.10    0.00
+          ------------------------------------------------
+           Totals               28.20    5.72    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      60666.7  5055.6  2333.3   291.7   153.3     3.8
+             2      39898.3  3324.9   351.7    44.0   102.8     2.6
+             3      12731.1  1060.9    18.9     2.4    68.9     1.7
+             4       5620.5   468.4     4.5     0.6    41.8     1.0
+             5       2099.2   174.9     0.8     0.1    22.9     0.6
+             6        999.8    83.3     0.2     0.0    10.3     0.3
+          ---------------------------------------------------------
+           Totals  122015.6 10168.0  2709.4   338.7   400.0    10.0
+          ---------------------------------------------------------
+
+------- AgPasture Initialisation ----------------------------------------------
+
+
+           AgPature Properties
+         -----------------------------------------------------------------------------
+          Species        TotalWt  ShootWt  RootWt   LAI  TotalC   TotalN   RootDepth
+                         (kg/ha)  (kg/ha)  (kg/ha)   () (kg/ha)   (kg/ha)       (mm)
+         -----------------------------------------------------------------------------
+          Ryegrass        1350.0   1000.0   350.0  1.90   540.0     32.9       750.0
+          RedClover        400.0    300.0   100.0  0.69   160.0     11.1       350.0
+          Paspalum         400.0    300.0   100.0  0.52   160.0      7.2       850.0
+          Kikuyu           400.0    300.0   100.0  0.52   160.0      9.8       650.0
+          BrownTop         300.0    200.0   100.0  0.35   120.0      7.2       600.0
+         -----------------------------------------------------------------------------
+          Totals          2850.0   2100.0   750.0  3.97  1140.0     68.2       850.0
+         -----------------------------------------------------------------------------
+
+          - N uptake controlled by AgPasture
+          - Water uptake controlled by AgPasture
+
+
+          Root distribution
+         -----------------------------
+          Layer     Depth  FractionWt
+         -----------------------------
+            0       0-150      0.625
+            1     150-350      0.316
+            2     350-550      0.056
+            3     550-800      0.004
+            4    800-1100      0.000
+            5   1100-1500      0.000
+         -----------------------------
+
+------- Grazing Initialisation ------------------------------------------------
+
+   Harvest rotation for AgPasture initialised
+     rotation rule valid between 01/01/1900 and 31/12/2100
+     rotation type: harvest at regular intervals, every 21 days
+     remove all biomass down to residual DM (1500 kgDM/ha)
+     fraction of harvested DM to return as dung: based on herbage digestibility
+     fraction of harvested N to return as dung & urine: 85.0% (60.0% of it as urine)
+     proportion of urine N to be added in each layer:
+      0.750, 0.250, 0.000, 0.000, 0.000, 0.000
+
+------- Start of simulation  --------------------------------------------------
+ Biomass removed from Ryegrass by grazing: 192.5kg/ha
+ Biomass removed from Whiteclover by grazing: 40.6kg/ha
+ Biomass removed from TallFescue by grazing: 53.5kg/ha
+ Biomass removed from Cocksfoot by grazing: 53.5kg/ha
+01 July 1980 (Day of year=183), Grazing:
+     Removing 340kg DM/ha, with 8.9kg N/ha
+1 July 1980(Day of year=183), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.55 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+ Biomass removed from Ryegrass by grazing: 281.4kg/ha
+ Biomass removed from RedClover by grazing: 61.3kg/ha
+ Biomass removed from Paspalum by grazing: 78.2kg/ha
+ Biomass removed from Kikuyu by grazing: 78.2kg/ha
+ Biomass removed from BrownTop by grazing: 46.9kg/ha
+01 July 1980 (Day of year=183), Grazing:
+     Removing 546kg DM/ha, with 13.7kg N/ha
+1 July 1980(Day of year=183), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.00 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+22 July 1980 (Day of year=204), Grazing:
+     Removing 0kg DM/ha, with 0.0kg N/ha
+22 July 1980 (Day of year=204), Grazing:
+     Removing 0kg DM/ha, with 0.0kg N/ha
+12 August 1980 (Day of year=225), Grazing:
+     Removing 0kg DM/ha, with 0.0kg N/ha
+12 August 1980 (Day of year=225), Grazing:
+     Removing 0kg DM/ha, with 0.0kg N/ha
+02 September 1980 (Day of year=246), Grazing:
+     Removing 0kg DM/ha, with 0.0kg N/ha
+02 September 1980 (Day of year=246), Grazing:
+     Removing 0kg DM/ha, with 0.0kg N/ha
+ Biomass removed from Ryegrass by grazing: 60.6kg/ha
+ Biomass removed from Whiteclover by grazing: 8.3kg/ha
+ Biomass removed from TallFescue by grazing: 8.8kg/ha
+ Biomass removed from Cocksfoot by grazing: 12.9kg/ha
+23 September 1980 (Day of year=267), Grazing:
+     Removing 90kg DM/ha, with 3.6kg N/ha
+23 September 1980(Day of year=267), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.85 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+23 September 1980 (Day of year=267), Grazing:
+     Removing 0kg DM/ha, with 0.0kg N/ha
+ Biomass removed from Ryegrass by grazing: 320.1kg/ha
+ Biomass removed from Whiteclover by grazing: 40.7kg/ha
+ Biomass removed from TallFescue by grazing: 37.4kg/ha
+ Biomass removed from Cocksfoot by grazing: 63.9kg/ha
+14 October 1980 (Day of year=288), Grazing:
+     Removing 462kg DM/ha, with 17.4kg N/ha
+14 October 1980(Day of year=288), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         8.86 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+ Biomass removed from Ryegrass by grazing: 273.8kg/ha
+ Biomass removed from RedClover by grazing: 16.6kg/ha
+ Biomass removed from Paspalum by grazing: 18.7kg/ha
+ Biomass removed from Kikuyu by grazing: 29.5kg/ha
+ Biomass removed from BrownTop by grazing: 29.2kg/ha
+14 October 1980 (Day of year=288), Grazing:
+     Removing 368kg DM/ha, with 15.2kg N/ha
+14 October 1980(Day of year=288), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.74 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+ Biomass removed from Ryegrass by grazing: 528.9kg/ha
+ Biomass removed from Whiteclover by grazing: 74.4kg/ha
+ Biomass removed from TallFescue by grazing: 60.7kg/ha
+ Biomass removed from Cocksfoot by grazing: 102.6kg/ha
+04 November 1980 (Day of year=309), Grazing:
+     Removing 766kg DM/ha, with 24.7kg N/ha
+4 November 1980(Day of year=309), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.61 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+ Biomass removed from Ryegrass by grazing: 548.3kg/ha
+ Biomass removed from RedClover by grazing: 36.5kg/ha
+ Biomass removed from Paspalum by grazing: 17.8kg/ha
+ Biomass removed from Kikuyu by grazing: 50.7kg/ha
+ Biomass removed from BrownTop by grazing: 60.0kg/ha
+04 November 1980 (Day of year=309), Grazing:
+     Removing 713kg DM/ha, with 24.5kg N/ha
+4 November 1980(Day of year=309), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.49 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+ Biomass removed from Ryegrass by grazing: 529.3kg/ha
+ Biomass removed from Whiteclover by grazing: 91.5kg/ha
+ Biomass removed from TallFescue by grazing: 73.8kg/ha
+ Biomass removed from Cocksfoot by grazing: 118.9kg/ha
+25 November 1980 (Day of year=330), Grazing:
+     Removing 814kg DM/ha, with 24.7kg N/ha
+25 November 1980(Day of year=330), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.60 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+ Biomass removed from Ryegrass by grazing: 622.5kg/ha
+ Biomass removed from RedClover by grazing: 54.8kg/ha
+ Biomass removed from Paspalum by grazing: 7.7kg/ha
+ Biomass removed from Kikuyu by grazing: 48.2kg/ha
+ Biomass removed from BrownTop by grazing: 82.3kg/ha
+25 November 1980 (Day of year=330), Grazing:
+     Removing 815kg DM/ha, with 25.3kg N/ha
+25 November 1980(Day of year=330), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.88 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+ Biomass removed from Ryegrass by grazing: 477.4kg/ha
+ Biomass removed from Whiteclover by grazing: 110.7kg/ha
+ Biomass removed from TallFescue by grazing: 90.9kg/ha
+ Biomass removed from Cocksfoot by grazing: 136.2kg/ha
+16 December 1980 (Day of year=351), Grazing:
+     Removing 815kg DM/ha, with 24.1kg N/ha
+16 December 1980(Day of year=351), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.30 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+ Biomass removed from Ryegrass by grazing: 586.0kg/ha
+ Biomass removed from RedClover by grazing: 74.3kg/ha
+ Biomass removed from Paspalum by grazing: 3.5kg/ha
+ Biomass removed from Kikuyu by grazing: 53.6kg/ha
+ Biomass removed from BrownTop by grazing: 102.1kg/ha
+16 December 1980 (Day of year=351), Grazing:
+     Removing 820kg DM/ha, with 24.1kg N/ha
+16 December 1980(Day of year=351), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.28 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+ Biomass removed from Ryegrass by grazing: 425.3kg/ha
+ Biomass removed from Whiteclover by grazing: 136.6kg/ha
+ Biomass removed from TallFescue by grazing: 102.0kg/ha
+ Biomass removed from Cocksfoot by grazing: 124.6kg/ha
+06 January 1981 (Day of year=6), Grazing:
+     Removing 788kg DM/ha, with 24.4kg N/ha
+6 January 1981(Day of year=6), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        12.44 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+ Biomass removed from Ryegrass by grazing: 539.1kg/ha
+ Biomass removed from RedClover by grazing: 109.5kg/ha
+ Biomass removed from Paspalum by grazing: 13.5kg/ha
+ Biomass removed from Kikuyu by grazing: 115.6kg/ha
+ Biomass removed from BrownTop by grazing: 104.3kg/ha
+06 January 1981 (Day of year=6), Grazing:
+     Removing 882kg DM/ha, with 26.1kg N/ha
+6 January 1981(Day of year=6), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        13.29 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+ Biomass removed from Ryegrass by grazing: 217.3kg/ha
+ Biomass removed from Whiteclover by grazing: 79.6kg/ha
+ Biomass removed from TallFescue by grazing: 58.6kg/ha
+ Biomass removed from Cocksfoot by grazing: 58.3kg/ha
+27 January 1981 (Day of year=27), Grazing:
+     Removing 414kg DM/ha, with 14.7kg N/ha
+27 January 1981(Day of year=27), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         7.52 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+ Biomass removed from Ryegrass by grazing: 309.7kg/ha
+ Biomass removed from RedClover by grazing: 83.0kg/ha
+ Biomass removed from Paspalum by grazing: 19.1kg/ha
+ Biomass removed from Kikuyu by grazing: 133.5kg/ha
+ Biomass removed from BrownTop by grazing: 57.5kg/ha
+27 January 1981 (Day of year=27), Grazing:
+     Removing 603kg DM/ha, with 19.5kg N/ha
+27 January 1981(Day of year=27), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         9.95 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+ Biomass removed from Ryegrass by grazing: 38.0kg/ha
+ Biomass removed from Whiteclover by grazing: 14.9kg/ha
+ Biomass removed from TallFescue by grazing: 11.1kg/ha
+ Biomass removed from Cocksfoot by grazing: 8.9kg/ha
+17 February 1981 (Day of year=48), Grazing:
+     Removing 73kg DM/ha, with 3.0kg N/ha
+17 February 1981(Day of year=48), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.52 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+ Biomass removed from Ryegrass by grazing: 146.0kg/ha
+ Biomass removed from RedClover by grazing: 47.5kg/ha
+ Biomass removed from Paspalum by grazing: 17.2kg/ha
+ Biomass removed from Kikuyu by grazing: 120.0kg/ha
+ Biomass removed from BrownTop by grazing: 23.7kg/ha
+17 February 1981 (Day of year=48), Grazing:
+     Removing 354kg DM/ha, with 12.9kg N/ha
+17 February 1981(Day of year=48), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.56 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+ Biomass removed from Ryegrass by grazing: 36.1kg/ha
+ Biomass removed from Whiteclover by grazing: 13.2kg/ha
+ Biomass removed from TallFescue by grazing: 10.1kg/ha
+ Biomass removed from Cocksfoot by grazing: 7.1kg/ha
+10 March 1981 (Day of year=69), Grazing:
+     Removing 66kg DM/ha, with 2.9kg N/ha
+10 March 1981(Day of year=69), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         1.49 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+ Biomass removed from Ryegrass by grazing: 102.0kg/ha
+ Biomass removed from RedClover by grazing: 32.8kg/ha
+ Biomass removed from Paspalum by grazing: 12.1kg/ha
+ Biomass removed from Kikuyu by grazing: 109.6kg/ha
+ Biomass removed from BrownTop by grazing: 13.5kg/ha
+10 March 1981 (Day of year=69), Grazing:
+     Removing 270kg DM/ha, with 10.6kg N/ha
+10 March 1981(Day of year=69), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         5.39 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+ Biomass removed from Ryegrass by grazing: 82.4kg/ha
+ Biomass removed from Whiteclover by grazing: 27.0kg/ha
+ Biomass removed from TallFescue by grazing: 20.5kg/ha
+ Biomass removed from Cocksfoot by grazing: 12.7kg/ha
+31 March 1981 (Day of year=90), Grazing:
+     Removing 143kg DM/ha, with 6.5kg N/ha
+31 March 1981(Day of year=90), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.31 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+ Biomass removed from Ryegrass by grazing: 111.0kg/ha
+ Biomass removed from RedClover by grazing: 31.5kg/ha
+ Biomass removed from Paspalum by grazing: 10.8kg/ha
+ Biomass removed from Kikuyu by grazing: 125.0kg/ha
+ Biomass removed from BrownTop by grazing: 11.0kg/ha
+31 March 1981 (Day of year=90), Grazing:
+     Removing 289kg DM/ha, with 11.8kg N/ha
+31 March 1981(Day of year=90), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         6.03 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+ Biomass removed from Ryegrass by grazing: 80.5kg/ha
+ Biomass removed from Whiteclover by grazing: 22.6kg/ha
+ Biomass removed from TallFescue by grazing: 17.6kg/ha
+ Biomass removed from Cocksfoot by grazing: 10.8kg/ha
+21 April 1981 (Day of year=111), Grazing:
+     Removing 131kg DM/ha, with 6.1kg N/ha
+21 April 1981(Day of year=111), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.13 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+ Biomass removed from Ryegrass by grazing: 90.6kg/ha
+ Biomass removed from RedClover by grazing: 21.4kg/ha
+ Biomass removed from Paspalum by grazing: 4.9kg/ha
+ Biomass removed from Kikuyu by grazing: 96.8kg/ha
+ Biomass removed from BrownTop by grazing: 7.5kg/ha
+21 April 1981 (Day of year=111), Grazing:
+     Removing 221kg DM/ha, with 9.6kg N/ha
+21 April 1981(Day of year=111), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.91 of N as urea (urea_n)
+                                         added at depth   10.00 (layer   1)
+12 May 1981 (Day of year=132), Grazing:
+     Removing 0kg DM/ha, with 0.0kg N/ha
+12 May 1981 (Day of year=132), Grazing:
+     Removing 0kg DM/ha, with 0.0kg N/ha
+02 June 1981 (Day of year=153), Grazing:
+     Removing 0kg DM/ha, with 0.0kg N/ha
+02 June 1981 (Day of year=153), Grazing:
+     Removing 0kg DM/ha, with 0.0kg N/ha
+23 June 1981 (Day of year=174), Grazing:
+     Removing 0kg DM/ha, with 0.0kg N/ha
+23 June 1981 (Day of year=174), Grazing:
+     Removing 0kg DM/ha, with 0.0kg N/ha
+30 June 1981(Day of year=181), clock: 
+     Simulation is terminating due to end criteria being met.
+
