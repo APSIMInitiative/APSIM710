@@ -3,7 +3,6 @@
 
 #include <ComponentInterface2/ScienceAPI2.h>
 #include <ComponentInterface2/DataTypes.h>
-#include <ComponentInterface2/Variant.h>
 
 #include "Utilities.h"
 #include "PlantComponents.h"
@@ -141,11 +140,11 @@ namespace Maize {
          void onNewMet(NewMetType &) ;
          void onNewProfile(NewProfileType &v) ;
 
-         void onSowCrop(Variant &);
-         void onHarvest(void) ;
+         void onSowCrop(SowType &);
+         void onHarvest(HarvestType &) ;
          void onEndCrop(void) ;
          void onEndRun(void) ;
-         void onKillCrop(void);
+         void onKillCrop(KillCropType &);
 
          void getOtherVariables(void);
 

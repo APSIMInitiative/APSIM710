@@ -134,35 +134,34 @@ void Plant::setStatus(Status status)
 //------------------------------------------------------------------------------------------------
 //------------------- Field a Sow event
 //------------------------------------------------------------------------------------------------
-void Plant::onSowCrop(Variant &sowLine)
+void Plant::onSowCrop(SowType &sow)
    {
    if(plantStatus != out)
       throw std::runtime_error("Crop is still in the ground -\n unable to sow until it is\n taken out by \"end_crop\" action.");
 
    scienceAPI.write("Sowing initiate\n");
 
-   string temp;
-   if (sowLine.get("crop_class", temp) == false)
+   if (sow.crop_class == "")
       cropClass = defaultCropClass;
    else
-      cropClass = temp;
+      cropClass = sow.crop_class;
 
-   if (sowLine.get("cultivar", temp) == false)
+   if (sow.Cultivar == "")
       throw std::runtime_error("Cultivar not specified");
-   else
-      cultivar = temp;
+   cultivar = sow.Cultivar;
 
-   if (sowLine.get("plants", plantDensity) == false)
+   if (sow.plants == 0)
       throw std::runtime_error("plant density ('plants') not specified");
-
+   plantDensity = sow.plants;
    checkRange(scienceAPI, plantDensity, 0.0, 1000.0, "plants");
 
-   if (sowLine.get("sowing_depth", sowingDepth) == false)
+   if (sow.sowing_depth == 0)
       throw std::runtime_error("sowing depth not specified");
-
+   sowingDepth = sow.sowing_depth;
    checkRange(scienceAPI,sowingDepth, 0.0, 100.0, "sowing_depth");
 
-   if (sowLine.get("row_spacing", rowSpacing) == false)
+   rowSpacing = sow.row_spacing ;
+   if (sow.row_spacing == 0)
       rowSpacing = (float)rowSpacingDefault;
    // row spacing was originally in metres
    // for compatibility, is now in mm
@@ -175,13 +174,13 @@ void Plant::onSowCrop(Variant &sowLine)
    checkRange(scienceAPI, rowSpacing, 100.0, 10000.0, "row_spacing");
 
    skipRow = 1.0;
-   if (sowLine.get("skip", temp) )
+   if (sow.Skip != "")
       {
-      if (temp == "single")skipRow = 1.5;
-      else if (temp == "double")skipRow = 2.0;
-      else if (temp == "solid")skipRow = 1.0;
+      if (sow.Skip == "single")skipRow = 1.5;
+      else if (sow.Skip == "double")skipRow = 2.0;
+      else if (sow.Skip == "solid")skipRow = 1.0;
       else
-         throw std::runtime_error("Unknown skip row configuration '" + temp + "'");
+         throw std::runtime_error("Unknown skip row configuration '" + sow.Skip + "'");
       }             
 
    checkRange(scienceAPI,skipRow, 0.0, 2.0, "skiprow");
