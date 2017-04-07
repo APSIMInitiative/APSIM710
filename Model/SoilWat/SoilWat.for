@@ -197,6 +197,7 @@
          real   water_table                           ! water table depth
          real   sws(max_layer)                        ! temporary soil water array
          real   oldSWDep
+         integer irrigation_will_runoff               ! 0 means no runoff (default), 1 means allow the irrigation to runoff just like rain. (in future perhaps have other runoff methods)
 
       end type Soilwat2Globals
 ! ====================================================================
@@ -415,11 +416,18 @@
       call soilwat2_cover_surface_runoff (g%cover_surface_runoff)
 c dsg 070302 added runon
 ! NIH Need to consider if interception losses were already considered in runoff model calibration
-      call soilwat2_runoff (g%rain
+      if (g%irrigation_will_runoff .eq. 0) then
+         call soilwat2_runoff (g%rain
      :                     ,g%runon
      :                     ,g%interception+g%ResidueInterception
      :                     ,g%runoff_pot)
-
+      else
+         call soilwat2_runoff (g%rain+g%irrigation
+     :                     ,g%runon
+     :                     ,g%interception+g%ResidueInterception
+     :                     ,g%runoff_pot)
+      endif 
+      
       ! DSG  041200
       ! g%runoff_pot is the runoff which would have occurred without
       ! ponding.  g%runoff is the ammended runoff after taking any
@@ -4318,6 +4326,7 @@ c  dsg   070302  added runon
          g%numvals_profile_esw_depth = 0
          g%numvals_wet_soil_depth = 0
          g%numvals_profile_fesw = 0
+         g%irrigation_will_runoff = 0
 
          p%insoil = 0
          g%sw_dep(:) = 0
@@ -5911,7 +5920,10 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
        integer          numvals          ! no. of values read from string
        real             solconc          ! solute conc in water(kg/ha)
        integer          solnum           ! solute no. counter variable
-
+       integer          will_runoff      ! 0=irrig won't runoff. 1=irrig will runoff
+       real             depth            ! irrigation depth (mm)
+       character        st*300           ! message string
+      
 *- Implementation Section ----------------------------------
       call push_routine (myname)
 
@@ -5923,6 +5935,44 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
      :                      ,1000.)
 
       g%irrigation = g%irrigation + amount
+      
+      ! Added in April 2017 to allow irrigation to runoff like rain. 
+      call collect_integer_var_optional (DATA_irrigate_will_runoff
+     :                      ,'(0-1)'
+     :                      ,g%irrigation_will_runoff
+     :                      ,numvals
+     :                      ,0
+     :                      ,1)
+      if (numvals .eq. 0) then
+         g%irrigation_will_runoff = 0
+      endif
+      
+      call collect_real_var_optional (DATA_irrigate_depth
+     :                      ,'(mm)'
+     :                      ,depth
+     :                      ,numvals
+     :                      ,0.0
+     :                      ,10000.0)
+      if (numvals .eq. 0) then
+         depth = 0
+      else if (depth .gt. 0) then
+         write (*, *) 'IN HERE', depth
+         !sv- added on 26 Nov 2012. Needed for subsurface irrigation. 
+         !    Manager module sends "apply" command specifying depth as a argument to irrigation module.
+         !    irrigation module sends "Irrigated" event with the depth. 
+         !    Now need to turn depth into the specific subsurface layer that the irrigation is to go into.
+         p%irrigation_layer = find_layer_no (depth
+     :                                     , p%dlayer
+     :                                     , numvals) + 1 ! irrigation_layer is 1 based layer number but FindLayerNo() returns zero based layer number, so add 1.       
+      endif
+      
+      if (g%irrigation_will_runoff .eq. 1 .and. depth .gt. 0.0) then
+         g%irrigation_will_runoff = 0
+         st = 'In the irrigation apply command, will_runoff=0 ' //
+     :        'and depth > 0 (mm). This is invalid. APSIM will ' //
+     :        'ignore will_runoff.'
+         call WARNING_ERROR (ERR_user, st)          
+      endif      
 
       do 100 solnum = 1, g%num_solutes
 
