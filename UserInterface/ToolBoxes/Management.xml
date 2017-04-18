@@ -1834,6 +1834,33 @@ public class Script
 
        </text>
         </manager2>
+        <manager2 name="Wait for dry surface">
+          <ui>
+            <threshold type="text" description="Threshold for &quot;dry surface&quot; layer (mm)">35</threshold>
+          </ui>
+          <text>using System;
+using ModelFramework;
+
+public class Script 
+{      
+   [Input] DateTime today;
+   [Input] float[] ll15_dep;    // lower limit
+   [Input] float[] sw_dep;      // soil water
+   [Param] int threshold;       // "dry" threshold (mm)
+
+   [Output, Description("Test whether the soil surface is dry")] public int isDry  {
+      get {
+         int SWD = (int) Math.Max(0.0, sw_dep[0] - ll15_dep[0]);
+         if (SWD &lt; threshold)
+            return(1);
+         else
+            return(0);
+         }
+      set {}
+   }
+}
+   </text>
+        </manager2>
         <manager2 name="PaddockAccumulator">
           <ui />
           <text>using System; 
