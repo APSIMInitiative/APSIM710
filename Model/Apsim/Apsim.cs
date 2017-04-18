@@ -89,7 +89,7 @@ public class Apsim
 			Console.WriteLine(" Apsim.exe @filename (reads these same arguments from file)");
 			Console.WriteLine(" Apsim.exe abc.apsim Simulation=/xml/path/to/sim");
 			Console.WriteLine(" Apsim.exe abc.apsim Simulation=/xml/path/to/sim/in/first_file def.apsim Simulation=/xml/path/to/sim/in/second_file");
-			Console.WriteLine(" Apsim.exe abc.apsim @Simulation=filename (reads paths to simulations from file)");
+			Console.WriteLine(" Apsim.exe abc.apsim Simulation=@filename (reads paths to simulations from file)");
 			Console.WriteLine("  ... MaxOutputLines=n (write at most n lines in summary file)");
 			Console.WriteLine("  ... doAllFactors=true|false (run, or not all factors in factorials)");
 			Console.WriteLine("  ... SaveProfileOutput=filename (write detailed timings to filename)");
@@ -106,7 +106,7 @@ public class Apsim
 	/// Apsim.exe @filename  (reads arguments from file)
 	/// Apsim.exe abc.apsim Simulation=/xml/path/to/sim
 	/// Apsim.exe abc.apsim Simulation=/xml/path/to/simin/first_file def.apsim Simulation=/xml/path/to/sim/in/second_file
-	/// Apsim.exe abc.apsim @Simulation=filename (reads paths to simulations from file)
+	/// Apsim.exe abc.apsim Simulation=@filename (reads paths to simulations from file)
     /// 
     // Parse 
 	static private int parseArg(ref List<RunApsim.apsimRunFileSims> allRuns, ref Dictionary<string, string> Macros, string arg1, string arg2)
@@ -162,7 +162,7 @@ public class Apsim
 				        System.IO.StreamReader file = new System.IO.StreamReader( simPath.Substring(1) );
 			            string line;
 			            while((line = file.ReadLine()) != null)
-							simPaths.Add(line);
+							simPaths.Add(line); 
                         file.Close();
                     }
 				    allRuns.Add(new RunApsim.apsimRunFileSims{fileName=fileList[0],simulationPaths=simPaths});
