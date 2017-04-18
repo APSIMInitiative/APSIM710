@@ -5923,6 +5923,7 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
        integer          will_runoff      ! 0=irrig won't runoff. 1=irrig will runoff
        real             depth            ! irrigation depth (mm)
        character        st*300           ! message string
+       integer          num_layers       ! number of soil layers
       
 *- Implementation Section ----------------------------------
       call push_routine (myname)
@@ -5956,14 +5957,14 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
       if (numvals .eq. 0) then
          depth = 0
       else if (depth .gt. 0) then
-         write (*, *) 'IN HERE', depth
          !sv- added on 26 Nov 2012. Needed for subsurface irrigation. 
          !    Manager module sends "apply" command specifying depth as a argument to irrigation module.
          !    irrigation module sends "Irrigated" event with the depth. 
          !    Now need to turn depth into the specific subsurface layer that the irrigation is to go into.
+         num_layers = count_of_real_vals (p%dlayer, max_layer)
          p%irrigation_layer = find_layer_no (depth
      :                                     , p%dlayer
-     :                                     , numvals) + 1 ! irrigation_layer is 1 based layer number but FindLayerNo() returns zero based layer number, so add 1.       
+     :                                     , num_layers)
       endif
       
       if (g%irrigation_will_runoff .eq. 1 .and. depth .gt. 0.0) then
