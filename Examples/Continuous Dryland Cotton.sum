@@ -21,6 +21,7 @@ Paddock:
    Component           "Cotton sowing rule" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
    Component "Fertilise on days after sowing - top up" = %apsim%\Model\Manager.dll
+   Component           "PostHarvestTillage" = %apsim%\Model\Manager.dll
    Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
    Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
    Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
@@ -122,6 +123,25 @@ Paddock:
      END of rules
      
 
+------- paddock.PostHarvestTillage Initialisation -----------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if (plant_status = 'out'  and  yesterdays_plant_status <> 'out' ) then
+     if ('user_defined' = 'user_defined') then
+         'surfaceorganicmatter' tillage type = user_defined, f_incorp = 0.95 (), tillage_depth = 150
+     else
+         'surfaceorganicmatter' tillage type = user_defined
+     endif
+     endif
+     yesterdays_plant_status = plant_status
+     
+     SECTION:- init
+     yesterdays_plant_status = 'out'
+     END of rules
+     
+     Manager creating a new local string variable : yesterdays_plant_status = out
+
 ------- paddock.Soil Water Initialisation -------------------------------------
      
          - Reading constants
@@ -138,17 +158,13 @@ Paddock:
               Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
                 mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
         ---------------------------------------------------------------------
-            0.-  150.  0.150  0.290  0.540  0.590  0.540  1.020  0.762  0.300
-          150.-  300.  0.260  0.290  0.530  0.580  0.530  1.030  0.190  0.300
-          300.-  600.  0.290  0.290  0.540  0.590  0.406  1.020  0.048  0.300
-          600.-  900.  0.290  0.290  0.540  0.580  0.290  1.020  0.000  0.300
-          900.- 1200.  0.300  0.300  0.520  0.570  0.300  1.060  0.000  0.300
-         1200.- 1500.  0.310  0.310  0.500  0.550  0.310  1.110  0.000  0.300
-         1500.- 1800.  0.320  0.320  0.500  0.550  0.320  1.120  0.000  0.300
-         1800.- 2100.  0.330  0.330  0.480  0.530  0.330  1.150  0.000  0.300
-         2100.- 2400.  0.340  0.340  0.470  0.520  0.340  1.180  0.000  0.300
-         2400.- 2700.  0.350  0.350  0.460  0.510  0.350  1.200  0.000  0.300
-         2700.- 3000.  0.360  0.360  0.440  0.490  0.360  1.250  0.000  0.300
+            0.-  150.  0.110  0.220  0.430  0.480  0.430  1.310  0.762  0.300
+          150.-  300.  0.176  0.220  0.440  0.490  0.440  1.260  0.190  0.300
+          300.-  600.  0.220  0.220  0.410  0.460  0.410  1.360  0.048  0.300
+          600.-  900.  0.220  0.220  0.400  0.450  0.400  1.390  0.000  0.300
+          900.- 1200.  0.220  0.220  0.380  0.430  0.380  1.440  0.000  0.300
+         1200.- 1500.  0.220  0.220  0.370  0.420  0.370  1.450  0.000  0.300
+         1500.- 1800.  0.220  0.220  0.370  0.420  0.370  1.460  0.000  0.300
         ---------------------------------------------------------------------
      
      
@@ -159,19 +175,15 @@ Paddock:
                           (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
                             mm        mm          mm         mm
           ---------------------------------------------------------
-            0.-  150.      43.50      37.50      37.50       7.50
-          150.-  300.      43.50      36.00      36.00       7.50
-          300.-  600.      87.00      34.80      75.00      15.00
-          600.-  900.      87.00       0.00      75.00      12.00
-          900.- 1200.      90.00       0.00      66.00      15.00
-         1200.- 1500.      93.00       0.00      57.00      15.00
-         1500.- 1800.      96.00       0.00      54.00      15.00
-         1800.- 2100.      99.00       0.00      45.00      15.00
-         2100.- 2400.     102.00       0.00      39.00      15.00
-         2400.- 2700.     105.00       0.00      33.00      15.00
-         2700.- 3000.     108.00       0.00      24.00      15.00
+            0.-  150.      33.00      31.50      31.50       7.50
+          150.-  300.      33.00      33.00      33.00       7.50
+          300.-  600.      66.00      57.00      57.00      15.00
+          600.-  900.      66.00      54.00      54.00      15.00
+          900.- 1200.      66.00      48.00      48.00      15.00
+         1200.- 1500.      66.00      45.00      45.00      15.00
+         1500.- 1800.      66.00      45.00      45.00      15.00
           ---------------------------------------------------------
-               Totals     954.00     108.30     541.50     147.00
+               Totals     396.00     313.50     313.50      90.00
           ---------------------------------------------------------
      
      
@@ -183,7 +195,7 @@ Paddock:
           ---------------------------------------------------------
                  Insoil        Salb     Dif_Con   Dif_Slope
           ---------------------------------------------------------
-                   0.00        0.13       40.00       16.00
+                   0.00        0.12       40.00       16.00
           ---------------------------------------------------------
      
      
@@ -198,8 +210,12 @@ Paddock:
      
      
            Using Ritchie evaporation model
-            Cuml evap (U):            6.00 (mm^0.5)
-            CONA:                     3.50 ()
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        4.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.50 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-Apr
             Eo from priestly-taylor
 
 ------- paddock.SurfaceOrganicMatter Initialisation ---------------------------
@@ -226,7 +242,7 @@ Paddock:
         - Reading Parameters
      
         - Reading Constants
-     Using standard soil mineralisation for soil type Black Vertosol
+     Using standard soil mineralisation for soil type Clay
      
      
      
@@ -239,19 +255,15 @@ Paddock:
            Layer    pH    OC     NO3     NH4    Urea
                          (%) (kg/ha) (kg/ha) (kg/ha)
           ------------------------------------------------
-             1     8.40  1.04    9.95    0.92    0.00
-             2     8.80  0.89    3.25    0.15    0.00
-             3     9.00  0.89    6.43    0.31    0.00
-             4     9.20  0.89    5.21    0.31    0.00
-             5     9.20  0.77    5.41    0.32    0.00
-             6     9.10  0.45    5.66    0.33    0.00
-             7     9.00  0.27    5.72    0.34    0.00
-             8     9.00  0.22    5.87    0.35    0.00
-             9     8.90  0.16    6.02    0.35    0.00
-            10     8.90  0.13    6.12    0.36    0.00
-            11     8.90  0.12    6.38    0.38    0.00
+             1     8.90  0.88   30.00    1.80    0.00
+             2     9.20  0.76   34.00    0.29    0.00
+             3     9.30  0.62   28.00    1.25    0.00
+             4     9.00  0.32   20.00    1.28    0.00
+             5     8.80  0.12   20.00    1.37    0.00
+             6     7.50  0.10   10.00    1.45    0.00
+             7     8.40  0.05    6.00    1.47    0.00
           ------------------------------------------------
-           Totals               66.01    4.10    0.00
+           Totals              148.00    8.91    0.00
           ------------------------------------------------
      
      
@@ -264,19 +276,15 @@ Paddock:
            Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
                     (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
           ---------------------------------------------------------
-             1      15679.1  1254.3   232.9    29.1    19.3     0.5
-             2      13642.7  1091.4   107.8    13.5    16.6     0.4
-             3      27153.5  2172.3    80.5    10.1    12.3     0.3
-             4      27207.0  2176.6    27.0     3.4     9.1     0.2
-             5      24473.9  1957.9    12.1     1.5     6.7     0.2
-             6      14977.6  1198.2     7.4     0.9     5.0     0.1
-             7       9067.5   725.4     4.5     0.6     3.7     0.1
-             8       7586.2   606.9     3.8     0.5     2.7     0.1
-             9       5661.2   452.9     2.8     0.4     2.0     0.1
-            10       4677.7   374.2     2.3     0.3     1.5     0.0
-            11       4497.8   359.8     2.2     0.3     1.1     0.0
+             1      16893.0  1407.7   399.0    49.9   138.9     3.5
+             2      14251.3  1187.6   112.7    14.1   108.1     2.7
+             3      25196.8  2099.7    99.2    12.4    65.6     1.6
+             4      13344.0  1112.0     0.0     0.0    39.8     1.0
+             5       5184.0   432.0     0.0     0.0    24.1     0.6
+             6       4350.0   362.5     0.0     0.0    14.6     0.4
+             7       2190.0   182.5     0.0     0.0     8.9     0.2
           ---------------------------------------------------------
-           Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
+           Totals   81409.1  6784.1   610.9    76.4   400.0    10.0
           ---------------------------------------------------------
 
 ------- paddock.tracker Initialisation ----------------------------------------
@@ -325,7 +333,7 @@ Paddock:
          respcon    =  0.016
          sqcon      =  0.022
          fcutout    =  0.5411
-         flai       =  0.5
+         flai       =  0.87
          ddisq      =  402.0
          dlds_max   =  0.12
          popcon     =  0.03633
@@ -366,65 +374,67 @@ Paddock:
             Depth          Limit 
              (cm)         (mm/mm) 
         -----------------------------
-             15.0          0.290 
-             15.0          0.290 
-             30.0          0.290 
-             30.0          0.329 
-             30.0          0.353 
-             30.0          0.373 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
+             15.0          0.220 
+             15.0          0.220 
+             30.0          0.220 
+             30.0          0.250 
+             30.0          0.270 
+             30.0          0.300 
+             30.0          0.330 
         -----------------------------
 
 
-Cotton development to First Square using RateOfDevelopment 
+Cotton development to First Square using DDSum 
 25 October 2000 (Day of year=299), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
 15 December 2000(Day of year=350), paddock.Fertilise on days after sowing - top up: 
-     Manager creating a new local real variable : n_deficit = 92.27449
-     Manager sending message :- fertiliser apply  amount = 92.27449 (kg/ha), depth = 50 (mm), type = urea_n
+     Manager creating a new local real variable : n_deficit = 46.13709
+     Manager sending message :- fertiliser apply  amount = 46.13709 (kg/ha), depth = 50 (mm), type = urea_n
 15 December 2000(Day of year=350), fertiliser: 
      
    - Reading Fertiliser Type Parameters
-        92.27 of N as urea (urea_n)
+        46.14 of N as urea (urea_n)
                                          added at depth   50.00 (layer   1)
-12 February 2001 (Day of year=43), cotton: 
+18 February 2001 (Day of year=49), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
-12 February 2001(Day of year=43), paddock.Harvesting rule: 
+18 February 2001(Day of year=49), paddock.Harvesting rule: 
      Manager sending message :- cotton defoliate
-12 February 2001 (Day of year=43), cotton: 
+18 February 2001 (Day of year=49), cotton: 
          Defoliant spray   1
-19 February 2001 (Day of year=50), cotton: 
+3 March 2001 (Day of year=62), cotton: 
          Crop ready for harvest.
-19 February 2001(Day of year=50), paddock.Harvesting rule: 
+3 March 2001(Day of year=62), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   127
-      bolls/m2               =   18.7        Lint (kg/ha)            =   224.3
-      N uptake (kg/ha)       =   43.0        bolls sc (g/boll)       =      3.0
-      max squares das (days) =   79          max lai das (days)      =    85
-      maximum squares/m2     =   54.0        maximum lai (m2/m2)     =      0.22
-      Total above ground biomass (kg/ha) =  2095.0
+      Days after sowing      =   139
+      bolls/m2               =   33.9        Lint (kg/ha)            =   502.9
+      N uptake (kg/ha)       =   96.5        bolls sc (g/boll)       =      3.7
+      max squares das (days) =   134          max lai das (days)      =    129
+      maximum squares/m2     =   92.6        maximum lai (m2/m2)     =      0.79
+      Total above ground biomass (kg/ha) =  5698.3
 
 
-      Total green biomass (g/m2) =  143.7
-      Total sensced biomass (g/m2) =  9.7
-      Total shed biomass (g/m2) =  34.0
-      (Total fruit shed biomass (g/m2) =  24.7)
-      Total harvested biomass (g/m2) =  56.1
+      Total green biomass (g/m2) =  431.8
+      Total sensced biomass (g/m2) =  12.3
+      Total shed biomass (g/m2) =  59.6
+      (Total fruit shed biomass (g/m2) =  23.0)
+      Total harvested biomass (g/m2) =  125.7
 
 
      Manager sending message :- cotton end_crop
  
  ** Cotton Component Reset 
  
+4 March 2001(Day of year=63), paddock.PostHarvestTillage: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.95, tillage_depth = 150
+4 March 2001(Day of year=63), paddock.SurfaceOrganicMatter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     0.95
+                                             Incorporated Depth    =   150.00
 15 October 2001(Day of year=288), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -440,7 +450,7 @@ Cotton development to First Square using RateOfDevelopment
          respcon    =  0.016
          sqcon      =  0.022
          fcutout    =  0.5411
-         flai       =  0.5
+         flai       =  0.87
          ddisq      =  402.0
          dlds_max   =  0.12
          popcon     =  0.03633
@@ -481,57 +491,59 @@ Cotton development to First Square using RateOfDevelopment
             Depth          Limit 
              (cm)         (mm/mm) 
         -----------------------------
-             15.0          0.290 
-             15.0          0.290 
-             30.0          0.290 
-             30.0          0.329 
-             30.0          0.353 
-             30.0          0.373 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
+             15.0          0.220 
+             15.0          0.220 
+             30.0          0.220 
+             30.0          0.250 
+             30.0          0.270 
+             30.0          0.300 
+             30.0          0.330 
         -----------------------------
 
 
-Cotton development to First Square using RateOfDevelopment 
+Cotton development to First Square using DDSum 
 26 October 2001 (Day of year=299), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
-16 February 2002 (Day of year=47), cotton: 
+19 February 2002 (Day of year=50), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
-16 February 2002(Day of year=47), paddock.Harvesting rule: 
+19 February 2002(Day of year=50), paddock.Harvesting rule: 
      Manager sending message :- cotton defoliate
-16 February 2002 (Day of year=47), cotton: 
+19 February 2002 (Day of year=50), cotton: 
          Defoliant spray   1
-23 February 2002 (Day of year=54), cotton: 
+20 February 2002 (Day of year=51), cotton: 
          Crop ready for harvest.
-23 February 2002(Day of year=54), paddock.Harvesting rule: 
+20 February 2002(Day of year=51), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   131
-      bolls/m2               =   38.8        Lint (kg/ha)            =   587.1
-      N uptake (kg/ha)       =   72.6        bolls sc (g/boll)       =      3.8
-      max squares das (days) =   91          max lai das (days)      =    99
-      maximum squares/m2     =   80.4        maximum lai (m2/m2)     =      0.50
-      Total above ground biomass (kg/ha) =  3967.5
+      Days after sowing      =   128
+      bolls/m2               =   28.8        Lint (kg/ha)            =   507.9
+      N uptake (kg/ha)       =   78.6        bolls sc (g/boll)       =      4.4
+      max squares das (days) =   81          max lai das (days)      =    93
+      maximum squares/m2     =   69.0        maximum lai (m2/m2)     =      0.48
+      Total above ground biomass (kg/ha) =  4716.9
 
 
-      Total green biomass (g/m2) =  229.0
-      Total sensced biomass (g/m2) =  20.9
-      Total shed biomass (g/m2) =  74.1
-      (Total fruit shed biomass (g/m2) =  50.3)
-      Total harvested biomass (g/m2) =  146.8
+      Total green biomass (g/m2) =  343.6
+      Total sensced biomass (g/m2) =  1.1
+      Total shed biomass (g/m2) =  66.2
+      (Total fruit shed biomass (g/m2) =  36.3)
+      Total harvested biomass (g/m2) =  127.0
 
 
      Manager sending message :- cotton end_crop
  
  ** Cotton Component Reset 
  
+21 February 2002(Day of year=52), paddock.PostHarvestTillage: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.95, tillage_depth = 150
+21 February 2002(Day of year=52), paddock.SurfaceOrganicMatter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     0.95
+                                             Incorporated Depth    =   150.00
 10 November 2002(Day of year=314), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -547,7 +559,7 @@ Cotton development to First Square using RateOfDevelopment
          respcon    =  0.016
          sqcon      =  0.022
          fcutout    =  0.5411
-         flai       =  0.5
+         flai       =  0.87
          ddisq      =  402.0
          dlds_max   =  0.12
          popcon     =  0.03633
@@ -588,57 +600,59 @@ Cotton development to First Square using RateOfDevelopment
             Depth          Limit 
              (cm)         (mm/mm) 
         -----------------------------
-             15.0          0.290 
-             15.0          0.290 
-             30.0          0.290 
-             30.0          0.329 
-             30.0          0.353 
-             30.0          0.373 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
+             15.0          0.220 
+             15.0          0.220 
+             30.0          0.220 
+             30.0          0.250 
+             30.0          0.270 
+             30.0          0.300 
+             30.0          0.330 
         -----------------------------
 
 
-Cotton development to First Square using RateOfDevelopment 
+Cotton development to First Square using DDSum 
 17 November 2002 (Day of year=321), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
-17 February 2003 (Day of year=48), cotton: 
+11 February 2003 (Day of year=42), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
-17 February 2003(Day of year=48), paddock.Harvesting rule: 
+11 February 2003(Day of year=42), paddock.Harvesting rule: 
      Manager sending message :- cotton defoliate
-17 February 2003 (Day of year=48), cotton: 
+11 February 2003 (Day of year=42), cotton: 
          Defoliant spray   1
-18 February 2003 (Day of year=49), cotton: 
+14 February 2003 (Day of year=45), cotton: 
          Crop ready for harvest.
-18 February 2003(Day of year=49), paddock.Harvesting rule: 
+14 February 2003(Day of year=45), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   100
-      bolls/m2               =   10.4        Lint (kg/ha)            =   92.9
-      N uptake (kg/ha)       =   22.7        bolls sc (g/boll)       =      2.2
-      max squares das (days) =   65          max lai das (days)      =    71
-      maximum squares/m2     =   51.7        maximum lai (m2/m2)     =      0.14
-      Total above ground biomass (kg/ha) =  966.3
+      Days after sowing      =   96
+      bolls/m2               =   15.0        Lint (kg/ha)            =   114.5
+      N uptake (kg/ha)       =   24.0        bolls sc (g/boll)       =      1.9
+      max squares das (days) =   50          max lai das (days)      =    65
+      maximum squares/m2     =   48.5        maximum lai (m2/m2)     =      0.17
+      Total above ground biomass (kg/ha) =  1276.0
 
 
-      Total green biomass (g/m2) =  72.4
-      Total sensced biomass (g/m2) =  1.0
-      Total shed biomass (g/m2) =  26.3
-      (Total fruit shed biomass (g/m2) =  20.7)
-      Total harvested biomass (g/m2) =  23.2
+      Total green biomass (g/m2) =  97.7
+      Total sensced biomass (g/m2) =  1.2
+      Total shed biomass (g/m2) =  18.7
+      (Total fruit shed biomass (g/m2) =  14.8)
+      Total harvested biomass (g/m2) =  28.6
 
 
      Manager sending message :- cotton end_crop
  
  ** Cotton Component Reset 
  
+15 February 2003(Day of year=46), paddock.PostHarvestTillage: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.95, tillage_depth = 150
+15 February 2003(Day of year=46), paddock.SurfaceOrganicMatter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     0.95
+                                             Incorporated Depth    =   150.00
 10 November 2003(Day of year=314), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -654,7 +668,7 @@ Cotton development to First Square using RateOfDevelopment
          respcon    =  0.016
          sqcon      =  0.022
          fcutout    =  0.5411
-         flai       =  0.5
+         flai       =  0.87
          ddisq      =  402.0
          dlds_max   =  0.12
          popcon     =  0.03633
@@ -695,57 +709,59 @@ Cotton development to First Square using RateOfDevelopment
             Depth          Limit 
              (cm)         (mm/mm) 
         -----------------------------
-             15.0          0.290 
-             15.0          0.290 
-             30.0          0.290 
-             30.0          0.329 
-             30.0          0.353 
-             30.0          0.373 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
+             15.0          0.220 
+             15.0          0.220 
+             30.0          0.220 
+             30.0          0.250 
+             30.0          0.270 
+             30.0          0.300 
+             30.0          0.330 
         -----------------------------
 
 
-Cotton development to First Square using RateOfDevelopment 
+Cotton development to First Square using DDSum 
 18 November 2003 (Day of year=322), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
-25 May 2004 (Day of year=146), cotton: 
+19 May 2004 (Day of year=140), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
-25 May 2004(Day of year=146), paddock.Harvesting rule: 
+19 May 2004(Day of year=140), paddock.Harvesting rule: 
      Manager sending message :- cotton defoliate
-25 May 2004 (Day of year=146), cotton: 
+19 May 2004 (Day of year=140), cotton: 
          Defoliant spray   1
-9 June 2004 (Day of year=161), cotton: 
+27 May 2004 (Day of year=148), cotton: 
          Crop ready for harvest.
-9 June 2004(Day of year=161), paddock.Harvesting rule: 
+27 May 2004(Day of year=148), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   212
-      bolls/m2               =   95.0        Lint (kg/ha)            =   1761.7
-      N uptake (kg/ha)       =   183.7        bolls sc (g/boll)       =      4.6
-      max squares das (days) =   212          max lai das (days)      =    204
-      maximum squares/m2     =   74.6        maximum lai (m2/m2)     =      1.35
-      Total above ground biomass (kg/ha) =  13959.5
+      Days after sowing      =   199
+      bolls/m2               =   65.6        Lint (kg/ha)            =   1025.1
+      N uptake (kg/ha)       =   141.5        bolls sc (g/boll)       =      3.9
+      max squares das (days) =   120          max lai das (days)      =    142
+      maximum squares/m2     =   62.4        maximum lai (m2/m2)     =      1.31
+      Total above ground biomass (kg/ha) =  9645.5
 
 
-      Total green biomass (g/m2) =  941.6
-      Total sensced biomass (g/m2) =  14.0
-      Total shed biomass (g/m2) =  97.3
-      (Total fruit shed biomass (g/m2) =  40.9)
-      Total harvested biomass (g/m2) =  440.4
+      Total green biomass (g/m2) =  684.6
+      Total sensced biomass (g/m2) =  23.7
+      Total shed biomass (g/m2) =  52.6
+      (Total fruit shed biomass (g/m2) =  31.8)
+      Total harvested biomass (g/m2) =  256.3
 
 
      Manager sending message :- cotton end_crop
  
  ** Cotton Component Reset 
  
+28 May 2004(Day of year=149), paddock.PostHarvestTillage: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.95, tillage_depth = 150
+28 May 2004(Day of year=149), paddock.SurfaceOrganicMatter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     0.95
+                                             Incorporated Depth    =   150.00
 20 October 2004(Day of year=294), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -761,7 +777,7 @@ Cotton development to First Square using RateOfDevelopment
          respcon    =  0.016
          sqcon      =  0.022
          fcutout    =  0.5411
-         flai       =  0.5
+         flai       =  0.87
          ddisq      =  402.0
          dlds_max   =  0.12
          popcon     =  0.03633
@@ -802,57 +818,59 @@ Cotton development to First Square using RateOfDevelopment
             Depth          Limit 
              (cm)         (mm/mm) 
         -----------------------------
-             15.0          0.290 
-             15.0          0.290 
-             30.0          0.290 
-             30.0          0.329 
-             30.0          0.353 
-             30.0          0.373 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
+             15.0          0.220 
+             15.0          0.220 
+             30.0          0.220 
+             30.0          0.250 
+             30.0          0.270 
+             30.0          0.300 
+             30.0          0.330 
         -----------------------------
 
 
-Cotton development to First Square using RateOfDevelopment 
+Cotton development to First Square using DDSum 
 29 October 2004 (Day of year=303), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
-28 February 2005 (Day of year=59), cotton: 
+19 February 2005 (Day of year=50), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
-28 February 2005(Day of year=59), paddock.Harvesting rule: 
+19 February 2005(Day of year=50), paddock.Harvesting rule: 
      Manager sending message :- cotton defoliate
-28 February 2005 (Day of year=59), cotton: 
+19 February 2005 (Day of year=50), cotton: 
          Defoliant spray   1
-8 March 2005 (Day of year=67), cotton: 
+26 February 2005 (Day of year=57), cotton: 
          Crop ready for harvest.
-8 March 2005(Day of year=67), paddock.Harvesting rule: 
+26 February 2005(Day of year=57), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   139
-      bolls/m2               =   58.3        Lint (kg/ha)            =   872.7
-      N uptake (kg/ha)       =   98.7        bolls sc (g/boll)       =      3.7
-      max squares das (days) =   90          max lai das (days)      =    102
-      maximum squares/m2     =   89.8        maximum lai (m2/m2)     =      0.81
-      Total above ground biomass (kg/ha) =  5470.7
+      Days after sowing      =   129
+      bolls/m2               =   47.2        Lint (kg/ha)            =   501.1
+      N uptake (kg/ha)       =   112.5        bolls sc (g/boll)       =      2.7
+      max squares das (days) =   79          max lai das (days)      =    112
+      maximum squares/m2     =   73.2        maximum lai (m2/m2)     =      0.89
+      Total above ground biomass (kg/ha) =  5521.9
 
 
-      Total green biomass (g/m2) =  300.4
-      Total sensced biomass (g/m2) =  28.5
-      Total shed biomass (g/m2) =  70.9
-      (Total fruit shed biomass (g/m2) =  36.9)
-      Total harvested biomass (g/m2) =  218.2
+      Total green biomass (g/m2) =  365.7
+      Total sensced biomass (g/m2) =  61.2
+      Total shed biomass (g/m2) =  37.9
+      (Total fruit shed biomass (g/m2) =  21.8)
+      Total harvested biomass (g/m2) =  125.3
 
 
      Manager sending message :- cotton end_crop
  
  ** Cotton Component Reset 
  
+27 February 2005(Day of year=58), paddock.PostHarvestTillage: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.95, tillage_depth = 150
+27 February 2005(Day of year=58), paddock.SurfaceOrganicMatter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     0.95
+                                             Incorporated Depth    =   150.00
 10 November 2005(Day of year=314), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -868,7 +886,7 @@ Cotton development to First Square using RateOfDevelopment
          respcon    =  0.016
          sqcon      =  0.022
          fcutout    =  0.5411
-         flai       =  0.5
+         flai       =  0.87
          ddisq      =  402.0
          dlds_max   =  0.12
          popcon     =  0.03633
@@ -909,57 +927,59 @@ Cotton development to First Square using RateOfDevelopment
             Depth          Limit 
              (cm)         (mm/mm) 
         -----------------------------
-             15.0          0.290 
-             15.0          0.290 
-             30.0          0.290 
-             30.0          0.329 
-             30.0          0.353 
-             30.0          0.373 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
+             15.0          0.220 
+             15.0          0.220 
+             30.0          0.220 
+             30.0          0.250 
+             30.0          0.270 
+             30.0          0.300 
+             30.0          0.330 
         -----------------------------
 
 
-Cotton development to First Square using RateOfDevelopment 
+Cotton development to First Square using DDSum 
 19 November 2005 (Day of year=323), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
-17 March 2006 (Day of year=76), cotton: 
+13 February 2006 (Day of year=44), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
-17 March 2006(Day of year=76), paddock.Harvesting rule: 
+13 February 2006(Day of year=44), paddock.Harvesting rule: 
      Manager sending message :- cotton defoliate
-17 March 2006 (Day of year=76), cotton: 
+13 February 2006 (Day of year=44), cotton: 
          Defoliant spray   1
-25 March 2006 (Day of year=84), cotton: 
+14 February 2006 (Day of year=45), cotton: 
          Crop ready for harvest.
-25 March 2006(Day of year=84), paddock.Harvesting rule: 
+14 February 2006(Day of year=45), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   135
-      bolls/m2               =   53.9        Lint (kg/ha)            =   1104.2
-      N uptake (kg/ha)       =   67.7        bolls sc (g/boll)       =      5.1
-      max squares das (days) =   67          max lai das (days)      =    82
-      maximum squares/m2     =   62.8        maximum lai (m2/m2)     =      0.33
-      Total above ground biomass (kg/ha) =  6762.3
+      Days after sowing      =   96
+      bolls/m2               =   13.2        Lint (kg/ha)            =   162.6
+      N uptake (kg/ha)       =   29.9        bolls sc (g/boll)       =      3.1
+      max squares das (days) =   60          max lai das (days)      =    70
+      maximum squares/m2     =   64.6        maximum lai (m2/m2)     =      0.19
+      Total above ground biomass (kg/ha) =  1647.5
 
 
-      Total green biomass (g/m2) =  392.5
-      Total sensced biomass (g/m2) =  7.7
-      Total shed biomass (g/m2) =  51.6
-      (Total fruit shed biomass (g/m2) =  30.1)
-      Total harvested biomass (g/m2) =  276.1
+      Total green biomass (g/m2) =  123.5
+      Total sensced biomass (g/m2) =  0.6
+      Total shed biomass (g/m2) =  40.8
+      (Total fruit shed biomass (g/m2) =  29.9)
+      Total harvested biomass (g/m2) =  40.6
 
 
      Manager sending message :- cotton end_crop
  
  ** Cotton Component Reset 
  
+15 February 2006(Day of year=46), paddock.PostHarvestTillage: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.95, tillage_depth = 150
+15 February 2006(Day of year=46), paddock.SurfaceOrganicMatter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     0.95
+                                             Incorporated Depth    =   150.00
 10 November 2006(Day of year=314), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -975,7 +995,7 @@ Cotton development to First Square using RateOfDevelopment
          respcon    =  0.016
          sqcon      =  0.022
          fcutout    =  0.5411
-         flai       =  0.5
+         flai       =  0.87
          ddisq      =  402.0
          dlds_max   =  0.12
          popcon     =  0.03633
@@ -1016,57 +1036,59 @@ Cotton development to First Square using RateOfDevelopment
             Depth          Limit 
              (cm)         (mm/mm) 
         -----------------------------
-             15.0          0.290 
-             15.0          0.290 
-             30.0          0.290 
-             30.0          0.329 
-             30.0          0.353 
-             30.0          0.373 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
+             15.0          0.220 
+             15.0          0.220 
+             30.0          0.220 
+             30.0          0.250 
+             30.0          0.270 
+             30.0          0.300 
+             30.0          0.330 
         -----------------------------
 
 
-Cotton development to First Square using RateOfDevelopment 
+Cotton development to First Square using DDSum 
 19 November 2006 (Day of year=323), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
-27 February 2007 (Day of year=58), cotton: 
+14 February 2007 (Day of year=45), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
-27 February 2007(Day of year=58), paddock.Harvesting rule: 
+14 February 2007(Day of year=45), paddock.Harvesting rule: 
      Manager sending message :- cotton defoliate
-27 February 2007 (Day of year=58), cotton: 
+14 February 2007 (Day of year=45), cotton: 
          Defoliant spray   1
-6 March 2007 (Day of year=65), cotton: 
+21 February 2007 (Day of year=52), cotton: 
          Crop ready for harvest.
-6 March 2007(Day of year=65), paddock.Harvesting rule: 
+21 February 2007(Day of year=52), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   116
-      bolls/m2               =   35.9        Lint (kg/ha)            =   547.9
-      N uptake (kg/ha)       =   54.6        bolls sc (g/boll)       =      3.8
-      max squares das (days) =   72          max lai das (days)      =    83
-      maximum squares/m2     =   73.2        maximum lai (m2/m2)     =      0.33
-      Total above ground biomass (kg/ha) =  3531.1
+      Days after sowing      =   103
+      bolls/m2               =   19.4        Lint (kg/ha)            =   195.3
+      N uptake (kg/ha)       =   40.1        bolls sc (g/boll)       =      2.5
+      max squares das (days) =   61          max lai das (days)      =    65
+      maximum squares/m2     =   56.0        maximum lai (m2/m2)     =      0.29
+      Total above ground biomass (kg/ha) =  2196.9
 
 
-      Total green biomass (g/m2) =  201.8
-      Total sensced biomass (g/m2) =  14.3
-      Total shed biomass (g/m2) =  58.3
-      (Total fruit shed biomass (g/m2) =  40.9)
-      Total harvested biomass (g/m2) =  137.0
+      Total green biomass (g/m2) =  160.1
+      Total sensced biomass (g/m2) =  10.7
+      Total shed biomass (g/m2) =  20.6
+      (Total fruit shed biomass (g/m2) =  19.0)
+      Total harvested biomass (g/m2) =  48.8
 
 
      Manager sending message :- cotton end_crop
  
  ** Cotton Component Reset 
  
+22 February 2007(Day of year=53), paddock.PostHarvestTillage: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.95, tillage_depth = 150
+22 February 2007(Day of year=53), paddock.SurfaceOrganicMatter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     0.95
+                                             Incorporated Depth    =   150.00
 27 October 2007(Day of year=300), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -1082,7 +1104,7 @@ Cotton development to First Square using RateOfDevelopment
          respcon    =  0.016
          sqcon      =  0.022
          fcutout    =  0.5411
-         flai       =  0.5
+         flai       =  0.87
          ddisq      =  402.0
          dlds_max   =  0.12
          popcon     =  0.03633
@@ -1123,57 +1145,59 @@ Cotton development to First Square using RateOfDevelopment
             Depth          Limit 
              (cm)         (mm/mm) 
         -----------------------------
-             15.0          0.290 
-             15.0          0.290 
-             30.0          0.290 
-             30.0          0.329 
-             30.0          0.353 
-             30.0          0.373 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
+             15.0          0.220 
+             15.0          0.220 
+             30.0          0.220 
+             30.0          0.250 
+             30.0          0.270 
+             30.0          0.300 
+             30.0          0.330 
         -----------------------------
 
 
-Cotton development to First Square using RateOfDevelopment 
+Cotton development to First Square using DDSum 
 3 November 2007 (Day of year=307), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
-28 April 2008 (Day of year=119), cotton: 
+24 March 2008 (Day of year=84), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
-28 April 2008(Day of year=119), paddock.Harvesting rule: 
+24 March 2008(Day of year=84), paddock.Harvesting rule: 
      Manager sending message :- cotton defoliate
-28 April 2008 (Day of year=119), cotton: 
+24 March 2008 (Day of year=84), cotton: 
          Defoliant spray   1
-6 May 2008 (Day of year=127), cotton: 
+2 April 2008 (Day of year=93), cotton: 
          Crop ready for harvest.
-6 May 2008(Day of year=127), paddock.Harvesting rule: 
+2 April 2008(Day of year=93), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   192
-      bolls/m2               =   78.1        Lint (kg/ha)            =   1638.1
-      N uptake (kg/ha)       =   201.7        bolls sc (g/boll)       =      5.2
-      max squares das (days) =   80          max lai das (days)      =    144
-      maximum squares/m2     =   82.0        maximum lai (m2/m2)     =      1.28
-      Total above ground biomass (kg/ha) =  11304.0
+      Days after sowing      =   158
+      bolls/m2               =   67.8        Lint (kg/ha)            =   1359.0
+      N uptake (kg/ha)       =   198.3        bolls sc (g/boll)       =      5.0
+      max squares das (days) =   77          max lai das (days)      =    118
+      maximum squares/m2     =   82.0        maximum lai (m2/m2)     =      1.90
+      Total above ground biomass (kg/ha) =  10677.7
 
 
-      Total green biomass (g/m2) =  660.2
-      Total sensced biomass (g/m2) =  60.7
-      Total shed biomass (g/m2) =  105.2
-      (Total fruit shed biomass (g/m2) =  40.7)
-      Total harvested biomass (g/m2) =  409.5
+      Total green biomass (g/m2) =  712.6
+      Total sensced biomass (g/m2) =  15.5
+      Total shed biomass (g/m2) =  170.3
+      (Total fruit shed biomass (g/m2) =  34.2)
+      Total harvested biomass (g/m2) =  339.7
 
 
      Manager sending message :- cotton end_crop
  
  ** Cotton Component Reset 
  
+3 April 2008(Day of year=94), paddock.PostHarvestTillage: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.95, tillage_depth = 150
+3 April 2008(Day of year=94), paddock.SurfaceOrganicMatter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     0.95
+                                             Incorporated Depth    =   150.00
 7 October 2008(Day of year=281), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -1189,7 +1213,7 @@ Cotton development to First Square using RateOfDevelopment
          respcon    =  0.016
          sqcon      =  0.022
          fcutout    =  0.5411
-         flai       =  0.5
+         flai       =  0.87
          ddisq      =  402.0
          dlds_max   =  0.12
          popcon     =  0.03633
@@ -1230,57 +1254,59 @@ Cotton development to First Square using RateOfDevelopment
             Depth          Limit 
              (cm)         (mm/mm) 
         -----------------------------
-             15.0          0.290 
-             15.0          0.290 
-             30.0          0.290 
-             30.0          0.329 
-             30.0          0.353 
-             30.0          0.373 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
+             15.0          0.220 
+             15.0          0.220 
+             30.0          0.220 
+             30.0          0.250 
+             30.0          0.270 
+             30.0          0.300 
+             30.0          0.330 
         -----------------------------
 
 
-Cotton development to First Square using RateOfDevelopment 
+Cotton development to First Square using DDSum 
 18 October 2008 (Day of year=292), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
-17 February 2009 (Day of year=48), cotton: 
+6 February 2009 (Day of year=37), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
-17 February 2009(Day of year=48), paddock.Harvesting rule: 
+6 February 2009(Day of year=37), paddock.Harvesting rule: 
      Manager sending message :- cotton defoliate
-17 February 2009 (Day of year=48), cotton: 
+6 February 2009 (Day of year=37), cotton: 
          Defoliant spray   1
-25 February 2009 (Day of year=56), cotton: 
+12 February 2009 (Day of year=43), cotton: 
          Crop ready for harvest.
-25 February 2009(Day of year=56), paddock.Harvesting rule: 
+12 February 2009(Day of year=43), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   141
-      bolls/m2               =   42.6        Lint (kg/ha)            =   657.3
-      N uptake (kg/ha)       =   89.1        bolls sc (g/boll)       =      3.9
-      max squares das (days) =   96          max lai das (days)      =    97
-      maximum squares/m2     =   85.6        maximum lai (m2/m2)     =      0.69
-      Total above ground biomass (kg/ha) =  4599.0
+      Days after sowing      =   128
+      bolls/m2               =   47.3        Lint (kg/ha)            =   553.2
+      N uptake (kg/ha)       =   108.9        bolls sc (g/boll)       =      2.9
+      max squares das (days) =   88          max lai das (days)      =    92
+      maximum squares/m2     =   87.8        maximum lai (m2/m2)     =      1.09
+      Total above ground biomass (kg/ha) =  5587.0
 
 
-      Total green biomass (g/m2) =  255.0
-      Total sensced biomass (g/m2) =  40.5
-      Total shed biomass (g/m2) =  61.2
-      (Total fruit shed biomass (g/m2) =  45.3)
-      Total harvested biomass (g/m2) =  164.3
+      Total green biomass (g/m2) =  355.4
+      Total sensced biomass (g/m2) =  65.0
+      Total shed biomass (g/m2) =  50.9
+      (Total fruit shed biomass (g/m2) =  29.3)
+      Total harvested biomass (g/m2) =  138.3
 
 
      Manager sending message :- cotton end_crop
  
  ** Cotton Component Reset 
  
+13 February 2009(Day of year=44), paddock.PostHarvestTillage: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.95, tillage_depth = 150
+13 February 2009(Day of year=44), paddock.SurfaceOrganicMatter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     0.95
+                                             Incorporated Depth    =   150.00
 29 October 2009(Day of year=302), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -1296,7 +1322,7 @@ Cotton development to First Square using RateOfDevelopment
          respcon    =  0.016
          sqcon      =  0.022
          fcutout    =  0.5411
-         flai       =  0.5
+         flai       =  0.87
          ddisq      =  402.0
          dlds_max   =  0.12
          popcon     =  0.03633
@@ -1337,57 +1363,59 @@ Cotton development to First Square using RateOfDevelopment
             Depth          Limit 
              (cm)         (mm/mm) 
         -----------------------------
-             15.0          0.290 
-             15.0          0.290 
-             30.0          0.290 
-             30.0          0.329 
-             30.0          0.353 
-             30.0          0.373 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
+             15.0          0.220 
+             15.0          0.220 
+             30.0          0.220 
+             30.0          0.250 
+             30.0          0.270 
+             30.0          0.300 
+             30.0          0.330 
         -----------------------------
 
 
-Cotton development to First Square using RateOfDevelopment 
+Cotton development to First Square using DDSum 
 6 November 2009 (Day of year=310), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
-27 March 2010 (Day of year=86), cotton: 
+20 February 2010 (Day of year=51), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
-27 March 2010(Day of year=86), paddock.Harvesting rule: 
+20 February 2010(Day of year=51), paddock.Harvesting rule: 
      Manager sending message :- cotton defoliate
-27 March 2010 (Day of year=86), cotton: 
+20 February 2010 (Day of year=51), cotton: 
          Defoliant spray   1
-9 April 2010 (Day of year=99), cotton: 
+7 March 2010 (Day of year=66), cotton: 
          Crop ready for harvest.
-9 April 2010(Day of year=99), paddock.Harvesting rule: 
+7 March 2010(Day of year=66), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   162
-      bolls/m2               =   72.8        Lint (kg/ha)            =   1572.7
-      N uptake (kg/ha)       =   137.7        bolls sc (g/boll)       =      5.4
-      max squares das (days) =   89          max lai das (days)      =    140
-      maximum squares/m2     =   71.5        maximum lai (m2/m2)     =      0.73
-      Total above ground biomass (kg/ha) =  10845.9
+      Days after sowing      =   129
+      bolls/m2               =   41.5        Lint (kg/ha)            =   546.0
+      N uptake (kg/ha)       =   87.5        bolls sc (g/boll)       =      3.3
+      max squares das (days) =   57          max lai das (days)      =    120
+      maximum squares/m2     =   58.1        maximum lai (m2/m2)     =      0.63
+      Total above ground biomass (kg/ha) =  5350.8
 
 
-      Total green biomass (g/m2) =  690.5
-      Total sensced biomass (g/m2) =  0.9
-      Total shed biomass (g/m2) =  101.9
-      (Total fruit shed biomass (g/m2) =  42.8)
-      Total harvested biomass (g/m2) =  393.2
+      Total green biomass (g/m2) =  391.9
+      Total sensced biomass (g/m2) =  6.6
+      Total shed biomass (g/m2) =  45.8
+      (Total fruit shed biomass (g/m2) =  23.6)
+      Total harvested biomass (g/m2) =  136.5
 
 
      Manager sending message :- cotton end_crop
  
  ** Cotton Component Reset 
  
+8 March 2010(Day of year=67), paddock.PostHarvestTillage: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.95, tillage_depth = 150
+8 March 2010(Day of year=67), paddock.SurfaceOrganicMatter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     0.95
+                                             Incorporated Depth    =   150.00
 9 November 2010(Day of year=313), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -1403,7 +1431,7 @@ Cotton development to First Square using RateOfDevelopment
          respcon    =  0.016
          sqcon      =  0.022
          fcutout    =  0.5411
-         flai       =  0.5
+         flai       =  0.87
          ddisq      =  402.0
          dlds_max   =  0.12
          popcon     =  0.03633
@@ -1444,57 +1472,59 @@ Cotton development to First Square using RateOfDevelopment
             Depth          Limit 
              (cm)         (mm/mm) 
         -----------------------------
-             15.0          0.290 
-             15.0          0.290 
-             30.0          0.290 
-             30.0          0.329 
-             30.0          0.353 
-             30.0          0.373 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
+             15.0          0.220 
+             15.0          0.220 
+             30.0          0.220 
+             30.0          0.250 
+             30.0          0.270 
+             30.0          0.300 
+             30.0          0.330 
         -----------------------------
 
 
-Cotton development to First Square using RateOfDevelopment 
+Cotton development to First Square using DDSum 
 16 November 2010 (Day of year=320), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
-11 March 2011 (Day of year=70), cotton: 
+28 February 2011 (Day of year=59), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
-11 March 2011(Day of year=70), paddock.Harvesting rule: 
+28 February 2011(Day of year=59), paddock.Harvesting rule: 
      Manager sending message :- cotton defoliate
-11 March 2011 (Day of year=70), cotton: 
+28 February 2011 (Day of year=59), cotton: 
          Defoliant spray   1
-15 March 2011 (Day of year=74), cotton: 
+8 March 2011 (Day of year=67), cotton: 
          Crop ready for harvest.
-15 March 2011(Day of year=74), paddock.Harvesting rule: 
+8 March 2011(Day of year=67), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   126
-      bolls/m2               =   56.8        Lint (kg/ha)            =   871.1
-      N uptake (kg/ha)       =   86.0        bolls sc (g/boll)       =      3.8
-      max squares das (days) =   87          max lai das (days)      =    90
-      maximum squares/m2     =   94.4        maximum lai (m2/m2)     =      0.65
-      Total above ground biomass (kg/ha) =  5498.5
+      Days after sowing      =   119
+      bolls/m2               =   46.1        Lint (kg/ha)            =   441.5
+      N uptake (kg/ha)       =   90.3        bolls sc (g/boll)       =      2.4
+      max squares das (days) =   74          max lai das (days)      =    80
+      maximum squares/m2     =   77.3        maximum lai (m2/m2)     =      0.73
+      Total above ground biomass (kg/ha) =  4145.7
 
 
-      Total green biomass (g/m2) =  330.0
-      Total sensced biomass (g/m2) =  2.1
-      Total shed biomass (g/m2) =  109.4
-      (Total fruit shed biomass (g/m2) =  71.2)
-      Total harvested biomass (g/m2) =  217.8
+      Total green biomass (g/m2) =  287.8
+      Total sensced biomass (g/m2) =  16.5
+      Total shed biomass (g/m2) =  72.1
+      (Total fruit shed biomass (g/m2) =  24.3)
+      Total harvested biomass (g/m2) =  110.4
 
 
      Manager sending message :- cotton end_crop
  
  ** Cotton Component Reset 
  
+9 March 2011(Day of year=68), paddock.PostHarvestTillage: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.95, tillage_depth = 150
+9 March 2011(Day of year=68), paddock.SurfaceOrganicMatter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     0.95
+                                             Incorporated Depth    =   150.00
 1 October 2011(Day of year=274), paddock.Cotton sowing rule: 
      Manager sending message :- cotton sow  plants_pm = 10, sowing_depth = 50, cultivar = s71br, row_spacing = 1000, skiprow = 1
 
@@ -1510,7 +1540,7 @@ Cotton development to First Square using RateOfDevelopment
          respcon    =  0.016
          sqcon      =  0.022
          fcutout    =  0.5411
-         flai       =  0.5
+         flai       =  0.87
          ddisq      =  402.0
          dlds_max   =  0.12
          popcon     =  0.03633
@@ -1551,57 +1581,59 @@ Cotton development to First Square using RateOfDevelopment
             Depth          Limit 
              (cm)         (mm/mm) 
         -----------------------------
-             15.0          0.290 
-             15.0          0.290 
-             30.0          0.290 
-             30.0          0.329 
-             30.0          0.353 
-             30.0          0.373 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
-             30.0          0.401 
+             15.0          0.220 
+             15.0          0.220 
+             30.0          0.220 
+             30.0          0.250 
+             30.0          0.270 
+             30.0          0.300 
+             30.0          0.330 
         -----------------------------
 
 
-Cotton development to First Square using RateOfDevelopment 
+Cotton development to First Square using DDSum 
 15 October 2011 (Day of year=288), cotton:
     *** Crop emerged with 6.7 plants per m sq, 100% of target population of 6.7
 
-1 April 2012 (Day of year=92), cotton: 
+18 March 2012 (Day of year=78), cotton: 
    Crop has reached the percent open bolls as defined for maturity. Crop mature.
-1 April 2012(Day of year=92), paddock.Harvesting rule: 
+18 March 2012(Day of year=78), paddock.Harvesting rule: 
      Manager sending message :- cotton defoliate
-1 April 2012 (Day of year=92), cotton: 
+18 March 2012 (Day of year=78), cotton: 
          Defoliant spray   1
-9 April 2012 (Day of year=100), cotton: 
+26 March 2012 (Day of year=86), cotton: 
          Crop ready for harvest.
-9 April 2012(Day of year=100), paddock.Harvesting rule: 
+26 March 2012(Day of year=86), paddock.Harvesting rule: 
      Manager sending message :- cotton harvest
 
       Harvest
 
 
-      Days after sowing      =   191
-      bolls/m2               =   75.7        Lint (kg/ha)            =   1409.3
-      N uptake (kg/ha)       =   154.8        bolls sc (g/boll)       =      4.7
-      max squares das (days) =   110          max lai das (days)      =    147
-      maximum squares/m2     =   94.7        maximum lai (m2/m2)     =      1.62
-      Total above ground biomass (kg/ha) =  8659.7
+      Days after sowing      =   177
+      bolls/m2               =   66.8        Lint (kg/ha)            =   1228.7
+      N uptake (kg/ha)       =   197.2        bolls sc (g/boll)       =      4.6
+      max squares das (days) =   98          max lai das (days)      =    139
+      maximum squares/m2     =   90.5        maximum lai (m2/m2)     =      2.24
+      Total above ground biomass (kg/ha) =  10171.4
 
 
-      Total green biomass (g/m2) =  473.7
-      Total sensced biomass (g/m2) =  39.9
-      Total shed biomass (g/m2) =  139.9
-      (Total fruit shed biomass (g/m2) =  59.1)
-      Total harvested biomass (g/m2) =  352.3
+      Total green biomass (g/m2) =  641.2
+      Total sensced biomass (g/m2) =  68.8
+      Total shed biomass (g/m2) =  149.5
+      (Total fruit shed biomass (g/m2) =  48.1)
+      Total harvested biomass (g/m2) =  307.2
 
 
      Manager sending message :- cotton end_crop
  
  ** Cotton Component Reset 
  
+27 March 2012(Day of year=87), paddock.PostHarvestTillage: 
+     Manager sending message :- surfaceorganicmatter tillage  type = user_defined, f_incorp = 0.95, tillage_depth = 150
+27 March 2012(Day of year=87), paddock.SurfaceOrganicMatter: 
+     Residue removed using user_defined
+                                             Fraction Incorporated =     0.95
+                                             Incorporated Depth    =   150.00
 31 August 2012(Day of year=244), clock: 
      Simulation is terminating due to end criteria being met.
 
