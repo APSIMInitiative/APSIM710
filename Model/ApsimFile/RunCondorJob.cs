@@ -156,6 +156,15 @@ namespace ApsimFile
                                     filenames.Add(n);
                             }
 						}
+						foreach (XmlNode linkedNode in simulation.SelectNodes(".//*[string(@shortcut)]")) {
+						   XmlNode target = XmlHelper.Find(linkedNode, 
+								                           linkedNode.Attributes["shortcut"].Value);
+						   if (target != null) {
+								foreach (XmlNode targetFilename in target.SelectNodes(".//filename")) {
+									filenames.Add(targetFilename);
+								}
+							}
+						}
 						
 						foreach (XmlNode node in filenames)
 						if (XmlHelper.Attribute (node, "output") != "yes" &&
