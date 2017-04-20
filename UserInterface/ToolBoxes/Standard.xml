@@ -1205,36 +1205,37 @@ tav = tav + ([MaxtChange] + [MintChange]) / 2
          </script>
       </manager>
       <manager name="Climate Change Yearly Increase">
-         <ui>
-            <category type="category" description="Climate Control Year" />
-            <startyear type="text" description="Enter year to start climate change from : ">1990</startyear>
-            <category type="category" description="Yearly Increase in Climate Change Parameters" />
-            <MaxtChange type="text" description="Change in maximum temperature (oC):">0.01</MaxtChange>
-            <MintChange type="text" description="Change in minimum temperature (oC):">0.01</MintChange>
-            <RainChange type="text" description="Relative change in daily rainfall (%):">0</RainChange>
-            <RadnChange type="text" description="Relative change in daily radiation (%):">0</RadnChange>
-            <CO2 type="text" description="Atmospheric CO2 Concentration (ppm)">380</CO2>
-         </ui>
-         <script>
-            <text>
-!  Yearly increase the daily temperatures, rainfall and radiation up or down according to user-defined amounts
-
-if (year &gt; [startyear]) then
-   changemultiplier = year - [startyear]
-   maxt = maxt + ([MaxtChange] * changemultiplier)
-   mint = mint + ([MintChange]  * changemultiplier)
-   tav = tavoriginal + ([MaxtChange] + [MintChange]) / 2 * changemultiplier
-   rain = rain + rain * (([RainChange] / 100)  * changemultiplier)
-   radn = radn + radn * (([RadnChange] / 100)  * changemultiplier)
-   co2 = ([CO2]  * changemultiplier)
- endif
-            </text>
-            <event>prenewmet</event>
-         </script>
-         <script>
-            <text>tavoriginal = tav</text>
-            <event>init</event>
-         </script>
+        <ui>
+          <category type="category" description="Climate Control Year" />
+          <startyear type="text" description="Enter year to start climate change from : ">1990</startyear>
+          <category type="category" description="Yearly Increase in Climate Change Parameters" />
+          <MaxtChange type="text" description="Change in maximum temperature (oC):">0.01</MaxtChange>
+          <MintChange type="text" description="Change in minimum temperature (oC):">0.01</MintChange>
+          <RainChange type="text" description="Relative change in daily rainfall (%):">0</RainChange>
+          <RadnChange type="text" description="Relative change in daily radiation (%):">0</RadnChange>
+          <CO2 type="text" description="Atmospheric CO2 Concentration (ppm)">380</CO2>
+          <CO2Change type="text" description="Relative change in CO2 (%)">1</CO2Change>
+        </ui>
+        <script>
+          <text>
+  !  Yearly increase the daily temperatures, rainfall and radiation up or down according to user-defined amounts
+  
+  if (year &gt; [startyear]) then
+     changemultiplier = year - [startyear]
+     maxt = maxt + ([MaxtChange] * changemultiplier)
+     mint = mint + ([MintChange]  * changemultiplier)
+     tav = tavoriginal + ([MaxtChange] + [MintChange]) / 2 * changemultiplier
+     rain = rain + rain * (([RainChange] / 100)  * changemultiplier)
+     radn = radn + radn * (([RadnChange] / 100)  * changemultiplier)
+     co2 = co2 + co2 * (([CO2Change] / 100) * changemultiplier)
+   endif
+              </text>
+          <event>prenewmet</event>
+        </script>
+        <script>
+          <text>tavoriginal = tav</text>
+          <event>init</event>
+        </script>
       </manager>
       <patchinput>
          <filename name="filename" />
