@@ -57,7 +57,7 @@ namespace Actions
             try
             {
                 response = (HttpWebResponse)request.GetResponse();
-                Process.Start(website + "/Documentation");
+                Process.Start(website + "/Documentation.aspx");
             }
             catch (Exception e)
             {
