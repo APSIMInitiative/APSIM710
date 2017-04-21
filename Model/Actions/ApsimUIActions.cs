@@ -454,17 +454,18 @@ namespace Actions
 
 		public static void ImportConFile(BaseController Controller)
 		{
-			if ((!(BaseActions.FileSave(Controller))))
-				return;
-			OpenFileDialog F = new OpenFileDialog();
-			F.Filter = "Con files (*.con)|*.con|All files (*.*)|*.*";
-			F.Title = "Select a .con file to import";
-			if (F.ShowDialog() == DialogResult.OK) {
-				XmlNode NewXmlNode = ConToApsim.Converter.Go(F.FileName);
-				if ((NewXmlNode != null)) {
+            Controller.FileSaveAfterPrompt();
+            OpenFileDialog F = new OpenFileDialog();
+            F.Filter = "Con files (*.con)|*.con|All files (*.*)|*.*";
+            F.Title = "Select a .con file to import";
+            if (F.ShowDialog() == DialogResult.OK)
+            {
+                XmlNode NewXmlNode = ConToApsim.Converter.Go(F.FileName);
+                if ((NewXmlNode != null))
+                {
                     Controller.ApsimData.New(NewXmlNode.OuterXml);
                 }
-			}
+            }
 		}
 
 		public static void Plant2Documentation(BaseController Controller)
