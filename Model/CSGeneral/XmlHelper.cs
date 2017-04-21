@@ -586,13 +586,48 @@ namespace CSGeneral
                 // Perform lookup comparison for all non sequential nodes.
                 foreach (XmlNode Child1 in XmlHelper.ChildNodes(Node1, ""))
                 {
+                    XmlNode Child2 = XmlHelper.ChildByNameAndType(Node2, XmlHelper.Name(Child1), Child1.Name);
+                    if (Child2 == null)
+                        return false;
+
                     if (Array.IndexOf(SequentialNodeTypes, Child1.Name) == -1)
                     {
-                        XmlNode Child2 = XmlHelper.ChildByNameAndType(Node2, XmlHelper.Name(Child1), Child1.Name);
-                        if (Child2 == null)
-                            return false;
-                        if (!XmlHelper.IsEqual(Child1, Child2))
-                            return false;
+                        if (XmlHelper.Value(Child1, "double") != "")
+                        {
+                            List<string> values1 = XmlHelper.Values(Child1, "double");
+                            List<string> values2 = XmlHelper.Values(Child2, "double");
+                            if (values1.Count != values2.Count)
+                                return false;
+
+                            // Compare arrays.
+                            for (int i = 0; i != values1.Count; i++)
+                            {
+                                double Value1, Value2;
+                                if (!double.TryParse(values1[i], out Value1) ||
+                                    !double.TryParse(values2[i], out Value2) ||
+                                    !MathUtility.FloatsAreEqual(Value1, Value2))
+                                    return false;
+                            }
+                        }
+                        else if (XmlHelper.Value(Child1, "string") != "")
+                        {
+                            List<string> values1 = XmlHelper.Values(Child1, "string");
+                            List<string> values2 = XmlHelper.Values(Child2, "string");
+                            if (values1.Count != values2.Count)
+                                return false;
+
+                            // Compare arrays.
+                            for (int i = 0; i != values1.Count; i++)
+                            {
+                                if (values1[i] != values2[i])
+                                    return false;
+                            }
+                        }
+                        else
+                        {
+                            if (!XmlHelper.IsEqual(Child1, Child2))
+                                return false;
+                        }
                     }
                 }
 
