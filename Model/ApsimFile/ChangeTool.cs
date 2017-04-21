@@ -13,7 +13,7 @@ namespace ApsimFile
     // ------------------------------------------
     public class APSIMChangeTool
     {
-        public static int CurrentVersion = 36;
+        public static int CurrentVersion = 37;
         private delegate void UpgraderDelegate(XmlNode Data);
 
         public static void Upgrade(XmlNode Data)
@@ -69,7 +69,8 @@ namespace ApsimFile
                                           new UpgraderDelegate(ToVersion33),
                                           new UpgraderDelegate(ToVersion34),
                                           new UpgraderDelegate(ToVersion35),
-                                          new UpgraderDelegate(ToVersion36)
+                                          new UpgraderDelegate(ToVersion36),
+                                          new UpgraderDelegate(ToVersion37)
                                        };
             if (Data != null)
             {
@@ -2519,6 +2520,29 @@ namespace ApsimFile
 
         }
 
+        /// <summary>
+        /// Change old probability y variables from 'Probability' to 'Probability of being above' or
+        /// 'Probability of being below' depending on Exceedence child node.
+        /// </summary>
+        private static void ToVersion37(XmlNode Node)
+        {
+            if (Node.Name.ToLower() == "graph")
+            {
+                foreach (XmlNode plot in XmlHelper.ChildNodes(Node, "Plot"))
+                {
+                    string yVariableName = XmlHelper.Value(plot, "Y");
+                    if (yVariableName == "Probability")
+                    {
+                        string exceedence = XmlHelper.Value(plot, "GDProbability/Exceedence");
+                        if (exceedence == "Yes")
+                            yVariableName = "Probability of being above";
+                        else
+                            yVariableName = "Probability of being below";
+                        XmlHelper.SetValue(plot, "Y", yVariableName);
+                    }
+                }
+            }
+        }
     }
 
 }
