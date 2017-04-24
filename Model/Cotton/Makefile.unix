@@ -1,0 +1,13 @@
+include $(APSIM)/Model/Build/Platform.make
+
+PROJECT = Cotton
+
+PROJECTTYPE = dll
+
+
+dummy:
+	7z x ./Cotton.7z -p`cat /etc/CottonPassword.txt`
+	xbuild $(PROJECT).sln /target:Build /p:Configuration=Release
+	rm -f *.cs
+	rm -f *.sln
+	rm -f *.csproj
