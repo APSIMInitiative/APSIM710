@@ -860,7 +860,7 @@ public class Leaf : BaseOrgan, AboveGround
             double TotalSinkCapacity = 0;
             foreach (LeafCohort L in Leaves)
                 TotalSinkCapacity += L.NonStructuralDMDemand;
-            if (value.NonStructural > TotalSinkCapacity)
+            if (Math.Round(value.NonStructural,7) > Math.Round(TotalSinkCapacity,7))
                 throw new Exception("Allocating more excess DM to Leaves then they are capable of storing");
             if (TotalSinkCapacity > 0.0)
             {

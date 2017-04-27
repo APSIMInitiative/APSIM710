@@ -1,4 +1,4 @@
-<Type version="36" creator="Apsim 7.5-r3212" name="Kale2">
+<Type version="36" creator="Apsim 7.6-r3526" name="Kale2">
   <MetaData>
     <UItype type="text" description="UItype">CSUserInterface.EmptyUI</UItype>
     <IsCrop type="text" description="IsCrop">Yes</IsCrop>
@@ -33,8 +33,8 @@
         <Values type="text" description="Values">1           2      3         4          5     6   </Values>
       </StageBasedInterpolation>
       <Arbitrator>
-        <NArbitrationOption type="text" description="NArbitrationOption">PriorityAllocation</NArbitrationOption>
-        <DMArbitrationOption type="text" description="DMArbitrationOption">PriorityAllocation</DMArbitrationOption>
+        <NArbitrationOption type="text" description="NArbitrationOption">RelativeAllocation</NArbitrationOption>
+        <DMArbitrationOption type="text" description="DMArbitrationOption">RelativeAllocation</DMArbitrationOption>
         <Memo>
           There are a number of passes involved in the allocation of Weight (Wt).
           Wt_Step 1. Set up DM supplies and demands.  Each organ may have a demand for Structural, Metabolic and Non-structural Wt.  Each organ may supply Fresh DM from photosynthesis and/or stored DM from retranslocation of its Non-structural pool.
@@ -82,10 +82,16 @@
           <Start type="text" description="Start stage name">Germination</Start>
           <End type="text" description="End stage name">Emergence</End>
           <Constant name="Target">
-            <Value type="text" description="Value">400</Value>
+            <Value type="text" description="Value">100</Value>
           </Constant>
-          <AirTemperatureFunction name="ThermalTime" shortcut="/Kale2/Model/Plant/Phenology/Germinating/ThermalTime">
-            <XYPairs shortcut="/Kale2/Model/Plant/Phenology/Germinating/ThermalTime/XYPairs" />
+          <AirTemperatureFunction name="ThermalTime">
+            <XYPairs>
+              <XY>2 0</XY>
+              <XY>9 1</XY>
+              <XY>10 10</XY>
+              <XY>18 18</XY>
+              <XY>36 0</XY>
+            </XYPairs>
           </AirTemperatureFunction>
         </GenericPhase>
         <GenericPhase name="Emerged">
@@ -209,7 +215,7 @@ For Potato the potential branching rate is the branching pattern that would be o
           <XYPairs>
             <XY>0 0</XY>
             <XY>0.98 0</XY>
-            <XY>1 0.01</XY>
+            <XY>1 0.1</XY>
           </XYPairs>
           <Memo>Takes the current value of the XProperty and returns the corresponding y value from the XY maxtix specified</Memo>
         </LinearInterpolationFunction>
@@ -255,9 +261,18 @@ For Potato the potential branching rate is the branching pattern that would be o
           </XYPairs>
           <Memo>Gives the size of individual leaves when they are fully expanded (mm2)</Memo>
         </LinearInterpolationFunction>
-        <Constant name="LagDuration">
+        <Constant name="LagDurationConst">
           <Value type="text" description="Value">200</Value>
         </Constant>
+        <LinearInterpolationFunction name="LagDuration">
+          <XProperty type="text" description="XProperty">LAI</XProperty>
+          <XYPairs>
+            <XY>0 300</XY>
+            <XY>3.5 200</XY>
+            <XY>9 200</XY>
+          </XYPairs>
+          <Memo>This controls the effect of water stress on leaf area expansion</Memo>
+        </LinearInterpolationFunction>
         <Constant name="SenescenceDuration">
           <Value type="text" description="Value">20</Value>
         </Constant>
@@ -296,18 +311,12 @@ For Potato the potential branching rate is the branching pattern that would be o
         <LinearInterpolationFunction name="ExpansionStress">
           <XProperty type="text" description="XProperty">WaterSupplyDemandRatio</XProperty>
           <XYPairs>
-            <XY>0.5 0</XY>
+            <XY>0 0</XY>
+            <XY>0.9 0.75</XY>
             <XY>1 1</XY>
+            <XY>1.5 1</XY>
           </XYPairs>
           <Memo>This controls the effect of water stress on leaf area expansion</Memo>
-          <LinearInterpolationFunction name="ExpansionStress">
-            <XProperty type="text" description="XProperty">WaterSupplyDemandRatio</XProperty>
-            <XYPairs>
-              <XY>0.1 0</XY>
-              <XY>1 1</XY>
-            </XYPairs>
-            <Memo>This controls the effect of water stress on leaf area expansion</Memo>
-          </LinearInterpolationFunction>
         </LinearInterpolationFunction>
         <Constant name="MinimumNConc">
           <Value type="text" description="Value">0.015</Value>
@@ -359,8 +368,8 @@ For Potato the potential branching rate is the branching pattern that would be o
           <Value type="text" description="Value">0</Value>
         </Constant>
         <LeafCohort name="InitialLeaves[1]">
-          <Rank>1</Rank>
-          <Area>900</Area>
+          <Rank type="text" description="Rank">1</Rank>
+          <Area type="text" description="Area">900</Area>
         </LeafCohort>
         <Memo>The Leaf organ has 3 biomass pools, Structural, Metabolic and Non-Structural.
 
@@ -408,7 +417,7 @@ Initial ages and initial areas are array fields so the size and age of multiple 
           <LinearInterpolationFunction name="FN">
             <XProperty type="text" description="XProperty">Leaf.Fn</XProperty>
             <XYPairs>
-              <XY>0 1</XY>
+              <XY>0 0</XY>
               <XY>1 1</XY>
               <XY>1.5 1</XY>
             </XYPairs>
@@ -417,7 +426,7 @@ Initial ages and initial areas are array fields so the size and age of multiple 
             <XProperty type="text" description="XProperty">Leaf.Fw</XProperty>
             <XYPairs>
               <XY>0 0</XY>
-              <XY>0.4 1</XY>
+              <XY>1 1</XY>
               <XY>1.5 1</XY>
             </XYPairs>
           </LinearInterpolationFunction>
@@ -434,12 +443,8 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
       </Leaf>
       <GenericAboveGroundOrgan name="Stem">
         <Constant name="StructuralFraction">
-          <Value type="text" description="Value">0.2</Value>
+          <Value type="text" description="Value">0.8</Value>
           <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
-          <Constant name="StructuralFraction">
-            <Value type="text" description="Value">0.5</Value>
-            <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
-          </Constant>
         </Constant>
         <LinearInterpolationFunction name="MaximumNConc">
           <XProperty type="text" description="XProperty">StageCode.Value</XProperty>
@@ -506,7 +511,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
               <Start type="text" description="Start">Vegetative</Start>
               <End type="text" description="End">Maturity</End>
               <Constant name="Function">
-                <Value type="text" description="Value">0.8</Value>
+                <Value type="text" description="Value">0.5</Value>
               </Constant>
             </PhaseLookupValue>
             <PhaseLookupValue name="PostMaturity">
@@ -545,8 +550,15 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
           </XYPairs>
         </AirTemperatureFunction>
         <PhaseLookup name="RootFrontVelocity">
-          <PhaseLookupValue>
+          <PhaseLookupValue name="Emerging">
             <Start type="text" description="Start">Germination</Start>
+            <End type="text" description="End">Emergence</End>
+            <Constant>
+              <Value type="text" description="Value">1</Value>
+            </Constant>
+          </PhaseLookupValue>
+          <PhaseLookupValue name="Emerged">
+            <Start type="text" description="Start">Emergence</Start>
             <End type="text" description="End">Maturity</End>
             <Constant>
               <Value type="text" description="Value">10</Value>
@@ -558,14 +570,14 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
             <Start type="text" description="Start">Emergence</Start>
             <End type="text" description="End">Vegetative</End>
             <Constant name="Function">
-              <Value type="text" description="Value">0.3</Value>
+              <Value type="text" description="Value">0.05</Value>
             </Constant>
           </PhaseLookupValue>
           <PhaseLookupValue name="Vegetative">
             <Start type="text" description="Start">Vegetative</Start>
             <End type="text" description="End">Maturity</End>
             <Constant name="Function">
-              <Value type="text" description="Value">.3</Value>
+              <Value type="text" description="Value">0.05</Value>
             </Constant>
           </PhaseLookupValue>
         </PhaseLookup>
@@ -601,7 +613,7 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
 1. SenescenceRate.  Default value is 0 which means the organ will not seness.  If senesence is required place a function on the organ named SenescenceRate.  It needs to be a number for 0 - 1 that represents the proportion of total biomass that is senessed each day.
 2.  NitrogenDemandSwitch.  Default value is 1 which means the organ always has a N demand if its N content is below maximum N conc.  If N demand needs to be switched off place a function on the organ named NitrogenDemandSwitch which returns a value of 1 when no demand is expressed.
 </Memo>
-        <Constant name="MaxDailyNUptake">
+        <Constant name="MaxDailyNUptakeConst">
           <Value type="text" description="Value">7.5</Value>
           <Memo>This is the highest N concentration that the organ can achieve.  This sets the upper limit to N demand and includes essential and Luxury N demands.  Essential N demand is set by the MinimumNConc of the organ.  Luxary N Demand is N is set by Live.Wt * (MaximumNConc - MinimumNConc) and is N the organ may take up in surples to its growth requirements and store in its Non-Structural pool for reallocation -</Memo>
         </Constant>
@@ -613,6 +625,46 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
             <Memo>Demand for DM is based on demand to grow structural components.  If the structural fraction is less than 1 the organ has the capacity to accumulate Non-structural biomass.  The lower the number the greater the capacity.  However, the arbitrator will only partition biomass to non-structural pools after all structural and metabolic DM demands have been met so the Non-Structural DM proportion of the organ may be less smaller that 1 - StructuralFraction.</Memo>
           </Constant>
         </Constant>
+        <LinearInterpolationFunction name="MaxDailyNUptake1">
+          <XProperty type="text" description="XProperty">Root.Depth</XProperty>
+          <XYPairs>
+            <XY>0 3</XY>
+            <XY>150 3.5</XY>
+            <XY>300 4.5</XY>
+            <XY>600 6</XY>
+            <XY>900 7.5</XY>
+            <XY>1200 7.5</XY>
+            <XY>1500 7.5</XY>
+            <XY>1800 7.5</XY>
+          </XYPairs>
+          <Memo>Takes the current value of the XProperty and returns the corresponding y value from the XY maxtix specified</Memo>
+        </LinearInterpolationFunction>
+        <MultiplyFunction name="MaxDailyNUptake">
+          <LinearInterpolationFunction name="MaxDailyNUptake1">
+            <XProperty type="text" description="XProperty">Root.Depth</XProperty>
+            <XYPairs>
+              <XY>0 3</XY>
+              <XY>150 3.5</XY>
+              <XY>300 4.5</XY>
+              <XY>600 6</XY>
+              <XY>900 7.5</XY>
+              <XY>1200 7.5</XY>
+              <XY>1500 7.5</XY>
+              <XY>1800 7.5</XY>
+            </XYPairs>
+            <Memo>Takes the current value of the XProperty and returns the corresponding y value from the XY maxtix specified</Memo>
+          </LinearInterpolationFunction>
+          <LinearInterpolationFunction name="ExpansionStress">
+            <XProperty type="text" description="XProperty">WaterSupplyDemandRatio</XProperty>
+            <XYPairs>
+              <XY>0 0</XY>
+              <XY>0.9 0.5</XY>
+              <XY>1 1</XY>
+              <XY>1.5 1</XY>
+            </XYPairs>
+            <Memo>This controls the effect of water stress on leaf area expansion</Memo>
+          </LinearInterpolationFunction>
+        </MultiplyFunction>
       </Root>
       <Summary />
       <CompositeBiomass name="AboveGround">
@@ -640,6 +692,53 @@ Photosynthesis =  RadnInt * RUE * Min(Ft, Min(Fn Fvpd)) * Fw * Fco2</Memo>
     </Plant>
     <Cultivar name="grunner">
       <Construct type="text" description="Construct">Plant</Construct>
+    </Cultivar>
+    <Cultivar name="regal">
+      <Construct type="text" description="Construct">Plant</Construct>
+      <Override name="Stem.MaximumNConc">
+        <XYPairs>
+          <XY>3 0.045</XY>
+          <XY>4 0.023</XY>
+          <XY>6 0.015</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.ExpansionStress">
+        <XYPairs>
+          <XY>0 0</XY>
+          <XY>1 1</XY>
+          <XY>1.5 1</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.DMReallocationFactor">
+        <Value type="text" description="Value">0.8</Value>
+      </Override>
+      <Override name="Leaf.NReallocationFactor">
+        <Value type="text" description="Value">0.95</Value>
+      </Override>
+      <Override name="Stem.NRetranslocationFactor">
+        <Value type="text" description="Value">0.5</Value>
+      </Override>
+      <Override name="Leaf.MaxArea">
+        <XYPairs>
+          <XY>0 500</XY>
+          <XY>1 50000</XY>
+          <XY>2 50000</XY>
+          <XY>4 80000</XY>
+          <XY>6 120000</XY>
+          <XY>8 200000</XY>
+          <XY>10 350000</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Leaf.lagDuration">
+        <XYPairs>
+          <XY>0 100</XY>
+          <XY>3.5 100</XY>
+          <XY>9 100</XY>
+        </XYPairs>
+      </Override>
+      <Override name="Structure.MainStemNodeAppearanceRate.Phyllochron">
+        <Value>120</Value>
+      </Override>
     </Cultivar>
     <Cultivar name="Kestral">
       <Construct type="text" description="Construct">Plant</Construct>
