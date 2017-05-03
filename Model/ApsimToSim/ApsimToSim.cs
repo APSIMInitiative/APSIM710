@@ -93,8 +93,8 @@ class ApsimToSimExe
                     Component Simulation = Apsim.Find(simXmlPath);
                     List<string> allFactorials = Factor.CalcFactorialList(Apsim, simXmlPath);
                     int totalCount = allFactorials.Count;
-                    Parallel.For(1, totalCount, instanceCount =>
-                    //for (int instanceCount = 1; instanceCount < totalCount; instanceCount++)
+                    Parallel.For(1, totalCount+1, instanceCount =>
+                    //for (int instanceCount = 0; instanceCount <= totalCount; instanceCount++)
                         {
                             string rootName = Simulation.Name;
                             if (b.SaveExtraInfoInFilename)
