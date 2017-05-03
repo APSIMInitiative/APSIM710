@@ -5,7 +5,25 @@
    </head>
    <body>
       <h1>APSIM 7.9 release notes</h1>
-      <p>...unreleased...</p>
+      <p>3rd May 2017</p>
+      <h2>APSIM changed to use Microsoft Visual C++ 2015</h2>
+      <p>APSIM has been changed to use Microsoft Visual C++ 2015. The implications for users is that the installation process can
+         be more complicated. The APSIM Installer will check for Microsoft Visual C++ 2015 and attempt to install it if required. On versions of Windows
+         before Windows 10 (i.e. Windows 7, 8, and 8.1) it may be necessary for the user to manually install Microsot KB2999226 (Update for Universal C Runtime in Windows). </p>
+      <p><a href="https://support.microsoft.com/en-us/help/2999226/update-for-universal-c-runtime-in-windows">This update can be found here</a></p>
+      <p>For this to succeed though, it may be necessary to update Windows via Windows Update. For example on Windows 7, we have 
+         found it necessary to install Windows 7 service pack before installing the above update.</p>
+      
+      <h2>Enhancements to the root development routines and water extraction routine in APSIM-Cotton</h2>
+      <p>APSIM-Cotton is extensively based on the OZCOT (Hearn, 1994) cotton model. OZCOT was designed with a very empirical approach to root development. The equations used were developed for the heavy clay soils at Myall Vale, NSW Australia and the only variables that are used to estimate rooting depth are the depth of the soil profile and the Days After Sowing (DAS). Plant growth, environmental conditions and soil hospitality for root growth play no part in the root development.  This was a legacy of the OZCOT model and was not consistent with the approach used for other models in APSIM.
+         In order to implement the standardised APSIM approaches for soil water uptake and root development which utilise the "kl" extraction factors and "xf" soil constraint factors for each soil layer, the cotton model required modifications.</p>
+      <a href="http://www.apsim.info/Documentation/Model,CropandSoil/Cotton.aspx">Click here for more detail.</a>      
+
+      <h2>New biochar model for APSIM</h2>
+      <p>A biochar model has been developed and incorporated into APSIM by Iowa State University. This can be found by clicking on "New" in the APSIM user interface,
+         selectng the Biochar folder and opening the .apsim file. For more information read: </p>
+      <p>Archontoulis, S.V., Huber, I., Miguez, F.E., Thorburn, P.J., Rogovska, N., Laird, D.A., 2016. A model for mechanistic and system assessments of biochar effects on soils and crops and trade-offs. GCB Bioenergy 8, 1028–1045. doi:10.1111/gcbb.12314</p>
+      
       <h2>Changes to command line programs</h2>
       <p>The syntax of several command line programs has been extended to allow specification of factorial instances. These instances are additions to the simulation path argument, of the form</p><p><code>Simulation=/path/to/simulation<i>@factorial=factor1=level1;factor2=level2</i> </code></p>
       <p>The program Apsim.exe accepts multiple .apsim, .con and .sim filenames, one optional simulation argument, and optional doAllFactors=(bool), and MaxOutputLines=(int) arguments. If the simulation arguments first character is the &quot;@&quot; character, it is interpreted as a filename containing a list of simulations to perform - one per line.</p>
@@ -14,9 +32,12 @@
       <p>Apsim.exe attempts to convert (via ApsimToSim) and run (via ApsimModel) simulations in parallel. The number of parallel instances is determined by the environment variable NUMBER_OF_PROCESSORS.</p>
       <p>The program BundleApsim.exe creates a zipfile for submission to remote batch processors such as condor or PBS. Its default parameters are taken from the GUI's "Run On Cluster" form. Inside are a .sub file for condor, and a .pbs file for PBS, both may require hand edits for the local installation.</p>
 
+      <h2>List of all changes and fixed defects</h2>
+      <p><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=31">The complete list of changes to APSIM can be found here</a></p>
+
 
       <h1>APSIM 7.8 release notes</h1>
-      <p>24th March 2015</p>
+      <p>24th March 2016</p>
       <h2>Enhancements and bug fixes to the cotton model</h2>
       <p>Cotton.dll replaces both OZCOT.dll and mvOZCOT.dll and is installed by default.</p>
       <p>Crop stages are now reported by 'stageName'  or  numerically by 'stage'.</p>
