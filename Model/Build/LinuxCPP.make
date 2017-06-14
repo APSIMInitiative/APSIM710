@@ -10,7 +10,7 @@ MONO_LIBDIR= -L$(MONO_PREFIX)/lib
 MONO_DEFINE= -DMONO 
 
 ifdef USE_MONO
-EXTRALIBS:= -lmono-2.0 -lm -lrt -lpthread $(EXTRALIBS)
+EXTRALIBS:= -lmonosgen-2.0 -lm -lrt -lpthread $(EXTRALIBS)
 endif
 
 CC=/usr/bin/g++
