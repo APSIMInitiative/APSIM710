@@ -1,0 +1,1177 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.9
+Title                  = cassava2_Fiji Nadelei Calibration
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                      "Outputs" = %apsim%\Model\Report.dll
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component          "Operations Schedule" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component                  "Sowing rule" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component "Fertilise incrop on critical NO3 level- top up" = %apsim%\Model\Manager.dll
+   Component         "Diagnostic variables" = %apsim%\Model\Manager.dll
+   Component                     "Micromet" = %apsim%\Model\MicroMet.dll
+   Component                   "Loam Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Loam Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                     "cassava2" = %apsim%\Model\Plant2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date =  1/09/2010
+     Simulation end date   = 14/03/2012
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Koronivia.met
+
+------- Outputs Initialisation ------------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mmm/yyyy
+        AccumTtemerg
+        PhenologyCurrentPhaseName
+        StageCodeValue
+        AccumPlantN
+        AccumMineralisation
+        AccumDenit
+        AccumFert
+        AccumLeach
+        AccumDetach
+        DeltaSoilOMN
+        DeltaSurfaceOMN
+        DeltaSoilMineralN
+        RootNSupplyUptake format 3
+        eo
+        es
+        sw_dep()
+        dul_dep()
+        drain
+        runoff
+        outflow_lat()
+        pond
+        AccumEO
+        AccumEP
+        AccumES
+        AccumDrainage
+        AccumRunoff
+        AccumRainfall
+        AccumIrrigation
+        AccumOutflowLat
+        SoilWaterDeficit
+        AboveGroundWt  format 3
+        BelowGroundWt  format 3
+        TotalWt  format 3
+        TotalDeadWt  format 3
+        TotalLiveWt  format 3
+        LeafDeadWt  format 3
+        LeafLiveWt  format 3
+        StemDeadWt  format 3
+        StemLiveWt  format 3
+        TuberDeadWt  format 3
+        TuberLiveWt  format 3
+        RootDeadWt  format 3
+        RootLiveWt  format 3
+        AboveGroundN  format 3
+        BelowGroundN  format 3
+        TotalN  format 3
+        TotalLiveN  format 3
+        TotalDeadN  format 3
+        LeafDeadN  format 3
+        LeafLiveN  format 3
+        StemDeadN  format 3
+        StemLiveN  format 3
+        TuberDeadN  format 3
+        TuberLiveN  format 3
+        RootLiveN  format 3
+        RootDeadN  format 3
+        LeafLiveNConc  format 3
+        LeafDeadNConc format 3
+        StemLiveNConc format 3
+        StemDeadNConc format 3
+        TuberLiveNConc format 3
+        TuberDeadNConc format 3
+        RootLiveNConc format 3
+        RootDeadNConc format 3
+        RootWaterSupply
+        RootWaterUptake
+        LeafTranspiration
+        LeafWaterDemand
+        RootDepth
+        Cover_green
+        Cover_tot
+        Cover_dead
+        LeafLAI
+        LeafLAIDead
+        Height
+        LeafFn
+        LeafFw
+        LeafPhotosynthesisFtValue
+        LeafPhotosynthesisFvpdValue
+        StructurePlantTotalNodeNo
+        StructureTotalStemPopn
+        LeafPlantAppearedGreenLeafNo
+        LeafExpandingCohortNo
+        LeafAppearedCohortNo
+        LeafDeadCohortNo
+        StructureMainStemNodeNo
+        LeafSenescingCohortNo
+        StructurePrimaryBudTotalNodeNo
+        LeafMinimumNConcValue
+        StemMinimumNConcValue
+        TuberMinimumNConcValue
+        RootMinimumNConcValue
+        LeafMaximumNConcValue
+        StemMaximumNConcValue
+        TuberMaximumNConcValue
+        RootMaximumNConcValue
+        StemLiveStructuralWt format 3
+        StemLiveNonStructuralWt
+        LeafSpecificArea
+        LeafExpandedCohortNo
+        sw_dep
+        no3  format 3
+        SoilNitrogenContent
+        ArbitratorNDemand
+        net_radn
+        peta
+        petr
+        fom_n()  format 3
+        hum_n() format 3
+        biom_n() format 3
+        dlt_n_min_res() format 3
+        dlt_n_min_tot()  format 3
+        plant_status
+        LeafLiveWtKgHa
+        StemLiveWtKgHa
+        TuberLiveWtKgHa
+        RootLiveWtKgHa
+        TotalDWtKgHa
+
+     Output file = cassava2_Fiji Nadelei Calibration Outputs.out
+     Format = normal
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mmm/yyyy
+        AboveGroundWt
+        TotalLiveWt
+        BelowGroundWt
+        leaflivewt
+        leafliven
+        leafdeadwt
+        stemlivewt
+        stemliven
+        tuberlivewt
+        TuberliveN
+        nfact_expan
+        nfact_photo
+        LeafLAI
+        Cover_tot
+        PhenologyCurrentPhaseName
+        PhenologyThermalTimeValue
+        StructureMainStemNodeNo
+        StructureHeightValue
+        LeafGreenCohortNo
+        LeafSenescingCohortNo
+        LeafDeadCohortNo
+        PhenologyAccumulatedTT
+        LeafFn
+        LeafPotentialGrowth
+        LeafFw
+        LeafLivePotentialDMAllocation
+        no3()
+        swdef_photo
+        rootdepth
+        no3_demand
+        LeafFw
+        leafFn
+        PhenologyThermalTimeValue
+        PhenologyCurrentPhaseName
+        PhenologyDormantTTinPhase
+        PhenologyEarlyTuberTTinPhase
+        PhenologyLateTuberTTinPhase
+        PhenologyMaturityTTinPhase
+        PhenologySenescedTTinPhase
+        PhenologySproutingTTinPhase
+        StructureMainStemNodeNo
+        PhenologyVegetativeTTInPhase
+        LeafThermalTimeValue
+        ReadyForHarvest
+        StageCodeValue
+        StructurePrimaryBudNo
+        StructurePrimaryBudTotalNodeNo
+        radn
+        maxt
+        mint
+        tav
+        LeafPhotosynthesisFNValue
+        LeafPhotosynthesisFTValue
+        LeafPhotosynthesisFVPDValue
+        LeafPhotosynthesisFWValue
+        LeafPhotosynthesisRUEValue
+        LeafPhotosynthesisVPD
+        StructureRelativeNodeApperance
+        LeafExpandedNodeNo
+
+     Output file = cassava2_Fiji Nadelei Calibration.out
+     Format = normal
+
+------- paddock.accum Initialisation ------------------------------------------
+     Initialising
+
+------- paddock.Operations Schedule Initialisation ----------------------------
+     Operations Schedule
+     ===================
+      20/10/2010  Prepare      fertiliser apply amount = 70 (kg/ha), depth = 40 (mm), type = urea ()
+      15/12/2010  Prepare      fertiliser apply amount = 200 (kg/ha), depth = 40 (mm), type = urea ()
+
+------- paddock.Irrigation Initialisation -------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- paddock.Sowing rule Initialisation ------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+           if today = date('20-oct-2010') then
+        cassava2 sow population = 2, depth = 2, cultivar = nadelei, maxcover = 1.0, budnumber = 1, row_spacing = 750, crop_class = plant
+           endif
+     END of rules
+     
+
+------- paddock.Harvesting rule Initialisation --------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     if (cassava2.plant_status <> 'out') then
+              if cassava2.phenologycurrentphasename = 'maturity' or cassava2.plant_status = 'dead' then
+       cassava2  harvest
+       cassava2  end_crop
+                endif
+     endif
+     END of rules
+     
+
+------- paddock.Fertilise incrop on critical NO3 level- top up Initialisation -
+     Manager rules:
+     
+     SECTION:- start_of_day
+               if ((today > date('1-jan-2011')  and today < date('1-jun-2011')) then
+     no3_available = no3(1)
+     if (no3_available <= 10) then
+        n_deficit = 12 - no3_available
+        'fertiliser' apply amount = n_deficit (kg/ha), depth = 50 (mm), type = no3_n ()
+     endif
+              endif
+     END of rules
+     
+
+------- paddock.Diagnostic variables Initialisation ---------------------------
+     Manager rules:
+     
+     SECTION:- init
+     simday = 1
+     accumplantn = 0
+     accummineralisation = 0
+     accumdenit = 0
+     accumfert = 0
+     accumleach = 0
+     accumdetach = 0
+     deltasoilomn = 0
+     deltasurfaceomn = 0
+     deltasoilmineraln = 0
+     soilnitrogencontent = 0;
+     accumeo = 0
+     accumep = 0
+     accumes = 0
+     accumdrainage = 0
+     accumrunoff = 0
+     accumoutflowlat = 0
+     accumirrigation = 0
+     accumrainfall = 0
+     soilwaterdeficit = 0
+     accumttemerg = 0
+     stemlivewtkgha = 0.0
+     leaflivewtkgha = 0.0
+     tuberlivewtkgha = 0.0
+     rootlivewtkgha = 0.0
+     totaldwtkgha = 0.0
+     
+     SECTION:- start_of_day
+     if (cassava2.plant_status <> 'out') then
+     if simday = 1 then
+     initialsoilomn = biom_n() + fom_n() + hum_n()
+     initialsurfaceomn = surfaceom_n
+     initialmineraln = no3() + nh4() + urea()
+     endif
+     accumplantn =  accumplantn - cassava2.rootnuptake
+     accummineralisation = accummineralisation + dlt_n_min()
+     accumdenit = accumdenit - dnit()
+     accumfert = accumfert + fertiliser
+     accumleach = accumleach - leach_urea - leach_no3 - leach_nh4
+     accumdetach = 0
+     deltasoilomn = (biom_n() + fom_n() + hum_n()) - initialsoilomn
+     deltasurfaceomn = surfaceom_n - initialsurfaceomn
+     deltasoilmineraln = (no3() + nh4() + urea()) - initialmineraln
+     soilnitrogencontent = (no3() + nh4() + urea())
+     accumep = accumep - cassava2.leaftranspiration
+     accumdrainage = accumdrainage - drain
+     accumrunoff = accumrunoff - runoff
+     accumoutflowlat = accumoutflowlat - outflow_lat()
+     accumirrigation = accumirrigation + irrigation
+     accumrainfall = accumrainfall + rain
+     soilwaterdeficit =  sw_dep() - dul_dep()
+     accumeo = accumeo - eo
+     accumes = accumes - es
+     if cassava2.stagecodevalue >= 3 then
+     accumttemerg = accumttemerg + cassava2.phenologythermaltimevalue
+     endif
+     endif
+     
+     SECTION:- end_of_day
+     if (cassava2.plant_status <> 'out') then
+     if simday = 1 then
+     simday = 2
+     else simday = 2
+     endif
+     stemlivewtkgha = cassava2.stemlivewt * 10.0
+     leaflivewtkgha = cassava2.leaflivewt * 10.0
+     tuberlivewtkgha = cassava2.tuberlivewt * 10.0
+     rootlivewtkgha = cassava2.rootlivewt * 10.0
+     totaldwtkgha = stemlivewtkgha + leaflivewtkgha + tuberlivewtkgha + rootlivewtkgha
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : simday = 1.00000
+     Manager creating a new local real variable : accumplantn = 0.00000
+     Manager creating a new local real variable : accummineralisation = 0.00000
+     Manager creating a new local real variable : accumdenit = 0.00000
+     Manager creating a new local real variable : accumfert = 0.00000
+     Manager creating a new local real variable : accumleach = 0.00000
+     Manager creating a new local real variable : accumdetach = 0.00000
+     Manager creating a new local real variable : deltasoilomn = 0.00000
+     Manager creating a new local real variable : deltasurfaceomn = 0.00000
+     Manager creating a new local real variable : deltasoilmineraln = 0.00000
+     Manager creating a new local real variable : soilnitrogencontent = 0.00000
+     Manager creating a new local real variable : accumeo = 0.00000
+     Manager creating a new local real variable : accumep = 0.00000
+     Manager creating a new local real variable : accumes = 0.00000
+     Manager creating a new local real variable : accumdrainage = 0.00000
+     Manager creating a new local real variable : accumrunoff = 0.00000
+     Manager creating a new local real variable : accumoutflowlat = 0.00000
+     Manager creating a new local real variable : accumirrigation = 0.00000
+     Manager creating a new local real variable : accumrainfall = 0.00000
+     Manager creating a new local real variable : soilwaterdeficit = 0.00000
+     Manager creating a new local real variable : accumttemerg = 0.00000
+     Manager creating a new local real variable : stemlivewtkgha = 0.00000
+     Manager creating a new local real variable : leaflivewtkgha = 0.00000
+     Manager creating a new local real variable : tuberlivewtkgha = 0.00000
+     Manager creating a new local real variable : rootlivewtkgha = 0.00000
+     Manager creating a new local real variable : totaldwtkgha = 0.00000
+
+------- paddock.Micromet Initialisation ---------------------------------------
+     Initialising
+     
+        - Reading Constants
+     
+        - Reading Parameters
+
+------- paddock.Loam Water Initialisation -------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.150  0.290  0.465  0.489  0.465  1.140  0.762  0.300
+          150.-  300.  0.260  0.290  0.431  0.454  0.431  1.240  0.190  0.300
+          300.-  600.  0.290  0.290  0.514  0.542  0.514  1.000  0.048  0.300
+          600.-  900.  0.290  0.290  0.497  0.523  0.410  1.050  0.000  0.300
+          900.- 1200.  0.300  0.300  0.512  0.539  0.300  1.010  0.000  0.300
+         1200.- 1500.  0.310  0.310  0.512  0.539  0.310  1.010  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      43.50      26.25      26.25       3.60
+          150.-  300.      43.50      21.15      21.15       3.45
+          300.-  600.      87.00      67.20      67.20       8.40
+          600.-  900.      87.00      36.00      62.10       7.80
+          900.- 1200.      90.00       0.00      63.60       8.10
+         1200.- 1500.      93.00       0.00      60.60       8.10
+          ---------------------------------------------------------
+               Totals     444.00     150.60     300.90      39.45
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- paddock.SurfaceOrganicMatter Initialisation ---------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat            0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- paddock.Loam Nitrogen Initialisation ----------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Loam
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     7.50  1.04   11.12    1.02    0.00
+             2     7.50  0.89    3.91    0.19    0.00
+             3     7.50  0.89    6.30    0.30    0.00
+             4     7.50  0.89    5.36    0.31    0.00
+             5     7.50  0.77    5.15    0.30    0.00
+             6     7.50  0.45    5.15    0.30    0.00
+          ------------------------------------------------
+           Totals               37.00    2.43    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      17523.7  1401.9   260.3    32.5    31.2     0.8
+             2      16424.2  1313.9   129.8    16.2    23.1     0.6
+             3      26621.1  2129.7    78.9     9.9    12.7     0.3
+             4      28007.2  2240.6    27.8     3.5     7.0     0.2
+             5      23319.4  1865.6    11.6     1.4     3.8     0.1
+             6      13628.3  1090.3     6.8     0.8     2.1     0.1
+          ---------------------------------------------------------
+           Totals  125523.9 10041.9   515.1    64.4    80.0     2.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+20 October 2010(Day of year=293), paddock.Operations Schedule: 
+      Sending apply message to fertiliser
+20 October 2010(Day of year=293), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        70.00 of Urea ferilizer (urea)
+                                         added at depth   40.00 (layer   1)
+20 October 2010(Day of year=293), paddock.Sowing rule: 
+     Manager sending message :- cassava2 sow  population = 2, depth = 2, cultivar = nadelei, maxcover = 1.0, budnumber = 1, row_spacing = 750, crop_class = plant
+20 October 2010(Day of year=293), paddock.Diagnostic variables: 
+     Manager creating a new local real variable : initialsoilomn = 10095.72363
+     Manager creating a new local real variable : initialsurfaceomn = 0.00000
+     Manager creating a new local real variable : initialmineraln = 80.26763
+20 October 2010 - Peeping
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+21 October 2010 - Emergence
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+22 October 2010 - FloralInitiation
+                            LAI = 0.00 (m^2/m^2)
+           Above Ground Biomass = 0.00 (g/m^2)
+15 December 2010(Day of year=349), paddock.Operations Schedule: 
+      Sending apply message to fertiliser
+15 December 2010(Day of year=349), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       200.00 of Urea ferilizer (urea)
+                                         added at depth   40.00 (layer   1)
+2 January 2011(Day of year=2), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager creating a new local real variable : no3_available = 23.72213
+12 January 2011 - TuberInitiation
+                            LAI = 0.54 (m^2/m^2)
+           Above Ground Biomass = 150.57 (g/m^2)
+14 January 2011(Day of year=14), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager creating a new local real variable : n_deficit = 3.47993
+     Manager sending message :- fertiliser apply  amount = 3.47993 (kg/ha), depth = 50 (mm), type = no3_n
+14 January 2011(Day of year=14), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.48 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+16 January 2011(Day of year=16), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.10457 (kg/ha), depth = 50 (mm), type = no3_n
+16 January 2011(Day of year=16), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.10 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+20 January 2011(Day of year=20), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.03597 (kg/ha), depth = 50 (mm), type = no3_n
+20 January 2011(Day of year=20), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.04 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+23 January 2011(Day of year=23), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.30304 (kg/ha), depth = 50 (mm), type = no3_n
+23 January 2011(Day of year=23), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.30 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+26 January 2011(Day of year=26), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.57896 (kg/ha), depth = 50 (mm), type = no3_n
+26 January 2011(Day of year=26), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.58 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+29 January 2011(Day of year=29), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.56563 (kg/ha), depth = 50 (mm), type = no3_n
+29 January 2011(Day of year=29), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.57 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+30 January 2011(Day of year=30), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.44098 (kg/ha), depth = 50 (mm), type = no3_n
+30 January 2011(Day of year=30), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.44 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+31 January 2011(Day of year=31), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.56430 (kg/ha), depth = 50 (mm), type = no3_n
+31 January 2011(Day of year=31), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.56 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+1 February 2011(Day of year=32), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.02703 (kg/ha), depth = 50 (mm), type = no3_n
+1 February 2011(Day of year=32), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.03 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+2 February 2011(Day of year=33), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.08927 (kg/ha), depth = 50 (mm), type = no3_n
+2 February 2011(Day of year=33), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.09 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+4 February 2011(Day of year=35), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.78617 (kg/ha), depth = 50 (mm), type = no3_n
+4 February 2011(Day of year=35), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.79 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+5 February 2011(Day of year=36), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.85597 (kg/ha), depth = 50 (mm), type = no3_n
+5 February 2011(Day of year=36), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.86 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+6 February 2011(Day of year=37), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.40015 (kg/ha), depth = 50 (mm), type = no3_n
+6 February 2011(Day of year=37), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.40 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+7 February 2011(Day of year=38), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.64469 (kg/ha), depth = 50 (mm), type = no3_n
+7 February 2011(Day of year=38), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.64 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+8 February 2011(Day of year=39), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.21017 (kg/ha), depth = 50 (mm), type = no3_n
+8 February 2011(Day of year=39), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.21 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+10 February 2011(Day of year=41), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 4.20191 (kg/ha), depth = 50 (mm), type = no3_n
+10 February 2011(Day of year=41), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.20 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+11 February 2011(Day of year=42), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.66742 (kg/ha), depth = 50 (mm), type = no3_n
+11 February 2011(Day of year=42), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.67 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+12 February 2011(Day of year=43), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 4.15000 (kg/ha), depth = 50 (mm), type = no3_n
+12 February 2011(Day of year=43), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.15 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+14 February 2011(Day of year=45), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.09879 (kg/ha), depth = 50 (mm), type = no3_n
+14 February 2011(Day of year=45), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.10 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+16 February 2011(Day of year=47), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.81223 (kg/ha), depth = 50 (mm), type = no3_n
+16 February 2011(Day of year=47), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.81 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+18 February 2011(Day of year=49), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.70587 (kg/ha), depth = 50 (mm), type = no3_n
+18 February 2011(Day of year=49), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.71 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+20 February 2011(Day of year=51), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 4.29466 (kg/ha), depth = 50 (mm), type = no3_n
+20 February 2011(Day of year=51), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.29 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+22 February 2011(Day of year=53), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.61586 (kg/ha), depth = 50 (mm), type = no3_n
+22 February 2011(Day of year=53), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.62 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+24 February 2011(Day of year=55), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.67288 (kg/ha), depth = 50 (mm), type = no3_n
+24 February 2011(Day of year=55), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.67 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+26 February 2011(Day of year=57), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.25928 (kg/ha), depth = 50 (mm), type = no3_n
+26 February 2011(Day of year=57), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.26 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+28 February 2011(Day of year=59), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.58629 (kg/ha), depth = 50 (mm), type = no3_n
+28 February 2011(Day of year=59), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.59 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+2 March 2011(Day of year=61), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.53061 (kg/ha), depth = 50 (mm), type = no3_n
+2 March 2011(Day of year=61), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.53 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+4 March 2011(Day of year=63), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 4.47954 (kg/ha), depth = 50 (mm), type = no3_n
+4 March 2011(Day of year=63), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.48 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+6 March 2011(Day of year=65), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.76192 (kg/ha), depth = 50 (mm), type = no3_n
+6 March 2011(Day of year=65), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.76 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+8 March 2011(Day of year=67), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 4.48622 (kg/ha), depth = 50 (mm), type = no3_n
+8 March 2011(Day of year=67), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.49 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+9 March 2011(Day of year=68), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.46921 (kg/ha), depth = 50 (mm), type = no3_n
+9 March 2011(Day of year=68), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.47 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+11 March 2011(Day of year=70), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.92004 (kg/ha), depth = 50 (mm), type = no3_n
+11 March 2011(Day of year=70), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.92 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+13 March 2011(Day of year=72), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 4.35930 (kg/ha), depth = 50 (mm), type = no3_n
+13 March 2011(Day of year=72), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.36 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+14 March 2011(Day of year=73), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.69221 (kg/ha), depth = 50 (mm), type = no3_n
+14 March 2011(Day of year=73), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.69 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+15 March 2011(Day of year=74), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.01080 (kg/ha), depth = 50 (mm), type = no3_n
+15 March 2011(Day of year=74), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.01 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+16 March 2011(Day of year=75), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.63613 (kg/ha), depth = 50 (mm), type = no3_n
+16 March 2011(Day of year=75), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.64 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+17 March 2011(Day of year=76), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.10924 (kg/ha), depth = 50 (mm), type = no3_n
+17 March 2011(Day of year=76), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.11 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+19 March 2011(Day of year=78), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 4.84679 (kg/ha), depth = 50 (mm), type = no3_n
+19 March 2011(Day of year=78), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.85 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+20 March 2011(Day of year=79), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.14403 (kg/ha), depth = 50 (mm), type = no3_n
+20 March 2011(Day of year=79), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.14 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+22 March 2011(Day of year=81), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.84184 (kg/ha), depth = 50 (mm), type = no3_n
+22 March 2011(Day of year=81), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.84 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+24 March 2011(Day of year=83), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.45027 (kg/ha), depth = 50 (mm), type = no3_n
+24 March 2011(Day of year=83), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.45 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+26 March 2011(Day of year=85), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.90109 (kg/ha), depth = 50 (mm), type = no3_n
+26 March 2011(Day of year=85), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.90 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+28 March 2011(Day of year=87), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.32219 (kg/ha), depth = 50 (mm), type = no3_n
+28 March 2011(Day of year=87), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.32 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+29 March 2011(Day of year=88), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.75129 (kg/ha), depth = 50 (mm), type = no3_n
+29 March 2011(Day of year=88), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.75 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+31 March 2011(Day of year=90), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.52015 (kg/ha), depth = 50 (mm), type = no3_n
+31 March 2011(Day of year=90), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.52 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+2 April 2011(Day of year=92), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.81476 (kg/ha), depth = 50 (mm), type = no3_n
+2 April 2011(Day of year=92), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.81 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+4 April 2011(Day of year=94), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.38428 (kg/ha), depth = 50 (mm), type = no3_n
+4 April 2011(Day of year=94), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.38 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+6 April 2011(Day of year=96), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.55314 (kg/ha), depth = 50 (mm), type = no3_n
+6 April 2011(Day of year=96), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.55 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+8 April 2011(Day of year=98), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.33656 (kg/ha), depth = 50 (mm), type = no3_n
+8 April 2011(Day of year=98), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.34 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+10 April 2011(Day of year=100), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.76682 (kg/ha), depth = 50 (mm), type = no3_n
+10 April 2011(Day of year=100), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.77 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+12 April 2011(Day of year=102), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.77849 (kg/ha), depth = 50 (mm), type = no3_n
+12 April 2011(Day of year=102), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.78 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+14 April 2011(Day of year=104), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.43748 (kg/ha), depth = 50 (mm), type = no3_n
+14 April 2011(Day of year=104), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.44 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+16 April 2011(Day of year=106), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.50876 (kg/ha), depth = 50 (mm), type = no3_n
+16 April 2011(Day of year=106), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.51 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+18 April 2011(Day of year=108), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.51677 (kg/ha), depth = 50 (mm), type = no3_n
+18 April 2011(Day of year=108), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.52 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+20 April 2011(Day of year=110), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.59010 (kg/ha), depth = 50 (mm), type = no3_n
+20 April 2011(Day of year=110), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.59 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+21 April 2011(Day of year=111), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.08379 (kg/ha), depth = 50 (mm), type = no3_n
+21 April 2011(Day of year=111), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.08 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+23 April 2011(Day of year=113), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.63587 (kg/ha), depth = 50 (mm), type = no3_n
+23 April 2011(Day of year=113), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.64 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+24 April 2011(Day of year=114), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.31694 (kg/ha), depth = 50 (mm), type = no3_n
+24 April 2011(Day of year=114), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.32 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+25 April 2011(Day of year=115), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.68784 (kg/ha), depth = 50 (mm), type = no3_n
+25 April 2011(Day of year=115), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.69 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+27 April 2011(Day of year=117), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 4.24260 (kg/ha), depth = 50 (mm), type = no3_n
+27 April 2011(Day of year=117), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.24 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+29 April 2011(Day of year=119), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 4.50683 (kg/ha), depth = 50 (mm), type = no3_n
+29 April 2011(Day of year=119), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.51 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+30 April 2011(Day of year=120), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 4.06695 (kg/ha), depth = 50 (mm), type = no3_n
+30 April 2011(Day of year=120), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.07 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+2 May 2011(Day of year=122), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.68583 (kg/ha), depth = 50 (mm), type = no3_n
+2 May 2011(Day of year=122), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.69 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+3 May 2011(Day of year=123), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.73368 (kg/ha), depth = 50 (mm), type = no3_n
+3 May 2011(Day of year=123), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.73 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+4 May 2011(Day of year=124), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 4.21856 (kg/ha), depth = 50 (mm), type = no3_n
+4 May 2011(Day of year=124), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.22 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+6 May 2011(Day of year=126), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 4.52970 (kg/ha), depth = 50 (mm), type = no3_n
+6 May 2011(Day of year=126), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.53 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+7 May 2011(Day of year=127), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.29178 (kg/ha), depth = 50 (mm), type = no3_n
+7 May 2011(Day of year=127), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.29 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+9 May 2011(Day of year=129), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 4.37876 (kg/ha), depth = 50 (mm), type = no3_n
+9 May 2011(Day of year=129), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.38 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+11 May 2011(Day of year=131), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 4.17281 (kg/ha), depth = 50 (mm), type = no3_n
+11 May 2011(Day of year=131), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.17 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+12 May 2011(Day of year=132), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.99039 (kg/ha), depth = 50 (mm), type = no3_n
+12 May 2011(Day of year=132), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.99 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+14 May 2011(Day of year=134), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.90020 (kg/ha), depth = 50 (mm), type = no3_n
+14 May 2011(Day of year=134), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.90 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+16 May 2011(Day of year=136), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.73925 (kg/ha), depth = 50 (mm), type = no3_n
+16 May 2011(Day of year=136), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.74 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+18 May 2011(Day of year=138), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.54992 (kg/ha), depth = 50 (mm), type = no3_n
+18 May 2011(Day of year=138), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.55 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+19 May 2011(Day of year=139), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.47134 (kg/ha), depth = 50 (mm), type = no3_n
+19 May 2011(Day of year=139), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.47 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+20 May 2011(Day of year=140), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.48289 (kg/ha), depth = 50 (mm), type = no3_n
+20 May 2011(Day of year=140), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.48 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+21 May 2011(Day of year=141), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 4.31229 (kg/ha), depth = 50 (mm), type = no3_n
+21 May 2011(Day of year=141), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.31 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+22 May 2011(Day of year=142), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.11295 (kg/ha), depth = 50 (mm), type = no3_n
+22 May 2011(Day of year=142), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.11 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+23 May 2011(Day of year=143), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.72287 (kg/ha), depth = 50 (mm), type = no3_n
+23 May 2011(Day of year=143), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.72 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+25 May 2011(Day of year=145), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 4.19441 (kg/ha), depth = 50 (mm), type = no3_n
+25 May 2011(Day of year=145), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         4.19 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+27 May 2011(Day of year=147), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.08592 (kg/ha), depth = 50 (mm), type = no3_n
+27 May 2011(Day of year=147), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.09 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+28 May 2011(Day of year=148), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 3.23408 (kg/ha), depth = 50 (mm), type = no3_n
+28 May 2011(Day of year=148), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         3.23 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+29 May 2011(Day of year=149), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.83306 (kg/ha), depth = 50 (mm), type = no3_n
+29 May 2011(Day of year=149), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.83 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+31 May 2011(Day of year=151), paddock.Fertilise incrop on critical NO3 level- top up: 
+     Manager sending message :- fertiliser apply  amount = 2.74473 (kg/ha), depth = 50 (mm), type = no3_n
+31 May 2011(Day of year=151), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+         2.74 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+19 October 2011 - FinalLeaf
+                            LAI = 2.56 (m^2/m^2)
+           Above Ground Biomass = 1169.42 (g/m^2)
+19 February 2012 - FullSenescence
+                            LAI = 1.63 (m^2/m^2)
+           Above Ground Biomass = 1255.61 (g/m^2)
+14 March 2012(Day of year=74), clock: 
+     Simulation is terminating due to end criteria being met.
+
