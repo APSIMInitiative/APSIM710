@@ -65,7 +65,7 @@ public class SoilWater
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
-    [Description("Maximum bare soil albedo, 100% green crop cover")]
+    [Description("Maximum soil albedo with 100% green crop cover")]
     public double max_albedo = 0.23;
 
     [Output]
@@ -77,7 +77,7 @@ public class SoilWater
     [Output]
     [Param(MinVal = 0.0, MaxVal = 10.0)]
     [Units("0-10")]
-    [Description("Coefficientfor the reduction on evaporation due to canopy")]
+    [Description("Coefficient for the reduction on evaporation due to canopy")]
     public double canopy_eos_coef = 1.7;
 
     [Output]
@@ -98,17 +98,17 @@ public class SoilWater
     [Description("Upper limit of sumes2")]
     public double sumes2_max = 25;
 
-    [Output] 
-    [Param(MinVal = 0.0, MaxVal = 1.0)] 
-    [Units("0-1")] 
-    [Description("Efficiency of moving solute with flow below DUL")] 
-    public double[] solute_flow_eff = {1.0};
+    [Output]
+    [Param(MinVal = 0.0, MaxVal = 1.0)]
+    [Units("0-1")]
+    [Description("Efficiency of moving solute with flow below DUL")]
+    public double[] solute_flow_eff = { 1.0 };
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Efficiency of moving solute with flow above DUL")]
-    public double[] solute_flux_eff =  { 1.0 };
+    public double[] solute_flux_eff = { 1.0 };
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
@@ -142,13 +142,13 @@ public class SoilWater
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Canopy factors for cover runoff effect")]
-    public double[] canopy_fact = {1, 1, 0, 0};
+    public double[] canopy_fact = { 1, 1, 0, 0 };
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 100000.0)]
     [Units("mm")]
     [Description("Heights for canopy factors")]
-    public double[] canopy_fact_height = {0, 600, 1800, 30000};
+    public double[] canopy_fact_height = { 0, 600, 1800, 30000 };
 
     [Output]
     [Param(MinVal = 0.0, MaxVal = 1.0)]
@@ -161,15 +161,19 @@ public class SoilWater
     [Description("Actual soil evaporation model being used")]
     public string act_evap_method = "ritchie";
 
-
     [Link]
     public SoilWatTillageType SoilWatTillageType;
 
+    private bool irrigationCanRunoff = false;
     [Param(IsOptional = true, MinVal = 0, MaxVal = 100)]
     [Output]
-    [Units ("yes/no")]
+    [Units("yes/no")]
     [Description("Irrigation will runoff like rain")]
-    private string irrigation_will_runoff = "no";
+    private string irrigation_will_runoff
+    {
+        get { return irrigationCanRunoff ? "yes" : "no"; }
+        set { irrigationCanRunoff = value.ToLower() == "yes"; }
+    }
 
     //Irrigation layer
     [Param(IsOptional = true, MinVal = 0, MaxVal = 100)]
@@ -184,12 +188,12 @@ public class SoilWater
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1000.0)]
     [Description("Diffusivity constant for water movement below DUL")]
-    public double diffus_const = Double.NaN;
+    public double diffus_const = double.NaN;
 
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 100.0)]
     [Description("Slope for relationshipe between water diffusivity and soil water content")]
-    public double diffus_slope = Double.NaN;
+    public double diffus_slope = double.NaN;
 
     #region Runoff paramters
 
@@ -198,77 +202,85 @@ public class SoilWater
     [Description("System variable name of external observed runoff source")]
     private string obsrunoff_name = "";
 
-    private double _cn2_bare = Double.NaN;
+    /// <summary>Curve number for bare soil</summary>
+    private double bareSoilCN = double.NaN;
+    private double resetBareSoilCN;
     [Output]
     [Param(IsOptional = true, MinVal = 1.0, MaxVal = 100.0)]
-    [Description("Curve number input used to calculate daily runoff")]
+    [Description("Curve number for bare soil used to calculate daily runoff")]
     public double cn2_bare
     {
-        get { return _cn2_bare; }
+        get { return bareSoilCN; }
         set
         {
-            if (!initDone)
+            if (isInitialising)
             {
                 //store a copy so if there is a Reset event we can set it back to this value.
-                reset_cn2_bare = value;
+                resetBareSoilCN = value;
             }
-            _cn2_bare = value;
+            bareSoilCN = value;
         }
     }
 
-    private double _cn_red = Double.NaN;
+    /// <summary>Maximum reduction of curve number due to cover</summary>
+    private double maxCNreduction = double.NaN;
+    private double resetMaxCNreduction;
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 100.0)]
-    [Description("Maximum reduction in cn2_bare due to cover")]
+    [Description("Maximum reduction of curve number due to cover")]
     public double cn_red
     {
-        get { return _cn_red; }
+        get { return maxCNreduction; }
         set
         {
-            if (!initDone)
+            if (isInitialising)
             {
                 //store a copy so if there is a Reset event we can set it back to this value.
-                reset_cn_red = value;
+                resetMaxCNreduction = value;
             }
-            _cn_red = value;
+            maxCNreduction = value;
         }
     }
 
-    private double _cn_cov = Double.NaN;
+    /// <summary>Cover for maximum cn reduction</summary>
+    private double coverAtMinimumCN = double.NaN;
+    private double resetCoverMinCN;
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
-    [Description("Cover at which cn_red occurs")]
+    [Description("Cover at which maximum cn reduction occurs")]
     public double cn_cov
     {
-        get { return _cn_cov; }
+        get { return coverAtMinimumCN; }
         set
         {
-            if (!initDone)
+            if (isInitialising)
             {
                 //store a copy so if there is a Reset event we can set it back to this value.
-                reset_cn_cov = value;
+                resetCoverMinCN = value;
             }
-            _cn_cov = value;
+            coverAtMinimumCN = value;
         }
     }
 
-    private double _max_pond = 0.0;
+    /// <summary>Maximum surface storage capacity (mm)</summary>
+    private double maxPondCapacity = 0.0;
+    double resetMaxPond;
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1000.0)]
     [Units("mm")]
     [Description("Maximum surface storage capacity of soil")]
     public double max_pond
     {
-        get { return _max_pond; }
+        get { return maxPondCapacity; }
         set
         {
-            if (!initDone)
+            if (isInitialising)
             {
                 //store a copy so if there is a Reset event we can set it back to this value.
-                reset_max_pond = value;
+                resetMaxPond = value;
             }
-            _max_pond = value;
+            maxPondCapacity = value;
         }
     }
 
@@ -276,18 +288,14 @@ public class SoilWater
 
     #region Evaporation parameters
 
-    private string _eo_source = "";
+    private string myPETsource = "";
     [Output]
     [Param(IsOptional = true)]
-    [Description("System variable name of external eo source")]
+    [Description("Name of potential evaporation source")]
     public string eo_source
     {
-        get { return _eo_source; }
-        set
-        {
-            _eo_source = value;
-            Console.WriteLine("Eo source set to: " + _eo_source);
-        }
+        get { return myPETsource; }
+        set { myPETsource = value.ToLower(); }
     }
 
     [Param(MinVal = 0.0001, MaxVal = 1.0)]
@@ -296,25 +304,25 @@ public class SoilWater
     [Description("Bare soil albedo")]
     public double salb;
 
-    private double _u = Double.NaN;
+    private double myU = double.NaN;
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 40.0)]
     [Units("mm")]
     [Description("Upper limit of stage 1 soil evaporation")]
     public double u
     {
-        get { return _u; }
-        set { _u = value; }
+        get { return myU; }
+        set { myU = value; }
     }
 
-    private double _cona = Double.NaN;
+    private double myConA = double.NaN;
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10.0)]
     [Description("Stage 2 drying coefficient")]
     public double cona
     {
-        get { return _cona; }
-        set { _cona = value; }
+        get { return myConA; }
+        set { myConA = value; }
     }
 
     [Output]
@@ -326,12 +334,12 @@ public class SoilWater
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 40.0)]
     [Units("mm")]
     [Description("Upper limit of stage 1 soil evaporation during summer")]
-    public double summeru = Double.NaN;
+    public double summeru = double.NaN;
 
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10.0)]
     [Description("Stage 2 drying coefficient during summer")]
-    public double summercona = Double.NaN;
+    public double summercona = double.NaN;
 
     //winter
     [Output]
@@ -343,12 +351,12 @@ public class SoilWater
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10.0)]
     [Units("mm")]
     [Description("Upper limit of stage 1 soil evaporation during winter")]
-    public double winteru = Double.NaN;
+    public double winteru = double.NaN;
 
     [Output]
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10.0)]
     [Description("Stage 2 drying coefficient during winter")]
-    public double wintercona = Double.NaN;
+    public double wintercona = double.NaN;
 
     #endregion
 
@@ -357,17 +365,17 @@ public class SoilWater
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0)]
     [Units("0-1")]
     [Description("Slope of terrain for lateral flow calculations")]
-    public double slope = Double.NaN;
+    public double slope = double.NaN;
 
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0e8F)]
     [Units("m")]
     [Description("Basal width of discharge area")]
-    public double discharge_width = Double.NaN;
+    public double discharge_width = double.NaN;
 
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0e8F)]
     [Units("m^2")]
     [Description("Area over which lateral flow is occuring")]
-    public double catchment_area = Double.NaN;
+    public double catchment_area = double.NaN;
 
     #endregion
 
@@ -386,7 +394,7 @@ public class SoilWater
         set
         {
             nLayers = value.Length;
-            if (!initDone)
+            if (isInitialising)
             {
                 //store a copy so if there is a Reset event we can set it back to this value.
                 resetDLayer = new double[nLayers];
@@ -399,24 +407,51 @@ public class SoilWater
                 ResizeProfileArrays();
             }
 
-            Array.Copy(value, dLayer, nLayers);
+            //check and correct the water amounts
             for (int layer = 0; layer < nLayers; layer++)
             {
-                //If you change the depths of the layer then you need to modify the water "_dep" variables by the same amount. (they are in mm too)
-                //If you don't do this, you will have the same amount of water that is now in a shallower layer, 
-                //therefore you will have a different fraction equivalent variables, the ones without the "_dep" eg. sw, dul.  
                 double fract = MathUtility.Divide(value[layer], dLayer[layer], 0.0);
                 swSAT[layer] = swSAT[layer] * fract;
                 swDUL[layer] = swDUL[layer] * fract;
                 swLL15[layer] = swLL15[layer] * fract;
                 swAirDry[layer] = swAirDry[layer] * fract;
                 swAmount[layer] = swAmount[layer] * fract;
-
-                soilwat2_check_profile(layer);
+                dlayer[layer] = value[layer];
             }
 
-            if (initDone)
-                soilwat2_New_Profile_Event();
+            if (!isInitialising)
+            {
+                //initialisation has finished
+                //publish event telling other modules that there is a new soil profile
+                sendNewProfileEvent();
+            }
+        }
+    }
+
+    /// <summary>Soil bulk density (g/cm3)</summary>
+    private double[] myBD;
+    private double[] resetBD;
+    [Param(MinVal = 0.01, MaxVal = 3.0)]
+    [Units("g/cm^3")]
+    [Output(Immutable = true)]
+    [Description("Bulk density of soil, fines only")]
+    public double[] bd
+    {
+        get { return myBD; }
+        set
+        {
+            if (isInitialising)
+            {
+                //store a copy so if there is a Reset event we can set it back to this value.
+                resetBD = new double[value.Length];
+                Array.Copy(value, resetBD, value.Length);
+            }
+
+            for (int layer = 0; layer < nLayers; layer++)
+            {
+                myBD[layer] = value[layer];
+                //soilwat2_check_profile(layer);
+            }
         }
     }
 
@@ -429,14 +464,15 @@ public class SoilWater
     {
         get
         {
-            double[] _sat = new double[nLayers];
+            double[] mySAT = new double[nLayers];
+
             for (int layer = 0; layer < nLayers; layer++)
-                _sat[layer] = MathUtility.Divide(swSAT[layer], dLayer[layer], 0.0);
-            return _sat;
+                mySAT[layer] = MathUtility.Divide(swSAT[layer], dLayer[layer], 0.0);
+            return mySAT;
         }
         set
         {
-            if (!initDone)
+            if (isInitialising)
             {
                 //store a copy so if there is a Reset event we can set it back to this value.
                 resetSAT = new double[value.Length];
@@ -446,7 +482,7 @@ public class SoilWater
             for (int layer = 0; layer < nLayers; layer++)
             {
                 swSAT[layer] = value[layer] * dLayer[layer];
-                soilwat2_check_profile(layer);
+                checkSoilWaterThresholds(layer);
             }
         }
     }
@@ -460,14 +496,15 @@ public class SoilWater
     {
         get
         {
-            double[] _dul = new double[nLayers];
+            double[] myDUL = new double[nLayers];
+
             for (int layer = 0; layer < nLayers; layer++)
-                _dul[layer] = MathUtility.Divide(swDUL[layer], dLayer[layer], 0.0);
-            return _dul;
+                myDUL[layer] = MathUtility.Divide(swDUL[layer], dLayer[layer], 0.0);
+            return myDUL;
         }
         set
         {
-            if (!initDone)
+            if (isInitialising)
             {
                 //store a copy so if there is a Reset event we can set it back to this value.
                 resetDUL = new double[value.Length];
@@ -477,7 +514,7 @@ public class SoilWater
             for (int layer = 0; layer < nLayers; layer++)
             {
                 swDUL[layer] = value[layer] * dLayer[layer];
-                soilwat2_check_profile(layer);
+                checkSoilWaterThresholds(layer);
             }
         }
     }
@@ -491,14 +528,15 @@ public class SoilWater
     {
         get
         {
-            double[] _ll15 = new double[nLayers];
+            double[] myLL15 = new double[nLayers];
+
             for (int layer = 0; layer < nLayers; layer++)
-                _ll15[layer] = MathUtility.Divide(swLL15[layer], dLayer[layer], 0.0);
-            return _ll15;
+                myLL15[layer] = MathUtility.Divide(swLL15[layer], dLayer[layer], 0.0);
+            return myLL15;
         }
         set
         {
-            if (!initDone)
+            if (isInitialising)
             {
                 //store a copy so if there is a Reset event we can set it back to this value.
                 resetLL15 = new double[value.Length];
@@ -508,7 +546,7 @@ public class SoilWater
             for (int layer = 0; layer < nLayers; layer++)
             {
                 swLL15[layer] = value[layer] * dLayer[layer];
-                soilwat2_check_profile(layer);
+                checkSoilWaterThresholds(layer);
             }
         }
     }
@@ -522,14 +560,15 @@ public class SoilWater
     {
         get
         {
-            double[] _air_dry = new double[nLayers];
+            double[] myAirDry = new double[nLayers];
+
             for (int layer = 0; layer < nLayers; layer++)
-                _air_dry[layer] = MathUtility.Divide(swAirDry[layer], dLayer[layer], 0.0);
-            return _air_dry;
+                myAirDry[layer] = MathUtility.Divide(swAirDry[layer], dLayer[layer], 0.0);
+            return myAirDry;
         }
         set
         {
-            if (!initDone)
+            if (isInitialising)
             {
                 //store a copy so if there is a Reset event we can set it back to this value.
                 resetAirDry = new double[value.Length];
@@ -539,219 +578,151 @@ public class SoilWater
             for (int layer = 0; layer < nLayers; layer++)
             {
                 swAirDry[layer] = value[layer] * dLayer[layer];
-                soilwat2_check_profile(layer);
+                checkSoilWaterThresholds(layer);
             }
         }
     }
 
-    private int numvals_sw = 0;   //! number of values returned for sw
-    private double[] resetSoilWater;
+    private double[] resetSWC;
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("mm/mm")]
     [Output]
-    [Description("Soil water content of layer")]
+    [Description("Soil water content, actual")]
     public double[] sw
     {
         get
         {
-            double[] _sw = new double[nLayers];
+            double[] mySW = new double[nLayers];
             for (int layer = 0; layer < nLayers; layer++)
-                _sw[layer] = MathUtility.Divide(swAmount[layer], dLayer[layer], 0.0);
-            return _sw;
+                mySW[layer] = MathUtility.Divide(swAmount[layer], dLayer[layer], 0.0);
+            return mySW;
         }
         set
         {
-            if (!initDone)
+            if (isInitialising)
             {
                 //store a copy so if there is a Reset event we can set it back to this value.
-                reset_numvals_sw = value.Length;
-                resetSoilWater = new double[value.Length];
-                Array.Copy(value, resetSoilWater, value.Length);
+                resetSWC = new double[value.Length];
+                Array.Copy(value, resetSWC, value.Length);
             }
 
-            double[] sw_dep_old;
-            double sw_dep_lyr, sw_dep_delta_sum;
-            sw_dep_old = swAmount;
-            soilwat2_zero_default_variables();
-            sw_dep_delta_sum = 0.0;
+            double oldSWAmount = MathUtility.Sum(swAmount);
+            // changes are actually done in swAmount
             for (int layer = 0; layer < nLayers; layer++)
             {
-                sw_dep_lyr = value[layer] * dLayer[layer];   //sw_dep = sw * DLayer
-                sw_dep_delta_sum = sw_dep_delta_sum + (sw_dep_lyr - sw_dep_old[layer]);   //accumulate the change in the entire soil profile.
-                swAmount[layer] = sw_dep_lyr;  //change sw_dep NOT sw. The sw variable is just for inputting and outputting and is immediately converted to sw_dep.    
-                soilwat2_check_profile(layer);
+                swAmount[layer] = value[layer] * dLayer[layer];
+                checkSoilWaterContent(layer);
             }
-            if (initDone)
-                SendExternalMassFlow(sw_dep_delta_sum);     //tell the "System Balance" module (if there is one) that the user has changed the water by this amount.
-            numvals_sw = value.Length;          //used in soilwat2_set_default()
+
+            if (!isInitialising)
+            {
+                //tell the "System Balance" module (if there is one) that the user has changed the water by this amount
+                double newSWAmount = MathUtility.Sum(swAmount);
+                sendExternalMassFlow(newSWAmount - oldSWAmount);
+            }
         }
     }
 
+    /// <summary>Soil water conductance constant (/day)</summary>
+    private double[] mySWCon;
+    private double[] resetSWCon;
     [Param(MinVal = 0.0, MaxVal = 1.0)]
     [Units("/d")]
     [Output(Immutable = true)]
-    [Description("Soil water conductivity constant")]
-    public double[] swcon;
+    [Description("Soil water conductance constant")]
+    public double[] swcon
+    {
+        get { return mySWCon; }
+        set
+        {
+            if (isInitialising)
+            {
+                //store a copy so if there is a Reset event we can set it back to this value.
+                resetSWCon = new double[value.Length];
+                Array.Copy(value, resetSWCon, value.Length);
+            }
 
+            for (int layer = 0; layer < nLayers; layer++)
+                mySWCon[layer] = value[layer];
+        }
+    }
+
+    /// <summary>Soil water conductance constant (/day)</summary>
+    private double[] myMWCon;
+    private double[] resetMWCon;
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0)]
-    [Units("0-1")]
+    [Units("/d")]
     [Output(Immutable = true)]
-    [Description("Impermeable soil layer indicator")]
-    public double[] mwcon;
+    [Description("Saturated water flow indicator")]
+    public double[] mwcon
+    {
+        get { return myMWCon; }
+        set
+        {
+            if (isInitialising)
+            {
+                //store a copy so if there is a Reset event we can set it back to this value.
+                resetMWCon = new double[value.Length];
+                myMWCon = new double[value.Length];
+                Array.Copy(value, resetMWCon, value.Length);
+            }
+
+            for (int layer = 0; layer < nLayers; layer++)
+                myMWCon[layer] = value[layer];
+        }
+    }
 
     [Output]
     [Description("Flag to determine if Ks has been chosen for use")]
-    private bool using_ks;
+    private bool usingKsat;
 
+    /// <summary>Soil water conductance constant (/day)</summary>
+    private double[] myKSat;
+    private double[] resetKSat;
     [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10000.0)]
     [Units("mm/d")]
     [Output(Immutable = true)]
-    [Description("Saturated conductivity")]
-    public double[] ks;
+    [Description("Saturated water conductivity")]
+    public double[] ks
+    {
+        get { return myKSat; }
+        set
+        {
+            if (isInitialising)
+            {
+                //store a copy so if there is a Reset event we can set it back to this value.
+                resetKSat = new double[value.Length];
+                myKSat = new double[value.Length];
+                Array.Copy(value, resetKSat, value.Length);
+            }
 
-    [Param(MinVal = 0.01, MaxVal = 3.0)]
-    [Units("g/cm^3")]
-    [Output(Immutable = true)]
-    [Description("Bulk density of soil")]
-    public double[] bd;
+            for (int layer = 0; layer < nLayers; layer++)
+                myKSat[layer] = value[layer];
+        }
+    }
 
+    /// <summary>Soil water conductance constant (/day)</summary>
+    private double[] myKLat;
+    private double[] resetKLat;
     [Param(IsOptional = true, MinVal = 0, MaxVal = 10000.0)]
     [Units("mm/d")]
     [Output(Immutable = true)]
-    public double[] klat;
-
-    #endregion
-
-    #region Initial water content
-
-
-    //sv- initial sw section (5 different methods to choose from) (see soilwat2_init() and soilwat2_set_default() to see which method is used)
-    //insoil is used for two different initial sw methods:
-    //1. User Specified Soil Water Content method is used when insoil > 1 
-    //2. Fill every layer in the soil to the same specified fraction of esw (specified by insoil)  (0 <= insoil <= 1) 
-    private int numvals_insoil = 0;                    //! number of values returned for insoil
-    private double _insoil = Double.NaN;
-    [Output]
-    [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10.0)]
-    [Description("Switch describing how initial soil water is specified")]
-    public double insoil
+    [Description("Water conductivity for lateral flow")]
+    public double[] klat
     {
-        get { return _insoil; }
+        get { return myKLat; }
         set
         {
-            if (!initDone)
+            if (isInitialising)
             {
-                //if we are reading in the [Param], because this variable is "settable" it can be changed from this value, 
-                //therefore store a copy so if there is a Reset event we can set it back to this value.
-                reset_numvals_insoil = 1;
-                reset_insoil = value;
+                //store a copy so if there is a Reset event we can set it back to this value.
+                resetKLat = new double[value.Length];
+                myKLat = new double[value.Length];
+                Array.Copy(value, resetKLat, value.Length);
             }
-            else
-            {
-                soilwat2_zero_default_variables();
-                numvals_insoil = 1;
-                _insoil = value;
-                soilwat2_set_default();
-                for (int layer = 0; layer < nLayers; layer++)
-                {
-                    soilwat2_check_profile(layer);
-                }
-            }
-        }
-    }
 
-    //3. Starting from the top, fill the soil until a specified fraction of the entire soils esw is reached. Fill each layer to dul.
-    private int numvals_profile_fesw = 0;              //! number of values returned for profile_fesw
-    private double _profile_fesw = Double.NaN;
-    [Output]
-    [Param(IsOptional = true, MinVal = 0.0, MaxVal = 1.0)]
-    [Units("0-1")]
-    [Description("Initial fraction of esw of profile distributed from top down")]
-    public double profile_fesw
-    {
-        get { return _profile_fesw; }
-        set
-        {
-            //sv- setting this automatically changes the sw values. Due to the soilwat2_set_default() call.
-            if (!initDone)
-            {
-                //if we are reading in the [Param], because this variable is "settable" it can be changed from this value, 
-                //therefore store a copy so if there is a Reset event we can set it back to this value.
-                reset_numvals_profile_fesw = 1;
-                reset_profile_fesw = value;
-            }
-            soilwat2_zero_default_variables();
-            numvals_profile_fesw = 1;  //used in soilwat2_set_default()
-            _profile_fesw = value;
-            soilwat2_set_default();
             for (int layer = 0; layer < nLayers; layer++)
-            {
-                soilwat2_check_profile(layer);
-            }
-        }
-    }
-
-
-    //4. Starting from the top, fill the soil until a specified amount of esw for the entire soil is reached. Fill each layer to dul.
-    private int numvals_profile_esw_depth = 0;         //! number of values returned for profile_esw_depth
-    private double _profile_esw_depth = Double.NaN;
-    [Output]
-    [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10000.0)]
-    [Units("mm")]
-    [Description("Initial depth of extractable soil water distributed from the top down")]
-    public double profile_esw_depth
-    {
-        get { return _profile_esw_depth; }
-        set
-        {
-            //sv- setting this automatically changes the sw values. Due to the soilwat2_set_default() call.
-            if (!initDone)
-            {
-                //if we are reading in the [Param], because this variable is "settable" it can be changed from this value, 
-                //therefore store a copy so if there is a Reset event we can set it back to this value.
-                reset_numvals_profile_esw_depth = 1;
-                reset_profile_esw_depth = value;
-            }
-            soilwat2_zero_default_variables();
-            numvals_profile_esw_depth = 1;   //used in soilwat2_set_default()
-            _profile_esw_depth = value;
-            soilwat2_set_default();
-            for (int layer = 0; layer < nLayers; layer++)
-            {
-                soilwat2_check_profile(layer);
-            }
-        }
-    }
-
-
-    //5. Starting from the top fill the soil to a specified soil depth. Fill each layer to dul. 
-    private int numvals_wet_soil_depth = 0;            //! number of values returned for wet_soil_depth
-    private double _wet_soil_depth = Double.NaN;
-    [Output]
-    [Param(IsOptional = true, MinVal = 0.0, MaxVal = 10000.0)]
-    [Units("mm")]
-    [Description("Initial depth of soil filled to drained upper limit (field capacity)")]
-    public double wet_soil_depth   //! initial depth of soil filled to drained upper limit (field capacity) (mm)
-    {
-        get { return _wet_soil_depth; }
-        set
-        {
-            //sv- setting this automatically changes the sw values. Due to the soilwat2_set_default() call.
-            if (!initDone)
-            {
-                //if we are reading in the [Param], because this variable is "settable" it can be changed from this value, 
-                //therefore store a copy so if there is a Reset event we can set it back to this value.
-                reset_wet_soil_depth = value;
-                reset_numvals_wet_soil_depth = 1;
-            }
-            soilwat2_zero_default_variables();
-            numvals_wet_soil_depth = 1;      //used in soilwat2_set_default()
-            _wet_soil_depth = value;
-            soilwat2_set_default();
-            for (int layer = 0; layer < nLayers; layer++)
-            {
-                soilwat2_check_profile(layer);
-            }
+                myKLat[layer] = value[layer];
         }
     }
 
@@ -773,7 +744,7 @@ public class SoilWater
     private double eff_rain
     { get { return MetFile.Rain + runon - runoff - drain; } }
 
-    [Output(Immutable=true)]
+    [Output(Immutable = true)]
     [Units("mm")]
     [Description("Potential extractable sw in profile")]
     private double esw
@@ -782,10 +753,11 @@ public class SoilWater
         {
             if (dLayer == null)
                 return 0;
-           double result = 0.0;
-           for (int layer = 0; layer < nLayers; layer++)
-              result += Math.Max(swAmount[layer] - swLL15[layer], 0.0);
-           return result;
+            double result = 0.0;
+
+            for (int layer = 0; layer < nLayers; layer++)
+                result += Math.Max(swAmount[layer] - swLL15[layer], 0.0);
+            return result;
         }
     }
 
@@ -794,7 +766,6 @@ public class SoilWater
     private double cover_surface_runoff;
 
     private double timeStage2;
-
     [Output]
     [Units("d")]
     [Description("time after which 2nd-stage soil evaporation begins")]
@@ -814,7 +785,11 @@ public class SoilWater
     private double eos;
 
     [Output]
-    [Description("New cn2 after modification for crop cover & residue cover")]
+    [Description("Curve number after modification for crop cover & residue cover")]
+    private double cn2_cover;
+
+    [Output]
+    [Description("Curve number after modification for antecedent soil moisture")]
     private double cn2_new;
 
     [Output]
@@ -842,7 +817,8 @@ public class SoilWater
     [Description("Surface water ponding depth")]
     private double pond;
 
-    private double waterTableDepth = Double.NaN;
+    /// <summary>Depth of water table (mm)</summary>
+    private double waterTableDepth = double.NaN;
     [Output]
     [Units("mm")]
     [Description("Water table depth (depth below the ground surface of the first saturated layer)")]
@@ -852,7 +828,7 @@ public class SoilWater
         set { waterTableDepth = SetWaterTable(value); }
     }
 
-    /// <summary>Water amount at saturation</summary>
+    /// <summary>Water amount at saturation (mm)</summary>
     private double[] swSAT;
     [Output(Immutable = true)]
     [Units("mm")]
@@ -862,17 +838,15 @@ public class SoilWater
         get { return swSAT; }
         set
         {
-            //* made settable to allow for erosion
-            swSAT = new double[value.Length];
-            Array.Copy(value, swSAT, value.Length);
-            for (int layer = 0; layer < nLayers; layer++)
+            for (int layer = 0; layer < value.Length; layer++)
             {
-                soilwat2_check_profile(layer);
+                swSAT[layer] = value[layer];
+                checkSoilWaterThresholds(layer);
             }
         }
     }
 
-    /// <summary>Water amount at drainage upper limit</summary>
+    /// <summary>Water amount at drainage upper limit (mm)</summary>
     private double[] swDUL;
     [Output(Immutable = true)]
     [Units("mm")]
@@ -882,16 +856,15 @@ public class SoilWater
         get { return swDUL; }
         set
         {
-            swDUL = new double[value.Length];
-            Array.Copy(value, swDUL, value.Length);
             for (int layer = 0; layer < nLayers; layer++)
             {
-                soilwat2_check_profile(layer);
+                swDUL[layer] = value[layer];
+                checkSoilWaterThresholds(layer);
             }
         }
     }
 
-    /// <summary>Water amount at drainage lower limit</summary>
+    /// <summary>Water amount at lower limit for water movement (mm)</summary>
     private double[] swLL15;
     [Output(Immutable = true)]
     [Units("mm")]
@@ -901,64 +874,53 @@ public class SoilWater
         get { return swLL15; }
         set
         {
-            swLL15 = new double[value.Length];
-            Array.Copy(value, swLL15, value.Length);
             for (int layer = 0; layer < nLayers; layer++)
             {
-                soilwat2_check_profile(layer);
+                swLL15[layer] = value[layer];
+                checkSoilWaterThresholds(layer);
             }
         }
     }
 
-    /// <summary>Water amount at air dry conditions</summary>
+    /// <summary>Water amount at air dry condition (mm)</summary>
     private double[] swAirDry;
     [Output(Immutable = true)]
     [Units("mm")]
-    [Description("Water amount at air dry conditions")]
+    [Description("Water amount at air dry condition")]
     public double[] air_dry_dep
     {
         get { return swAirDry; }
         set
         {
-            swAirDry = new double[value.Length];
-            Array.Copy(value, swAirDry, value.Length);
             for (int layer = 0; layer < nLayers; layer++)
             {
-                soilwat2_check_profile(layer);
+                swAirDry[layer] = value[layer];
+                checkSoilWaterThresholds(layer);
             }
         }
     }
 
-    /// <summary>Current water amount in the soil</summary>
+    /// <summary>Current water amount in the soil (mm)</summary>
     private double[] swAmount;
     [Output]
     [Units("mm")]
-    [Description("Water amount")]
+    [Description("Water amount, current")]
     public double[] sw_dep
     {
         get { return swAmount; }
         set
         {
-            soilwat2_zero_default_variables();
-            numvals_sw = value.Length;
-            swAmount = new double[value.Length];
-            Array.Copy(value, swAmount, value.Length);
+            double oldSWAmount = MathUtility.Sum(swAmount);
             for (int layer = 0; layer < nLayers; layer++)
             {
-                soilwat2_check_profile(layer);
+                swAmount[layer] = value[layer];
+                checkSoilWaterContent(layer);
             }
 
-            //TODO: External Mass Flow event should be triggered just like for sw. Same should go for dlt_sw and dlt_sw_dep.
+            //tell the "System Balance" module (if there is one) that the user has changed the water by this amount
+            double newSWAmount = MathUtility.Sum(swAmount);
+            sendExternalMassFlow(newSWAmount- oldSWAmount);
         }
-    }
-
-    [Output]
-    [Units("mm")]
-    [Description( "Depth of water moving between layers because of unsaturated flow")]
-    private double[] flow
-    {
-        //positive value indicates upward movement, negative value indicates downward movement
-        get { return waterFlowBelowDUL; }
     }
 
     [Output]
@@ -966,7 +928,7 @@ public class SoilWater
     [Description("Initially, water moving downward into layer i (mm), then water moving downward out of layer i (saturated flow)")]
     private double[] flux;
 
-    /// <summary>Water amount by passing each layer</summary>
+    /// <summary>Water amount bypassing each layer (mm)</summary>
     private double[] waterBypass;
     [Output]
     [Units("mm")]
@@ -976,24 +938,39 @@ public class SoilWater
         get { return waterBypass; }
     }
 
-    /// <summary>Water amount flowing above DUL</summary>
+    /// <summary>Water amount moving during flow above DUL (mm)</summary>
     private double[] waterFlowAboveDUL;
     [Output]
     [Units("mm")]
-    [Description("Water moving downward during flow above DUL")]
+    [Description("Water amount moving during flow above DUL")]
     private double[] WaterFlowAboveDUL
     {
         get { return waterFlowAboveDUL; }
     }
 
-    /// <summary>Water amount flowing below DUL</summary>
+    /// <summary>Water amount moving during flow below DUL (mm)</summary>
     private double[] waterFlowBelowDUL;
     [Output]
     [Units("mm")]
-    [Description("Water moving during flow below DUL (upwards or downwards")]
+    [Description("Water amount moving during flow below DUL (upwards or downwards")]
     private double[] WaterFlowBelowDUL
     {
         get { return waterFlowBelowDUL; }
+    }
+
+    [Output]
+    [Units("mm")]
+    [Description("Depth of water moving between layers because of unsaturated flow")]
+    private double[] flow
+    {
+        //positive value indicates upward movement, negative value indicates downward movement
+        get
+        {
+            double[] result = new double[nLayers];
+            for (int layer = 0; layer < nLayers; layer++)
+                result[layer] = -waterFlowBelowDUL[layer];
+            return result;
+        }
     }
 
     [Output]
@@ -1004,6 +981,7 @@ public class SoilWater
         get
         {
             double[] result = new double[nLayers];
+
             for (int layer = 0; layer < nLayers; layer++)
                 result[layer] = waterBypass[layer] +
                                 waterFlowAboveDUL[layer] +
@@ -1012,6 +990,7 @@ public class SoilWater
         }
     }
 
+    private double[] outflowLateral;
     [Output]
     [Units("mm")]
     [Description("Lateral outflow")]
@@ -1027,33 +1006,20 @@ public class SoilWater
     {
         set
         {
-            int num_layers = value.Length;
-            for (int layer = 0; layer < num_layers; layer++)
+            //check and correct the water amounts
+            for (int layer = 0; layer < value.Length; layer++)
             {
-                //If you change the depths of the layer then you need to modify the water "_dep" variables by the same amount. (they are in mm too)
-                //If you don't do this, you will have the same amount of water that is now in a shallower layer, 
-                //therefore you will have a different fraction equivalent variables, the ones without the "_dep" eg. sw, dul.  
                 double fract = MathUtility.Divide((dLayer[layer] + value[layer]), dLayer[layer], 0.0);
                 swAirDry[layer] = swAirDry[layer] * fract;
                 swDUL[layer] = swDUL[layer] * fract;
                 swLL15[layer] = swLL15[layer] * fract;
                 swSAT[layer] = swSAT[layer] * fract;
                 swAmount[layer] = swAmount[layer] * fract;
-
                 dLayer[layer] = dLayer[layer] + value[layer];
-
-                soilwat2_check_profile(layer);
             }
 
-            // TODO: I don't think this is needed (or even be allowed), if is, what values are used in new layers?
-            //resize all the arrays if the number of layers changed
-            if (num_layers != nLayers)
-            {
-                nLayers = num_layers;
-                ResizeProfileArrays();
-            }
-
-            soilwat2_New_Profile_Event();
+            //publish event telling other modules that there is a new soil profile.
+            sendNewProfileEvent();
         }
     }
 
@@ -1063,11 +1029,16 @@ public class SoilWater
     {
         set
         {
+            double oldSWAmount = MathUtility.Sum(swAmount);
             for (int layer = 0; layer < nLayers; layer++)
             {
-                swAmount[layer] = swAmount[layer] + (value[layer] * dLayer[layer]);
-                soilwat2_check_profile(layer);
+                swAmount[layer] += (value[layer] * dLayer[layer]);
+                checkSoilWaterContent(layer);
             }
+
+            //tell the "System Balance" module (if there is one) that the user has changed the water by this amount
+            double newSWAmount = MathUtility.Sum(swAmount);
+            sendExternalMassFlow(newSWAmount - oldSWAmount);
         }
     }
 
@@ -1077,11 +1048,16 @@ public class SoilWater
     {
         set
         {
+            double oldSWAmount = MathUtility.Sum(swAmount);
             for (int layer = 0; layer < nLayers; layer++)
             {
-                swAmount[layer] = swAmount[layer] + value[layer];
-                soilwat2_check_profile(layer);
+                swAmount[layer] += value[layer];
+                checkSoilWaterContent(layer);
             }
+
+            //tell the "System Balance" module (if there is one) that the user has changed the water by this amount
+            double newSWAmount = MathUtility.Sum(swAmount);
+            sendExternalMassFlow(newSWAmount - oldSWAmount);
         }
     }
 
@@ -1127,13 +1103,20 @@ public class SoilWater
         set
         {
             if (value.Length < nLayers)
-            {
                 Array.Resize(ref value, nLayers);
-            }
+
+            if (inflowLateral.Length < nLayers)
+                Array.Resize(ref inflowLateral, nLayers);
 
             Array.Copy(value, inflowLateral, nLayers);
         }
     }
+
+    //eo might come from micromet, needs setting of eo_source
+    [Input(IsOptional = true)]
+    [Units("mm")]
+    [Description("potential evaporation")]
+    private double pet_total = double.NaN;
 
     #endregion
 
@@ -1152,15 +1135,16 @@ public class SoilWater
         bool foundH;
 
         int i = 0;
+
         foreach (Component Comp in MyPaddock.Crops)
         {
-            foundCL = MyPaddock.Get(Comp.FullName + ".canopyGreenCover", out coverLive);
-            foundCT = MyPaddock.Get(Comp.FullName + ".canopyTotalCover", out coverTotal);
+            foundCL = MyPaddock.Get(Comp.FullName + ".cover_green", out coverLive);
+            foundCT = MyPaddock.Get(Comp.FullName + ".cover_tot", out coverTotal);
             foundH = MyPaddock.Get(Comp.FullName + ".Height", out height);
 
             ////must have at least these three variables to be considered a "crop" component.
             if (foundCL && foundCT && foundH)
-                {
+            {
                 nCrops = i + 1;
                 Array.Resize(ref canopyGreenCover, nCrops);
                 Array.Resize(ref canopyTotalCover, nCrops);
@@ -1169,14 +1153,14 @@ public class SoilWater
                 canopyTotalCover[i] = coverTotal;
                 canopyHeight[i] = height;
                 i++;
-                }
+            }
             else
-                {
-                throw new Exception("Crop Module: " +  Comp.FullName  + 
+            {
+                throw new Exception("Crop Module: " + Comp.FullName +
                         " is missing one/or more of the following 3 variables (canopyGreenCover, canopyTotalCover, height) " +
                         Environment.NewLine +
                         "These 3 output variables are needed by the SoilWater module (for evaporation, runoff etc.");
-                }
+            }
         }
     }
 
@@ -1190,12 +1174,13 @@ public class SoilWater
         {
             double[] Value;
             string propName;
+
             if (solutes[solnum].OwnerName != "")
                 propName = solutes[solnum].OwnerName + "." + solutes[solnum].Name;
             else
                 propName = solutes[solnum].Name;
             if (MyPaddock.Get(propName, out Value))
-              Array.Copy(Value, solutes[solnum].Amount, Math.Min(Value.Length, solutes[solnum].Amount.Length));
+                Array.Copy(Value, solutes[solnum].Amount, Math.Min(Value.Length, solutes[solnum].Amount.Length));
         }
     }
 
@@ -1203,60 +1188,39 @@ public class SoilWater
 
     #region Local Variables
 
-    //INITIALIZATION-RESET
-    bool initDone = false;
-    bool inReset = false;
+    //Initialisation and reset
+    bool isInitialising = true;
+    bool isResetting = false;
 
-    //RUNOFF
-    private double potentialRunoff;       //! potential runoff with no pond(mm)
-    private double observedRunoff;         //! observed runoff (mm)
-    private double ExtraRunoff;            // water backup, could not infiltrate
+    //Runoff
+    private double potentialRunoff;     // potential runoff with no pond(mm)
+    private double observedRunoff;      // observed runoff (mm)
+    private double extraRunoff;         // water backed up, could not infiltrate
 
     //GET CROP VARIABLES
-    private double[] canopyTotalCover;     //! total canopy cover of crops (0-1)
-    private double[] canopyGreenCover;   //! green canopy cover of crops (0-1)
-    private double[] canopyHeight; //! canopy heights of each crop (mm)
-    private int nCrops;                //! number of crops ()
+    private double[] canopyTotalCover;  // total canopy cover of crops (0-1)
+    private double[] canopyGreenCover;  // green canopy cover of crops (0-1)
+    private double[] canopyHeight;      // canopy heights of each crop (mm)
+    private int nCrops;                 // number of crops ()
 
-    //TILLAGE EVENT
-    private double tillage_cn_red;   //! reduction in CN due to tillage ()   //can either come from the manager module or from the sim file
-    private double tillage_cn_rain;  //! cumulative rainfall below which tillage reduces CN (mm) //can either come from the manager module orh the sim file
-    private double tillage_rain_sum; //! cumulative rainfall for tillage CN reduction (mm)
+    //Tillage
+    private double tillage_cn_red;      // reduction in CN due to tillage ()
+    private double tillage_cn_rain;     // cumulative rainfall below which tillage reduces CN (mm)
+    private double tillage_rain_sum;    // cumulative rainfall for tillage CN reduction (mm)
 
-    //EVAPORATION
-    private int evapMethod;           // integer representation of act_evap_method   
-    private double eoApsim;           // eo from somewhere else in the system //sv- see eo_source
-    private double sumes1;            // cumulative soil evaporation in stage 1 (mm)
-    private double sumes2;            // cumulative soil evaporation in stage 2 (mm)
-    private double[] evaporation;     // actual soil evaporation (mm)
+    //Evaporation
+    private int evapMethod;             // indication of the method to compute actual evaporation (currently only Ritchie)
+    private double suppliedPET;         // eo from somewhere else in the system (mm) - see eo_source
+    private double sumes1;              // cumulative soil evaporation in stage 1 (mm)
+    private double sumes2;              // cumulative soil evaporation in stage 2 (mm)
+    private double[] evaporation;       // actual soil evaporation (mm)
 
-    //SOLUTES
+    //Solutes
     private List<SoluteInfo> solutes = new List<SoluteInfo>();
-    //private SoluteInfo[] solutes;
     int nSolutes;
 
-    //IRRIGATION
-    private double irrigation;       //! irrigation (mm)                                                 
-
-    //The following are used to store the original values, and can be used when doing a Reset Event
-    //initial starting soil water 
-    private int reset_numvals_insoil;
-    private int reset_numvals_profile_fesw;
-    private int reset_numvals_profile_esw_depth;
-    int reset_numvals_wet_soil_depth;
-    private double reset_insoil;
-    private double reset_profile_fesw;
-    private double reset_profile_esw_depth;
-    double reset_wet_soil_depth;
-    //runoff
-    private double reset_cn2_bare;
-    private double reset_cn_red; 
-    double reset_cn_cov;
-    //ponding 
-    double reset_max_pond;
-
-    //Soil Profile
-    int reset_numvals_sw;
+    //Irrigation
+    private double irrigation;       // irrigation (mm)
 
     #endregion
 
@@ -1270,12 +1234,7 @@ public class SoilWater
 
     //MODEL
 
-    #region Set Initial SW values
-
-    //sv- DEAN SAYS THAT THE GUI ALWAYS SPECIFIES theValue SET OF SW VALUES. THEREFORE YOU DON'T NEED ANY OF THIS CODE TO SET DEFAULTS ANYMORE. ALL OF THIS IS DONE IN THE GUI NOW AND YOU JUST GET GIVE THE SW VALUES FOR EACH LAYER. SO DON'T NEED THIS ANYMORE.
-    //Had to uncomment this because it is called in the "set" for the "insoil" property. I don't think any simulation actually does a set on "insoil" though
-    //so perhaps I can comment it out and turn "insoil" just into a normal variable that is a [Param].
-    //TODO: see if I can comment out the soilwat2_set_default() as per the comments above.
+    #region Check initial values and reset
 
     /// <summary>
     /// Computes the proportion of layer that is between the soil surface and the depth given (0-1)
@@ -1285,275 +1244,17 @@ public class SoilWater
     /// <returns>The proportion of layer that is between the soil surface and the given depth</returns>
     private double LayerProportion(int layer, double theDepth)
     {
-        double depthAtTopLayer;     //! depth to top of layer (mm)
+        double depthAtTopLayer;     // depth to top of layer (mm)
 
         depthAtTopLayer = MathUtility.Sum(dLayer, 0, layer, 0.0) - dLayer[layer - 1];
         double result = MathUtility.Divide(theDepth - depthAtTopLayer, dLayer[layer - 1], 0.0);
         return Math.Max(0.0, Math.Min(result, 1.0));
     }
 
-    private void soilwat2_set_default()
-    {
-        //*       set default soil water values when the user does not specify any starting water values.
-
-        int layer;               //! layer number in loop
-        int last_layer_filled;   //! number of layers filled in profile
-        double esw_remaining;       //! esw left after distribution top down (mm)
-        //double   depth_remaining;     //! depth left after distribution top down (mm)
-        double esw_avail;           //! esw available for distribution (mm)
-        double profile_esw_depth_local;   //! depth of esw in profie to fill (mm)
-        string line;                //! temp output record
-
-
-
-        //sv- initial sw section (5 different methods to choose from) (see soilwat2_init() and soilwat2_set_default() to see which method is used)
-
-        //sv- insoil is used for two different initial sw methods:
-        //sv- 1. User Specified Soil Water Conent method is used when insoil > 1  (user has entered an sw for each layer in the soil)
-        //sv- 2. FASW evenly distributed method is used when  0 <= insoil <= 1    (user has entered a fraction for entire profile and wants each layer to be this fraction) 
-        //! switch describing initial soil water  //sv-specifies which option you are using.
-        // -> insoil
-
-        //sv- 3. FASW filled from top method      (user has entered a fraction for entire profile but wants you to achieve this fraction for the whole profile by completely filling up the top layers before filling the lower layers. So bottom layers are left dry)
-        //! initial fraction of esw of profile distributed from top down ()
-        // -> profile_fesw
-
-        //sv- 4. depth of available sw from top of profile method (same as profile_fesw but the user has entered total amount of water in millimeters for the entire profile instead of as a fraction for the whole profile)
-        // -> profile_esw_depth
-
-        //sv- 5. depth of wet soil (filled to dul) method  (same as profile_esw_depth only don't worry about what is available to the plant(profile_esw_depth =  profile_fesw * (the sum of DLayer))
-        //! initial depth of soil filled to drained upper limit (field capacity) (mm)
-        // -> wet_soil_depth
-
-        //sv- end of initial sw section
-
-
-
-        //*****************
-        //Initial SW   (5 different methods to choose from)
-        //*****************
-
-        //sv- these sw values read in from the sim file gets overriden by soilwat2_set_default() unless the user specified method (ie. insoil > 1) was choosen. 
-        //sv- If the user specified method (ie. insoil > 1) is not selected then soilwat2_set_default() uses one of the 4 "properties" (depending on the method that was choosen)
-        //sv- to create the new initial sw profile that then replaces these read in values for sw.
-
-
-
-        //Must specify one of Profile_esw_depth, wet_soil_depth, Profile_fesw Insoil, or Sw  to specify initial soilwater distribution.
-
-        //! check for exclusiveness
-        if (numvals_profile_esw_depth > 0)
-        {
-            if ((numvals_insoil > 0) || (numvals_sw > 0) || (numvals_profile_fesw > 0) || (numvals_wet_soil_depth > 0))
-            {
-                //! others present
-                throw new Exception("Insoil, Sw, profile_fesw or wet_soil_depth cannot be specified with \"profile_esw_depth\".");
-            }
-            else
-            {
-                //! numvals_profile_esw_depth present only
-                line = "Initial soilwater distributed from top down using \"profile_esw_depth\" parameter.";
-                Console.WriteLine(line);
-            }
-        }
-
-        else if (numvals_wet_soil_depth > 0)
-        {
-            //! numvals_profile_esw_depth absent
-            if ((numvals_insoil > 0) || (numvals_profile_fesw > 0) || (numvals_sw > 0))
-            {
-                //! others present
-                throw new Exception("Insoil, Profile_fesw or Sw cannot be specified with \"wet_soil_depth\".");
-            }
-            else
-            {
-                line = "Initial soilwater distributed from top down using \"wet_soil_depth\" parameter.";
-                Console.WriteLine(line);
-            }
-        }
-
-        else if (numvals_profile_fesw > 0)
-        {
-            //! numvals_profile_esw_depth absent
-            if ((numvals_insoil > 0) || (numvals_sw > 0))
-            {
-                //! others present
-                throw new Exception("Insoil or Sw cannot be specified with \"profile_fesw\".");
-            }
-            else
-            {
-                line = "Initial soilwater distributed from top down using \"profile_fesw\" parameter.";
-                Console.WriteLine(line);
-            }
-        }
-
-        else if (numvals_insoil > 0)
-        {
-            if (numvals_sw > 0)
-            {
-                //! note - this never activates because the switches are set previously
-                //see soilwat2_soil_profile_param() for where the switches are set.
-                throw new Exception("Sw cannot be specified with \"insoil\".");
-                //Console.WriteLine(line);
-            }
-            else
-            {
-                //! only insoil present
-                line = "Initial soilwater distributed evenly using \"insoil\" parameter.";
-                Console.WriteLine(line);
-            }
-        }
-
-        else if (numvals_sw > 0)
-        {
-            //! ok - only sw present
-            line = "Initial soilwater distributed using \"sw\" parameter.";
-            Console.WriteLine(line);
-        }
-
-        else
-        {
-            //! all absent - must have one
-            throw new Exception("Must specify one of Insoil, Sw, wet_soil_depth, Profile_fesw or Profile_esw_depth to specify initial soilwater distribution.");
-        }
-
-
-        //! initialize sw
-        //! set up default soil water profile
-
-        //! we want to calculate default
-
-
-        if (numvals_insoil > 0)
-        {
-            //! insoil parameter set - distibute evenly
-            ZeroArray(ref swAmount);
-
-            for (layer = 0; layer < nLayers; layer++)
-            {
-                //! set default according to insoil fraction of plant-
-                //! available water
-                swAmount[layer] = swLL15[layer] + (swDUL[layer] - swLL15[layer]) * _insoil;
-
-                soilwat2_layer_check(layer);
-                soilwat2_check_profile(layer);
-            }
-        }
-
-
-        else if (numvals_wet_soil_depth > 0)
-        {
-            //! wet_soil_depth parameter set - distribute top down
-            ZeroArray(ref swAmount);
-            Array.Copy(swLL15, swAmount, nLayers);
-
-            last_layer_filled = FindLayerNo(_wet_soil_depth);
-
-            for (layer = 0; layer <= last_layer_filled; layer++)
-            {
-                //! set default according to wet_soil_depth of plant available water
-                swAmount[layer] = swDUL[layer];
-            }
-
-            //! adjust last layer
-            swAmount[last_layer_filled] = swLL15[last_layer_filled]
-                                          + (swDUL[last_layer_filled] - swLL15[last_layer_filled])
-                                          * LayerProportion(last_layer_filled + 1, _wet_soil_depth);
-
-            if ((MathUtility.Sum(dLayer) + precisionForProfileSW) < _wet_soil_depth)
-            {
-                line = "Can't fit wet soil depth of " + _wet_soil_depth + " into profile depth of " + MathUtility.Sum(dLayer);
-                throw new Exception(line);
-            }
-            else
-            {
-                //! depth fits in profile
-            }
-        }
-
-
-        else if (numvals_profile_fesw > 0)
-        {
-            //! profile_fesw parameter set - distribute top down
-            ZeroArray(ref swAmount);
-            Array.Copy(swLL15, swAmount, nLayers);
-            profile_esw_depth_local = 0.0;
-            for (layer = 0; layer < nLayers; layer++)
-                profile_esw_depth_local += swDUL[layer] - swLL15[layer];
-            profile_esw_depth_local *= _profile_fesw;
-            esw_remaining = profile_esw_depth_local;
-
-            for (layer = 0; layer < nLayers; layer++)
-            {
-                //! set default according to profile_esw_depth of plant available water
-                esw_avail = bound(esw_remaining, 0.0, (swDUL[layer] - swLL15[layer]));
-
-                swAmount[layer] = swLL15[layer] + esw_avail;
-                esw_remaining = esw_remaining - esw_avail;
-            }
-
-            if (esw_remaining > precisionForProfileSW)
-            {
-                //! we have too much water to distirbute - won't fit in profile
-                line = "Can't fit profile esw of " + (profile_esw_depth_local + esw_remaining) + " into profile esw depth of " + profile_esw_depth_local;
-                throw new Exception(line);
-            }
-            else
-            {
-                //! it fits
-            }
-        }
-
-
-        else if (numvals_profile_esw_depth > 0)
-        {
-            //! profile_esw_depth parameter set - distribute top down
-            ZeroArray(ref swAmount);
-            Array.Copy(swLL15, swAmount, nLayers);
-
-            esw_remaining = _profile_esw_depth;
-
-            for (layer = 0; layer < nLayers; layer++)
-            {
-                //! set default according to profile_esw_depth of plant available water
-                esw_avail = bound(esw_remaining, 0.0, (swDUL[layer] - swLL15[layer]));
-
-                swAmount[layer] = swLL15[layer] + esw_avail;
-                esw_remaining = esw_remaining - esw_avail;
-            }
-
-            if (esw_remaining > precisionForProfileSW)
-            {
-                //! we have too much water to distirbute - won't fit in profile
-                profile_esw_depth_local = 0.0;
-                for (layer = 0; layer < nLayers; layer++)
-                    profile_esw_depth_local += swDUL[layer] - swLL15[layer];
-                line = "Can't fit profile esw of " + _profile_esw_depth + " into profile esw depth of " + profile_esw_depth_local;
-                throw new Exception(line);
-            }
-            else
-            {
-                //! it fits
-            }
-        }
-
-
-        else if (numvals_sw > 0)
-        {
-            //! do nothing
-        }
-
-
-        else
-        {
-            throw new Exception("Initial soilwater distribution method not defined.");
-        }
-
-
-    }
-
-    //All the following function are used ONLY in soilwat2_init() no where else.
-    private void CheckParameters()
+    /// <summary>
+    /// Verify that the parameters for evaporation have been initialised
+    /// </summary>
+    private void checkEvaporationParameters()
     {
         // Check that the brokenStick funtion for canopy effects has equal number of X and Y
         if (canopy_fact.Length != canopy_fact_height.Length)
@@ -1594,10 +1295,62 @@ public class SoilWater
                        "SoilWater can only use ritchie evaporation for now, therefore this method has been changed.");
         }
 
-        // Check that we have one value for each layer
+        // The paramters u and cona can either use a single value or two different (for summer and winter).
+            if (Double.IsNaN(myU))
+            {
+                if ((Double.IsNaN(summeru) && (Double.IsNaN(winteru))))
+                    throw new Exception("the value for \'u\' OR BOTH values for \'summeru\' and \'winteru\' must be specified");
+            }
+            else
+            {
+                summeru = myU;
+                winteru = myU;
+            }
+
+            if (Double.IsNaN(myConA))
+            {
+                if ((Double.IsNaN(summercona)) && (Double.IsNaN(wintercona)))
+                    throw new Exception("the value for \'cona\' OR BOTH values for \'summercona\' and \'wintercona\' must be specified");
+            }
+            else
+            {
+                summercona = myConA;
+                wintercona = myConA;
+            }
+
+            //summer and winter default dates.
+            if (summerdate == "not set")
+                summerdate = "1-oct";
+
+            if (winterdate == "not set")
+                winterdate = "1-apr";
+
+        //assign u and cona to either sumer or winter values
+        // Need to add 12 hours to move from "midnight" to "noon", or this won't work as expected
+        //if (DateUtility.WithinDates(winterdate, Clock.Today, summerdate))
+        //{
+        //    _cona = wintercona;
+        //    _u = winteru;
+        //}
+        //else
+        //{
+        //    _cona = summercona;
+        //    _u = summeru;
+        //}
+    }
+
+    /// <summary>
+    /// Check the values for solute transport efficiency
+    /// </summary>
+    /// <remarks>
+    /// Values are needed for each layer, so if only one was supplied, use it for all layers.
+    /// </remarks>
+    private void checkSoluteTransportEfficiencies()
+    {
+        // For transport above DUL
         if (solute_flux_eff.Length == 1)
         {
-            // we have only one value, use this for all layers
+            // only one value was supplied, use this for all layers
             double theValue = solute_flux_eff[0];
             solute_flux_eff = new double[nLayers];
             for (int layer = 0; layer < nLayers; layer++)
@@ -1605,13 +1358,14 @@ public class SoilWater
         }
         else if (solute_flux_eff.Length < nLayers)
         {
-            // we have some data but it is not complete
+            // data supplied is not complete
             throw new Exception("The number of values give to \'solute_flux_eff\' does not match the number of layers");
         }
 
+        // For transport below DUL
         if (solute_flow_eff.Length == 1)
         {
-            // we have only one value, use this for all layers
+            // only one value was supplied, use this for all layers
             double theValue = solute_flow_eff[0];
             solute_flow_eff = new double[nLayers];
             for (int layer = 0; layer < nLayers; layer++)
@@ -1619,255 +1373,50 @@ public class SoilWater
         }
         else if (solute_flow_eff.Length < nLayers)
         {
-            // we have some data but it is not complete
+            // data supplied is not complete
             throw new Exception("The number of values give to \'solute_flow_eff\' does not match the number of layers");
         }
-
-        if (inflowLateral == null)
-        {
-            inflow_lat = new double[nLayers];
-        }
-
-        //sv- the following test is removed from soilwat2_soil_property_param()
-        //sv- used to initialise the sw profile [used in soilwat2_set_default()] -> flags indicating if anything was read in from the sim file.
-        //sv- insoil is used for two different initialisation of sw methods:
-        //sv- User Specified Soil Water Conent method is used when insoil > 1 
-        //sv- FASW evenly distributed method is used when  0 <= insoil <= 1 
-        if (Double.IsNaN(_insoil))
-            numvals_insoil = 0;
-
-        //sv- FASW filled from top method method
-        if (Double.IsNaN(_profile_fesw))
-            numvals_profile_fesw = 0;
-
-        //sv- depth of available sw from top of profile method
-        if (Double.IsNaN(_profile_esw_depth))
-            numvals_profile_esw_depth = 0;
-
-        //sv- depth of wet soil (filled to dul) method
-        if (Double.IsNaN(_wet_soil_depth))
-            numvals_wet_soil_depth = 0;
-
-        //If this function has been called by a Reset Event
-        //then reset (all the variables that are "Settable" by the user) back to the original values read in by [Param]  
-        if (initDone)
-        {
-            //Soil Property
-
-            //initial starting soil water 
-
-            numvals_insoil = reset_numvals_insoil;
-            _insoil = reset_insoil;
-
-            numvals_profile_fesw = reset_numvals_profile_fesw;
-            _profile_fesw = reset_profile_fesw;
-
-            numvals_profile_esw_depth = reset_numvals_profile_esw_depth;
-            _profile_esw_depth = reset_profile_esw_depth;
-
-            numvals_wet_soil_depth = reset_numvals_wet_soil_depth;
-            _wet_soil_depth = reset_wet_soil_depth;
-
-            //runoff
-            _cn2_bare = reset_cn2_bare;
-            _cn_red = reset_cn_red;
-            _cn_cov = reset_cn_cov;
-
-            //ponding
-            _max_pond = reset_max_pond;
-
-        }
-
-        if (_cn_red >= _cn2_bare)
-        {
-            _cn_red = _cn2_bare - 0.00009;
-        }
-
-
-
-        // The paramters u and cona can either use a single value or two different (for summer and winter).
-        if (!initDone)
-        {
-            if (Double.IsNaN(_u))
-            {
-                if ((Double.IsNaN(summeru) || (Double.IsNaN(winteru))))
-                {
-                    throw new Exception(
-                        "theValue single value for u OR BOTH values for summeru and winteru must be specified");
-                }
-                //if they entered two values but they made them the same
-                if (summeru == winteru)
-                {
-                    _u = summeru;
-                }
-            }
-            else
-            {
-                summeru = _u;
-                winteru = _u;
-            }
-
-            if (Double.IsNaN(_cona))
-            {
-                if ((Double.IsNaN(summercona)) || (Double.IsNaN(wintercona)))
-                {
-                    throw new Exception(
-                        "theValue single value for cona OR BOTH values for summercona and wintercona must be specified");
-                }
-                //if they entered two values but they made them the same.
-                if (summercona == wintercona)
-                {
-                    _cona = summercona; //cona is now no longer null. As if the user had entered a value for cona.
-                }
-            }
-            else
-            {
-                summercona = _cona;
-                wintercona = _cona;
-            }
-
-            //summer and winter default dates.
-            if (summerdate == "not set")
-            {
-                summerdate = "1-oct";
-            }
-
-            if (winterdate == "not set")
-            {
-                winterdate = "1-apr";
-            }
-        }
-
-        //assign u and cona to either sumer or winter values
-        // Need to add 12 hours to move from "midnight" to "noon", or this won't work as expected
-        if (DateUtility.WithinDates(winterdate, Clock.Today, summerdate))
-        {
-            _cona = wintercona;
-            _u = winteru;
-        }
-        else
-        {
-            _cona = summercona;
-            _u = summeru;
-        }
     }
 
-    private void soilwat2_soil_profile_param()
+    /// <summary>
+    /// Initialise the optional parameters controling saturated flow (if not read in)
+    /// </summary>
+    /// <remarks>
+    /// Need to establish, during initialisation, whether mwcon or ks will be used
+    /// Note: mwcon = 0.0 indicates impermeable layer, while mwcon = 1.0 is fully permeable
+    /// If mwcon is not specified then set it to 1.0. If ks is specified then mwcon is not used.
+    /// </remarks>
+    private void checkSaturatedFlowParameters()
     {
-         Console.WriteLine("   - Reading Soil Profile Parameters");
-
-        //Initialise the Optional Array Parameters (if not read in).
-        if (!initDone)
+        if (myMWCon == null)
         {
-            // This is actual initialisation, establish whether we will use ks
-            //  Note: mwcon: 0 is impermeable and 1 is permeable.  if mwcon is not specified then set it to 1
-            //   and don't use ks. If it is specified then use mwcon and ks. If there is NO impermeable layer specified,
-            //   then mwcon must be set to '1' in all layers by default.
-            if (mwcon == null)
+            myMWCon = new double[nLayers];
+            resetMWCon = new double[nLayers];
+            for (int z = 0; z < nLayers; z++)
             {
-                mwcon = new double[nLayers];
-                for (int i = 0; i < mwcon.Length; i++)
-                    mwcon[i] = 1.0;
+                myMWCon[z] = 1.0;
+                resetMWCon[z] = 1.0;
             }
-            else
-            {
-                My.Warning("mwcon is being replaced with saturated conductivity (ks). " + "\n"
-                                    + "See documentation for details.");
-            }
+        }
 
-            if (ks == null)
-            {
-                using_ks = false;
-                ks = new double[nLayers];
-                ZeroArray(ref ks);
-            }
-            else
-            {
-                using_ks = true;
-            }
+        if (myKSat == null)
+        {
+            usingKsat = false;
+            myKSat = new double[nLayers];
+            resetKSat = new double[nLayers];
         }
         else
-        {
-            //If this function has been called by a Reset Event
-            //then reset (all the variables that are "Settable" by the user) back to the original values read in by [Param]  
-            inReset = true;
-
-            dLayer = new double[resetDLayer.Length];
-            Array.Copy(resetDLayer, dLayer, resetDLayer.Length);
-            Array.Copy(resetSAT, sat, resetDLayer.Length);
-            Array.Copy(resetDUL, dul, resetDLayer.Length);
-            Array.Copy(resetLL15, ll15, resetDLayer.Length);
-            Array.Copy(resetAirDry, air_dry, resetDLayer.Length);
-            Array.Copy(resetSoilWater, sw, resetDLayer.Length);
-            numvals_sw = reset_numvals_sw;
-            sw = resetSoilWater;
-            inReset = false;
-        }
-
-
-        // THE FOLLOWING CODE INTERACTS WITH soilwat2_set_default(). 
-        //It is necessary to make sure the "Sw cannot be specified with \"insoil\"." case is never activated.
-        //sv- comment out the code below because the GUI always defines SW in layers. The 5 different methods are sorted out in the GUI. The GUI then specifies the sw layers depending on the method and sets insoil is always set to be >1 and 
-        //sv-start
-        //sv- the following initialisation is removed from soilwat2_soil_profile_param()
-        //sv- if insoil is specified then sort out which of the two methods you are using (user specified sw OR FASW evenly distributed) 
-        //sv- if the user specified an insoil and they specified FASW evenly distributed method (ie. 0>=insoil<=1) not the user specified sw method.
-        if ((numvals_insoil > 0) && ((_insoil >= 0.0) && (_insoil <= 1.0)))
-        {
-            //warn the user that their user specified sw is beign overridden.
-            Console.WriteLine("Soil water in parameter file is being overridden by");
-            Console.WriteLine("the insoil parameter which is between 0 and 1");
-            numvals_sw = 0; //change the flag to pretend that no sw values were not read in.
-        }
-        else
-        {
-            numvals_insoil = 0;     //change the flag to pretend that no insoil value was read in.
-            //sv- isn't this a mistake? what if you want to use a user specifed sw method (ie. insoil > 1). I assume soilwat2_set_default() caters for this.
-        }
-
-        //sv- Since you have initialised all the _dep[] profile variables 
-        //sv- AND you have got all your numvals flags indicating what initial sw method was selected sorted out
-        //sv- now you can set your initial sw for the profile.
-        soilwat2_set_default();
-     }
-
-    private void soilwat2_evap_init()
-    {
-        if (evapMethod == defaultEvapMethod)
-        {
-            // Initialise ritchie evaporation model
-
-            double swr_top; //! stage 2 evaporation occurs ratio available sw potentially available sw in top layer
-
-            //! set up evaporation stage
-            swr_top = MathUtility.Divide((swAmount[0] - ll15_dep[0]), (swDUL[0] - swLL15[0]), 0.0);
-            swr_top = bound(swr_top, 0.0, 1.0);
-
-            //! are we in stage1 or stage2 evap?
-            if (swr_top >= sw_top_crit)
-            {
-                // stage 1 evap
-                sumes2 = 0.0;
-                sumes1 = sumes1_max - (sumes1_max * swr_top);
-                timeStage2 = 0.0;
-            }
-            else
-            {
-                // stage 2 evap
-                sumes2 = sumes2_max - (sumes2_max * MathUtility.Divide(swr_top, sw_top_crit, 0.0));
-                sumes1 = _u;
-                timeStage2 = MathUtility.Sqr(MathUtility.Divide(sumes2, _cona, 0.0));
-            }
-        }
+            usingKsat = true;
     }
 
-    private void Lateral_init()
+    /// <summary>
+    /// Check that all parameters for lateral flow have been initialised
+    /// </summary>
+    /// <remarks>
+    /// Lateral flow parameters are all optional, so zero them if not entered by user.
+    /// </remarks>
+    private void checkLateralFlowParameters()
     {
-        //sv- the following test is removed from Lateral_read_param()
-        //sv- Lateral variables are all optional so zero them if not entered by user.
-        //These are optional parameters and so they may have a default value of NaN(double vars) or null(array vars) if they were not read in.
-        //So set them to zero.
-
         if (Double.IsNaN(slope))
             slope = 0.0;
 
@@ -1877,153 +1426,80 @@ public class SoilWater
         if (Double.IsNaN(catchment_area))
             catchment_area = 0.0;
 
-        if (klat == null)
-            klat = new double[nLayers];
+        if (myKLat == null)
+        {
+            myKLat = new double[nLayers];
+            resetKLat = new double[nLayers];
+        }
+    }
 
-        //taken from Lateral_zero_variables()
-        ZeroArray(ref outflow_lat);
+    /// <summary>
+    /// Reset all parameters that are "Settable" back to the original values
+    /// </summary>
+    private void resetSoilWater()
+    {
+        isResetting = true;
 
-        //see CalcLateralFlow() for where daily input inflow_lat[] is initialised if not read in.
+        //soil profile
+        int nLayersReset = resetDLayer.Length;
+        dLayer = new double[nLayersReset];
+        Array.Copy(resetDLayer, dLayer, nLayersReset);
+        Array.Copy(resetBD, bd, nLayersReset);
+        Array.Copy(resetSAT, sat, nLayersReset);
+        Array.Copy(resetDUL, dul, nLayersReset);
+        Array.Copy(resetLL15, ll15, nLayersReset);
+        Array.Copy(resetAirDry, air_dry, nLayersReset);
+        Array.Copy(resetSWCon, swcon, nLayersReset);
+        Array.Copy(resetMWCon, mwcon, nLayersReset);
+        Array.Copy(resetKSat, ks, nLayersReset);
+        Array.Copy(resetKLat, klat, nLayersReset);
+
+        Array.Copy(resetSWC, sw, nLayersReset);
+
+        //runoff
+        bareSoilCN = resetBareSoilCN;
+        maxCNreduction = resetMaxCNreduction;
+        coverAtMinimumCN = resetCoverMinCN;
+
+        //ponding
+        maxPondCapacity = resetMaxPond;
+
+        isResetting = false;
     }
 
     #endregion
 
+
     #region Functions to Zero Variables
 
-    private void soilwat2_zero_variables()
+    private void zeroVariables()
     {
-
-        //You only really want to zero, 
-        // Ouputs, Local Variables, 
-        // and Settable Params (which you are using reset variables to store the original value in)
-        //You do not want to zero non Settable Params because there is no way to reread them back in again. 
-        //Plus they don't change during the simulation so why bother.  
-        //By definition you don't want to reset the module constants. ( except the ones changed in CheckParameters() )
-
-
-        //Settable Params
-        _cn2_bare = 0.0;                         //! curve number input used to calculate daily g_runoff
-        _cn_cov = 0.0;                           //! cover at which c_cn_red occurs
-        _cn_red = 0.0;                           //! maximum reduction in p_cn2_bare due to cover
-
-        _max_pond = 0.0;                         //! maximum allowable surface storage (ponding) mm
-
-        numvals_insoil = 0;                     //! number of values returned for insoil
-        numvals_profile_fesw = 0;               //! number of values returned for profile_fesw
-        numvals_profile_esw_depth = 0;          //! number of values returned for profile_esw_depth
-        numvals_wet_soil_depth = 0;             //! number of values returned for wet_soil_depth
-        numvals_sw = 0;                         //! number of values returned for sw
-
-        _insoil = 0.0;                           //! switch describing initial soil water distributed evenly
-        _profile_fesw = 0.0;                     //! initial fraction of profile esw filled top down with soil water (mm)
-        _profile_esw_depth = 0.0;                //! initial depth of esw in profile filled top down with soil water (mm)
-        _wet_soil_depth = 0.0;                   //! initial depth profile filled top down with soil water (mm)
-
-        ZeroArray(ref dLayer);                   //! thickness of soil layer i (mm)
-        ZeroArray(ref swSAT);                  //! saturated water content for layer l (mm water)
-        ZeroArray(ref swDUL);                  //! drained upper limit soil water content for each soil layer (mm water)
-        ZeroArray(ref swAmount);                   //! soil water content of layer l (mm)
-        ZeroArray(ref swLL15);                 //! 15 bar lower limit of extractable soil water for each soil layer(mm water)
-        ZeroArray(ref swAirDry);              //! air dry soil water content (mm water)
-
-        waterTableDepth = 0.0;                      //! water table depth (mm)
-
-        //Outputs
-        drain = 0.0;                            //! drainage rate from bottom layer (cm/d)
-        infiltration = 0.0;                     //! infiltration (mm)
-        runoff = 0.0;                           //! runoff (mm)
-
-        pond = 0.0;                             //! surface ponding depth (mm)
-        pond_evap = 0.0;                        //! evaporation from the pond surface (mm)
-        eo = 0.0;                               //! potential evapotranspiration (mm)
-        eos = 0.0;                              //! pot sevap after modification for green cover & residue wt
-        timeStage2 = 0.0;                                //! time after 2nd-stage soil evaporation begins (d)
-        cn2_new = 0.0;                          //! New cn2  after modification for crop cover & residue cover
-        cover_surface_runoff = 0.0;             //! effective total cover (0-1)
-        ZeroArray(ref flux);                     //! initially, water moving downward into layer l (mm), 
-        ZeroArray(ref waterBypass);
-        ZeroArray(ref waterFlowAboveDUL);
-        ZeroArray(ref waterFlowBelowDUL);
-        ZeroArray(ref evaporation);                //! actual soil evaporation (mm)
-
-        ZeroArray(ref outflow_lat);
-
-        //Local Variables
-        canopyTotalCover = null;                //! total canopy cover of crops (0-1)
-        canopyGreenCover = null;              //! green canopy cover of crops (0-1)
-        canopyHeight = null;            //! canopy heights of each crop (mm)
-        nCrops = 0;                          //! number of crops ()
-        sumes1 = 0.0;                           //! cumulative soil evaporation in stage 1 (mm)
-        sumes2 = 0.0;                           //! cumulative soil evaporation in stage 2 (mm)
-
-        for (int sol = 0; sol < nSolutes; sol++)
-        {
-            ZeroArray(ref solutes[sol].Amount);
-            ZeroArray(ref solutes[sol].Delta);
-            ZeroArray(ref solutes[sol].FlowSaturated);
-            ZeroArray(ref solutes[sol].FlowAboveDUL);
-            ZeroArray(ref solutes[sol].FlowBelowDUL);
-            solutes[sol].ConcentrationInRain = 0.0;
-            solutes[sol].AmountInIrrigation = 0.0;
-        }
-
-        potentialRunoff = 0.0;                       //! potential runoff with no pond(mm)  
-        irrigation = 0.0;                       //! irrigation (mm)
-
-        observedRunoff = 0.0;                        //! observed runoff (mm)
-        tillage_cn_red = 0.0;                   //! reduction in CN due to tillage ()
-        tillage_cn_rain = 0.0;                  //! cumulative rainfall below which tillage reduces CN (mm)
-        tillage_rain_sum = 0.0;                 //! cumulative rainfall for tillage CN reduction (mm)
-        obsrunoff_name = "";                    //! system name of observed runoff
-
-        eoApsim = 0.0;                        //! eo from somewhere else in the system
-        _eo_source = "";                        //! system variable name of external eo source
-
-        irrigation_layer = 0;                   // irrigation applied onto soil surface
-    }
-
-    //TODO: this is used by the soilwat2_set_my_variables(). This allows other modules to set soilwat's variables.
-    // this is implememented in .NET by declaring a Property with Gets and Sets and making it an INPUT tag. 
-    // Nb. that i think you have to use a local variable as a go between as well. See SoilNitrogen [Input] tags with get and set. 
-    // Or maybet it is [Output] tags.
-    private void soilwat2_zero_default_variables()
-    {
-        //*     zero default soil water initialisation parameters      
-        numvals_insoil = 0;
-        numvals_sw = 0;
-        numvals_profile_esw_depth = 0;
-        numvals_wet_soil_depth = 0;
-        numvals_profile_fesw = 0;
-        _insoil = 0.0;
-        ZeroArray(ref swAmount);
-        _profile_esw_depth = 0.0;
-        _wet_soil_depth = 0.0;
-        _profile_fesw = 0.0;
-    }
-
-    private void soilwat2_zero_daily_variables()
-    {
-        ZeroArray(ref outflow_lat);
+        ZeroArray(ref evaporation);
+        ZeroArray(ref outflowLateral);
         ZeroArray(ref waterBypass);
         ZeroArray(ref waterFlowAboveDUL);
         ZeroArray(ref waterFlowBelowDUL);
         ZeroArray(ref flux);
-        ZeroArray(ref evaporation);
+
+        nCrops = 0;
         canopyTotalCover = null;
         canopyGreenCover = null;
         canopyHeight = null;
+
+        irrigation = 0.0;
+        infiltration = 0.0;
         eo = 0.0;
         eos = 0.0;
+        cn2_cover = 0.0;
         cn2_new = 0.0;
-        drain = 0.0;
-        infiltration = 0.0;
-        runoff = 0.0;
         potentialRunoff = 0.0;
-        nCrops = 0;
-        observedRunoff = 0.0;
+        runoff = 0.0;
+        drain = 0.0;
         pond_evap = 0.0;
 
-        //! initialise all solute information
+        irrigation_layer = 0;
+
+        // zero all solute information
         for (int solnum = 0; solnum < nSolutes; solnum++)
         {
             ZeroArray(ref solutes[solnum].Amount);
@@ -2032,24 +1508,26 @@ public class SoilWater
             ZeroArray(ref solutes[solnum].FlowBelowDUL);
             ZeroArray(ref solutes[solnum].Delta);
             solutes[solnum].ConcentrationInRain = 0.0;
+            solutes[solnum].AmountInIrrigation = 0.0;
         }
+
     }
 
     #endregion
 
     #region Bounds checking and warning functions
 
-    #region Check a given layer for Errors
+    #region Check a given layer for errors
 
     /// <summary>
     /// Checks that layer lies within the parameterised soil profile
     /// </summary>
     /// <param name="layer">the layer being tested</param>
-    private void soilwat2_layer_check(int layer)
+    private void checkLayerExists(int layer)
     {
         if (layer < 1)
         {
-            My.Warning(String.Format("{0} {1} {2} {3}", " soil layer no. ", layer, 
+            My.Warning(String.Format("{0} {1} {2} {3}", " soil layer no. ", layer,
                        " is below mimimum of ", 1));
         }
         else if (layer > nLayers)
@@ -2060,81 +1538,87 @@ public class SoilWater
     }
 
     /// <summary>
-    /// Checks validity of soil water parameters for a soil profile layer
+    /// Checks validity of soil water parameters for a give soil layer
     /// </summary>
     /// <param name="layer">the layer being checked</param>
-    private void soilwat2_check_profile(int layer)
+    private void checkSoilWaterThresholds(int layer)
     {
-        //*+  Notes
-        //*           reports an error if
-        //*           - g%ll15_dep, swDUL, and swSAT are not in ascending order
-        //*           - ll15 is below min_sw
-        //*           - sat is above max_sw
-        //*           - sw > sat or sw < min_sw      
-
-        if (inReset || !initDone)
+        if (isResetting || isInitialising)
             return;
 
-        //Constant Values
         double min_sw_local = 0.0;
-        double max_sw_margin = 0.01;
-        double dul_local;                 //! drained upper limit water content of layer (mm water/mm soil)
-        double ll15_local;                //! lower limit at 15 bars water content of layer (mm water/mm soil)
-        double air_dry_local;             //! lower limit at air dry water content of layer (mm water/mm soil)
-        double sat_local;                 //! saturated water content of layer (mm water/mm soil)
-        double sw_local;                  //! soil water content of layer l (mm water/mm soil)
- 
-        double max_sw_local;              //! largest acceptable value for sat (mm water/mm soil)
+        double dul_local;               // drained upper limit water content of layer (mm water/mm soil)
+        double ll15_local;              // lower limit at 15 bars water content of layer (mm water/mm soil)
+        double airDry_local;            // lower limit at air dry water content of layer (mm water/mm soil)
+        double sat_local;               // saturated water content of layer (mm water/mm soil)
+        double sw_local;                // soil water content of layer l (mm water/mm soil)
+        double max_porosity;            // largest acceptable value for sat (mm water/mm soil)
 
-        max_sw_local = 1.0 - MathUtility.Divide(bd[layer], specific_bd, 0.0);  //ie. Total Porosity
+        max_porosity = 1.0 - MathUtility.Divide(myBD[layer], specific_bd, 0.0);
 
         sw_local = MathUtility.Divide(swAmount[layer], dLayer[layer], 0.0);
         sat_local = MathUtility.Divide(swSAT[layer], dLayer[layer], 0.0);
         dul_local = MathUtility.Divide(swDUL[layer], dLayer[layer], 0.0);
         ll15_local = MathUtility.Divide(swLL15[layer], dLayer[layer], 0.0);
-        air_dry_local = MathUtility.Divide(swAirDry[layer], dLayer[layer], 0.0);
+        airDry_local = MathUtility.Divide(swAirDry[layer], dLayer[layer], 0.0);
 
-        if ((air_dry_local + myEpsilon) < min_sw_local)
+        if (airDry_local - min_sw_local < myEpsilon)
         {
             My.Warning(String.Format("({0} {1:G}) {2} {3} {4} {5} {6:G})",
-                       " Air dry lower limit of ", air_dry_local,
+                       " Air dry lower limit of ", airDry_local,
                        " in layer ", layer, "\n",
                        "         is below acceptable value of ", min_sw_local));
         }
 
-        if ((ll15_local + myEpsilon) < (air_dry_local - myEpsilon))
+        if (ll15_local - airDry_local < -myEpsilon)
         {
             My.Warning(String.Format("({0} {1:G}) {2} {3} {4} {5} {6:G})",
                        " 15 bar lower limit of ", ll15_local,
                        " in layer ", layer, "\n",
-                       "         is below air dry value of ", air_dry_local));
+                       "         is below air dry value of ", airDry_local));
         }
 
-        if ((dul_local + myEpsilon) <= (ll15_local - myEpsilon))
+        if (dul_local - ll15_local < myEpsilon)
         {
             My.Warning(String.Format("({0} {1:G}) {2} {3} {4} {5} {6:G})",
                        " drained upper limit of ", dul_local,
                        " in layer ", layer, "\n",
                        "         is at or below lower limit of ", ll15_local));
         }
-        if ((sat_local + myEpsilon) <= (dul_local - myEpsilon))
+        if (sat_local - dul_local < myEpsilon)
         {
             My.Warning(String.Format("({0} {1:G}) {2} {3} {4} {5} {6:G})",
                        " saturation of ", sat_local,
                        " in layer ", layer, "\n",
                        "         is at or below drained upper limit of ", dul_local));
         }
-        if ((sat_local - myEpsilon) > (max_sw_local + max_sw_margin))
+        if (max_porosity - sat_local < -myEpsilon)
         {
             My.Warning(String.Format("({0} {1:G}) {2} {3} {4} {5} {6:G} {7} {8} {9:G} {10} {11} {12:G})",
                        " saturation of ", sat_local,
                        " in layer ", layer, "\n",
-                       "         is above acceptable value of ", max_sw_local, "\n",
+                       "         is above acceptable value of ", max_porosity, "\n",
                        "You must adjust bulk density (bd) to below ", (1.0 - sat_local) * specific_bd, "\n",
-                       "OR saturation (sat) to below ", max_sw_local));
+                       "OR saturation (sat) to below ", max_porosity));
         }
 
-        if (sw_local - myEpsilon > sat_local + myEpsilon)
+        checkSoilWaterContent(layer);
+    }
+
+    private void checkSoilWaterContent(int layer)
+    {
+        if (isResetting || isInitialising)
+            return;
+
+        double sw_local;            // soil water content of layer l (mm water/mm soil)
+        double airDry_local;        // lower limit at air dry water content of layer (mm water/mm soil)
+        double sat_local;           // saturated water content of layer (mm water/mm soil)
+
+        sat_local = MathUtility.Divide(swSAT[layer], dLayer[layer], 0.0);
+        airDry_local = MathUtility.Divide(swAirDry[layer], dLayer[layer], 0.0);
+        sw_local = MathUtility.Divide(swAmount[layer], dLayer[layer], 0.0);
+
+        if (sat_local - sw_local < -myEpsilon)
         {
             My.Warning(String.Format("({0} {1:G}) {2} {3} {4} {5} {6:G}",
                        " soil water of ", sw_local,
@@ -2142,12 +1626,12 @@ public class SoilWater
                        "         is above saturation of ", sat_local));
         }
 
-        if (sw_local + myEpsilon < air_dry_local - myEpsilon)
+        if (sw_local - airDry_local < -myEpsilon)
         {
             My.Warning(String.Format("({0} {1:G}) {2} {3} {4} {5} {6:G}",
                        " soil water of ", sw_local,
                        " in layer ", layer, "\n",
-                       "         is below air-dry value of ", air_dry_local));
+                       "         is below air-dry value of ", airDry_local));
         }
     }
 
@@ -2160,58 +1644,41 @@ public class SoilWater
     /// <param name="minVal">The lower bound</param>
     /// <param name="maxVal">The upper bound</param>
     /// <returns>The value within bounds</returns>
-    private double bound(double theValue, double minVal, double maxVal)
+
+    /// <summary>
+    /// check whether a value of a given variable is within bounds
+    /// </summary>
+    /// <param name="theValue">Value being tested</param>
+    /// <param name="minVal">Lower bound</param>
+    /// <param name="maxVal">Upper bound</param>
+    /// <param name="variableName">Variable name</param>
+    /// <param name="doConstrain">Wheter the value is forced within bounds</param>
+    /// <returns>The value given, adjusted or not</returns>
+    private double checkBounds(double theValue, double minVal, double maxVal, string variableName, bool doConstrain, bool doReport = false)
     {
+        double result;
         if (minVal > maxVal)
         {
-            My.Warning("Lower bound (" + minVal + ") is greater than the upper bound (" + maxVal + ")\n" + 
-                       "        theValue is not constrained");
+            My.Warning("Lower bound (" + minVal + ") is greater than the upper bound (" + maxVal + "), the value of"
+                + variableName + " cannot be constrained");
             return theValue;
         }
 
+        if ((theValue < minVal) || (theValue > maxVal))
+        {
+            if (doReport)
+            {
+                My.Warning("The variable /'" + variableName + "/' is set to a value (" + theValue +
+                    ") outside the expected range (" + minVal + " - " + maxVal + ")");
+            }
+
+            if (doConstrain)
+                result = Math.Max(Math.Min(theValue, maxVal), minVal);
+            else
+                result = theValue;
+        }
+
         return Math.Max(Math.Min(theValue, maxVal), minVal);
-    }
-
-     /// <summary>
-    /// Checks whether a values is within bounds, raises a warning if not
-    /// </summary>
-    /// <param name="theValue">The value being tested</param>
-    /// <param name="minVal">The lower bound</param>
-    /// <param name="maxVal">The upper bound</param>
-    /// <param name="variableName">The name of the variable</param>
-    protected void bound_check_real_var(double theValue, double minVal, double maxVal, string variableName)
-    {
-        string warningMsg;
-        if (theValue > maxVal)
-        {
-            warningMsg = "The variable /'" + variableName + "/' is set to a value (" + theValue +
-                         ") above the expected upper bound (" + maxVal +")";
-            My.Warning(warningMsg);
-        }
-        if (theValue < minVal)
-        {
-            warningMsg = "The variable /'" + variableName + "/' is set to a value (" + theValue +
-                         ") below the expected lower bound (" + minVal + ")";
-            My.Warning(warningMsg);
-        }
-    }
-
-    /// <summary>
-    /// Checks whether a set of values is within bounds, raises a warning if not
-    /// </summary>
-    /// <param name="theArray">The array of values being tested</param>
-    /// <param name="minVal">The lower bound</param>
-    /// <param name="maxVal">The upper bound</param>
-    /// <param name="variableName">The name of the variable</param>
-    /// <param name="elementToStopChecking">the index of the last element to be checked</param>
-    protected void bound_check_real_array(double[] theArray, double minVal, double maxVal, string variableName, int elementToStopChecking)
-    {
-        for (int i = 0; i < theArray.Length ; i++)
-        {
-            bound_check_real_var(theArray[i], minVal, maxVal, variableName + "(" + i + 1 + ")");
-            if (i == elementToStopChecking)
-                i = theArray.Length;
-        }
     }
 
     #endregion
@@ -2223,32 +1690,40 @@ public class SoilWater
     /// <summary>
     /// Gets the potential runoff
     /// </summary>
-    /// <param name="precipitation"></param>
-    /// <param name="runOn"></param>
-    /// <param name="totalInterception"></param>
-    /// <returns>Potential runoff amount</returns>
+    /// <remarks>
+    /// There are two options, controlled by obsrunoff_name. If empty runoff is calculated using scs curve number
+    /// otherwise the user or apsim must supply a value.
+    /// </remarks>
+    /// <param name="precipitation">Amount of precipitation (rain + irrigation)</param>
+    /// <param name="runOn">Amount of water rununing in</param>
+    /// <param name="totalInterception">Amount of water intercepted by canopy and residues</param>
+    /// <returns>Potential runoff amount (mm)</returns>
     private double PotentialRunoff(double precipitation, double runOn, double totalInterception)
     {
         double result = 0.0;
 
         if (precipitation + runOn - totalInterception > 0.0)
         {
+            // there is some water that could runoff
             if (obsrunoff_name == "")
             {
+                // no runoff values were supplied, computing using scs curve number
                 result = CalcSCSRunoff(precipitation, runOn, totalInterception);
             }
             else
             {
+                // runoff values are meant to be supplied, check them
                 if (MyPaddock.Get(obsrunoff_name, out observedRunoff))
-                   result = observedRunoff;
+                {
+                    // values were given, bound to available water
+                    result = checkBounds(observedRunoff, 0.0, precipitation + runOn - totalInterception, "observed runoff", true, true);
+                }
                 else
                 {
-                    observedRunoff = Double.NaN;
-                    My.Warning(String.Format("{0} {1} {2} {3} {4}",
-                                             "Year = ", Clock.Today.Year,
-                                             ", day = ", Clock.Today.Day,
-                                             ", Using predicted runoff for missing observation"));
-                    result = CalcSCSRunoff(precipitation, runOn, totalInterception);
+                    // no values were actually supplied
+                    observedRunoff = double.NaN;
+                    throw new Exception("No values for runoff, given by \'" + obsrunoff_name
+                        + "\' were found. Check setting of \'obsrunoff_name\'");
                 }
             }
         }
@@ -2257,72 +1732,63 @@ public class SoilWater
     }
 
     /// <summary>
-    /// Calculates the potential runoff
+    /// Calculates the potential runoff using the SCS curve number approach
     /// </summary>
-    /// <remarks>
-    /// This code uses the SCS curve number approach
-    /// </remarks>
     /// <param name="precipitation">Amount of precipitation (rain + irrigation)</param>
     /// <param name="runOn">Amount of water rununing in</param>
     /// <param name="totalInterception">Amount of water intercepted by canopy and residues</param>
-    /// <returns>Runoff amount</returns>
+    /// <returns>Runoff amount (mm)</returns>
     private double CalcSCSRunoff(double precipitation, double runOn, double totalInterception)
     {
-        double cn;                                 //! scs curve number
-        double cn1;                                //! curve no. for dry soil (antecedent) moisture
-        double cn3;                                //! curve no. for wet soil (antecedent) moisture
-        double coverFractor;                       //! proportion of maximum cover effect on runoff (0-1)
-        double cnpd;                               //! cn proportional in dry range (dul to ll15)
-        double maxPotentialStorage;                //! potential max retention (surface ponding + infiltration)
-        double xpb;                                //! intermediate variable for deriving runof
-        double[] runoff_wf;                        //! weighting factor for depth for each layer
-        double dul_fraction;                       // if between 0 and 1 sw is below DUL, if >1 then is above DUL
-        double tillageEffect;                      //! reduction in cn due to tillage
+        double cn;                      // scs curve number
+        double cn_drySoil;              // curve no. for dry soil (antecedent) moisture
+        double cn_wetSoil;              // curve no. for wet soil (antecedent) moisture
+        double coverFractor;            // proportion of maximum cover effect on runoff (0-1)
+        double moistureFactor;          // proportional in range dul to ll15, to adjust cn
+        double maxPotentialRetention;     // potential max retention (surface ponding + infiltration)
+        double xpb;                     // intermediate variable for deriving runof
+        double[] layerFactor;           // weighting factor for depth for each layer
+        double swFac;                   // if between 0 and 1 sw is below DUL, if >1 then is above DUL
+        double tillageEffect;           // reduction in cn due to tillage
+        double result;
 
-        runoff_wf = CalcWeightFactorRunoff();
-
-        cnpd = 0.0;
+        // get the moisture factor
+        moistureFactor = 0.0;
+        layerFactor = CalcWeightFactorRunoff();
         for (int layer = 0; layer < nLayers; layer++)
         {
-            dul_fraction = MathUtility.Divide(swAmount[layer] - swLL15[layer], swDUL[layer] - swLL15[layer], 0.0);
-            cnpd = cnpd + dul_fraction * runoff_wf[layer];
+            swFac = MathUtility.Divide(swAmount[layer] - swLL15[layer], swDUL[layer] - swLL15[layer], 0.0);
+            moistureFactor += swFac * layerFactor[layer];
         }
-        cnpd = bound(cnpd, 0.0, 1.0);
+        moistureFactor = checkBounds(moistureFactor, 0.0, 1.0, "runoff moistureFactor", true);
 
-        //reduce cn2 for the day due to the cover effect
-        cover_surface_runoff = CalcSurfaceCoverRunoff();
-        coverFractor = MathUtility.Divide(cover_surface_runoff, _cn_cov, 0.0);
-        coverFractor = bound(coverFractor, 0.0, 1.0);
-        cn2_new = _cn2_bare - (_cn_red * coverFractor);
+        // adjust cn for the day due to the cover effect
+        cover_surface_runoff = CalcSurfaceCoverForRunoff();
+        coverFractor = MathUtility.Divide(cover_surface_runoff, coverAtMinimumCN, 0.0);
+        coverFractor = Math.Min(1.0, coverFractor);
+        cn2_cover = bareSoilCN - (maxCNreduction * coverFractor);
 
-        //tillage reduction on cn
-        if (tillage_cn_rain > 0.0)
-        {
-            tillageEffect = tillage_cn_red * (MathUtility.Divide(tillage_rain_sum, tillage_cn_rain, 0.0) - 1.0);
-            cn2_new = cn2_new + tillageEffect;
-        }
+        // check tillage effects on cn
+        tillageEffect = EvaluateTillageEffect(precipitation, runOn, totalInterception);
+        cn2_cover = cn2_cover + tillageEffect;
 
-        //! cut off response to cover at high covers if p%cn_red < 100.
-        cn2_new = bound(cn2_new, 0.0, 100.0);
+        // check cn bounds
+        cn2_cover = checkBounds(cn2_cover, 0.0, 100.0, "runoff curve number", true);
 
-        cn1 = MathUtility.Divide(cn2_new, (2.334 - 0.01334 * cn2_new), 0.0);
-        cn3 = MathUtility.Divide(cn2_new, (0.4036 + 0.005964 * cn2_new), 0.0);
-        cn = cn1 + (cn3 - cn1) * cnpd;
+        // adjust cn according to soil moisture
+        cn_drySoil = MathUtility.Divide(cn2_cover, (2.334 - 0.01334 * cn2_cover), 0.0);
+        cn_wetSoil = MathUtility.Divide(cn2_cover, (0.4036 + 0.005964 * cn2_cover), 0.0);
+        cn2_new = cn_drySoil + (cn_wetSoil - cn_drySoil) * moistureFactor;
 
-        // ! curve number will be decided from scs curve number table ??dms
-        maxPotentialStorage = 254.0 * (MathUtility.Divide(100.0, cn, 1000000.0) - 1.0);
-        xpb = (precipitation + runOn - totalInterception) - 0.2 * maxPotentialStorage;
-        xpb = Math.Max(xpb, 0.0);
+        // get potential water retention (estimate of ponding + infiltration)
+        maxPotentialRetention = 254.0 * (MathUtility.Divide(100.0, cn2_new, 1000000.0) - 1.0);
 
-        //assign the output variable
-        double result = MathUtility.Divide(xpb * xpb,
-                        precipitation + runOn - totalInterception + 0.8 * maxPotentialStorage, 0.0);
+        // get the potential runoff amount
+        xpb = Math.Max(0.0, (precipitation + runOn - totalInterception) - 0.2 * maxPotentialRetention);
+        result = MathUtility.Divide(xpb * xpb, precipitation + runOn - totalInterception + 0.8 * maxPotentialRetention, 0.0);
 
         //bound check the ouput variable
-        bound_check_real_var(result, 0.0, (precipitation + runOn - totalInterception), "runoff");
-
-        //Consider the reduction in the curve number as a result of a tillage
-        EvaluateTillageEffect(precipitation, runOn, totalInterception);
+        checkBounds(result, 0.0, precipitation + runOn - totalInterception, "runoff", false, true);
 
         return result;
     }
@@ -2332,120 +1798,124 @@ public class SoilWater
     /// </summary>
     /// <remarks>
     /// This code considers cover cn response to cover from 'perfect' model
-    /// It is assumed that crop canopy was 1/2 effect of mulch, thus allowing the taller canopies to 
+    /// It is assumed that crop canopy was 1/2 effect of mulch, thus allowing the taller canopies to
     ///  have less effect on runoff and the cover close to ground to have full effect.
     /// </remarks>
     /// <returns>surcafe cover</returns>
-    private double CalcSurfaceCoverRunoff()
+    private double CalcSurfaceCoverForRunoff()
     {
-        double canopyfact; //! canopy factor (0-1)
-        double effectiveCropCover; //! effective crop cover (0-1)
-        double coverSurfaceCrop; //! efective total cover (0-1)
+        double canopyfactor;        // canopy factor (0-1)
+        double effectiveCropCover;  // effective crop cover (0-1)
+        double coverSurfaceCrop;    // efective total cover (0-1)
 
-        //! weight effectiveness of crop canopies
-        //!    0 (no effect) to 1 (full effect)
+        // weight effectiveness of crop canopies
+        //    0 (no effect) to 1 (full effect)
 
         coverSurfaceCrop = 0.0;
         for (int crop = 0; crop < nCrops; crop++)
         {
             if (canopyHeight[crop] >= 0.0)
             {
-                bool bDidInterpolate;
-                canopyfact = MathUtility.LinearInterpReal(canopyHeight[crop], canopy_fact_height, canopy_fact,
-                    out bDidInterpolate);
+                bool didWork;
+                canopyfactor = MathUtility.LinearInterpReal(canopyHeight[crop], canopy_fact_height, canopy_fact, out didWork);
             }
             else
-            {
-                canopyfact = canopy_fact_default;
-            }
+                canopyfactor = canopy_fact_default;
 
-            effectiveCropCover = canopyTotalCover[crop] * canopyfact;
+            effectiveCropCover = canopyTotalCover[crop] * canopyfactor;
             coverSurfaceCrop = 1.0 - (1.0 - coverSurfaceCrop) * (1.0 - effectiveCropCover);
-
-            //TODO: there seem to be a problem here, the values above are no accumulated or saved anywhere,
-            //  so only the value for the last crop is actually used. This would only be an issue for multicrop
         }
 
-        //! add canopy cover with that of residues
+        // add canopy cover with that of residues
         double result = 1.0 - (1.0 - coverSurfaceCrop) * (1.0 - surfaceom_cover);
-        return result;
+        return Math.Min(1.0, Math.Max(0.0, result));
     }
 
     /// <summary>
-    /// Calculate the weighting factor for hydraulic effectiveness of each soil layer
+    /// Calculate the weighting factor for hydraulic effectiveness for runoff of each soil layer
     /// </summary>
+    /// <remarks>
+    /// This represents the fraction of each layer that contributes to the moisture effect on the calculation of runoff
+    /// </remarks>
     /// <returns>weighting factor</returns>
     private double[] CalcWeightFactorRunoff()
     {
-        double profileDepth;                      //! current depth of soil profile - for when erosion turned on     
-        double depthFromSurface;                  //! cumulative depth (mm)
-        double actualEffectiveHydrologicalDepth;  //! hydrologically effective depth for runoff (mm)
-        int layerOfEffectiveDepth;                //! layer number that the effective depth occurs in ()
-        double scale_fact;                //! scaling factor for wf function to sum to 1
-        double wf_tot;                    //! total of wf ()
-        double wx;                        //! depth weighting factor for current total depth. intermediate variable for deriving wf (total wfs to current layer)
-        double xx;                        //! intermediate variable for deriving wf total wfs to previous layer
+        double depthFromSurface;            // cumulative depth from soil surface (mm)
+        double actualEffectiveDepth;        // effective hydrologicallydepth for runoff (mm)
+        int layerOfEffectiveDepth;          // layer number for the effective hydrological depth
+        double scalingFactor;               // scaling factor for the weight factor function, so it sums up to 1.0
+        double sumWF;                       // sum of depth weight factor over the profile
+        double layerWF;                     // depth weighting factor for current layer, intermediate variable for deriving wf
+        double auxWFx;                      // intermediate variable for deriving wf considering total wfs to previous layer
 
-        xx = 0.0;
+        auxWFx = 0.0;
         depthFromSurface = 0.0;
-        wf_tot = 0.0;
+        sumWF = 0.0;
         double[] result = new double[nLayers];
 
-        //! check if hydro_effective_depth applies for eroded profile.
-        profileDepth = MathUtility.Sum(dLayer);
-        actualEffectiveHydrologicalDepth = Math.Min(hydrol_effective_depth, profileDepth);
+        // check that effective hydrological depth is within the profile (need to check this in case of changes due to erosion).
+        double profileDepth = MathUtility.Sum(dLayer);
+        actualEffectiveDepth = Math.Min(hydrol_effective_depth, profileDepth);
+        layerOfEffectiveDepth = FindLayerNo(actualEffectiveDepth);
 
-        scale_fact = 1.0 / (1.0 - Math.Exp(-4.16));
-        layerOfEffectiveDepth = FindLayerNo(actualEffectiveHydrologicalDepth);
-
+        // get the weighting factor for each layer
+        scalingFactor = 1.0 / (1.0 - Math.Exp(-4.16));
         for (int layer = 0; layer <= layerOfEffectiveDepth; layer++)
         {
             depthFromSurface = depthFromSurface + dLayer[layer];
-            depthFromSurface = Math.Min(depthFromSurface, actualEffectiveHydrologicalDepth);
+            depthFromSurface = Math.Min(depthFromSurface, actualEffectiveDepth);
 
-            //! assume water content to c%hydrol_effective_depth affects runoff
-            //! sum of wf should = 1 - may need to be bounded? <dms 7-7-95>
-            wx = scale_fact * (1.0 - Math.Exp(-4.16 * MathUtility.Divide(depthFromSurface, actualEffectiveHydrologicalDepth, 0.0)));
-            result[layer] = wx - xx;
-            xx = wx;
-            wf_tot = wf_tot + result[layer];
+            // assume water content to c%hydrol_effective_depth affects runoff
+            // sum of wf should = 1 - may need to be bounded? <dms 7-7-95>
+            layerWF = scalingFactor * (1.0 - Math.Exp(-4.16 * MathUtility.Divide(depthFromSurface, actualEffectiveDepth, 0.0)));
+            result[layer] = layerWF - auxWFx;
+            auxWFx = layerWF;
+            sumWF = sumWF + result[layer];
         }
 
-        bound_check_real_var(wf_tot, 0.9999, 1.0001, "wf_tot");
+        checkBounds(sumWF, 1.0 - myEpsilon, 1.0 + myEpsilon, "total runnof weighting factor", false, true);
 
         return result;
     }
 
     /// <summary>
-    /// Evaluates the reduction in cn after tillage
+    /// Evaluates the reduction in curve number after tillage and the 'recover' afterwards
     /// </summary>
     /// <remarks>
-    /// The cn for runoff can be altered after when tillage event occurs (tillage_cn_red)
-    /// This effect ceases after a set given amount of rainfall is accumulated (tillage_cn_rain)
+    /// The value of cn is altered (reduced) instantaneously after a tillage event occurs (controlled by tillage_cn_red)
+    /// This effect is reduced by rainfall+irrigation, ceasing after a given amount is accumulated (set by tillage_cn_rain)
     /// </remarks>
     /// <param name="precipitation">Amount of precipitation (rain + irrigation)</param>
     /// <param name="runOn">Amount of water rununing in</param>
     /// <param name="totalInterception">Amount of water intercepted by canopy and residues</param>
-    private void EvaluateTillageEffect(double precipitation, double runOn, double totalInterception)
+    /// <returns>Change in cn number </returns>
+    private double EvaluateTillageEffect(double precipitation, double runOn, double totalInterception)
     {
-        // TODO: the reduction in cn should be fading away as rainfall acumulates, here it is only as switch, has or has not effect
-
+        double result = 0.0;
         if (tillage_cn_rain > 0.0)
         {
+            // get the tillageFactor, adjusted by precipitation accumulated since last tillage
+            result = tillage_cn_red * (MathUtility.Divide(tillage_rain_sum, tillage_cn_rain, 0.0) - 1.0);
+
+            // accumulate rainfall+irrigation to be used next dat
             tillage_rain_sum = tillage_rain_sum + precipitation + runOn - totalInterception;
         }
 
         if (tillage_rain_sum > tillage_cn_rain)
         {
+            // effect of tillage have ceased
             tillage_cn_rain = 0.0;
             tillage_cn_red = 0.0;
+            tillage_rain_sum = 0.0;
 
             Console.WriteLine("Reduction of CN due to tillage is finished");
         }
+
+        return result;
     }
 
     #endregion
-            
+
     #region Infiltration
 
     /// <summary>
@@ -2477,297 +1947,303 @@ public class SoilWater
     /// <summary>
     /// Gets the potential evapotranspiration (eo)
     /// </summary>
+    /// <remarks>
+    /// Eventually eo will be in a separate module entirely, and soilwater will get as an input,
+    /// but for now we either retrieve it "manually", or use Priestley-Taylor.
+    /// The possibility to use micromet's value has been added, but this need testing (RCichota, Jun/2017)
+    /// </remarks>
     private double PotentialEvapotranspiration()
     {
-        //+  Notes
-        //    Eventually eo will be in a separate module entirely, and soilwater will get as an input.
-        //    But, for now we either retrieve it "manually", or use priestly-taylor.
-
         double result = 0.0;
-        eoApsim = Double.NaN;
-        if (_eo_source != "" && My.Get(_eo_source, out eoApsim) && !Double.IsNaN(eoApsim))
+        suppliedPET = double.NaN;
+        if (myPETsource == "")
         {
-            // eo is provided by system
-            result = eoApsim;
+            // no external source was indicated, eo is calculated here
+            result = calcPriestleyTaylor();
+        }
+        else if((myPETsource == "micromet")|| (myPETsource == "microclimate"))
+        {
+            //get eo from micromet
+            if (double.IsNaN(pet_total))
+                throw new Exception("No values for pet_total were found, check that micromet is present in the simulation");
+            else
+                result = pet_total;
         }
         else
         {
-            //eo from priestly taylor
-            result= CalcPriestlyTaylor();
+            // try to get the value from the system, uses the name indicated by eo_source
+            if (MyPaddock.Get(myPETsource, out suppliedPET))
+                result = suppliedPET;
+            else
+                throw new Exception("No values for potential evaporation were found, given by \'" + myPETsource 
+                    + "\'. Check the setting of \'eo_source\'");
         }
 
         return result;
     }
 
     /// <summary>
-    /// Compute the effective potential evapotranspiration
+    /// Calculate the potential evapotranspiration using the Priestley and Taylor method
     /// </summary>
-    private void CalcEffectivePotentialEvaporation()
+    /// <returns>Daily potential evapotranspiration</returns>
+    private double calcPriestleyTaylor()
     {
-        // Check to see if there is any ponding.  If there is, evaporate any potential (eos) straight out of it and transfer
-        //  any remaining potential to the soil layer 1, as per usual.  Introduce new term pond_evap, which is the daily evaporation from the pond.
+        double albedo;           // albedo taking into account plant material
+        double canopyGreenCover; // sum of crop green covers (0-1)
+        double eeq;              // equilibrium evaporation rate (mm)
+        double tempFactor;       // temperature factor for equilibrium evaporation rate
+        double weightedTemp;     // weighted mean temperature for the day (oC)
 
-        if (pond > 0.0)
+        // get the total plant cover
+        canopyGreenCover = 0.0;
+        for (int crop = 0; crop < nCrops; ++crop)
+            canopyGreenCover = 1.0 - (1.0 - canopyGreenCover) * (1.0 - this.canopyGreenCover[crop]);
+
+        // corect soil albedo considering plant cover
+        albedo = max_albedo - (max_albedo - salb) * (1.0 - canopyGreenCover);
+
+        // weighted mean temperature, weighted towards maximum
+        weightedTemp = (0.60 * MetFile.MaxT) + (0.40 * MetFile.MinT);
+
+        // get basic value for equilibrium evaporation rate
+        eeq = MetFile.Radn * 23.8846 * (0.000204 - 0.000183 * albedo) * (weightedTemp + 29.0);
+
+        // get the temperature factor
+        if (MetFile.MaxT > max_crit_temp)
         {
+            // at very high max temps eo/eeq increases beyond its normal value
+            tempFactor = 1.1 + (MetFile.MaxT - max_crit_temp) * 0.05;
+        }
+        else if (MetFile.MaxT < min_crit_temp)
+        {
+            // at very low max temperatures eo/eeq decreases below its normal value
+            tempFactor = 0.01 * Math.Exp(0.18 * (MetFile.MaxT + 20.0));
+            //// Note: there is a discontinuity at maxT = 5 when using the default parameters
+            ////  Thies could be solved if min_crit_temp = 6.115, or change the 0.18 to 0.1881, or change the 20 to 21.12
+        }
+        else
+        {
+            // 'normal' value
+            tempFactor = 1.1;
+        }
+
+
+        // potential evapotranspiration (eo)
+        return eeq * tempFactor;
+    }
+
+    /// <summary>
+    /// Compute the potential and actual evaporation rate
+    /// </summary>
+    private void CalcEvaporation()
+    {
+        // correct potential soil water evaporation, after effect of crop and residue cover
+        eos = eo * canopyCoverFactor() * residuesCoverFactor();
+
+        // get available soil water for evaporation. Ritchie method uses top layer only
+       double evaporableWater = Math.Max(0.0, swAmount[0] - swAirDry[0]);
+
+        // get actual soil water evaporation
+        evaporation = CalcActualEvaporation(evaporableWater);
+    }
+
+    /// <summary>
+    /// Compute the factor to adjust evaporation due to canopy cover
+    /// </summary>
+    /// <remarks>
+    /// Based on: Adams, J. E.; Arkin, G. F.; & Ritchie, J. T. (1976). Influence of row spacing and straw mulch on first stage drying.
+    /// Soil Science Society of America Journal, 40(3):436-442.
+    /// 
+    /// Reduction in potential soil evaporation under a canopy is determined by the fraction cover of the crop canopy,
+    /// this should include both green and dead canopy, but does not account for residues.
+    /// From fig. 5 and eqn 2: Default value for canopy_eos_coef = 1.7
+    ///        ...minimum reduction, for cover = 0.0, has factor = 1.0
+    ///        ...maximum reduction, for cover = 1.0, has factor = 0.183
+    /// </remarks>
+    /// <returns>Factor to adjust evaporation</returns>
+    private double canopyCoverFactor()
+    {
+        // get total cover, for all crops
+        double coverTotal = 0.0;
+        for (int i = 0; i < nCrops; i++)
+            coverTotal = 1.0 - (1.0 - coverTotal) * (1.0 - canopyTotalCover[i]);
+
+        // get fraction of potential soil evaporation, as limited by crop canopy
+        double coverFactor = Math.Exp(-canopy_eos_coef * coverTotal);
+        return coverFactor;
+    }
+
+    /// <summary>
+    /// Compute the factor to adjust evaporation due to residue cover
+    /// </summary>
+    /// <remarks>
+    /// Based on Adams et al, (1975), as used in Perfect
+    /// [DM. Silburn, June/95] temporary value - will reproduce Adams et al 75 effect
+    ///   A_to_evap_fact = 0.00022 / 0.0005 = 0.44
+    /// </remarks>
+    /// <returns>Factor to adjust evaporation</returns>
+    private double residuesCoverFactor()
+    {
+        // get factor for adjusting evaporation due to crop residue
+        double coverFactor = 0.0;
+        if (surfaceom_cover < 1.0)
+            coverFactor = Math.Pow((1.0 - surfaceom_cover), A_to_evap_fact);
+
+        return coverFactor;
+    }
+
+    /// <summary>
+    /// Gets the actual evaporation from soil surface
+    /// </summary>
+    /// <param name="maxEvaporation">maximum evaporation</param>
+    private double[] CalcActualEvaporation(double maxEvaporation)
+    {
+        // Wrapper for various evaporation models.
+        // 'es' is an array because some methods do evaporation from more than one layer in the soil,
+        //  although most only do the surface. Ritchie only uses top layer.
+
+        if (evapMethod == defaultEvapMethod)
+        {
+            return EvaporationRitchie(maxEvaporation);
+        }
+        else
+        {
+            throw new Exception("Undefined evaporation method");
+        }
+    }
+
+    /// <summary>
+    /// Calculate actual evaporation from soil surface using Ritchie method
+    /// </summary>
+    /// <remarks>
+    /// Evaporation (es) takes place in two stages, after Philip (1957): 
+    ///  Stage1: the constant rate stage. The soil is sufficiently wet for water to be transported to the surface at a
+    ///   rate at least equal to that of potential evaporation (eos).
+    ///  Stage2: the falling rate stage. The water content near the soil surface has decreased below a threshold value,
+    ///   so that evaporation is limited by the flow rate of water through the upper layer of soil towards the surface.
+    /// </remarks>
+    /// <param name="maxEvaporation">maximum evaporation</param>
+    /// <returns>actual evaporation from each soil layer</returns>
+    private double[] EvaporationRitchie(double maxEvaporation)
+    {
+        double evapStage1;      // actual soil evap in stage 1
+        double evapStage2;      // actual soil evap in stage 2
+        double sumes1Max;       // upper limit of sumes1
+        double w_inf;      // infiltration into top layer (mm)
+        double[] result = new double[nLayers];
+
+        // get the evaporation parameters for different season
+        //  need to add 12 hours to move from "midnight" to "noon", or this won't work as expected - TODO: is this still needed?
+        if (DateUtility.WithinDates(winterdate, Clock.Today, summerdate))
+        {
+            myConA = wintercona;
+            myU = winteru;
+        }
+        else
+        {
+            myConA = summercona;
+            myU = summeru;
+        }
+
+        sumes1Max = myU;
+        w_inf = infiltration;
+
+        // if infiltration, reset sumes1, reset sumes2 if infiltration exceeds sumes1
+        if (infiltration > 0.0)
+        {
+            // reset sumes2 if infiltration exceeds sumes1
+            sumes1 = Math.Max(0.0, sumes1 - infiltration);
+            sumes2 = Math.Max(0.0, sumes2 - sumes1);
+
+            // update time (incase sumes2 changed)
+            timeStage2 = Math.Pow(MathUtility.Divide(sumes2, myConA, 0.0), 0.5);
+        }
+
+        // check which stage we are at
+        if (sumes1 < sumes1Max)
+        {
+            // we are in stage1, set evaporation to potential, or limited by u.
+            evapStage1 = Math.Min(eos, sumes1Max - sumes1);
+
+            if ((eos > evapStage1) && (evapStage1 < maxEvaporation))
+            {
+                // eos was not satisfied by 1st stage drying and there is still evaporable water in the soil
+                // calculate some stage 2 evaporation
+                if (sumes2 > 0.0)
+                {
+                    timeStage2 += 1.0;
+                    evapStage2 = Math.Min(eos - evapStage1, myConA * Math.Pow(timeStage2, 0.5) - sumes2);
+                }
+                else
+                {
+                    // using Ritchie's empirical transition constant (0.6)
+                    evapStage2 = 0.6 * (eos - evapStage1);
+                }
+            }
+            else
+            {
+                // all evaporation was realised or there is no more water to evaporate
+                evapStage2 = 0.0;
+            }
+
+            // check that evaporation did not exceed the maximum possible
+            evapStage2 = Math.Min(evapStage2, maxEvaporation - evapStage1);
+
+            // update 1st and 2nd stage soil evaporation.
+            sumes1 = sumes1 + evapStage1;
+            sumes2 = sumes2 + evapStage2;
+            timeStage2 = Math.Pow(MathUtility.Divide(sumes2, myConA, 0.0), 0.0);
+        }
+        else
+        {
+            // no stage 1 evaporation, consider 2nd stage
+            evapStage1 = 0.0;
+
+            timeStage2 += 1.0;
+            evapStage2 = Math.Min(eos, myConA * Math.Pow(timeStage2, 0.5) - sumes2);
+
+            // check that evaporation did not exceed the maximum possible
+            evapStage2 = Math.Min(evapStage2, maxEvaporation);
+
+            //  update 2nd stage soil evaporation.
+            sumes2 = sumes2 + evapStage2;
+        }
+
+        result[0] = evapStage1 + evapStage2;
+
+        // make sure we are within bounds
+        result[0] = checkBounds(result[0], 0.0, eos, "Ritchie evaporation rate", true, true);
+
+        return result;
+    }
+
+    /// <summary>
+    /// Compute the effective evaporation from soil
+    /// </summary>
+    /// <remarks>
+    /// If there is a pond, evaporation is primarily out of it, and only the remaining is removed from the soil
+    /// This partition is reported as pond_evap
+    /// </remarks>
+    private void CalcEffectiveSoilEvaporation()
+    {
+        if ((pond > 0.0) && (eos>0.0))
+        {
+            // there is some ponding water and some evaporation
             if (pond >= eos)
             {
+                // all evaporation is supplied by pond
                 pond = pond - eos;
                 pond_evap = eos;
                 eos = 0.0;
             }
             else
             {
+                // part of evaporation is supplied by pond
                 eos = eos - pond;
                 pond_evap = pond;
                 pond = 0.0;
             }
         }
-    }
-
-    /// <summary>
-    /// Calculate the potential evapotranspiration
-    /// </summary>
-    /// <remarks>
-    /// This code uses the Priestly and Taylor method
-    /// </remarks>
-    /// <returns>potential evapotranspiration</returns>
-    private double CalcPriestlyTaylor()
-    {
-        double albedo;           //! albedo taking into account plant material
-        double cover_green_sum;  //! sum of crop green covers (0-1)
-        double eeq;              //! equilibrium evaporation rate (mm)
-        double wt_ave_temp;      //! weighted mean temperature for the day (oC)
-
-        cover_green_sum = 0.0;
-        for (int crop = 0; crop < nCrops; ++crop)
-            cover_green_sum = 1.0 - (1.0 - cover_green_sum) * (1.0 - canopyGreenCover[crop]);
-
-        albedo = max_albedo - (max_albedo - salb) * (1.0 - cover_green_sum);
-
-        // ! wt_ave_temp is mean temp, weighted towards max.
-        wt_ave_temp = (0.60 * MetFile.MaxT) + (0.40 * MetFile.MinT);
-
-        eeq = MetFile.Radn * 23.8846 * (0.000204 - 0.000183 * albedo) * (wt_ave_temp + 29.0);
-
-        //! find potential evapotranspiration (eo) from equilibrium evap rate
-        return eeq * EquilibriumEvaporationRate();
-    }
-
-    /// <summary>
-    /// Calculate the Equilibrium Evaporation Rate
-    /// </summary>
-    /// <returns></returns>
-    private double EquilibriumEvaporationRate()
-    {
-        if (MetFile.MaxT > max_crit_temp)
-        {
-            //! at very high max temps eo/eeq increases
-            //! beyond its normal value of 1.1
-            return ((MetFile.MaxT - max_crit_temp) * 0.05 + 1.1);
-        }
-
-        if (MetFile.MaxT < min_crit_temp)
-        {
-            //! at very low max temperatures eo/eeq
-            //! decreases below its normal value of 1.1
-            //! note that there is a discontinuity at tmax = 5
-            //! it would be better at tmax = 6.1, or change the
-            //! .18 to .188 or change the 20 to 21.1
-            return (0.01 * Math.Exp(0.18 * (MetFile.MaxT + 20.0)));
-        }
-
-        return 1.1;  //sv- normal value of eeq fac (eo/eeq)
-    }
-
-    private void CalcEvaporation()
-    {
-        //eos   -> ! (output) potential soil evap after modification for crop cover & residue_wt
-        //esoil -> ! (output) actual soil evaporation (mm)
-
-        double asw1;    //! available soil water in top layer for actual soil evaporation (mm)
-
-        //1. get potential soil water evaporation
-        eos = PotentialEvaporation();
-
-        //2. get available soil water for evaporation
-        //   NB. ritchie + b&s evaporate from layer 1, but rickert can evaporate from L1 + L2.
-        asw1 = Math.Max(0.0, swAmount[0] - swAirDry[0]);
-
-        //3. get actual soil water evaporation
-        CalcActualEvaporation(asw1);
-    }
-
-    /// <summary>
-    /// Gets the potential soil water evaporation
-    /// </summary>
-    /// <returns>potential soil evaporation</returns>
-    private double PotentialEvaporation()
-    {
-        //!---------------------------------------+
-        //! reduce Eo to that under plant CANOPY
-        //!---------------------------------------+
-
-        //!  Based on Adams, Arkin & Ritchie (1976) Soil Sci. Soc. Am. J. 40:436-
-        //!  Reduction in potential soil evaporation under a canopy is determined
-        //!  the "% shade" (ie cover) of the crop canopy - this should include th
-        //!  green & dead canopy ie. the total canopy cover (but NOT near/on-grou
-        //!  residues).  From fig. 5 & eqn 2.                       <dms June 95>
-        //!  Default value for c%canopy_eos_coef = 1.7
-        //!              ...minimum reduction (at cover =0.0) is 1.0
-        //!              ...maximum reduction (at cover =1.0) is 0.183.
-        //   !1a. adjust potential soil evaporation to account for the effects of surface 
-        //   !    residue (Adams et al, 1975) as used in Perfect
-
-        double cover_tot_sum = 0.0;
-        for (int i = 0; i < nCrops; i++)
-          cover_tot_sum = 1.0 - (1.0 - cover_tot_sum) * (1.0 - canopyTotalCover[i]);
-        
-        // fraction of potential soil evaporation limited by crop canopy (mm)
-        double  eos_canopy_fract = Math.Exp(-1 * canopy_eos_coef * cover_tot_sum);
-
-            // fraction of potential soil evaporation limited by crop residue (mm)
-        double eos_residue_fract = 0.0;
-        if (surfaceom_cover < 1.0)
-       {
-            //!  estimate 1st stage soil evap reduction power of mixed residues based on the cover by mixed residues.
-            //!    [DM. Silburn unpublished data, June 95 ]
-            //!    <temporary value - will reproduce Adams et al 75 effect>
-            //!     c%A_to_evap_fact = 0.00022 / 0.0005 = 0.44
-            eos_residue_fract = Math.Pow((1.0 - surfaceom_cover), A_to_evap_fact);
-        }
-
-        //! Reduce potential soil evaporation under canopy and residues (mulch)
-        double result = eo * eos_canopy_fract * eos_residue_fract;
-        return result;
-    }
-
-
-    /// <summary>
-    /// Gets the actual evaporation from soil surface
-    /// </summary>
-    /// <param name="maxEOS">maximum evaporation</param>
-    private void CalcActualEvaporation(double maxEOS)
-    {
-        // Wrapper for various evaporation models.
-        // Returns actual evaporation from soil surface (es).
-        // 'es' is an array because some methods do evaporation from every layer in the soil, although most only do the surface.
-
-        if (evapMethod == defaultEvapMethod)
-        {
-            evaporation = EvaporationRitchie(maxEOS);
-        }
-        else
-        {
-            throw new Exception("Undefined evaporation method");
-        }
-
-    }
-
-    /// <summary>
-    /// calculate actual evaporation from soil surface
-    /// </summary>
-    /// <param name="Eos_max">maximum evaporation</param>
-    /// <returns>actual evaporation from each soil layer</returns>
-    private double[] EvaporationRitchie(double Eos_max)
-    {
-        // Evaporation (es) takes place in two stages: the constant rate stage (stage 1) and the
-        //  falling rate stage (Stage2), after Philip (1957). In stage1, the soil is sufficiently
-        //  wet for water be transported to the surface at a rate at least equal to the evaporation
-        //  potential (eos), in the falling rate stage (stage 2), the surface soil water content
-        //  has decreased below a threshold value, so that es depends on the flux of water through
-        //  the upper layer of soil to the evaporating site near the surface.
-
-        double esoil1;     //! actual soil evap in stage 1
-        double esoil2;     //! actual soil evap in stage 2
-        double sumes1Max; //! upper limit of sumes1
-        double w_inf;      //! infiltration into top layer (mm)
-        double[] result = new double[nLayers];
-
-        // Need to add 12 hours to move from "midnight" to "noon", or this won't work as expected
-        if (DateUtility.WithinDates(winterdate, Clock.Today, summerdate))
-        {
-            _cona = wintercona;
-            _u = winteru;
-        }
-        else
-        {
-            _cona = summercona;
-            _u = summeru;
-        }
-
-        sumes1Max = _u;
-        w_inf = infiltration;
-
-        //! if infiltration, reset sumes1, reset sumes2 if infiltration exceeds sumes1      
-        if (w_inf > 0.0)
-        {
-            sumes2 = Math.Max(0.0, (sumes2 - Math.Max(0.0, w_inf - sumes1)));
-            sumes1 = Math.Max(0.0, sumes1 - w_inf);
-
-            //! update t (incase sumes2 changed)
-            timeStage2 = MathUtility.Sqr(MathUtility.Divide(sumes2, _cona, 0.0));
-        }
-
-        //! are we in stage1 ?
-        if (sumes1 < sumes1Max)
-        {
-            //! we are in stage1, set esoil1 = potential or limited by u.
-            esoil1 = Math.Min(eos, sumes1Max - sumes1);
-
-            if ((eos > esoil1) && (esoil1 < Eos_max))
-            {
-                // eos was not satisfied by 1st stage drying & there is evaporative sw in excess
-                //  to air_dry, allowing for esoil1. Need to calculate some stage 2 drying (esoil2).
-
-                //*  if sumes2>0.0 then esoil2 =f(sqrt(time),cona,sumes2,eos-esoil1).
-                //*  if sumes2 is zero, then use ritchie's empirical transition constant (0.6).            
-
-                if (sumes2 > 0.0)
-                {
-                    timeStage2 = timeStage2 + 1.0;
-                    esoil2 = Math.Min(eos - esoil1, _cona * Math.Pow(timeStage2, 0.5) - sumes2);
-                }
-                else
-                {
-                    esoil2 = 0.6 * (eos - esoil1);
-                }
-            }
-            else
-            {
-                //! no deficit (or esoil1 = eos_max,) no esoil2 on this day            
-                esoil2 = 0.0;
-            }
-
-            //! check any esoil2 with lower limit of evaporative sw.
-            esoil2 = Math.Min(esoil2, Eos_max - esoil1);
-
-            //!  update 1st and 2nd stage soil evaporation.     
-            sumes1 = sumes1 + esoil1;
-            sumes2 = sumes2 + esoil2;
-            timeStage2 = MathUtility.Sqr(MathUtility.Divide(sumes2, _cona, 0.0));
-        }
-        else
-        {
-            //! no 1st stage drying. calc. 2nd stage         
-            esoil1 = 0.0;
-
-            timeStage2 = timeStage2 + 1.0;
-            esoil2 = Math.Min(eos, _cona * Math.Pow(timeStage2, 0.5) - sumes2);
-
-            //! check with lower limit of evaporative sw.
-            esoil2 = Math.Min(esoil2, Eos_max);
-
-            //!   update 2nd stage soil evaporation.
-            sumes2 = sumes2 + esoil2;
-        }
-
-        result[0] = esoil1 + esoil2;
-
-        //! make sure we are within bounds      
-        result[0] = bound(result[0], 0.0, eos);
-        result[0] = bound(result[0], 0.0, Eos_max);
-
-        return result;
     }
 
     #endregion
@@ -2777,27 +2253,20 @@ public class SoilWater
     /// <summary>
     /// Calculate water flow above DUL for each layer
     /// </summary>
-    private void soilwat2_drainage()
+    private void CalcWaterFlowAboveDUL()
     {
-        //flux              //! (output) water moving out of
-        //extra_runoff      //! (output) water to add to runoff (mm)
-        //sv- it just calculates. It does not change anything.
-
         // Local Variables
-        double waterToAdd; //! water to add to layer
-        double waterToBackup; //! water to backup
-        double waterExcess; //! amount above saturation(overflow)(mm)
-        double waterByPassing = 0.0; //! amount above saturation(overflow) that moves on down (mm)
-        double[] newWaterAmount; //! record of results of sw calculations ensure mass balance. (mm)
-        double waterDraining; //! water draining by gravity (mm)
-        double incomingWater=0.0; //! water coming into layer (mm)
-        double outgoingWater; //! water going out of layer (mm)
-        double newWaterAmountLayer; //! total water in layer at start (mm)
+        double waterToAdd;              // water to add to layer
+        double waterToBackup;           // water to backup
+        double waterExcess;             // amount above saturation(overflow)(mm)
+        double waterByPassing = 0.0;    // amount above saturation(overflow) that moves on down (mm)
+        double[] newWaterAmount;        // record of results of sw calculations ensure mass balance. (mm)
+        double waterDraining;           // water draining by gravity (mm)
+        double incomingWater = 0.0;     // water coming into layer (mm)
+        double outgoingWater;           // water going out of layer (mm)
+        double newWaterAmountLayer;     // total water in layer at start (mm)
 
-        //! flux into layer 1 = infiltration (mm).
-        ExtraRunoff = 0.0;
-
-        //! calculate drainage and water redistribution.
+        // calculate drainage and water redistribution.
         newWaterAmount = new double[nLayers];
 
         for (int layer = 0; layer < nLayers; layer++)
@@ -2805,74 +2274,73 @@ public class SoilWater
             // get 1st estimate for water amount in this layer
             newWaterAmountLayer = swAmount[layer] + incomingWater;
 
-            //! get excess water above saturation & then water left
-            //! to drain between sat and dul.  Only this water is
-            //! subject to swcon. The excess is not - treated as a
-            //! bucket model. (mm)
+            // get excess water above saturation, this will cascade down as per bucket model.
             if (newWaterAmountLayer > swSAT[layer])
             {
                 waterExcess = newWaterAmountLayer - swSAT[layer];
                 newWaterAmountLayer = swSAT[layer];
             }
             else
-            {
                 waterExcess = 0.0;
-            }
 
+            // get water drainage, between sat and dul, controlled by swcon
             if (newWaterAmountLayer > swDUL[layer])
             {
-                waterDraining = (newWaterAmountLayer - swDUL[layer]) * swcon[layer];
+                waterDraining = (newWaterAmountLayer - swDUL[layer]) * mySWCon[layer];
             }
             else
-            {
                 waterDraining = 0.0;
-            }
 
-            //! get water draining out of layer (mm)
+            // get total water draining out of layer, the amount bypassing and that backing up
             if (waterExcess > 0.0)
             {
-                //! Calculate amount of water to backup and push down
-                //! Firstly top up this layer (to saturation)
+                // there is excess water entering this layer (there will be bypass or back up)
+                // top up this layer to saturation
                 waterToAdd = Math.Min(waterExcess, waterDraining);
                 waterExcess = waterExcess - waterToAdd;
                 newWaterAmount[layer] = swSAT[layer] - waterDraining + waterToAdd;
 
-                //! partition between flow back up and flow down
-                waterByPassing = Math.Min(ks[layer] - waterDraining, waterExcess);
+                // partition between bypass flow and water backing up
+                if (usingKsat)
+                    waterByPassing = Math.Min(myKSat[layer] - waterDraining, waterExcess);
+                else
+                    waterByPassing = myMWCon[layer] * waterExcess;
                 waterToBackup = waterExcess - waterByPassing;
                 
+                // gather water flow amounts
                 waterBypass[layer] = waterByPassing;
                 waterFlowAboveDUL[layer] = waterDraining;
-
                 outgoingWater = waterByPassing + waterDraining;
                 flux[layer] = outgoingWater;
 
-                //! now back up to saturation for this layer up out of the
-                //! backup water keeping account for reduction of actual
-                //! flow rates (flux) for N movement.
-                double bkUpFraction = 0.0;
-                for (int z = layer - 1; z >= 0; z--)
+                // now back up the excess water from this layer up to the top
+                // keep track of this for reducing actual flow rates when computing solute movement
+                if (waterToBackup > 0.0)
                 {
-                    bkUpFraction = MathUtility.Divide(waterBypass[z], flux[z], 0.0);
-                    waterBypass[z] -= waterToBackup * bkUpFraction;
-                    waterFlowAboveDUL[z] -= waterToBackup * (1.0 - bkUpFraction);
-                    flux[z] -= waterToBackup;
-                    waterToAdd = Math.Min(swSAT[z] - newWaterAmount[z], waterToBackup);
-                    newWaterAmount[z] = newWaterAmount[z] + waterToAdd;
-                    waterToBackup = waterToBackup - waterToAdd;
-                }
+                    for (int z = layer - 1; z >= 0; z--)
+                    {
+                        waterBypass[z] -= waterToBackup * MathUtility.Divide(waterBypass[z], flux[z], 0.0);
+                        waterFlowAboveDUL[z] -= waterToBackup * MathUtility.Divide(waterFlowAboveDUL[z], flux[z], 0.0);
+                        flux[z] -= waterToBackup;
+                        waterToAdd = Math.Min(swSAT[z] - newWaterAmount[z], waterToBackup);
+                        newWaterAmount[z] += waterToAdd;
+                        waterToBackup -= waterToAdd;
+                    }
+                    if(Clock.Today.Day ==5)
+                        extraRunoff += 0.0;
 
-                ExtraRunoff = ExtraRunoff + waterToBackup;
+                    extraRunoff += waterToBackup;
+                }
             }
             else
             {
-                //! there is no excess so do nothing
+                // there is no water excess, so just gather flow amounts
                 outgoingWater = waterDraining;
                 flux[layer] = outgoingWater;
                 newWaterAmount[layer] = swAmount[layer] + incomingWater - outgoingWater;
             }
 
-            //! drainage out of this layer goes into next layer down
+            // drainage out of this layer is the input into next layer down
             incomingWater = outgoingWater;
         }
     }
@@ -2882,112 +2350,90 @@ public class SoilWater
     /// </summary>
     private void soilwat2_drainage_old()
     {
-        //flux         -> (output) water moving out of
-        //extra_runoff -> (output) water to add to runoff layer (mm)
-        //sv- it just calculates. It does not change anything.
-
         // Local Variables
-        double waterToAdd; //! water to add to layer
-        double waterToBackup; //! water to backup
-        double waterExcess; //! amount above saturation(overflow)(mm)
-        double waterByPassing = 0.0; //! amount above saturation(overflow) that moves on down (mm)
-        double[] newWaterAmount; //! record of results of sw calculations ensure mass balance. (mm)
-        double waterDraining; //! water draining by gravity (mm)
-        double incomingWater; //! water coming into layer (mm)
-        double outgoingWater; //! water going out of layer (mm)
-        double newWaterAmountLayer; //! total water in layer at start (mm)
+        double waterToAdd;              // water to add to layer
+        double waterToBackup;           // water to backup
+        double waterExcess;             // amount above saturation(overflow)(mm)
+        double waterByPassing = 0.0;    // amount above saturation(overflow) that moves on down (mm)
+        double[] newWaterAmount;        // record of results of sw calculations ensure mass balance. (mm)
+        double waterDraining;           // water draining by gravity (mm)
+        double incomingWater = 0.0;     // water coming into layer (mm)
+        double outgoingWater;           // water going out of layer (mm)
+        double newWaterAmountLayer;     // total water in layer at start (mm)
 
-        //! flux into layer 1 = infiltration (mm).
-        incomingWater = 0.0;
-        ExtraRunoff = 0.0;
+        // potential increase in runoff
+        extraRunoff = 0.0;
 
-        //! calculate drainage and water redistribution.
-        flux = new double[nLayers];
+        // calculate drainage and water redistribution.
         newWaterAmount = new double[nLayers];
 
         for (int layer = 0; layer < nLayers; layer++)
         {
-            //! get total water concentration in layer
+            // get 1st estimate for water amount in this layer
             newWaterAmountLayer = swAmount[layer] + incomingWater;
 
-            //! get excess water above saturation & then water left
-            //! to drain between sat and dul.  Only this water is
-            //! subject to swcon. The excess is not - treated as a
-            //! bucket model. (mm)
+            // get excess water above saturation, this will cascade down as per bucket model.
             if (newWaterAmountLayer > swSAT[layer])
             {
                 waterExcess = newWaterAmountLayer - swSAT[layer];
                 newWaterAmountLayer = swSAT[layer];
             }
             else
-            {
                 waterExcess = 0.0;
-            }
 
+            // get water drainage, between sat and dul, controlled by swcon
             if (newWaterAmountLayer > swDUL[layer])
             {
-                waterDraining = (newWaterAmountLayer - swDUL[layer]) * swcon[layer];
+                waterDraining = (newWaterAmountLayer - swDUL[layer]) * mySWCon[layer];
             }
             else
-            {
                 waterDraining = 0.0;
-            }
 
-            //! get water draining out of layer (mm)
+            // get total water draining out of layer, the amount bypassing and that backing up
             if (waterExcess > 0.0)
             {
-                if (mwcon == null || mwcon[layer] >= 1.0)
+                // there is excess water entering this layer (there will be bypass or back up)
+                // top up this layer to saturation
+                waterToAdd = Math.Min(waterExcess, waterDraining);
+                waterExcess = waterExcess - waterToAdd;
+                newWaterAmount[layer] = swSAT[layer] - waterDraining + waterToAdd;
+
+                // partition between flow back up and flow down
+                waterToBackup = (1.0 - myMWCon[layer]) * waterExcess;
+                waterByPassing = myMWCon[layer] * waterExcess;
+
+                // gather water flow amounts
+                waterBypass[layer] = waterByPassing;
+                waterFlowAboveDUL[layer] = waterDraining;
+                outgoingWater = waterByPassing + waterDraining;
+                flux[layer] = outgoingWater;
+
+                // now back up the excess water from this layer up to the top
+                // keep track of this for reducing actual flow rates when computing solute movement
+                if (waterToBackup > 0.0)
                 {
-                    //! all this excess goes on down so do nothing
-                    outgoingWater = waterExcess + waterDraining;
-                    newWaterAmount[layer] = swAmount[layer] + incomingWater - outgoingWater;
-                    flux[layer] = outgoingWater;
-                }
-                else
-                {
-                    //! Calculate amount of water to backup and push down
-                    //! Firstly top up this layer (to saturation)
-                    waterToAdd = Math.Min(waterExcess, waterDraining);
-                    waterExcess = waterExcess - waterToAdd;
-                    newWaterAmount[layer] = swSAT[layer] - waterDraining + waterToAdd;
-
-                    //! partition between flow back up and flow down
-                    waterToBackup = (1.0 - mwcon[layer]) * waterExcess;
-                    waterByPassing = mwcon[layer] * waterExcess;
-
-                    waterBypass[layer] = waterByPassing;
-                    waterFlowAboveDUL[layer] = waterDraining;
-
-                    outgoingWater = waterByPassing + waterDraining;
-                    flux[layer] = outgoingWater;
-
-                    //! now back up to saturation for this layer up out of the
-                    //! backup water keeping account for reduction of actual
-                    //! flow rates (flux) for N movement.
-                    double bkUpFraction = 0.0;
                     for (int z = layer - 1; z >= 0; z--)
                     {
-                        bkUpFraction = MathUtility.Divide(waterBypass[z], flux[z], 0.0);
-                        waterBypass[z] -= waterToBackup * bkUpFraction;
-                        waterFlowAboveDUL[z] -= waterToBackup * (1.0 - bkUpFraction);
-                        flux[z] = flux[z] - waterToBackup;
+                        waterBypass[z] -= waterToBackup * MathUtility.Divide(waterBypass[z], flux[z], 0.0);
+                        waterFlowAboveDUL[z] -= waterToBackup * MathUtility.Divide(waterFlowAboveDUL[z], flux[z], 0.0);
+                        flux[z] -= waterToBackup;
                         waterToAdd = Math.Min(swSAT[z] - newWaterAmount[z], waterToBackup);
-                        newWaterAmount[z] = newWaterAmount[z] + waterToAdd;
-                        waterToBackup = waterToBackup - waterToAdd;
+                        newWaterAmount[z] += waterToAdd;
+                        waterToBackup -= waterToAdd;
                     }
 
-                    ExtraRunoff = ExtraRunoff + waterToBackup;
+                    extraRunoff += waterToBackup;
                 }
             }
             else
             {
-                //! there is no excess so do nothing
+                // there is no water excess, so just gather flow amounts
                 outgoingWater = waterDraining;
                 flux[layer] = outgoingWater;
                 newWaterAmount[layer] = swAmount[layer] + incomingWater - outgoingWater;
             }
 
-            //! drainage out of this layer goes into next layer down
+            // drainage out of this layer is the input into next layer down
             incomingWater = outgoingWater;
         }
     }
@@ -2995,147 +2441,93 @@ public class SoilWater
     /// <summary>
     /// Calculate water flow below DUL for each layer
     /// </summary>
-    private void soilwat2_unsat_flow()
+    /// <remarks>
+    /// Water can move down or upwards depending on the difference in water content between two layer
+    /// Water diffusivity and moisture gradient regulate this flow
+    /// </remarks>
+    private void CalcWaterFlowBelowDUL()
     {
-        double esw_dep1;            //! extractable soil water in current layer (mm)
-        double esw_dep2;            //! extractable soil water in next layer below (mm)
-        double dbar;                //! average diffusivity used to calc unsaturated flow between layers
-        int second_last_layer;      //! last layer for flow
-        int next_layer;             //! layer counter for next lower layer
-        double flow_max;            //! maximum flow to make gradient between layers equal zero
-        double theta1;              //! sw content above ll15 for current layer (cm/cm)
-        double theta2;              //! sw content above ll15 for next lower layer (cm/cm)
-        double w_out;               //! water moving up out of this layer (mm)
-        //! +ve = up to next layer
-        //! -ve = down into this layer
-        double this_layer_cap;      //! capacity of this layer to accept water from layer below (mm)
-        double next_layer_cap;      //! capacity of nxt layer to accept water from layer above (mm)
-        double sw1;                 //! sw for current layer (mm/mm)
-        double sw2;                 //! sw for next lower layer (mm/mm)
-        double gradient;            //! driving force for flow
-        double sum_inverse_dlayer;
-        double dlayer1;             //! depth of current layer (mm)
-        double dlayer2;             //! depth of next lower layer (mm)
-        double ave_dlayer;          //! average depth of current and next layers (mm)
-        double sw_dep1;             //! soil water depth in current layer (mm)
-        double sw_dep2;             //! soil water depth in next layer (mm)
-        double ll15_dep1;           //! 15 bar lower limit sw depth in current layer (mm)
-        double ll15_dep2;           //! 15 bar lower limit sw depth in next layer (mm)
-        double sat_dep1;            //! saturated sw depth in current layer (mm)
-        double sat_dep2;            //! saturated sw depth in next layer (mm)
-        double dul_dep1;            //! drained upper limit in current layer (mm)
-        double dul_dep2;            //! drained upper limit in next layer (mm)
-        double swg;                 //! sw differential due to gravitational pressure head (mm)
+        double extractableWater_thislayer;  // extractable soil water in current layer (mm)
+        double extractableWater_nextlayer;  // extractable soil water in next layer below (mm)
+        double waterDiffusivity;            // average water diffusivity
+        int nextLayer;                      // layer counter for the layer below current
+        double flow_max;                    // maximum water flow between layers
+        double incomingW;                   // water moving into this layer (mm), positive downwards
+        double holdCapacity;                // capacity of a layer to accept water from another layer (mm)
+        double theta1;                      // sw for current layer (mm/mm)
+        double theta2;                      // sw for next lower layer (mm/mm)
+        double meanTheta;                   // mean soil water content for current and next layer (mm/mm)
+        double gradient;                    // driving force for flow
+        double sum_inverse_dlayer;          // aux variable
+        double ave_dlayer;                  // average distance between current and next layer (mm)
+        double gravityFactor;               // sw differential due to gravitational pressure head (mm)
+        double potentialFlow;
 
-        second_last_layer = nLayers - 1;
-        w_out = 0.0;
+        // this process only considers diffusion between layers,
+        // so no water is flowing down from the surface, nor at the bottom of the soil
+        incomingW = 0.0;
+        waterFlowBelowDUL[nLayers - 1] = 0.0;
 
-        for (int layer = 0; layer < second_last_layer; layer++)
+        for (int thisLayer = 0; thisLayer < nLayers - 1; thisLayer++)
         {
-            next_layer = layer + 1;
+            nextLayer = thisLayer + 1;
+            ave_dlayer = (dLayer[thisLayer] + dLayer[nextLayer]) * 0.5;
 
-            dlayer1 = dLayer[layer];
-            dlayer2 = dLayer[next_layer];
-            ave_dlayer = (dlayer1 + dlayer2) * 0.5;
+            // get amount of water able to move
+            extractableWater_thislayer = Math.Max((swAmount[thisLayer] + incomingW) - swLL15[thisLayer], 0.0);
+            extractableWater_nextlayer = Math.Max(swAmount[nextLayer] - swLL15[nextLayer], 0.0);
 
-            sw_dep1 = swAmount[layer];
-            sw_dep2 = swAmount[next_layer];
+            // get the water diffusivity, a function of mean moisture above LL15.
+            meanTheta = 0.5 * (extractableWater_thislayer / dLayer[thisLayer] + extractableWater_nextlayer / dLayer[nextLayer]);
+            waterDiffusivity = diffus_const * Math.Exp(diffus_slope * meanTheta);
+            waterDiffusivity = Math.Min(waterDiffusivity, 10000.0);
+            //// limiting diffusivity to 10000 (as used in ceres-maize) was shown to reduce
+            //// instability of flow direction for consecutive days, in some situations.
 
-            ll15_dep1 = swLL15[layer];
-            ll15_dep2 = swLL15[next_layer];
+            // get the soil moisture gradient (uses absolute sw content)
+            theta1 = (swAmount[thisLayer] + incomingW) / dlayer[thisLayer];
+            theta2 = swAmount[nextLayer] / dlayer[nextLayer];
+            gradient = MathUtility.Divide((theta1 - theta2), ave_dlayer, 0.0) + gravity_gradient;
+            //// (cjh):  subtract gravity gradient to prevent gradient being +ve when flow_max is +ve, resulting in sw > sat.
 
-            sat_dep1 = swSAT[layer];
-            sat_dep2 = swSAT[next_layer];
+            //  get the potential flow rate (positive down)
+            potentialFlow = waterDiffusivity * gradient;
 
-            dul_dep1 = swDUL[layer];
-            dul_dep2 = swDUL[next_layer];
+            // calculate maximum flow
+            // flow will cease when the gradient becomes zero, adjusted for gravity
+            gravityFactor = gravity_gradient * ave_dlayer;
+            sum_inverse_dlayer = (1.0 / dlayer[thisLayer]) + (1.0 / dlayer[nextLayer]);
+            flow_max = (theta1 - theta2 + gravityFactor) / sum_inverse_dlayer;
 
-            esw_dep1 = Math.Max((sw_dep1 - w_out) - ll15_dep1, 0.0);
-            esw_dep2 = Math.Max(sw_dep2 - ll15_dep2, 0.0);
+            // stop a saturated layer diffusing water into a partially saturated layer, for Water_table height calculations
+            if ((swAmount[thisLayer] >= swDUL[thisLayer]) && (swAmount[nextLayer] >= swDUL[nextLayer]))
+                potentialFlow = 0.0;
 
-            //! theta1 is excess of water content above lower limit,
-            //! theta2 is the same but for next layer down.
-            theta1 = MathUtility.Divide(esw_dep1, dlayer1, 0.0);
-            theta2 = MathUtility.Divide(esw_dep2, dlayer2, 0.0);
+            // stop unsaturated flow downwards through an impermeable layer, but will allow flow up
+            if ((myMWCon[thisLayer] < myEpsilon) && (potentialFlow > 0.0))
+                potentialFlow = 0.0;
+            //// TODO: check whether any correction is needed when ks is used instead of mwcon
 
-            //! find diffusivity, a function of mean thet.
-            dbar = diffus_const * Math.Exp(diffus_slope * (theta1 + theta2) * 0.5);
-
-            //! testing found that a limit of 10000 (as used in ceres-maize) for dbar limits
-            //! instability for flow direction for consecutive days in some situations.
-            dbar = bound(dbar, 0.0, 10000.0);
-
-            sw1 = MathUtility.Divide((sw_dep1 - w_out), dlayer1, 0.0);
-            sw1 = Math.Max(sw1, 0.0);
-
-            sw2 = MathUtility.Divide(sw_dep2, dlayer2, 0.0);
-            sw2 = Math.Max(sw2, 0.0);
-
-            //    ! gradient is defined in terms of absolute sw content
-            //cjh          subtract gravity gradient to prevent gradient being +ve when flow_max is -ve, resulting in sw > sat.
-            gradient = MathUtility.Divide((sw2 - sw1), ave_dlayer, 0.0) - gravity_gradient;
-
-            //!  flow (positive up) = diffusivity * gradient in water content
-            waterFlowBelowDUL[layer] = dbar * gradient;
-
-            //! flow will cease when the gradient, adjusted for gravitational effect, becomes zero.
-            swg = gravity_gradient * ave_dlayer;
-
-            //! calculate maximum flow
-            sum_inverse_dlayer = MathUtility.Divide(1.0, dlayer1, 0.0) + MathUtility.Divide(1.0, dlayer2, 0.0);
-            flow_max = MathUtility.Divide((sw2 - sw1 - swg), sum_inverse_dlayer, 0.0);
-
-            //c dsg 260202
-            //c dsg    this code will stop a saturated layer difusing water into a partially saturated
-            //c        layer above for Water_table height calculations
-            if ((swAmount[layer] >= swDUL[layer]) && (swAmount[next_layer] >= swDUL[next_layer]))
+            if (potentialFlow > 0.0)
             {
-                waterFlowBelowDUL[layer] = 0.0;
+                // flow is down from this to the next layer
+                // check ability of this layer to supply the water and capacity of next layer to hold the incoming water
+                holdCapacity = Math.Max(swDUL[nextLayer] - swAmount[nextLayer], 0.0);
+                flow_max = Math.Min(flow_max, Math.Min(extractableWater_thislayer, holdCapacity));
+                waterFlowBelowDUL[thisLayer] = Math.Min(potentialFlow, flow_max);
             }
-
-            //c dsg 260202
-            //c dsg    this code will stop unsaturated flow downwards through an impermeable layer, but will allow flow up
-            if ((mwcon != null) && (mwcon[layer] < 0.000001) && (waterFlowBelowDUL[layer] < 0.0))
+            else if (potentialFlow < 0.0)
             {
-                waterFlowBelowDUL[layer] = 0.0;
+                // flow is up from layer below
+                // check capacity of this layer to hold the incoming water and ability of next layer supply the water
+                holdCapacity = Math.Max(swDUL[thisLayer] - (swAmount[thisLayer] + incomingW), 0.0);
+                flow_max = Math.Max(flow_max, -Math.Min(extractableWater_nextlayer, holdCapacity));
+                waterFlowBelowDUL[thisLayer] = Math.Max(potentialFlow, flow_max);
             }
+            // else { no flow }
 
-            if (waterFlowBelowDUL[layer] < 0.0)
-            {
-                //! flow is down to layer below
-                //! check capacity of layer below for holding water from this layer
-                //! and the ability of this layer to supply the water
-
-                //!    next_layer_cap = l_bound (sat_dep2 - sw_dep2, 0.0)
-                //!    dsg 150302   limit unsaturated downflow to a max of dul in next layer
-
-                next_layer_cap = Math.Max(dul_dep2 - sw_dep2, 0.0);
-                flow_max = Math.Max(flow_max, -1 * next_layer_cap);
-                flow_max = Math.Max(flow_max, -1 * esw_dep1);
-                waterFlowBelowDUL[layer] = Math.Max(waterFlowBelowDUL[layer], flow_max);
-            }
-            else
-            {
-                if (waterFlowBelowDUL[layer] > 0.0)
-                {
-                    //! flow is up from layer below
-                    //! check capacity of this layer for holding water from layer below
-                    //! and the ability of the layer below to supply the water
-
-                    //!            this_layer_cap = l_bound (sat_dep1 - (sw_dep1 - w_out), 0.0)
-                    //!    dsg 150302   limit unsaturated upflow to a max of dul in this layer
-                    this_layer_cap = Math.Max(dul_dep1 - (sw_dep1 - w_out), 0.0);
-                    flow_max = Math.Min(flow_max, this_layer_cap);
-                    flow_max = Math.Min(flow_max, esw_dep2);
-                    waterFlowBelowDUL[layer] = Math.Min(waterFlowBelowDUL[layer], flow_max);
-                }
-                // else { no flow }
-            }
-
-            //! For conservation of water, store amount of water moving
-            //! between adjacent layers to use for next pair of layers in profile
-            //! when calculating theta1 and sw1.
-            w_out = waterFlowBelowDUL[layer];
+            // Store amount of water moving between adjacent layers to use for calculations in the next pair of layers
+            incomingW = waterFlowBelowDUL[thisLayer];
         }
     }
 
@@ -3149,15 +2541,15 @@ public class SoilWater
     /// <param name="existingSolute"></param>
     private double[] SoluteFlowAboveDUL(double[] existingSolute)
     {
-        //solute_out   ->   ! (output) solute leaching out of each layer (kg/ha) 
+        //solute_out   ->   ! (output) solute leaching out of each layer (kg/ha)
         //existingSolute    ->   ! (input) solute in each layer (kg/ha)
 
-        double incomingWater; //! water draining into this layer (mm)
-        double outgoingWater; //! water draining out of layer (mm)
-        double incomingSolute; //! solute leaching into layer from above (kg/ha)
-        double outgoingSolute; //! solute leaching out of layer (kg/ha)
-        double newSoluteAmountLayer; //! quantity of solute in layer (kg/ha)
-        double waterAmount; //! quantity of water in layer (mm)
+        double incomingWater;           // water draining into this layer (mm)
+        double outgoingWater;           // water draining out of layer (mm)
+        double incomingSolute;          // solute leaching into layer from above (kg/ha)
+        double outgoingSolute;          // solute leaching out of layer (kg/ha)
+        double newSoluteAmountLayer;    // quantity of solute in layer (kg/ha)
+        double waterAmount;             // quantity of water in layer (mm)
 
         double[] soluteLeaching = new double[nLayers];
         incomingSolute = 0.0;
@@ -3166,7 +2558,7 @@ public class SoilWater
 
         for (int layer = 0; layer < nLayers; layer++)
         {
-            //! get water draining out of layer and n content of layer includes that leaching down         
+            // get water draining out of layer and n content of layer includes that leaching down
             outgoingWater = waterFlowAboveDUL[layer];
             newSoluteAmountLayer = existingSolute[layer] + incomingSolute;
 
@@ -3188,12 +2580,12 @@ public class SoilWater
             //TODO: need to chck these
 
             outgoingSolute = outgoingIncomingSolute + outgoingExistingSolute;
-                //newSoluteAmountLayer * fractionDrained * solute_flux_eff[layer];
+            //newSoluteAmountLayer * fractionDrained * solute_flux_eff[layer];
 
             // check that leaching is within bounds
-            outgoingSolute = bound(outgoingSolute, 0.0, newSoluteAmountLayer);
+            outgoingSolute = Math.Min(outgoingSolute, newSoluteAmountLayer);
 
-            //! keep the leaching and set the input for the next layer
+            // keep the leaching and set the input for the next layer
             soluteLeaching[layer] = outgoingSolute;
             incomingSolute = outgoingSolute;
         }
@@ -3207,21 +2599,21 @@ public class SoilWater
     /// <param name="existingSolute"></param>
     private double[] SoluteFlowAboveDUL_old(double[] existingSolute)
     {
-        //solute_out   ->   ! (output) solute leaching out of each layer (kg/ha) 
+        //solute_out   ->   ! (output) solute leaching out of each layer (kg/ha)
         //existingSolute    ->   ! (input) solute in each layer (kg/ha)
 
-        double outgoingWater; //! water draining out of layer (mm)
-        double incomingSolute; //! solute leaching into layer from above (kg/ha)
-        double outgoingSolute; //! solute leaching out of layer (kg/ha)
-        double newSoluteAmountLayer; //! quantity of solute in layer (kg/ha)
-        double waterAmount; //! quantity of water in layer (mm)
+        double outgoingWater; // water draining out of layer (mm)
+        double incomingSolute; // solute leaching into layer from above (kg/ha)
+        double outgoingSolute; // solute leaching out of layer (kg/ha)
+        double newSoluteAmountLayer; // quantity of solute in layer (kg/ha)
+        double waterAmount; // quantity of water in layer (mm)
 
         double[] soluteLeaching = new double[nLayers];
         incomingSolute = 0.0;
 
         for (int layer = 0; layer < nLayers; layer++)
         {
-            //! get water draining out of layer and n content of layer includes that leaching down         
+            // get water draining out of layer and n content of layer includes that leaching down
             outgoingWater = flux[layer];
             newSoluteAmountLayer = existingSolute[layer] + incomingSolute;
 
@@ -3230,9 +2622,9 @@ public class SoilWater
             outgoingSolute = newSoluteAmountLayer * fractionDrained * solute_flux_eff[layer];
 
             // check that leaching is within bounds
-            outgoingSolute = bound(outgoingSolute, 0.0, newSoluteAmountLayer);
+            outgoingSolute = Math.Min(outgoingSolute, newSoluteAmountLayer);
 
-            //! keep the leaching and set the input for the next layer
+            // keep the leaching and set the input for the next layer
             soluteLeaching[layer] = outgoingSolute;
             incomingSolute = outgoingSolute;
         }
@@ -3250,18 +2642,18 @@ public class SoilWater
         //solute_up -> ! (output) solute moving upwards into each layer (kg/ha)
         //existingSolute -> ! (input/output) solute in each layer (kg/ha)
 
-        double bottomw; //! water movement to/from next layer (kg/ha)
-        double incomingSolute; //! solute moving into layer from above (kg/ha)
-        double[] solute_down; //! solute moving downwards out of each layer (kg/ha)
-        double outgoingSolute; //! solute moving out of layer (kg/ha)
-        double outgoingWater; //! water draining out of layer (mm)
-        double[] remain; //! n remaining in each layer between movement up (kg/ha)
-        double soluteAmountLayer; //! quantity of solute in layer (kg/ha)
-        double top_w; //! water movement to/from above layer (kg/ha)
-        double waterAmountLayer; //! quantity of water in layer (mm)
+        double bottomw;         // water movement to/from next layer (kg/ha)
+        double incomingSolute;  // solute moving into layer from above (kg/ha)
+        double[] solute_down;   // solute moving downwards out of each layer (kg/ha)
+        double outgoingSolute;  // solute moving out of layer (kg/ha)
+        double outgoingWater;   // water draining out of layer (mm)
+        double[] remain;        // n remaining in each layer between movement up (kg/ha)
+        double soluteAmountLayer; // quantity of solute in layer (kg/ha)
+        double top_w;           // water movement to/from above layer (kg/ha)
+        double waterAmountLayer; // quantity of water in layer (mm)
 
-        //! flow  up from lower layer:  + up, - down
-        //! + ve flow : upward movement. go from bottom to top layer   
+        // flow here is assumed positive if up from lower layer, as typically we have upward movement
+        //  loop thought profile from bottom to top layer
 
         solute_up = new double[nLayers];
         solute_down = new double[nLayers];
@@ -3270,72 +2662,72 @@ public class SoilWater
         incomingSolute = 0.0;
         for (int layer = nLayers - 1; layer > 0; layer--)
         {
-            //! keep the solute flow upwards
+            // keep the solute flow upwards
             solute_up[layer] = incomingSolute;
 
-            //! get water moving up and out of layer to the one above
-            outgoingWater = waterFlowBelowDUL[layer - 1];
+            // get water moving up and out of layer to the one above
+            outgoingWater = -waterFlowBelowDUL[layer - 1];
             if (outgoingWater <= 0.0)
             {
                 outgoingSolute = 0.0;
             }
             else
             {
-                //! get water movement between this and next layer
-                bottomw = waterFlowBelowDUL[layer];
+                // get water movement between this and next layer
+                bottomw = -waterFlowBelowDUL[layer];
 
-                //! get new solute content of layer includes that moving from other layer
+                // get new solute content of layer includes that moving from other layer
                 soluteAmountLayer = solute_kg[layer] + incomingSolute;
                 waterAmountLayer = swAmount[layer] + outgoingWater - bottomw;
 
-                //! solute moving out of layer is proportional to the water moving out.
+                // solute moving out of layer is proportional to the water moving out.
                 outgoingSolute = soluteAmountLayer * MathUtility.Divide(outgoingWater, waterAmountLayer, 0.0) *
                                  solute_flow_eff[layer];
 
-                //! check that leaching is within bounds
-                outgoingSolute = bound(outgoingSolute, 0.0, soluteAmountLayer);
+                // check that leaching is within bounds
+                outgoingSolute = Math.Min(outgoingSolute, soluteAmountLayer);
             }
 
-            //! set the input for the next layer
+            // set the input for the next layer
             incomingSolute = outgoingSolute;
         }
 
         solute_up[0] = incomingSolute;
-        //! now get remaining solute in each layer between movements
-        //! this is needed to adjust the amount in each layer before calculating
-        //! downwards movement.  I think we shouldn't do this within a time
-        //! step. i.e. there should be no movement within a time step. jngh
+        // now get remaining solute in each layer between movements
+        // this is needed to adjust the amount in each layer before calculating
+        // downwards movement.  I think we shouldn't do this within a time
+        // step. i.e. there should be no movement within a time step. jngh
         remain[0] = solute_up[0];
         for (int layer = 1; layer < nLayers; layer++)
         {
             remain[layer] = solute_up[layer] - solute_up[layer - 1];
         }
 
-        //! -ve flow - downward movement
+        // -ve flow - downward movement
         incomingSolute = 0.0;
         top_w = 0.0;
 
         for (int layer = 0; layer < nLayers; layer++)
         {
-            //! get water moving out of layer
-            outgoingWater = -1 * waterFlowBelowDUL[layer];
+            // get water moving out of layer
+            outgoingWater =  waterFlowBelowDUL[layer];
             if (outgoingWater <= 0.0)
             {
                 outgoingSolute = 0.0;
             }
             else
             {
-                //! get solute content of layer, includes that moving from other layer
+                // get solute content of layer, includes that moving from other layer
                 soluteAmountLayer = solute_kg[layer] + incomingSolute + remain[layer];
                 waterAmountLayer = swAmount[layer] + outgoingWater - top_w;
 
-                //! solute moving out of layer is proportional to the water moving out.
+                // solute moving out of layer is proportional to the water moving out.
                 outgoingSolute = soluteAmountLayer * MathUtility.Divide(outgoingWater, waterAmountLayer, 0.0) *
                                  solute_flow_eff[layer];
 
-                //! check that leaching is within bounds
+                // check that leaching is within bounds
                 outgoingSolute = MathUtility.RoundToZero(outgoingSolute);
-                outgoingSolute = bound(outgoingSolute, 0.0, soluteAmountLayer);
+                outgoingSolute = Math.Min(outgoingSolute, soluteAmountLayer);
             }
 
             solute_down[layer] = outgoingSolute;
@@ -3354,13 +2746,13 @@ public class SoilWater
     /// </summary>
     private void soilwat2_irrig_solute()
     {
-        //sv- 11 Dec 2012. 
+        //sv- 11 Dec 2012.
         //Since I have allowed irrigations to runoff just like rain (using argument "will_runoff = 1" in apply command)
         //I should really remove a proportion of the solutes that are lost due to some of the irrigation running off.
-        //Perhaps something like (irrigation / (rain + irrigation)) * runoff 
+        //Perhaps something like (irrigation / (rain + irrigation)) * runoff
         //to work out how much of the runoff is caused by irrigation and remove this proportion of solutes from the surface layer.
-        //HOWEVER, when rain causes runoff we don't remove solutes from the surface layer of the soil. 
-        //So why when irrigation causes runoff should we remove solutes.  
+        //HOWEVER, when rain causes runoff we don't remove solutes from the surface layer of the soil.
+        //So why when irrigation causes runoff should we remove solutes.
 
         int layer = Math.Max(0, irrigation_layer);
 
@@ -3376,9 +2768,9 @@ public class SoilWater
     /// </summary>
     private void soilwat2_rainfall_solute()
     {
-        double mass_solute; //! mass of solute in this rainfall (kg/ha)
+        double mass_solute; // mass of solute in this rainfall (kg/ha)
 
-        //!assume all rainfall goes into surface layer
+        //assume all rainfall goes into surface layer
         // rain is given in mm (=kg/m2) while rain_conc in ppm (mg/kg),
         // so, to get amount of solute rain * 10^4 * rain_conc / 10^6
 
@@ -3390,42 +2782,62 @@ public class SoilWater
         }
     }
 
+    /// <summary>
+    /// Add flow (deltas) to the amount of a given soil variable
+    /// </summary>
+    /// <remarks>
+    /// Assumes that the flow is the delta of given variable at the bottom of each layer (thus first flow is zero)
+    /// Assumes that positive values represent downwards flow
+    /// </remarks>
+    /// <param name="givenFlow">flows of the given variable</param>
+    /// <param name="givenAmount">amounts of the given variable</param>
+    private void DoFlowChanges(double[] givenFlow, ref double[] givenAmount)
+    {
+        double incomingA = 0.0;
+        double outgoingA = 0.0;
+        for (int layer = 0; layer < givenFlow.Length; layer++)
+        {
+            outgoingA = givenFlow[layer];
+            givenAmount[layer] += (incomingA - outgoingA);
+            incomingA = outgoingA;
+        }
+    }
+
     private void MoveDownReal(double[] DownAmount, ref double[] A)
     {
-
-        //!+ Sub-Program Arguments
+        //+ Sub-Program Arguments
         //   real       array (*)             ! (INPUT/OUTPUT) amounts currently in
         //                                    !   each layer
         //   real       down (*)              ! (INPUT) amounts to move into each
         //                                    !   layer from the one above
 
-        //!+ Purpose
-        //!     move amounts specified, downwards from one element to the next
+        //+ Purpose
+        //     move amounts specified, downwards from one element to the next
 
-        //!+  Definition
-        //!     Each of the "nlayr" elements of "array" holds quantities
-        //!     for a given soil layer.  "array"(1) corresponds to the
-        //!     uppermost layer.   "array"(n) corresponds to the layer
-        //!     (n-1) layers down from the uppermost layer.  "down"(n)
-        //!     indicates a quantity to be moved from the layer
-        //!     corresponding to "array"(n) down into the layer
-        //!     corresponding to "array"(n+1).  This subroutine subtracts
-        //!     "down"(n) from "array"(n) and adds it to "array"(n+1) for
-        //!     n=1 .. ("nlayr"-1).  "down"("nlayr") is subtracted from
-        //!     "array"("nlayr").
+        //+  Definition
+        //     Each of the "nlayr" elements of "array" holds quantities
+        //     for a given soil layer.  "array"(1) corresponds to the
+        //     uppermost layer.   "array"(n) corresponds to the layer
+        //     (n-1) layers down from the uppermost layer.  "down"(n)
+        //     indicates a quantity to be moved from the layer
+        //     corresponding to "array"(n) down into the layer
+        //     corresponding to "array"(n+1).  This subroutine subtracts
+        //     "down"(n) from "array"(n) and adds it to "array"(n+1) for
+        //     n=1 .. ("nlayr"-1).  "down"("nlayr") is subtracted from
+        //     "array"("nlayr").
 
-        //!+  Mission Statement
-        //!      Move amounts of %1 down array %2
+        //+  Mission Statement
+        //      Move amounts of %1 down array %2
 
-        //!+ Changes
-        //!       031091  jngh changed variable movedn to down - cr157
+        //+ Changes
+        //       031091  jngh changed variable movedn to down - cr157
 
-        //!+ Local Variables
-        int layer;  //! layer number
-        double win;    //! amount moving from layer above to current layer
-        double wout;   //! amount moving from current layer to the one below
+        //+ Local Variables
+        int layer;  // layer number
+        double win;    // amount moving from layer above to current layer
+        double wout;   // amount moving from current layer to the one below
 
-        //!- Implementation Section ----------------------------------
+        //- Implementation Section ----------------------------------
 
         win = 0.0;
         for (layer = 0; layer < Math.Min(A.Length, DownAmount.Length); layer++)
@@ -3438,11 +2850,10 @@ public class SoilWater
 
     private void soilwat2_move_solute_down()
     {
-
         //*+  Mission Statement
         //*      Calculate downward movement of solutes
 
-        int solnum;              //! solute number counter variable
+        int solnum;              // solute number counter variable
 
         for (solnum = 0; solnum < nSolutes; solnum++)
         {
@@ -3460,48 +2871,46 @@ public class SoilWater
     {
         //move_up_real(leach, temp_solute, num_layers);
 
-
-        //!     ===========================================================
+        //     ===========================================================
         //   subroutine Move_up_real (up, array, nlayr)
-        //!     ===========================================================
+        //     ===========================================================
 
+        //+ Sub-Program Arguments
+        //eal        array (*)             // (INPUT/OUTPUT) amounts currently in each layer
+        //int         nlayr                 // (INPUT) number of layers
+        //real        up (*)                // (INPUT) amounts to move into each layer from the one below
 
-        //!+ Sub-Program Arguments
-        //eal        array (*)             //! (INPUT/OUTPUT) amounts currently in each layer
-        //int         nlayr                 //! (INPUT) number of layers
-        //real        up (*)                //! (INPUT) amounts to move into each layer from the one below
+        //+ Purpose
+        //       move amounts specified, upwards from one element to the next
 
-        //!+ Purpose
-        //!       move amounts specified, upwards from one element to the next
+        //+  Definition
+        //     Each of the "nlayr" elements of "array" holds quantities
+        //     for a given soil layer.  "array"(1) corresponds to the
+        //     uppermost layer.   "array"(n) corresponds to the layer
+        //     (n-1) layers down from the uppermost layer.  "up"(n)
+        //     indicates a quantity to be moved from the layer
+        //     corresponding to "array"(n+1) up into the layer
+        //     corresponding to "array"(n).  This subroutine subtracts
+        //     "up"(n) from "array"(n+1) and adds it to "array"(n) for
+        //     n=1..("nlayr"-1).  "up"("nlayr") is added to "array"("nlayr").
 
-        //!+  Definition
-        //!     Each of the "nlayr" elements of "array" holds quantities
-        //!     for a given soil layer.  "array"(1) corresponds to the
-        //!     uppermost layer.   "array"(n) corresponds to the layer
-        //!     (n-1) layers down from the uppermost layer.  "up"(n)
-        //!     indicates a quantity to be moved from the layer
-        //!     corresponding to "array"(n+1) up into the layer
-        //!     corresponding to "array"(n).  This subroutine subtracts
-        //!     "up"(n) from "array"(n+1) and adds it to "array"(n) for
-        //!     n=1..("nlayr"-1).  "up"("nlayr") is added to "array"("nlayr").
+        //+  Mission Statement
+        //      Move amounts %1 up array %2
 
-        //!+  Mission Statement
-        //!      Move amounts %1 up array %2
+        //+ Changes
+        //       031091  jngh renamed moveup to up - cr158
+        //                    included description of variables in parameter list
+        //                      - cr159
+        //                    corrected description - cr160
 
-        //!+ Changes
-        //!       031091  jngh renamed moveup to up - cr158
-        //!                    included description of variables in parameter list
-        //!                      - cr159
-        //!                    corrected description - cr160
+        //+ Calls
 
-        //!+ Calls
+        //+ Local Variables
+        int layer;                 // layer number
+        double win;                   // amount moving from layer below to current layer
+        double wout;                  // amount moving from current layer to the one above
 
-        //!+ Local Variables
-        int layer;                 //! layer number
-        double win;                   //! amount moving from layer below to current layer
-        double wout;                  //! amount moving from current layer to the one above
-
-        //!- Implementation Section ----------------------------------
+        //- Implementation Section ----------------------------------
 
         wout = 0.0;
         for (layer = 0; layer < Math.Min(A.Length, UpAmount.Length); layer++)
@@ -3514,11 +2923,10 @@ public class SoilWater
 
     private void soilwat2_move_solute_up()
     {
-
         //*+  Mission Statement
         //*      Calculate upward movement of solutes
 
-        int solnum;              //! solute number counter variable
+        int solnum;              // solute number counter variable
 
         for (solnum = 0; solnum < nSolutes; solnum++)
         {
@@ -3539,64 +2947,61 @@ public class SoilWater
     /// <summary>
     /// Calculate the water table depth
     /// </summary>
-    /// <returns>The depth (in mm) below the ground surface of the first layer which is saturated</returns>
+    /// <returns>The depth (in mm) below the surface of the first layer whose water content is above saturation</returns>
     private double DepthToWaterTable()
     {
-        int saturatedLayer= -1;
-        double saturatedFraction = 0.0;
-        double saturatedFractionAbove = 0.0;
+        int saturatedLayer = -1;
+        double drainableFraction = 0.0;
+        double drainableFractionFromAbove=0.0;
         double depthWaterTable;
 
         for (int layer = 0; layer < nLayers; layer++)
         {
-            //Find the first layer that is above saturation
+            //Find the first layer that is above saturation or, 
+            // if mwcon is used to define 'impermeable' layers (mwcon=0.0), find the first layer with sw above dul
             if (swSAT[layer] - swAmount[layer] <= myEpsilon)
             {
                 saturatedLayer = layer;
                 break;
             }
-
-            //Or if mwcon is set to be impermeable for this layer and above sw is above dul then consider this layer as saturated.
-            if ((mwcon != null) && (mwcon[layer] < 1.0) && (swAmount[layer] > swDUL[layer]))
+            else if ((!usingKsat) && (myMWCon[layer] < myEpsilon) && (swDUL[layer] - swAmount[layer] <= myEpsilon))
             {
                 saturatedLayer = layer;
                 break;
             }
         }
 
+        // Do the calculation of the water table depth
         if (saturatedLayer >= 0)
         {
-            //! saturated fraction of saturated layer
-            saturatedFraction = MathUtility.Divide(swAmount[saturatedLayer] - swDUL[saturatedLayer],
+            //There is a saturated layer, get the fraction of water that is drainable (over dul) in that layer
+            drainableFraction = MathUtility.Divide(swAmount[saturatedLayer] - swDUL[saturatedLayer],
                                                     swSAT[saturatedLayer] - swDUL[saturatedLayer], 0.0);
-            if (saturatedLayer >= 1)
-            {
-                //! saturated fraction of layer above saturated layer
-                saturatedFractionAbove = MathUtility.Divide(swAmount[saturatedLayer - 1] - swDUL[saturatedLayer - 1],
-                                                              swSAT[saturatedLayer - 1] - swDUL[saturatedLayer - 1], 0.0);
-            }
-        }
 
-        //Do the calculation of the water table depth
-        if (saturatedFraction >= 0.999999 && saturatedFractionAbove >= 0.0)
-        {
-            // there is saturated layer and layer above is over DUL
-            depthWaterTable = MathUtility.Sum(dLayer, 0, saturatedLayer, 0.0);
-            depthWaterTable -= saturatedFractionAbove * dLayer[saturatedLayer - 1];
-        }
-        else
-        {
-            if (saturatedFractionAbove >= 0.0)
+            if (drainableFraction >= 1.0 - myEpsilon)
             {
-                // there is a saturated layer and layer above not over DUL
-                depthWaterTable = MathUtility.Sum(dLayer, 0, saturatedLayer + 1, 0.0);
-                depthWaterTable -= saturatedFraction * dLayer[saturatedLayer];
+                // this is a fully saturated layer, all of it is part of the water table
+                depthWaterTable = MathUtility.Sum(dLayer, 0, saturatedLayer, 0.0);
+
+                // check how much of the layer above is within the water table (based on fraction over dul)
+                if (saturatedLayer >= 1)
+                {
+                    drainableFractionFromAbove = MathUtility.Divide(swAmount[saturatedLayer - 1] - swDUL[saturatedLayer - 1],
+                                                                  swSAT[saturatedLayer - 1] - swDUL[saturatedLayer - 1], 0.0);
+                    depthWaterTable -= drainableFractionFromAbove * dLayer[saturatedLayer - 1];
+                }
             }
             else
             {
-                // there is no saturated layer, profile is not saturated, no water table
-                depthWaterTable = MathUtility.Sum(dLayer);
+                // this is a partially saturated layer (sw>dul), so only a fraction of it is considered within the water table
+                depthWaterTable = MathUtility.Sum(dLayer, 0, Math.Min(nLayers, saturatedLayer + 1), 0.0);
+                depthWaterTable -= drainableFraction * dLayer[saturatedLayer];
             }
+        }
+        else
+        {
+            // there is no saturated layer, water table is below the profile
+            depthWaterTable = MathUtility.Sum(dLayer);
         }
 
         return depthWaterTable;
@@ -3613,9 +3018,9 @@ public class SoilWater
         {
             depthTopOfLayer = depthBottomOfLayer;
             depthBottomOfLayer = depthBottomOfLayer + dLayer[layer];
-                if (depthWaterTable > depthTopOfLayer && depthWaterTable < depthBottomOfLayer)
+            if (depthWaterTable > depthTopOfLayer && depthWaterTable < depthBottomOfLayer)
             {
-                //! top of water table is in this layer
+                // top of water table is in this layer
                 double fractionLayer = (depthBottomOfLayer - depthWaterTable) / (depthBottomOfLayer - depthTopOfLayer);
                 swAmount[layer] = swDUL[layer] + fractionLayer * (swSAT[layer] - swDUL[layer]);
             }
@@ -3646,15 +3051,20 @@ public class SoilWater
 
         for (int layer = 0; layer < nLayers; layer++)
         {
-            depthAboveDUL = dLayer[layer] * Math.Max(0.0,
-                            MathUtility.Divide(swAmount[layer] - swDUL[layer], swSAT[layer] - swDUL[layer], 0.0));
-            nominator = klat[layer] * depthAboveDUL * (discharge_width * 1000.0) * slope;
-            denominator = catchment_area * 1000000.0 * Math.Pow((1.0 + Math.Pow(slope, 2)), 0.5);
-            result[layer] = MathUtility.Divide(nominator, denominator, 0.0);
+            if (myKLat[layer] > 0.0)
+            {
+                depthAboveDUL = MathUtility.Divide(swAmount[layer] - swDUL[layer], swSAT[layer] - swDUL[layer], 0.0);
+                depthAboveDUL = dLayer[layer] * Math.Max(0.0, depthAboveDUL);
+                nominator = myKLat[layer] * depthAboveDUL * (discharge_width * 1000.0) * slope;
+                denominator = catchment_area * 1000000.0 * Math.Pow((1.0 + Math.Pow(slope, 2)), 0.5);
+                result[layer] = MathUtility.Divide(nominator, denominator, 0.0);
 
-            //! Cannot drop sw below dul
-            maxFlow = Math.Max(0.0, swAmount[layer] - swDUL[layer]);
-            result[layer] = bound(outflow_lat[layer], 0.0, maxFlow);
+                // Cannot drop sw below dul
+                maxFlow = Math.Max(0.0, swAmount[layer] - swDUL[layer]);
+                result[layer] = Math.Min(result[layer], maxFlow);
+            }
+            else
+                result[layer] = 0.0;
         }
 
         return result;
@@ -3670,40 +3080,40 @@ public class SoilWater
     [EventHandler]
     public void OnInitialised()
     {
-        //Save State
-        double oldSWDep = MathUtility.Sum(swAmount);
+        //save initial total
+        double oldSWAmount = MathUtility.Sum(swAmount);
 
-        //Change State
-        soilwat2_init();
+        //do initialisation checks
+        CheckSoilWaterInitialisation();
 
-        //Do reporting
+        //do reporting
         WriteReport();
 
-        //Send mass balance changes
-        double newSWDep = MathUtility.Sum(swAmount);
-        SendExternalMassFlow(newSWDep - oldSWDep);
+        //tell the "System Balance" module (if there is one) that soil water was changed by this amount
+        double newSWAmount = MathUtility.Sum(swAmount);
+        sendExternalMassFlow(newSWAmount - oldSWAmount);
     }
 
     /// <summary>
     /// Initialise SoilWater module
     /// </summary>
-    private void soilwat2_init()
+    private void CheckSoilWaterInitialisation()
     {
-        CheckParameters();
+        checkEvaporationParameters();
+        checkSoluteTransportEfficiencies();
+        checkSaturatedFlowParameters();
+        checkLateralFlowParameters();
 
-        soilwat2_soil_profile_param();
+        if (maxCNreduction >= bareSoilCN)
+            maxCNreduction = bareSoilCN - myEpsilon;
 
-        soilwat2_evap_init();
-
-        Lateral_init();
-
-        initDone = true;
+        isInitialising = false;
 
         for (int layer = 0; layer < nLayers; layer++)
-            soilwat2_check_profile(layer);
+            checkSoilWaterThresholds(layer);
 
-        //publish event saying there is a new soil profile.
-        soilwat2_New_Profile_Event();
+        //publish event telling other modules that there is a new soil profile.
+        sendNewProfileEvent();
     }
 
     /// <summary>
@@ -3711,44 +3121,43 @@ public class SoilWater
     /// </summary>
     private void WriteReport()
     {
-        double depthTopOfLayer;     //! depth to top of layer (mm)
-        double depthBottomOfLayer;  //! depth to bottom of layer (mm)
-        string line;                //! temp output record
-        double[] runoff_wf;           //! weighting factor for runoff
-        double[] usw;                 //! unavail. sw (mm)
-        double[] asw;                 //! avail. sw (mm)
-        double[] masw;                //! max unavail. sw (mm)
-        double[] dsw;                 //! drainable sw (mm)
+        double depthTopOfLayer;     // depth to top of layer (mm)
+        double depthBottomOfLayer;  // depth to bottom of layer (mm)
+        string line;                // temp output record
+        double[] runoff_wf;           // weighting factor for runoff
+        double[] unavailableWater;                 // unavail. sw (mm)
+        double[] availableWater;                 // avail. sw (mm)
+        double[] maxAvailableWater;                // max unavail. sw (mm)
+        double[] drainableWater;                 // drainable sw (mm)
 
         runoff_wf = new double[nLayers];
-        usw = new double[nLayers];
-        asw = new double[nLayers];
-        masw = new double[nLayers];
-        dsw = new double[nLayers];
+        unavailableWater = new double[nLayers];
+        availableWater = new double[nLayers];
+        maxAvailableWater = new double[nLayers];
+        drainableWater = new double[nLayers];
 
         Console.WriteLine();
-        line = "                 Soil Profile Properties";
+        line = "             Soil Profile Properties";
         Console.WriteLine(line);
-        line = "   ---------------------------------------------------------------------";
+        line = "   -----------------------------------------------------------------------------";
         Console.WriteLine(line);
 
-        if (!using_ks)
+        if (usingKsat)
         {
-
-            line = "         Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON";
+            line = "       Depth     AirDry   LL15   Dul    Sat    Sw     BD   Runoff SWCON    Ks";
             Console.WriteLine(line);
-            line = "           mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf";
+            line = "         mm       mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc  w.fact  /day  mm/day";
             Console.WriteLine(line);
         }
         else
         {
-            line = "         Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks";
+            line = "       Depth     AirDry   LL15   Dul    Sat    Sw     BD   Runoff SWCon   MWCon";
             Console.WriteLine(line);
-            line = "           mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day";
+            line = "         mm       mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc  w.fact  /day";
             Console.WriteLine(line);
         }
 
-        line = "   ---------------------------------------------------------------------";
+        line = "   -----------------------------------------------------------------------------";
         Console.WriteLine(line);
 
         depthTopOfLayer = 0.0;
@@ -3758,9 +3167,9 @@ public class SoilWater
         {
             depthBottomOfLayer = depthTopOfLayer + dLayer[layer];
 
-            if (!using_ks)
+            if (usingKsat)
             {
-                line = String.Format("   {0,6:0.#} {1} {2,4:0.#} {3,6:0.000} {4,6:0.000} {5,6:0.000} {6,6:0.000} {7,6:0.000} {8,6:0.000} {9,6:0.000} {10,6:0.000}",
+                line = String.Format("   {0,5:0.#} {1} {2,-4:0.#} {3,6:0.000} {4,6:0.000} {5,6:0.000} {6,6:0.000} {7,6:0.000} {8,6:0.000} {9,6:0.000} {10,6:0.000} {11,7:0.0}",
                                      depthTopOfLayer,
                                      "-",
                                      depthBottomOfLayer,
@@ -3769,13 +3178,14 @@ public class SoilWater
                                      MathUtility.Divide(swDUL[layer], dLayer[layer], 0.0),
                                      MathUtility.Divide(swSAT[layer], dLayer[layer], 0.0),
                                      MathUtility.Divide(swAmount[layer], dLayer[layer], 0.0),
-                                     bd[layer],
+                                     myBD[layer],
                                      runoff_wf[layer],
-                                     swcon[layer]);
+                                     mySWCon[layer],
+                                     myKSat[layer]);
             }
             else
             {
-                line = String.Format("   {0,6:0.#} {1} {2,4:0.#} {3,6:0.000} {4,6:0.000} {5,6:0.000} {6,6:0.000} {7,6:0.000} {8,6:0.000} {9,6:0.000} {10,6:0.000} {11,6:0.000}",
+                line = String.Format("   {0,5:0.#} {1} {2,-4:0.#} {3,6:0.000} {4,6:0.000} {5,6:0.000} {6,6:0.000} {7,6:0.000} {8,6:0.000} {9,6:0.000} {10,6:0.000} {11,7:0.000}",
                                      depthTopOfLayer,
                                      "-",
                                      depthBottomOfLayer,
@@ -3784,22 +3194,22 @@ public class SoilWater
                                      MathUtility.Divide(swDUL[layer], dLayer[layer], 0.0),
                                      MathUtility.Divide(swSAT[layer], dLayer[layer], 0.0),
                                      MathUtility.Divide(swAmount[layer], dLayer[layer], 0.0),
-                                     bd[layer],
+                                     myBD[layer],
                                      runoff_wf[layer],
-                                     swcon[layer],
-                                     ks[layer]);
+                                     mySWCon[layer],
+                                     myMWCon[layer]);
             }
             Console.WriteLine(line);
             depthTopOfLayer = depthBottomOfLayer;
         }
 
-        line = "   ---------------------------------------------------------------------";
+        line = "   -----------------------------------------------------------------------------";
         Console.WriteLine(line);
         Console.WriteLine();
         Console.WriteLine();
         line = "             Soil Water Holding Capacity";
         Console.WriteLine(line);
-        line = "     ---------------------------------------------------------";
+        line = "     ----------------------------------------------------------";
         Console.WriteLine(line);
         line = "         Depth    Unavailable Available  Max Avail.  Drainable";
         Console.WriteLine(line);
@@ -3807,95 +3217,90 @@ public class SoilWater
         Console.WriteLine(line);
         line = "                       mm        mm          mm         mm";
         Console.WriteLine(line);
-        line = "     ---------------------------------------------------------";
+        line = "     ----------------------------------------------------------";
         Console.WriteLine(line);
         depthTopOfLayer = 0.0;
 
         for (int layer = 0; layer < nLayers; layer++)
         {
             depthBottomOfLayer = depthTopOfLayer + dLayer[layer];
-            usw[layer] = swLL15[layer];
-            asw[layer] = Math.Max((swAmount[layer] - swLL15[layer]), 0.0);
-            masw[layer] = swDUL[layer] - swLL15[layer];
-            dsw[layer] = swSAT[layer] - swDUL[layer];
+            unavailableWater[layer] = swLL15[layer];
+            availableWater[layer] = Math.Max((swAmount[layer] - swLL15[layer]), 0.0);
+            maxAvailableWater[layer] = swDUL[layer] - swLL15[layer];
+            drainableWater[layer] = swSAT[layer] - swDUL[layer];
 
-            line = String.Format("   {0,6:0.#} {1} {2,4:0.#} {3,10:0.00} {4,10:0.00} {5,10:0.00} {6,10:0.00}",
+            line = String.Format("   {0,6:0.#} {1} {2,-4:0.#} {3,10:0.00} {4,10:0.00} {5,10:0.00} {6,10:0.00}",
                                  depthTopOfLayer,
                                  "-",
                                  depthBottomOfLayer,
-                                 usw[layer],
-                                 asw[layer],
-                                 masw[layer],
-                                 dsw[layer]);
+                                 unavailableWater[layer],
+                                 availableWater[layer],
+                                 maxAvailableWater[layer],
+                                 drainableWater[layer]);
 
             Console.WriteLine(line);
             depthTopOfLayer = depthBottomOfLayer;
         }
 
-        line = "     ---------------------------------------------------------";
+        line = "     ----------------------------------------------------------";
         Console.WriteLine(line);
-        line = String.Format("           Totals{0,10:0.00} {1,10:0.00} {2,10:0.00} {3,10:0.00}",
-                             MathUtility.Sum(usw),
-                             MathUtility.Sum(asw),
-                             MathUtility.Sum(masw),
-                             MathUtility.Sum(dsw));
+        line = String.Format("          Totals {0,10:0.00} {1,10:0.00} {2,10:0.00} {3,10:0.00}",
+                             MathUtility.Sum(unavailableWater),
+                             MathUtility.Sum(availableWater),
+                             MathUtility.Sum(maxAvailableWater),
+                             MathUtility.Sum(drainableWater));
 
         Console.WriteLine(line);
-        line = "     ---------------------------------------------------------";
+        line = "     ----------------------------------------------------------";
         Console.WriteLine(line);
-        Console.WriteLine();
-        Console.WriteLine();
         Console.WriteLine();
         Console.WriteLine();
 
-        line = "             Initial Soil Parameters";
+        line = "          General Soil Parameters";
         Console.WriteLine(line);
-        line = "     ---------------------------------------------------------";
+        line = "     -----------------------------------------------";
         Console.WriteLine(line);
-        line = "            Insoil        Salb     Dif_Con   Dif_Slope";
+        line = "         Soil albedo: " + salb.ToString("0.00");
         Console.WriteLine(line);
-        line = "     ---------------------------------------------------------";
+        line = "         Water diffusivity constant: " + diffus_const.ToString("0.00");
         Console.WriteLine(line);
-        line = String.Format("       {0,11:0.00} {1,11:0.00} {2,11:0.00} {3,11:0.00}",
-                             _insoil,
-                             salb,
-                             diffus_const,
-                             diffus_slope);
-
+        line = "         Water diffusivity slope: " + diffus_slope.ToString("0.00");
         Console.WriteLine(line);
-        line = "     ---------------------------------------------------------";
+        line = "         Maximum pond capacity (mm): " + maxPondCapacity.ToString("0.00");
+        Console.WriteLine(line);
+        line = "     -----------------------------------------------";
         Console.WriteLine(line);
         Console.WriteLine();
         Console.WriteLine();
 
         if (obsrunoff_name != "")
         {
+            // runnof data has supplied
             string obsrunoff_name_trunc;
-            obsrunoff_name_trunc = obsrunoff_name.Trim();      //get rid of any whitespaces before and after the name.
+            obsrunoff_name_trunc = obsrunoff_name.Trim();
             line = String.Format("      {0} {1} {2}",
                                  "             Observed runoff data ( ",
                                  obsrunoff_name_trunc,
-                                 " ) is used in water balance");
+                                 " ) will be used in water balance");
 
             Console.WriteLine(line);
         }
         else
         {
-            //! no observed data
-            Console.WriteLine("             Runoff is predicted using scs curve number:");
-            line = "           Cn2  Cn_Red  Cn_Cov   H_Eff_Depth ";
+            // no data was supplied, use CN
+            line = "          Runoff is predicted using scs curve number";
             Console.WriteLine(line);
-            line = "                                      mm     ";
+            line = "     ------------------------------------------------";
             Console.WriteLine(line);
-            line = "     ---------------------------------------------------------";
+            line = "         Bare soil curve number: " + bareSoilCN.ToString("0.00");
             Console.WriteLine(line);
-            line = String.Format("      {0,8:0.00} {1,7:0.00} {2,7:0.00} {3,11:0.00}",
-                                 _cn2_bare,
-                                 _cn_red,
-                                 _cn_cov,
-                                 hydrol_effective_depth);
+            line = "         Max reduction in curve number: " + maxCNreduction.ToString("0.00");
             Console.WriteLine(line);
-            line = "     ---------------------------------------------------------";
+            line = "         Soil cover for max reduction: " + coverAtMinimumCN.ToString("0.00");
+            Console.WriteLine(line);
+            line = "         Effective hydraulic depth (mm): " + hydrol_effective_depth.ToString("0.00");
+            Console.WriteLine(line);
+            line = "     ------------------------------------------------";
             Console.WriteLine(line);
         }
 
@@ -3904,13 +3309,15 @@ public class SoilWater
 
         if (evapMethod == defaultEvapMethod)
         {
-            line = "      Using Ritchie evaporation model";
+            line = "          Using Ritchie evaporation model";
+            Console.WriteLine(line);
+            line = "     --------------------------------------------------------";
             Console.WriteLine(line);
 
             if (winteru == summeru)
             {
                 line = String.Format("       {0} {1,8:0.00} {2}",
-                                     "Cuml evap (U):        ", _u,
+                                     "Cuml evap (U):        ", myU,
                                      " (mm^0.5)");
 
                 Console.WriteLine(line);
@@ -3918,7 +3325,7 @@ public class SoilWater
             else
             {
                 line = String.Format("        {0} {1,8:0.00} {2}        {3} {4,8:0.00} {5}",
-                                     "Stage 1 Duration (U): Summer    ", summeru,
+                                     "Stage 1 duration (U): Summer    ", summeru,
                                      " (mm)" + Environment.NewLine,
                                      "                      Winter    ", winteru,
                                      " (mm)");
@@ -3928,7 +3335,7 @@ public class SoilWater
             if (wintercona == summercona)
             {
                 line = String.Format("       {0} {1,8:0.00} {2}",
-                                     "CONA:                 ", _cona,
+                                     "CONA:                 ", myConA,
                                      " ()");
                 Console.WriteLine(line);
             }
@@ -3944,9 +3351,12 @@ public class SoilWater
 
             if ((wintercona != summercona) || (winteru != summeru))
             {
-                Console.WriteLine("       Critical Dates:       Summer        " + summerdate + Environment.NewLine +
-                "                             Winter        " + winterdate);
+                Console.WriteLine("        Critical dates:       Summer        " + summerdate + Environment.NewLine +
+                "                              Winter        " + winterdate);
             }
+
+            line = "     --------------------------------------------------------";
+            Console.WriteLine(line);
         }
         else
         {
@@ -3954,18 +3364,19 @@ public class SoilWater
             Console.WriteLine(line);
         }
 
-        if (_eo_source != "")
+        Console.WriteLine();
+        if (myPETsource != "")
         {
-            line = String.Format("      {0} {1}",
-                                 "Eo source:             ", _eo_source);
+            line = String.Format("    - {0} {1}", "Potential evapotranspiration source:             ", myPETsource);
             Console.WriteLine(line);
         }
         else
         {
-            line = String.Format("       {0}",
-                                 "Eo from priestly-taylor");
+            line = "     - Potential evapotranspiration predicted using Priestley-Taylor";
             Console.WriteLine(line);
         }
+
+        Console.WriteLine();
     }
 
     #endregion
@@ -3978,9 +3389,10 @@ public class SoilWater
     [EventHandler]
     public void OnPrepare()
     {
-        soilwat2_zero_daily_variables();
+        // zero some variables
+        zeroVariables();
 
-        //Calculate potential evapotranspiration
+        // get the potential evapotranspiration
         eo = PotentialEvapotranspiration();
     }
 
@@ -3994,118 +3406,94 @@ public class SoilWater
         GetCropVariables();
         GetSoluteVariables();
 
-        double extra_runoff; //! water backed up from flux calculations that was unable to enter profile
-
-        // LATERAL FLOW
+        // Lateral flow
         for (int layer = 0; layer < nLayers; layer++)
             swAmount[layer] += inflowLateral[layer];
 
-        outflow_lat = CalcLateralFlow();
+        outflowLateral = CalcLateralFlow();
         for (int layer = 0; layer < nLayers; layer++)
-            swAmount[layer] -= outflow_lat[layer];
+            swAmount[layer] -= outflowLateral[layer];
 
-        // RUNOFF
-        if (irrigation_will_runoff == "no")
-        {
-            potentialRunoff = PotentialRunoff(MetFile.Rain, runon, interception + residueinterception);
-        }
-        else
-        {
-            //calculate runoff but allow irrigations to runoff just like rain.
+        // Water runoff
+        if (irrigationCanRunoff)
             potentialRunoff = PotentialRunoff(MetFile.Rain + irrigation, runon, interception + residueinterception);
-        }
+        else
+            potentialRunoff = PotentialRunoff(MetFile.Rain, runon, interception + residueinterception);
 
         // Note: potentialRunoff is the runoff which would have occurred without ponding.
-        //  This value is then ammended after taking any ponding into account
+        //  This value is then adjusted after taking any ponding into account, and later any backup water
 
         pond = pond + potentialRunoff;
-        runoff = Math.Max(pond - _max_pond, 0.0);
-        pond = Math.Min(pond, _max_pond);
+        runoff = Math.Max(pond - maxPondCapacity, 0.0);
+        pond = Math.Min(pond, maxPondCapacity);
 
-        // INFILTRATION
+        // Water infiltration
         infiltration = CalcInfiltration();
         swAmount[0] += infiltration;
 
-        // IRRIGATION, if subsurface
-        if (irrigation_layer > 0)
-        {
+        // Irrigation water, if subsurface
+        if (irrigation_layer > 0.0)
             swAmount[irrigation_layer] += irrigation;
-        }
 
-        // RAIN + IRRIGATION
+        // Add solutes from rain + irrigation
         soilwat2_irrig_solute();
         soilwat2_rainfall_solute();
 
-        // dispose off the data from irrigation
+        // Dispose off the data from irrigation
         irrigation = 0.0;
         for (int solnum = 0; solnum < nSolutes; solnum++)
             solutes[solnum].AmountInIrrigation = 0.0;
 
-        // WATER FLOW (aka flux, aka Drainage) 
-        extra_runoff = 0.0;
-        if (using_ks)
-        {
-            soilwat2_drainage();
-        }
-        else
-        {
-            soilwat2_drainage_old();
-        }
+        // Water flow above DUL (aka flux, aka Drainage)
+        extraRunoff = 0.0;
+        CalcWaterFlowAboveDUL();
 
-        if (extra_runoff > 0.0)
+        if (extraRunoff > 0.0)
         {
-            // The "extra_runoff" is caused by water backing up of top layer due to inability of soil to drain.
-            // Any extra_runoff then is added to pond, if possible or will actually runoff
-            pond = Math.Min(extra_runoff, _max_pond);
-            runoff = runoff + extra_runoff - pond;
-            //Deduct the extra_runoff from the infiltration because it did not infiltrate
-            infiltration = infiltration - extra_runoff;
-            swAmount[0] -= extra_runoff;
+            // The "ExtraRunoff" is caused by water backing up of top layer due to inability of soil to drain.
+            // Any ExtraRunoff then is added to pond, if possible, or will actually runoff
+            pond = Math.Min(extraRunoff, maxPondCapacity);
+            runoff = runoff + extraRunoff - pond;
+            //Deduct the ExtraRunoff from the infiltration because it did not infiltrate
+            infiltration = infiltration - extraRunoff;
+            swAmount[0] -= extraRunoff;
         }
 
-        //! move water down     (Saturated Flow - alter swAmount values using flux calculation)
-        MoveDownReal(flux, ref swAmount);
+        // Change water due to flow above DUL
+        DoFlowChanges(flux, ref swAmount);
 
-        //! drainage out of bottom layer
+        // Drainage out of bottom layer
         drain = flux[nLayers - 1];
 
-        // SATURATED FLOW SOLUTE MOVEMENT
-
-        //! now move the solutes with flow above dul
+        // Move the solutes with flow above dul
         soilwat2_move_solute_down();
 
-        // EVAPORATION
+        // Evaporation
         CalcEvaporation();
-        CalcEffectivePotentialEvaporation();
-        // TODO: shouldn't the effective potential evaporation be computed before actual evaporation?
-
-        //! ** take away evaporation
+        CalcEffectiveSoilEvaporation();
         for (int layer = 0; layer < nLayers; layer++)
-        {
             swAmount[layer] -= evaporation[layer];
-        }
 
-        // UNSATURATED FLOW (flow calculation)
+        // Water flow below DUL (aka flow)
+        CalcWaterFlowBelowDUL();
 
-        //! get unsaturated flow
-        soilwat2_unsat_flow();
-        MoveUpReal(waterFlowBelowDUL, ref swAmount);
+        // Change water due to flow above DUL
+        DoFlowChanges(waterFlowBelowDUL, ref swAmount);
+        //MoveUpReal(waterFlowBelowDUL, ref swAmount);
 
-        //! now check that the soil water is not silly
+        // now check that the soil water is not silly
         for (int layer = 0; layer < nLayers; layer++)
-        {
-            soilwat2_check_profile(layer);
-        }
+            checkSoilWaterContent(layer);
 
         // WATER TABLE
         waterTableDepth = DepthToWaterTable();
 
         // UNSATURATED FLOW SOLUTE MOVEMENT
-        //! now move the solutes with flow  
+        // now move the solutes with flow
         soilwat2_move_solute_up();
 
         //Change the variables in other modules
-        SetSolutesValues();
+        sendSoluteChanges();
         RaiseRunoffEvent();
     }
 
@@ -4117,11 +3505,11 @@ public class SoilWater
     /// Gets the initial information about solutes
     /// </summary>
     /// <param name="newsolute">Solute data</param>
-    [EventHandler(EventName="new_solute")]
+    [EventHandler(EventName = "new_solute")]
     public void OnNew_solute(NewSoluteType newsolute)
     {
         // Gets the name of a new solute, what module owns the new solute, and whether it is mobile or immobile.
-        //  It alerts you at any given point in a simulation when a new solute is added. 
+        //  It alerts you at any given point in a simulation when a new solute is added.
 
         int sender = (int)My.eventSenderId;
         string compName = MyPaddock.SiblingNameFromId(newsolute.sender_id);
@@ -4156,7 +3544,7 @@ public class SoilWater
     //public void OnNew_solute(NewSoluteType newsolute)
     //{
     //    // Gets the name of a new solute, what module owns the new solute, and whether it is mobile or immobile.
-    //    //  It alerts you at any given point in a simulation when a new solute is added. 
+    //    //  It alerts you at any given point in a simulation when a new solute is added.
 
     //    int sender = (int)My.eventSenderId;
     //    string compName = MyPaddock.SiblingNameFromId(newsolute.sender_id);
@@ -4194,51 +3582,6 @@ public class SoilWater
     //}
 
     /// <summary>
-    /// Infraestructure that allows other modules to get leaching outputs
-    /// </summary>
-    /// <param name="propID">The id of the variable desired (flow_ or leach_)</param>
-    /// <param name="value">the output container</param>
-    /// <param name="isReqSet">whether is a get or a set</param>
-    /// <returns></returns>
-    public bool getPropertyValue(int propID, ref TPropertyInfo value, bool isReqSet)
-    {
-        if (isReqSet)  // currently only handling read requests (get), so fail if this is not.
-            return false;
-        for (int solnum = 0; solnum < nSolutes; solnum++)
-        {
-            if (solutes[solnum].leach_id == propID)
-            {
-                value.setValue(solutes[solnum].FlowAboveDUL[solutes[solnum].FlowAboveDUL.Length - 1]);
-                return true;
-            }
-            if (solutes[solnum].flow_id == propID)
-            {
-                int num_layers = solutes[solnum].FlowBelowDUL.Length;
-                double[] result = new double[num_layers];
-                for (int layer = 0; layer < num_layers; layer++)
-                    result[layer] = solutes[solnum].FlowAboveDUL[layer] - solutes[solnum].FlowBelowDUL[layer];
-                value.setValue(result);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /// <summary>
-    /// Gets the index of first occurence of a value in an array
-    /// </summary>
-    /// <param name="theValue">the value being sough</param>
-    /// <param name="theArray">the array being searched</param>
-    /// <returns>the index number</returns>
-    private int PositionInArray(string theValue, string[] theArray)
-    {
-        for (int i = 0; i < theArray.Length; i++)
-            if (theArray[i].ToLower() == theValue.ToLower())
-                return i;
-        return -1;  // Not found
-    }
-
-    /// <summary>
     /// Add water from irrigation
     /// </summary>
     /// <param name="irrigationData">Irrigation data</param>
@@ -4250,22 +3593,22 @@ public class SoilWater
 
         if (irrigationData.will_runoff == 1)
         {
-            irrigation_will_runoff = "yes";
+            irrigationCanRunoff = true;
             if (irrigationData.Depth > 0.0)
             {
                 // get the specific layer that the irrigation is to go into.
                 irrigation_layer = FindLayerNo(irrigationData.Depth);
 
                 // check runof option
-                irrigation_will_runoff = "no";
+                irrigationCanRunoff = false;
                 My.Warning("The irrigation applied was set to allow runoff, but it is not a surface irrigation \n" +
-                           "Only surface irrigation can runoff, thus this irrigation event will be allowed to runoff \n" +
+                           "Only surface irrigation can runoff, thus this irrigation event will not be allowed to runoff \n" +
                            " note: runoff may happen even with subsurface irrigation when soil is saturated and ponding occurs.");
             }
         }
         else
         {
-            irrigation_will_runoff = "no";
+            irrigationCanRunoff = false;
             irrigation_layer = 0;
         }
 
@@ -4293,173 +3636,184 @@ public class SoilWater
     /// <summary>
     /// Gets the water changes from another module
     /// </summary>
+    /// <remarks>
+    /// This method is used by Plant2 and AgPasture
+    /// </remarks>
     /// <param name="WaterChanged">Changes in water</param>
     [EventHandler]
     public void OnWaterChanged(WaterChangedType WaterChanged)
     {
-        // this method is used by Plant2 and AgPasture
+        double oldSWAmount = MathUtility.Sum(swAmount);
         for (int layer = 0; layer < WaterChanged.DeltaWater.Length; layer++)
         {
             swAmount[layer] = swAmount[layer] + WaterChanged.DeltaWater[layer];
-            soilwat2_check_profile(layer);
+            checkSoilWaterContent(layer);
         }
-    }
 
-    [EventHandler]
-    public void Onsum_report()
-    {
-        //Manager module can request that each module write its variables out to the summary file. 
-        WriteReport();
+        //tell the "System Balance" module (if there is one) that soil water was changed by this amount
+        double newSWAmount = MathUtility.Sum(swAmount);
+        sendExternalMassFlow(newSWAmount - oldSWAmount);
     }
 
     [EventHandler]
     public void OnReset()
     {
-        //Save State
-        double oldSWDep = MathUtility.Sum(swAmount);
+        //save initial total
+        double oldSWAmount = MathUtility.Sum(swAmount);
 
-        //Change state
-        soilwat2_zero_variables();
+        //Reset state
+        zeroVariables();
+        waterTableDepth = 0.0;
+        pond = 0.0;
+        sumes1 = 0.0;
+        sumes2 = 0.0;
+        timeStage2 = 0.0;
+        tillage_cn_red = 0.0;
+        tillage_cn_rain = 0.0;
+        tillage_rain_sum = 0.0;
         GetCropVariables();
         GetSoluteVariables();
-        soilwat2_init();
+        resetSoilWater();
 
-        //Send mass balance changes
-        double newSWDep = MathUtility.Sum(swAmount);
-        SendExternalMassFlow(newSWDep - oldSWDep);
+        //publish event telling other modules that there is a new soil profile.
+        sendNewProfileEvent();
+
+        //tell the "System Balance" module (if there is one) that soil water was changed by this amount
+        double newSWAmount = MathUtility.Sum(swAmount);
+        sendExternalMassFlow(newSWAmount - oldSWAmount);
     }
 
     /// <summary>
-    /// Set up CN reduction after tillage operation
+    /// Set up the reduction in curve number after tillage
     /// </summary>
-    /// <param name="TillageData">TillageData data</param>
+    /// <remarks>
+    /// cn_red is the instantaneous reduction in the cn value being used to compute runoff, the cn value bounces back
+    /// with time, following rainfal+irrigation. n_rain is the total amount of rainfall+irrigation after which the reduction
+    /// is due to tillage has no effect.
+    /// If the data does not contain cn_red and cn_rain, then default values will be used. This departs slightly from the 
+    /// Fortran version, where they were optional arguments, and zero were used whn not supplied
+    /// </remarks>
+    /// <param name="TillageData">Tillage data</param>
     [EventHandler]
     public void OnTillage(TillageType TillageData)
     {
-        string message;             //! message string
-        string tillage_type;             //! name of implement used for tillage//! 1. Find which implement was used. eg. disc, burn, etc.
+        string myMessage;   // message to write in the summary file
 
-
-        // cn_red is the reduction in the cn value, and cn_rain is the amount of rainfall after the
-        //  tillage event that the reduction ceases to occur.
-        // In the data there is at least the type of tillage. Even if it does not give the cn_red and cn_rain.
-        //  if the data does not contain cn_red and cn_rain (i.e. they are negatives) then use the type name to
-        //  look up the values in the ini file. This departs slightly from the Fortran version, where they were 
-        //  optional arguments
-
-        tillage_type = TillageData.type;
         if ((TillageData.cn_red <= 0) || (TillageData.cn_rain <= 0))
         {
-            Console.WriteLine();
+            // no tillage data was given, look for defaults
+            TillageType defaultData = SoilWatTillageType.GetTillageData(TillageData.type);
 
-            TillageType data = SoilWatTillageType.GetTillageData(tillage_type);
-            if (data != null)
+            if (defaultData != null)
             {
-                if (TillageData.cn_red >= 0)
-                    tillage_cn_red = data.cn_red;
-
-                if (TillageData.cn_rain >= 0)
-                    tillage_cn_rain = data.cn_rain;
-
-                Console.WriteLine(" Using default tillage info for type: " + tillage_type);
-                Console.WriteLine("  CN reduction: " + tillage_cn_red.ToString("#0.0#") +
-                                  ", accum.  rain: " + tillage_cn_rain.ToString("#0"));
+                // tillage type was found, if it had no values use zero
+                tillage_cn_red = Math.Max(0.0, defaultData.cn_red);
+                tillage_cn_rain = Math.Max(0.0, defaultData.cn_rain);
+                myMessage = " Using default tillage parameters for type: " + TillageData.type;
             }
             else
             {
-                //sv- Event did not give us the tillage information and the sim file does not have the tillage information.
-                //! We have an unspecified tillage type
-                tillage_cn_red = 0.0;
-                tillage_cn_rain = 0.0;
-
-                message = " Cannot find info for tillage type: " + TillageData.type;
-                throw new Exception(message);
+                // no tillage information wasw given and the tillage type was not recognised
+                throw new Exception(" Cannot find information for tillage type: " + TillageData.type);
             }
         }
         else
         {
-            tillage_cn_red = bound(tillage_cn_red, 0.0, _cn2_bare);
-            tillage_cn_rain = Math.Max(0.0, TillageData.cn_rain);
-
-            Console.WriteLine(" Using tillage info supplied for type: " + tillage_type);
-            Console.WriteLine("  CN reduction: " + tillage_cn_red.ToString("#0.0#") +
-                              ", accum. rain: " + tillage_cn_rain.ToString("#0"));
+            // tillage parameters were given, check bounds
+            tillage_cn_red = checkBounds(TillageData.cn_red, 0.0, bareSoilCN - myEpsilon, "tillage cn reduction", true);
+            tillage_cn_rain = checkBounds(TillageData.cn_rain, 0.0, 1000000.0, "tillage accum. rain", true);
+            myMessage = " Using tillage parameters supplied for type: " + TillageData.type;
         }
 
-        //! 3. Reset the rain accumulator
+        // let the user know which values are going to be used
+        Console.WriteLine();
+        Console.WriteLine(myMessage);
+        myMessage = "  CN reduction: " + tillage_cn_red.ToString("#0.0#") + ", accum. rain: " + tillage_cn_rain.ToString("#0") + " mm";
+        Console.WriteLine(myMessage);
+
+        // reset the rain accumulator
         tillage_rain_sum = 0.0;
+    }
+
+    /// <summary>
+    /// Write a summary of this module's paramters out to the summary file
+    /// </summary>
+    [EventHandler]
+    public void Onsum_report()
+    {
+        //external module has request that we write our parameters out to the summary file
+        WriteReport();
     }
 
     #endregion
 
-    //EVENTS - SENDING
     #region Publish Events
 
-    private void soilwat2_New_Profile_Event()
+    /// <summary>
+    ///Advertise to other modules the new soil profile specification 
+    /// </summary>
+    private void sendNewProfileEvent()
     {
-        //*+  Mission Statement
-        //*     Advise other modules of new profile specification
         if (New_profile != null)
         {
             NewProfileType newProfile = new NewProfileType();
             // Convert array values from doubles to floats
             newProfile.air_dry_dep = ToFloatArray(swAirDry);
-            newProfile.bd = ToFloatArray(bd);
+            newProfile.bd = ToFloatArray(myBD);
             newProfile.dlayer = ToFloatArray(dLayer);
             newProfile.dul_dep = ToFloatArray(swDUL);
             newProfile.ll15_dep = ToFloatArray(swLL15);
             newProfile.sat_dep = ToFloatArray(swSAT);
             newProfile.sw_dep = ToFloatArray(swAmount);
-            if (newProfile != null)
-                New_profile.Invoke(newProfile);
+            New_profile.Invoke(newProfile);
         }
     }
 
     /// <summary>
-    /// Send some info about changes in mass balance
+    /// Send some info about changes in mass balance of soil water
     /// </summary>
-    /// <param name="sw_dep_delta_sum"></param>
-    private void SendExternalMassFlow(double sw_dep_delta_sum)
+    /// <remarks>
+    /// External Mass Flow event is used for a model called "System Balance" which just keeps track of all the water, solutes, etc.
+    /// It is used mainly for debugging purposes. It helps track errors when water is forcibly changed externally, such as from 
+    ///  a manager and this breakes the mass balance. So every time water changes from outside, this info should be send out.
+    /// </remarks>
+    /// <param name="deltaSW">Amount of soil water changed</param>
+    private void sendExternalMassFlow(double deltaSW)
     {
-        //External Mass Flow event is used for a model called "System Balance" which just keeps track of all the water, solutes etc in the model. 
-        //To make sure it all balances out and no water is being lost from the system. It is used for debugging purposes.
-        //Some times however the user will do something that will diliberately upset this, such as forcibly reseting a water content by doing a
-        //Reset command in a manager or by Setting a variable in the manager manually. When this happens the "System Balance" module's balance 
-        //no longer adds up. So when you do a Reset or Set a variable you must send an External Mass Flow Type event that alerts the "System Balance"
-        //module that the user has forced a change and the amount by which they have changed it, so that the "System Balance" module can add this
-        //amount to its balance so it's balance will work out correctly again. 
-
         ExternalMassFlowType massBalanceChange = new ExternalMassFlowType();
 
-
-        if (sw_dep_delta_sum >= 0.0)
-        {
+        if (deltaSW >= 0.0)
             massBalanceChange.FlowType = "gain";
-        }
         else
-        {
             massBalanceChange.FlowType = "loss";
-        }
 
         massBalanceChange.PoolClass = "soil";
         massBalanceChange.DM = 0.0F;
         massBalanceChange.C = 0.0F;
         massBalanceChange.N = 0.0F;
         massBalanceChange.P = 0.0F;
-        massBalanceChange.SW = Math.Abs((float)sw_dep_delta_sum);
+        massBalanceChange.SW = Math.Abs((float)deltaSW);
 
         if (ExternalMassFlow != null)
             ExternalMassFlow.Invoke(massBalanceChange);
     }
 
-    private void SetSolutesValues()
+    /// <summary>
+    /// Send the amounts changed for each solute
+    /// </summary>
+    /// <remarks>
+    /// The major N solutes (urea, NH4 and NO3) are send via NitrogenChanged event, deltas are directly set for other solutes
+    /// </remarks>
+    private void sendSoluteChanges()
     {
+        // initialise the data package for N, assumes these will practically always be present
         NitrogenChangedType NitrogenChanges = new NitrogenChangedType();
         NitrogenChanges.Sender = "SoilWater";
         NitrogenChanges.SenderType = "WateModule";
         NitrogenChanges.DeltaUrea = new double[nLayers];
         NitrogenChanges.DeltaNH4 = new double[nLayers];
         NitrogenChanges.DeltaNO3 = new double[nLayers];
+        bool isNChanging = false;
 
         //for all solutes in this simulation.
         for (int solnum = 0; solnum < nSolutes; solnum++)
@@ -4467,15 +3821,25 @@ public class SoilWater
             float[] temp_dlt_solute = ToFloatArray(solutes[solnum].Delta);
 
             //set the change in solutes for the modules
-            string propName;
             if (solutes[solnum].Name == "urea")
+            {
+                isNChanging = true;
                 NitrogenChanges.DeltaUrea = solutes[solnum].Delta;
+            }
             else if (solutes[solnum].Name == "nh4")
+            {
+                isNChanging = true;
                 NitrogenChanges.DeltaNH4 = solutes[solnum].Delta;
+            }
             else if (solutes[solnum].Name == "no3")
+            {
+                isNChanging = true;
                 NitrogenChanges.DeltaNO3 = solutes[solnum].Delta;
+            }
             else
             {
+                // not a N solute, set delta
+                string propName;
                 if (solutes[solnum].OwnerName != "")
                     propName = solutes[solnum].OwnerName + ".dlt_" + solutes[solnum].Name;
                 else
@@ -4483,17 +3847,22 @@ public class SoilWater
                 MyPaddock.Set(propName, temp_dlt_solute);
             }
         }
-        NitrogenChanged.Invoke(NitrogenChanges);
+
+        if (isNChanging)
+            NitrogenChanged.Invoke(NitrogenChanges);
     }
 
+    /// <summary>
+    /// Advertise that a runoff event has occured
+    /// </summary>
     private void RaiseRunoffEvent()
     {
         if (runoff > 0.0)
         {
-            RunoffEventType r = new RunoffEventType(); //! structure holding runoff event
-            r.runoff = (float)runoff;
+            RunoffEventType runoffData = new RunoffEventType();
+            runoffData.runoff = (float)runoff;
             if (Runoff != null)
-                Runoff.Invoke(r);
+                Runoff.Invoke(runoffData);
         }
     }
 
@@ -4504,18 +3873,20 @@ public class SoilWater
     private void ResizeProfileArrays()
     {
         Array.Resize(ref dLayer, nLayers);
+        Array.Resize(ref myBD, nLayers);
         Array.Resize(ref swSAT, nLayers);
         Array.Resize(ref swDUL, nLayers);
         Array.Resize(ref swLL15, nLayers);
         Array.Resize(ref swAirDry, nLayers);
         Array.Resize(ref swAmount, nLayers);
-        Array.Resize(ref bd, nLayers);
+        Array.Resize(ref mySWCon, nLayers);
         Array.Resize(ref evaporation, nLayers);
         Array.Resize(ref waterBypass, nLayers);
         Array.Resize(ref waterFlowAboveDUL, nLayers);
         Array.Resize(ref waterFlowBelowDUL, nLayers);
         Array.Resize(ref flux, nLayers);
-        Array.Resize(ref outflow_lat, nLayers);
+        Array.Resize(ref inflowLateral, nLayers);
+        Array.Resize(ref outflowLateral, nLayers);
 
         //also resize for all solutes in this simulation.
         for (int solnum = 0; solnum < nSolutes; solnum++)
@@ -4537,6 +3908,7 @@ public class SoilWater
     {
         // If the depth is not reached, the last element is used
         double depthFromSurface = 0.0;
+
         for (int i = 0; i < nLayers; i++)
         {
             depthFromSurface = depthFromSurface + dLayer[i];
@@ -4546,20 +3918,82 @@ public class SoilWater
         return nLayers - 1;
     }
 
-    private float[] ToFloatArray(double[] D)
+    /// <summary>
+    /// Infraestructure that allows other modules to get leaching outputs
+    /// </summary>
+    /// <param name="propID">The id of the variable desired (flow_ or leach_)</param>
+    /// <param name="value">the output container</param>
+    /// <param name="isRequestingSet">whether a set is being requested</param>
+    /// <returns></returns>
+    public bool getPropertyValue(int propID, ref TPropertyInfo value, bool isRequestingSet)
     {
-        float[] f = new float[D.Length];
-        for (int i = 0; i < D.Length; i++)
-            f[i] = (float)D[i];
-        return f;
+        // currently only handling read requests (get), so fail if this is not the case
+        if (isRequestingSet)
+            return false;
+
+        // look for the solute and property required
+        for (int solnum = 0; solnum < nSolutes; solnum++)
+        {
+            if (solutes[solnum].leach_id == propID)
+            {
+                // value requested was leaching, return value
+                value.setValue(solutes[solnum].FlowAboveDUL[solutes[solnum].FlowAboveDUL.Length - 1]);
+                return true;
+            }
+
+            if (solutes[solnum].flow_id == propID)
+            {
+                // value requested was flow, return array
+                int num_layers = solutes[solnum].FlowBelowDUL.Length;
+                double[] result = new double[num_layers];
+
+                for (int layer = 0; layer < num_layers; layer++)
+                    result[layer] = solutes[solnum].FlowAboveDUL[layer] - solutes[solnum].FlowBelowDUL[layer];
+
+                value.setValue(result);
+                return true;
+            }
+        }
+
+        return false;
     }
 
+    /// <summary>
+    /// Gets the index of first occurence of a value in an array
+    /// </summary>
+    /// <param name="theValue">the value being sough</param>
+    /// <param name="theArray">the array being searched</param>
+    /// <returns>the index number</returns>
+    private int PositionInArray(string theValue, string[] theArray)
+    {
+        for (int i = 0; i < theArray.Length; i++)
+            if (theArray[i].ToLower() == theValue.ToLower())
+                return i;
+        return -1;  // Not found
+    }
+
+    /// <summary>
+    /// Converts all elements of a double array to floats
+    /// </summary>
+    /// <param name="theArray">Array of doubles</param>
+    /// <returns>Array of floats</returns>
+    private float[] ToFloatArray(double[] theArray)
+    {
+        float[] result = new float[theArray.Length];
+
+        for (int i = 0; i < theArray.Length; i++)
+            result[i] = (float)theArray[i];
+        return result;
+    }
+
+    /// <summary>
+    /// Zeores all the elements of an array
+    /// </summary>
+    /// <param name="theArray">Array to be zeroed</param>
     private void ZeroArray(ref double[] theArray)
     {
         for (int i = 0; i < theArray.Length; i++)
-        {
             theArray[i] = 0.0;
-        }
     }
 
     #endregion
@@ -4640,9 +4074,9 @@ public class SoilWatTillageType
     {
         tillage_types = new Dictionary<string, float[]>();
 
-            foreach (System.Xml.XmlNode xnc in xe.ChildNodes)
-                if (xnc.NodeType == System.Xml.XmlNodeType.Element)
-                    tillage_types.Add(xnc.Name, strToArr(xnc.FirstChild.Value));
+        foreach (System.Xml.XmlNode xnc in xe.ChildNodes)
+            if (xnc.NodeType == System.Xml.XmlNodeType.Element)
+                tillage_types.Add(xnc.Name, strToArr(xnc.FirstChild.Value));
     }
 
     public TillageType GetTillageData(string name)

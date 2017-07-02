@@ -173,13 +173,13 @@
     </ApsimToSim>
   </MetaData>
   <Model name="SoilWater3">
-       <!-- Parameters for eequilibrium evaporation rate (eeq) -->
+       <!-- Parameters for equilibrium evaporation rate (eeq) -->
        <min_crit_temp units="oC" description="Temperature below which eeq decreases (oC)">5.0</min_crit_temp>
        <max_crit_temp units="oC" description="Temperature above which eeq increases (oC)">35.0</max_crit_temp>
-       <max_albedo description="Maximum bare soil albedo, 100% green crop cover (0-1).">0.23</max_albedo>
+       <max_albedo description="Maximum soil albedo with 100% green crop cover (0-1).">0.23</max_albedo>
        <A_to_evap_fact description="Coefficient for the reduction on evaporation due to residue cover">0.44</A_to_evap_fact>
        <!-- 1st stage soil evaporation reduction of mixed residues. 1st approximation: 0.44 = 0.00022/0.0005 DMS, Jun/95 -->
-       <canopy_eos_coef description="Coefficientfor the reduction on evaporation due to canopy">1.70</canopy_eos_coef>
+       <canopy_eos_coef description="Coefficient for the reduction on evaporation due to canopy cover">1.70</canopy_eos_coef>
        <!--  default = 1.7, from Adams, Arkin & Ritchie (1976) Soil Sci. Soc. Am. J. 40:436- -->
        <sw_top_crit description="Critical sw ratio in top layer below which stage 2 evaporation occurs">0.9</sw_top_crit>
        <sumes1_max units="mm" description="Upper limit of sumes1">100.0</sumes1_max>
@@ -244,6 +244,12 @@
   </Model>
   <Model name="SoilNitrogen">
     <standard>
+      <!-- Bounds  -->
+      <fbiom_lb>0.0</fbiom_lb>
+      <fbiom_ub>1.0</fbiom_ub>
+      <finert_lb>0.0</finert_lb>
+      <finert_ub>1.0</finert_ub>
+
       <cnrf_coeff description="coeff. to determine the magnitude">0.693  </cnrf_coeff>
       <!--  of C:N effects on decomposition of FOM ()
          -->
