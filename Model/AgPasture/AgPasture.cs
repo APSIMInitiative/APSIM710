@@ -852,15 +852,55 @@ public class AgPasture
     private double[] kNO3;
 
     // - Passed on by the soil module
+    private double[] myKL = null;
     [Param]
+    [Output]
     [Description("SW uptake parameter (/day)")]
     [Units("0-1")]
-    private double[] kl = null;
+    private double[] kl
+    {
+        get { return myKL; }
+        set
+        {
+            if (myKL == null)
+                myKL = new double[value.Length];
+            for (int layer = 0; layer < value.Length; layer++)
+                myKL[layer] = value[layer];
+        }
+    }
 
+    private double[] myLL = null;
     [Param]
+    [Output]
     [Description("Crop Lower Limit for water uptake (mm/mm)")]
     [Units("mm3/mm3")]
-    private double[] ll = null;
+    private double[] ll
+    {
+        get
+        {
+            double[] result = new double[dlayer.Length];
+            for (int layer = 0; layer < dlayer.Length; layer++)
+                result[layer] = LL_dep[layer] / dlayer[layer];
+            return result;
+        }
+        set
+        {
+            int nLayers = value.Length;
+            if (dlayer != null)
+            {
+                // values have already bee initialised
+                nLayers = Math.Min(dlayer.Length, nLayers);
+                for (int layer = 0; layer < nLayers; layer++)
+                    LL_dep[layer] = value[layer] * dlayer[layer];
+            }
+            else
+            {
+                myLL = new double[nLayers];
+                for (int layer = 0; layer < nLayers; layer++)
+                    myLL[layer] = value[layer];
+            }
+        }
+    }
 
     [Param]
     [Description("Exploration factor, for each soil layer - affects root growth")]
@@ -1233,11 +1273,11 @@ public class AgPasture
 
         // initialise LL, same for all species (ideally this would de given for each species)
         LL_dep = new double[nLayers];
-        if (ll.Length == nLayers)
+        if (myLL.Length == nLayers)
         {
             // there are values for LL (so we should be using SoilWat)
             for (int layer = 0; layer < nLayers; layer++)
-                LL_dep[layer] = ll[layer] * dlayer[layer];
+                LL_dep[layer] = myLL[layer] * dlayer[layer];
         }
         else
         {
@@ -2479,7 +2519,7 @@ public class AgPasture
                     {
                         nRootSpecies += 1;
                         auxAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
-                        double xFac = Math.Min(1.0, kl[layer]);
+                        double xFac = Math.Min(1.0, myKL[layer]);
                         potentialAvailableWater = Math.Max(potentialAvailableWater, auxAvailableWater);
                         mySpecies[s].soilAvailableWater[layer] = auxAvailableWater * xFac;
                         PAW[layer] += mySpecies[s].soilAvailableWater[layer];
@@ -2506,7 +2546,7 @@ public class AgPasture
             {
                 layerFrac = mySpecies[0].LayerFractionWithRoots(layer);
                 auxAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
-                double xFac = Math.Min(1.0, kl[layer]);
+                double xFac = Math.Min(1.0, myKL[layer]);
                 PAW[layer] = auxAvailableWater * xFac;
                 for (int s = 0; s < NumSpecies; s++)
                 {
@@ -2555,7 +2595,7 @@ public class AgPasture
                         auxAvailableWater = Math.Max(0.0, (sw_dep[layer] - LL_dep[layer]) * layerFrac);
                         swFac = 1.0 - Math.Pow(1.0 - swFac, mySpecies[s].myExponentSWCUptake);
                         double rldFac = MathUtility.Divide(mySpecies[s].RLD[layer], mySpecies[s].myReferenceRLD, 0.0);
-                        double xFac = Math.Min(1.0, kl[layer] * swFac * rldFac);
+                        double xFac = Math.Min(1.0, myKL[layer] * swFac * rldFac);
                         potentialAvailableWater = Math.Max(potentialAvailableWater, auxAvailableWater);
                         mySpecies[s].soilAvailableWater[layer] = auxAvailableWater * xFac;
                         PAW[layer] += mySpecies[s].soilAvailableWater[layer];
@@ -2586,7 +2626,7 @@ public class AgPasture
                 swFac = MathUtility.Bound(swFac, 0.0, 1.0);
                 swFac = 1.0 - Math.Pow(1.0 - swFac, ExponentSWCUptake[0]);
                 double rldFac = MathUtility.Divide(rlv[layer], ReferenceRLD[0], 0.0);
-                double xFac = Math.Min(1.0, kl[layer] * swFac * rldFac);
+                double xFac = Math.Min(1.0, myKL[layer] * swFac * rldFac);
                 PAW[layer] = auxAvailableWater * xFac;
                 for (int s = 0; s < NumSpecies; s++)
                 {
