@@ -22,7 +22,7 @@ $(APSIM)/Model/$(PROJECT).exe: $(PREBUILD)
 	xbuild $(PROJECT).sln /target:Build
 
 $(APSIM)/Model/$(PROJECT).dll: $(PREBUILD)
-	xbuild $(PROJECT).sln /target:BuildDef
+	xbuild $(PROJECT).sln /target:Build
 
 endif
 
