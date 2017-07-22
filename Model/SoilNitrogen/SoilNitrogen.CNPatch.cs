@@ -21,6 +21,7 @@ public partial class SoilNitrogen
     /// </remarks>
     public partial class soilCNPatch
     {
+        /// <summary>The soilCNPatch constructor</summary>
         public soilCNPatch(SoilNitrogen MainSoilNitrogen)
         { g = MainSoilNitrogen; }
 
@@ -760,7 +761,7 @@ public partial class SoilNitrogen
         public void ClearDeltaVariables()
         {
             // miscelaneous
-            Array.Clear(g.InhibitionFactor_Nitrification, 0, g.InhibitionFactor_Nitrification.Length);
+            Array.Clear(g.inhibitionFactor_Nitrification, 0, g.inhibitionFactor_Nitrification.Length);
             dlt_n_loss_in_sed = 0.0;
             dlt_c_loss_in_sed = 0.0;
 
@@ -903,14 +904,14 @@ public partial class SoilNitrogen
             int new_lowest_layer = new_dlayer.Length;
 
             double TodaysInitialAmount = g.SumDoubleArray(SoilProperty);
-            double SoilLossThickness = g.soil_loss / (g.SoilDensity[0] * 10);  //  10 = 1000/10000, converts loss to kg/m2, then to L/m2 = mm
+            double SoilLossThickness = g.soil_loss / (g.soilDensity[0] * 10);  //  10 = 1000/10000, converts loss to kg/m2, then to L/m2 = mm
             double AmountGainedBottom = 0.0;
             double AmountLostTop = 0.0;
 
             // check whether soil loss is not bigger than any layer
             for (int layer = 0; layer < lowestLayer; layer++)
             {
-                SoilLossThickness = g.soil_loss * (g.SoilDensity[layer] * 10);
+                SoilLossThickness = g.soil_loss * (g.soilDensity[layer] * 10);
                 if (g.dlayer[layer] < SoilLossThickness)
                 {
                     double LayerDeviation = ((SoilLossThickness / g.dlayer[layer]) - 1) * 100;
@@ -966,7 +967,7 @@ public partial class SoilNitrogen
             for (int layer = new_lowest_layer - 1; layer >= 0; layer--)
             {
                 // this layer gains what the lower layer lost
-                SoilLossThickness = g.soil_loss * (g.SoilDensity[layer] * 10);
+                SoilLossThickness = g.soil_loss * (g.soilDensity[layer] * 10);
                 layer_loss = SoilProperty[layer] * Math.Min(1.0, SoilLossThickness / g.dlayer[layer]);
                 SoilProperty[layer] += layer_gain - layer_loss;
                 layer_gain = layer_loss;
@@ -990,6 +991,7 @@ public partial class SoilNitrogen
             return AmountLostTop;
         }
 
+        /// <summary>Check that the values of variables are ok</summary>
         public void CheckVariables()
         {
             int nLayers = g.dlayer.Length;

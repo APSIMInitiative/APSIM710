@@ -18,6 +18,8 @@ using CSGeneral;
 /// </remarks>
 public partial class SoilNitrogen
 {
+
+    /// <summary>Initialises a new instance of the class.</summary>
     public SoilNitrogen()
     {
         Patch = new List<soilCNPatch>();
@@ -76,7 +78,7 @@ public partial class SoilNitrogen
         if (usingSimpleSoilTemp)
         {
             simpleST = new simpleSoilTemp(MetFile.Latitude, MetFile.tav, MetFile.amp, MetFile.MinT, MetFile.MaxT);
-            Tsoil = simpleST.SoilTemperature(Clock.Today, MetFile.MinT, MetFile.MaxT, MetFile.Radn, salb, dlayer, SoilDensity, ll15_dep, sw_dep);
+            Tsoil = simpleST.SoilTemperature(Clock.Today, MetFile.MinT, MetFile.MaxT, MetFile.Radn, salb, dlayer, soilDensity, ll15_dep, sw_dep);
         }
 
         // notify apsim about solutes
@@ -107,7 +109,7 @@ public partial class SoilNitrogen
         if (usingSimpleSoilTemp)
         {
             simpleST = new simpleSoilTemp(MetFile.Latitude, MetFile.tav, MetFile.amp, MetFile.MinT, MetFile.MaxT);
-            Tsoil = simpleST.SoilTemperature(Clock.Today, MetFile.MinT, MetFile.MaxT, MetFile.Radn, salb, dlayer, SoilDensity, ll15_dep, sw_dep);
+            Tsoil = simpleST.SoilTemperature(Clock.Today, MetFile.MinT, MetFile.MaxT, MetFile.Radn, salb, dlayer, soilDensity, ll15_dep, sw_dep);
         }
 
         // get the changes of state and publish (let other component to know)
@@ -140,7 +142,7 @@ public partial class SoilNitrogen
         Console.WriteLine(myMessage);
 
         // check whether soil temperature is present. If not, check whether the basic params for simpleSoilTemp have been supplied
-        if (SimpleSoilTempAllowed)
+        if (simpleSoilTempAllowed)
             usingSimpleSoilTemp = (ave_soil_temp == null);
         if (usingSimpleSoilTemp)
             myMessage = "           + Soil temperature calculated internally";
@@ -174,7 +176,7 @@ public partial class SoilNitrogen
         {
             fomPoolsCNratio = new double[3];
             for (int i = 0; i < 3; i++)
-                fomPoolsCNratio[i] = InitialCNrFOM;
+                fomPoolsCNratio[i] = InitialFOMCNr;
         }
 
         // Check if initial fom depth has been supplied, if not assume that initial fom is distributed over the whole profile
@@ -188,13 +190,13 @@ public partial class SoilNitrogen
         // Calculate conversion factor from kg/ha to ppm (mg/kg)
         convFactor = new double[nLayers];
         for (int layer = 0; layer < nLayers; ++layer)
-            convFactor[layer] = MathUtility.Divide(100.0, SoilDensity[layer] * dlayer[layer], 0.0);
+            convFactor[layer] = MathUtility.Divide(100.0, soilDensity[layer] * dlayer[layer], 0.0);
 
         // Check parameters for patches
         if (DepthToTestByLayer <= epsilon)
-            LayerDepthToTestDiffs = dlayer.Length - 1;
+            layerDepthToTestDiffs = dlayer.Length - 1;
         else
-            LayerDepthToTestDiffs = getCumulativeIndex(DepthToTestByLayer, dlayer);
+            layerDepthToTestDiffs = getCumulativeIndex(DepthToTestByLayer, dlayer);
         
     }
 
@@ -255,7 +257,7 @@ public partial class SoilNitrogen
         {
             FracLayer = Math.Min(1.0, MathUtility.Divide(InitialFOMDepth - cumDepth, dlayer[layer], 0.0));
             cumDepth += dlayer[layer];
-            FOMiniFraction[layer] = FracLayer * Math.Exp(-FOMDistributionCoefficient * Math.Min(1.0, MathUtility.Divide(cumDepth, InitialFOMDepth, 0.0)));
+            FOMiniFraction[layer] = FracLayer * Math.Exp(-InititalFOMDistCoefficient * Math.Min(1.0, MathUtility.Divide(cumDepth, InitialFOMDepth, 0.0)));
         }
 
         // distribute FOM through layers
@@ -307,9 +309,9 @@ public partial class SoilNitrogen
 
             // distribute C over fom pools
             double[] fomPool = new double[3];
-            fomPool[0] = InitialFOMAmount * FOMiniFraction[layer] * fract_carb[FOMtypeID_reset] * defaultCarbonInFOM;
-            fomPool[1] = InitialFOMAmount * FOMiniFraction[layer] * fract_cell[FOMtypeID_reset] * defaultCarbonInFOM;
-            fomPool[2] = InitialFOMAmount * FOMiniFraction[layer] * fract_lign[FOMtypeID_reset] * defaultCarbonInFOM;
+            fomPool[0] = InitialFOMWt * FOMiniFraction[layer] * fract_carb[FOMtypeID_reset] * defaultCarbonInFOM;
+            fomPool[1] = InitialFOMWt * FOMiniFraction[layer] * fract_cell[FOMtypeID_reset] * defaultCarbonInFOM;
+            fomPool[2] = InitialFOMWt * FOMiniFraction[layer] * fract_lign[FOMtypeID_reset] * defaultCarbonInFOM;
 
             // set the initial values across patches - assume there is only one patch (as it is initialisation)
             int k = 0;
@@ -330,8 +332,8 @@ public partial class SoilNitrogen
             Patch[k].fom_n[2][layer] = MathUtility.Divide(fomPool[2], fomPoolsCNratio[2], 0.0);
         
             // set maximum uptake rates for N forms (only really used for AgPasture when patches exist)
-            MaximumNH4UptakeRate[layer] = reset_MaximumNH4Uptake / convFactor[layer];
-            MaximumNO3UptakeRate[layer] = reset_MaximumNO3Uptake / convFactor[layer];
+            maximumNH4UptakeRate[layer] = reset_MaximumNH4Uptake / convFactor[layer];
+            maximumNO3UptakeRate[layer] = reset_MaximumNO3Uptake / convFactor[layer];
         }
 
         Patch[0].CalcTotalMineralNInRootZone();
@@ -351,58 +353,9 @@ public partial class SoilNitrogen
     /// <param name="nLayers">The number of layers</param>
     private void ResizeLayeredVariables(int nLayers)
     {
-        // Amounts - N
-        //Array.Resize(ref _nh4, nLayers);
-        //Array.Resize(ref _no3, nLayers);
-        //Array.Resize(ref _urea, nLayers);
-        //Array.Resize(ref TodaysInitialNO3, nLayers);
-        //Array.Resize(ref TodaysInitialNH4, nLayers);
-        //Array.Resize(ref fom_n_pool[0], nLayers);
-        //Array.Resize(ref fom_n_pool[1], nLayers);
-        //Array.Resize(ref fom_n_pool[2], nLayers);
-        //Array.Resize(ref biom_n, nLayers);
-        //Array.Resize(ref hum_n, nLayers);
-
-        //// Amounts - C
-        //Array.Resize(ref fom_c_pool[0], nLayers);
-        //Array.Resize(ref fom_c_pool[1], nLayers);
-        //Array.Resize(ref fom_c_pool[2], nLayers);
-        //Array.Resize(ref inert_c, nLayers);
-        //Array.Resize(ref biom_c, nLayers);
-        //Array.Resize(ref hum_c, nLayers);
-
-        //// deltas
-        //Array.Resize(ref dlt_c_res_to_biom, nLayers);
-        //Array.Resize(ref dlt_c_res_to_hum, nLayers);
-        //Array.Resize(ref dlt_c_res_to_atm, nLayers);
-        //Array.Resize(ref dlt_res_nh4_min, nLayers);
-        //Array.Resize(ref dlt_res_no3_min, nLayers);
-
-        //Array.Resize(ref dlt_urea_hydrolysis, nLayers);
-        //Array.Resize(ref dlt_nitrification, nLayers);
-        //Array.Resize(ref dlt_n2o_nitrif, nLayers);
-        //Array.Resize(ref dlt_no3_dnit, nLayers);
-        //Array.Resize(ref dlt_n2o_dnit, nLayers);
-        //Array.Resize(ref dlt_fom_n_min, nLayers);
-        //Array.Resize(ref dlt_biom_n_min, nLayers);
-        //Array.Resize(ref dlt_hum_n_min, nLayers);
-        //Array.Resize(ref nh4_deficit_immob, nLayers);
-        //for (int i = 0; i < 3; i++)
-        //{
-        //    Array.Resize(ref dlt_c_fom_to_biom[i], nLayers);
-        //    Array.Resize(ref dlt_c_fom_to_hum[i], nLayers);
-        //    Array.Resize(ref dlt_c_fom_to_atm[i], nLayers);
-        //    Array.Resize(ref dlt_n_fom[i], nLayers);
-        //}
-        //Array.Resize(ref dlt_biom_c_hum, nLayers);
-        //Array.Resize(ref dlt_biom_c_atm, nLayers);
-        //Array.Resize(ref dlt_hum_c_biom, nLayers);
-        //Array.Resize(ref dlt_hum_c_atm, nLayers);
-
-        Array.Resize(ref InhibitionFactor_Nitrification, nLayers);
-
-        Array.Resize(ref MaximumNH4UptakeRate, nLayers);
-        Array.Resize(ref MaximumNO3UptakeRate, nLayers);
+        Array.Resize(ref inhibitionFactor_Nitrification, nLayers);
+        Array.Resize(ref maximumNH4UptakeRate, nLayers);
+        Array.Resize(ref maximumNO3UptakeRate, nLayers);
 
         for (int k = 0; k < Patch.Count; k++)
             Patch[k].ResizeLayeredVariables(nLayers);
@@ -433,7 +386,7 @@ public partial class SoilNitrogen
         if (new_solute != null)
         {
             string[] solute_names;
-            if (OrganicSolutesAllowed)
+            if (organicSolutesAllowed)
             {
                 solute_names = new string[7] { "urea", "nh4", "no3", "org_c_pool1", "org_c_pool2", "org_c_pool3", "org_n" };
             }
@@ -551,7 +504,7 @@ public partial class SoilNitrogen
 
         // update soil temperature
         if (usingSimpleSoilTemp)
-            Tsoil = simpleST.SoilTemperature(Clock.Today, MetFile.MinT, MetFile.MaxT, MetFile.Radn, salb, dlayer, SoilDensity, ll15_dep, sw_dep);
+            Tsoil = simpleST.SoilTemperature(Clock.Today, MetFile.MinT, MetFile.MaxT, MetFile.Radn, salb, dlayer, soilDensity, ll15_dep, sw_dep);
         else
             Tsoil = ave_soil_temp;
 
@@ -570,12 +523,12 @@ public partial class SoilNitrogen
     public void OnPost()
     {
         // Check whether patch auto amalgamation is allowed
-        if ((Patch.Count > 1) && (PatchAutoAmalgamationAllowed))
+        if ((Patch.Count > 1) && (patchAutoAmalgamationAllowed))
         {
-            if ((PatchAmalgamationApproach.ToLower() == "CompareAll".ToLower()) ||
-                (PatchAmalgamationApproach.ToLower() == "CompareBase".ToLower()) ||
-                (PatchAmalgamationApproach.ToLower() == "CompareAge".ToLower()) ||
-                (PatchAmalgamationApproach.ToLower() == "CompareMerge".ToLower()))
+            if ((patchAmalgamationApproach.ToLower() == "CompareAll".ToLower()) ||
+                (patchAmalgamationApproach.ToLower() == "CompareBase".ToLower()) ||
+                (patchAmalgamationApproach.ToLower() == "CompareAge".ToLower()) ||
+                (patchAmalgamationApproach.ToLower() == "CompareMerge".ToLower()))
             {
                 CheckPatchAutoAmalgamation();
             }
@@ -924,13 +877,13 @@ public partial class SoilNitrogen
     {
         // get the basic soil data info
         int nLayers = NewProfile.dlayer.Length;
-        Array.Resize(ref SoilDensity, nLayers);
+        Array.Resize(ref soilDensity, nLayers);
         Array.Resize(ref ll15_dep, nLayers);
         Array.Resize(ref dul_dep, nLayers);
         Array.Resize(ref sat_dep, nLayers);
         for (int layer = 0; layer < nLayers; layer++)
         {
-            SoilDensity[layer] = (double)NewProfile.bd[layer];
+            soilDensity[layer] = (double)NewProfile.bd[layer];
             ll15_dep[layer] = (double)NewProfile.ll15_dep[layer];
             dul_dep[layer] = (double)NewProfile.dul_dep[layer];
             sat_dep[layer] = (double)NewProfile.sat_dep[layer];
@@ -948,7 +901,7 @@ public partial class SoilNitrogen
                 reset_dlayer[layer] = dlayer[layer];
             }
         }
-        else if (soil_loss > epsilon && ProfileReductionAllowed)
+        else if (soil_loss > epsilon && profileReductionAllowed)
         {
             // check for variations in the soil profile. and update the C and N amounts appropriately
             // Are these changes mainly (only) due to by erosion? what else??
@@ -1007,7 +960,7 @@ public partial class SoilNitrogen
             if ((Patch.Count > 1) && ((senderModule == "WaterModule".ToLower()) || (senderModule == "Plant".ToLower())))
             {
                 // the values come from a module that requires partition
-                double[][] newDelta = partitionDelta(NitrogenChanges.DeltaUrea, "Urea", PatchNPartitionApproach.ToLower());
+                double[][] newDelta = partitionDelta(NitrogenChanges.DeltaUrea, "Urea", patchNPartitionApproach.ToLower());
                 for (int k = 0; k < Patch.Count; k++)
                     Patch[k].dlt_urea = newDelta[k];
             }
@@ -1025,7 +978,7 @@ public partial class SoilNitrogen
             if ((Patch.Count > 1) && ((senderModule == "WaterModule".ToLower()) || (senderModule == "Plant".ToLower())))
             {
                 // the values come from a module that requires partition
-                double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNH4, "NH4", PatchNPartitionApproach.ToLower());
+                double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNH4, "NH4", patchNPartitionApproach.ToLower());
                 for (int k = 0; k < Patch.Count; k++)
                     Patch[k].dlt_nh4 = newDelta[k];
             }
@@ -1043,7 +996,7 @@ public partial class SoilNitrogen
             if ((Patch.Count > 1) && ((senderModule == "WaterModule".ToLower()) || (senderModule == "Plant".ToLower())))
             {
                 // the values come from a module that requires partition
-                double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNO3, "NO3", PatchNPartitionApproach.ToLower());
+                double[][] newDelta = partitionDelta(NitrogenChanges.DeltaNO3, "NO3", patchNPartitionApproach.ToLower());
                 for (int k = 0; k < Patch.Count; k++)
                     Patch[k].dlt_no3 = newDelta[k];
             }
