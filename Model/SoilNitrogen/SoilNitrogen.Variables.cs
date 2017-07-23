@@ -6559,6 +6559,11 @@ public partial class SoilNitrogen
     private int fom_type;
 
     /// <summary>
+    /// Number of surface residues whose decomposition is being calculated.
+    /// </summary>
+    private int nResidues = 0;
+
+    /// <summary>
     /// The C:N ratio of each fom pool
     /// </summary>
     private double[] fomPoolsCNratio;

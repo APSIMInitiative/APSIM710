@@ -370,6 +370,7 @@ public partial class SoilNitrogen
     private void ClearDeltaVariables()
     {
         // residue decomposition
+        nResidues = 0;
         Array.Clear(pot_c_decomp, 0, pot_c_decomp.Length);
         // this is also cleared onPotentialResidueDecompositionCalculated, but it is here to ensure it will be reset every timestep
 
@@ -603,7 +604,7 @@ public partial class SoilNitrogen
     {
 
         // number of residues being considered
-        int nResidues = SurfaceOrganicMatterDecomp.Pool.Length;
+        nResidues = SurfaceOrganicMatterDecomp.Pool.Length;
 
         // zero variables by assigning new array
         residueName = new string[nResidues];
@@ -635,10 +636,9 @@ public partial class SoilNitrogen
         //      - Now we explicitly tell the sender module the actual decomposition rate for each of its residues.
         //    - If there wasn't enough mineral N to decompose, the rate will be reduced to zero !!  - MUST CHECK THE VALIDITY OF THIS
 
-        if (actualResidueDecompositionCalculated != null && SumDoubleArray(pot_c_decomp) >= epsilon)
+        if (actualResidueDecompositionCalculated != null)
         {
             int nLayers = dlayer.Length;
-            int nResidues = residueName.Length;
             SurfaceOrganicMatterDecompType SurfOMDecomposed = new SurfaceOrganicMatterDecompType();
             SurfOMDecomposed.Pool = new SurfaceOrganicMatterDecompPoolType[nResidues];
 
