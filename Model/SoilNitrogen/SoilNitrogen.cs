@@ -269,7 +269,6 @@ public partial class SoilNitrogen
 
         // initialise some residue decomposition variables
         residueName = new string[1] { "none" };
-        pot_c_decomp = new double[1] { 0.0 };
     }
 
     /// <summary>
@@ -371,7 +370,9 @@ public partial class SoilNitrogen
     {
         // residue decomposition
         nResidues = 0;
-        Array.Clear(pot_c_decomp, 0, pot_c_decomp.Length);
+        Array.Resize(ref pot_c_decomp, 0);
+        Array.Resize(ref pot_n_decomp, 0);
+        Array.Resize(ref pot_p_decomp, 0);
         // this is also cleared onPotentialResidueDecompositionCalculated, but it is here to ensure it will be reset every timestep
 
         for (int k = 0; k < Patch.Count; k++)
@@ -513,7 +514,7 @@ public partial class SoilNitrogen
         EvaluateProcesses();
 
         // send actual decomposition back to surface OM
-        if (!isPondActive || SumDoubleArray(pot_c_decomp) > epsilon)
+        if (!isPondActive)
             SendActualResidueDecompositionCalculated();
     }
 
@@ -1417,23 +1418,6 @@ public partial class SoilNitrogen
             TheValue = 0.0;
         }
         //else { } // Value is positive
-    }
-
-    /// <summary>
-    /// Computes the fraction of each layer that is between the surface and a given depth
-    /// </summary>
-    /// <param name="maxDepth">The depth down to which the fractions are computed</param>
-    /// <returns>An array with the fraction (0-1) of each layer that is between the surface and maxDepth</returns>
-    private double[] FractionLayer(double maxDepth)
-    {
-        double cumDepth = 0.0;
-        double[] result = new double[dlayer.Length];
-        int maxLayer = getCumulativeIndex(maxDepth, dlayer);
-        for (int layer = 0; layer <= maxLayer; layer++)
-        {
-            result[layer] = Math.Min(1.0, MathUtility.Divide(maxDepth - cumDepth, dlayer[layer], 0.0));
-        }
-        return result;
     }
 
     /// <summary>
