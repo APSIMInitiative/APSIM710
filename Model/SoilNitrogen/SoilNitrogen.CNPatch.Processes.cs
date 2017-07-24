@@ -64,13 +64,11 @@ public partial class SoilNitrogen
                 {
                     // Surface OM sent some potential decomposition, here we verify the C-N balance over the immobilisation layer
 
+                    double[] no3_available = new double[nLayers];           // no3 available for mineralisation
+                    double[] nh4_available = new double[nLayers];           // nh4 available for mineralisation
+                    double[] dltC_into_biom = new double[g.nResidues];        // C mineralized converted to biomass
+                    double[] dltC_into_hum = new double[g.nResidues];         // C mineralized converted to humus
                     int ImmobilisationLayer = g.getCumulativeIndex(g.ResiduesDecompDepth, g.dlayer);  // soil layer down to which soil N is available for decemposition
-                    double[] fracLayer = g.FractionLayer(g.ResiduesDecompDepth);          // fraction of each layer that is within immobilisation depth
-
-                    double[] no3_available = new double[nLayers];          // no3 available for mineralisation
-                    double[] nh4_available = new double[nLayers];          // nh4 available for mineralisation
-                    double[] dltC_into_biom = new double[g.nResidues];         // C mineralized converted to biomass
-                    double[] dltC_into_hum = new double[g.nResidues];       // C mineralized converted to humus
 
                     // 2.1. get the potential transfers to m. biomass and humic pools
                     for (int residue = 0; residue < g.nResidues; residue++)
@@ -84,8 +82,10 @@ public partial class SoilNitrogen
                     // 2.2.1. get the available mineral N in the soil close to surface (mineralisation depth)
                     double MineralNAvailable = 0.0;
                     double cumDepth = 0.0;
+                    double[] fracLayer = new double[nLayers];
                     for (int layer = 0; layer <= ImmobilisationLayer; layer++)
                     {
+                        fracLayer[layer] = Math.Min(1.0, MathUtility.Divide(g.ResiduesDecompDepth - cumDepth, g.dlayer[layer], 0.0));
                         cumDepth += g.dlayer[layer];
                         no3_available[layer] = Math.Max(0.0, no3[layer]) * fracLayer[layer];
                         nh4_available[layer] = Math.Max(0.0, nh4[layer]) * fracLayer[layer];
