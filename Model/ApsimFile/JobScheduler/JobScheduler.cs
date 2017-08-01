@@ -1,10 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using CSGeneral;
 using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 using System.Reflection;
 using System.Linq;
@@ -331,10 +331,17 @@ namespace JobScheduler
         /// </summary>
         private static int CalcNumCPUs()
         {
-            int NumCPUsToUse = 0;
-
+            string NumberOfProcesses = "";
             // Work out how many processes to use.
-            string NumberOfProcesses = Environment.GetEnvironmentVariable("NUMBER_OF_PROCESSORS");
+            foreach (DictionaryEntry de in Environment.GetEnvironmentVariables())
+            {
+                if (Convert.ToString(de.Key) == "NUMBER_OF_PROCESSORS")
+                {
+                    NumberOfProcesses = Convert.ToString(de.Value);
+                }
+            }
+
+            int NumCPUsToUse = 0;
             if (NumberOfProcesses != null && NumberOfProcesses != "")
                 NumCPUsToUse = Convert.ToInt32(NumberOfProcesses);
             else
