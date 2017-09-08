@@ -56,6 +56,7 @@ class ReportComponent
    {
    public:
       ReportComponent(ScienceAPI2& scienceAPI);
+	  virtual ~ReportComponent() {}
       virtual void onInit1();
       virtual void onInit2();
 
