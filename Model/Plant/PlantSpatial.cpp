@@ -86,14 +86,23 @@ void PlantSpatial::startCrop(protocol::SowType& Sow)
    bound_check_real_var(scienceAPI, skip_plant, 0.0, 2.0, "skipplant");
    skip_plant_fac = (float)((2.0 + skip_plant)/2.0);
 
-   skip_row = (float)Sow.SkipRow;
-   if (skip_row == 0)
-      {
-      skip_row = skip_row_default;
-      }
+   skip_row = skip_row_default;
+   if (Sow.SkipRow != 0)
+   {
+	   skip_row = (float)Sow.SkipRow;
+   }
+   else if (Sow.Skip != "")
+   {
+	   if (Sow.Skip == "single")skip_row = 1.0;
+	   else if (Sow.Skip == "double")skip_row = 2.0;
+	   else if (Sow.Skip == "solid")skip_row = 0.0;
+	   else
+		   throw std::runtime_error("Unknown skip row configuration '" + Sow.Skip + "'");
+   }
+
    bound_check_real_var(scienceAPI, skip_row, 0.0, 2.0, "skiprow");
    skip_row_fac = (float)((2.0 + skip_row)/2.0);
-    }
+}
 
 
 float PlantSpatial::canopyFac (void)

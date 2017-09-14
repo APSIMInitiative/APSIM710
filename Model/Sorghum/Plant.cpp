@@ -149,7 +149,6 @@ void Plant::onSowCrop(SowType &sow)
 
    scienceAPI.write("Sowing initiate\n");
 
-   string temp;
    if (sow.crop_class == "")
       cropClass = defaultCropClass;
    else
@@ -186,14 +185,18 @@ void Plant::onSowCrop(SowType &sow)
    checkRange(scienceAPI, rowSpacing, 100.0, 10000.0, "row_spacing");
 
    skipRow = 1.0;
-   if (sow.Skip != "")
-      {
+   if (sow.SkipRow != 0)
+   {
+	   skipRow = sow.SkipRow;
+   }
+   else if (sow.Skip != "")
+   {
       if (sow.Skip == "single")skipRow = 1.5;
       else if (sow.Skip == "double")skipRow = 2.0;
       else if (sow.Skip == "solid")skipRow = 1.0;
       else
-        throw std::runtime_error("Unknown skip row configuration '" + temp + "'");
-      }             
+         throw std::runtime_error("Unknown skip row configuration '" + sow.Skip + "'");
+   }             
 
    checkRange(scienceAPI,skipRow, 0.0, 2.0, "skiprow");
    
