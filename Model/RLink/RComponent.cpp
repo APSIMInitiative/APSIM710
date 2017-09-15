@@ -199,6 +199,9 @@ void RComponent::oneTimeInit(void)
        replace(installPath.begin(), installPath.end(), '\\', '/');
 #else
        installPath = "/usr/lib/R";
+#ifdef RVERSIONNUM
+       versionString = RVERSIONNUM;  // Gets split into vnums below
+#endif       
 #endif
     }
 // Load R.dll first so that the embedder dll resolves to the loaded version and not something unknown
@@ -212,6 +215,8 @@ void RComponent::oneTimeInit(void)
     loadDLL(dll);
 
     string userlibs = "";
+    vector<string> vnums;
+    split(versionString, ".", vnums);
 #ifdef __WIN32__
     // We need to find the user's "My Docments" directory
     // Microsoft hasn't made this simple, and the rules change with different versions of Windows
@@ -224,8 +229,6 @@ void RComponent::oneTimeInit(void)
         // Now see if the user has an R win-library directory
         string testDir = string(docPath) + "/R/win-library/";
         replace(testDir.begin(), testDir.end(), '\\', '/');
-        vector<string> vnums;
-        split(versionString, ".", vnums);
         if (vnums.size() >= 2) 
             {
                 testDir += vnums[0];
@@ -237,7 +240,9 @@ void RComponent::oneTimeInit(void)
     }
 #else
     char *home = getenv("HOME");
-    if (home != NULL) {userlibs = string(home) + "/R/" ; } //??? FIXME
+    if (home != NULL && vnums.size() >= 2) {
+        userlibs = string(home) + "/R/x86_64-unknown-linux-gnu-library/" + vnums[0] + "." + vnums[1] ; 
+    }
 #endif    
     vector<string> paths;
     if (userlibs != "") 

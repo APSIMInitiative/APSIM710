@@ -25,6 +25,7 @@ ifneq ($(RINSTALLED),)
   RLD := 	$(shell PATH=$(PATH); $(R_HOME)/bin/R $(R_ARCH) CMD config SHLIB_LD)
   RCPPFLAGS := 	$(RCPPFLAGS)	-Wall -Wno-attributes
   RCXXFLAGS := 	$(RCPPFLAGS) -I$(APSIM)/Model
+  RVERSIONNUM := $(shell R --version | head -1 | cut -d ' ' -f 3)
 endif
 
 LIBS = General ApsimShared ComponentInterface2
@@ -33,7 +34,7 @@ SRC = RComponent.cpp RDataTypes.cpp
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
 
-CFLAGS := $(CFLAGS) -Wno-attributes
+CPPFLAGS := -Wno-attributes -DRVERSIONNUM=\"$(RVERSIONNUM)\" 
 
 RComponent.$(OBJEXT): RComponent.cpp RComponent.h RDataTypes.h
 
