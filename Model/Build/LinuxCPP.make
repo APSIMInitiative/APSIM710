@@ -9,8 +9,14 @@ MONO_INCLUDEDIR=-I$(MONO_PREFIX)/include/mono-2.0
 MONO_LIBDIR= -L$(MONO_PREFIX)/lib
 MONO_DEFINE= -DMONO 
 
+MONO5 := $(shell command -v msbuild 2> /dev/null)
+
 ifdef USE_MONO
-EXTRALIBS:= -lmonosgen-2.0 -lm -lrt -lpthread $(EXTRALIBS)
+ifdef MONO5
+  EXTRALIBS:= -lmonosgen-2.0 -lm -lrt -lpthread $(EXTRALIBS)
+else
+  EXTRALIBS:= -lmono-2.0 -lm -lrt -lpthread $(EXTRALIBS)
+endif
 endif
 
 CC=/usr/bin/g++
