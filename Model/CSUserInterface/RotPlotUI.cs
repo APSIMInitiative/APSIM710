@@ -204,6 +204,18 @@ namespace CSUserInterface
                     sRule += rName + ".action.Add(\"" + action + "\");\n";
                 sRule += "g.AddDirectedEdge(\"" + arc.SourceNode.Name + "\",\"" + arc.TargetNode.Name + "\"," + rName + ");\n";
             }
+
+            sRule += "string title;\n";
+            sRule += "MySimulation.Get(\"title\", out title);\n";
+            sRule += "logfile = new System.IO.StreamWriter(title + \".\" + MySelf.FullName + \".log.csv\");\n";
+            sRule += "logfile.WriteLine(\"Date,Paddock,State,Target,Rule,Value\");\n";
+            sRule += "}\n";
+            sRule += "[Link] public Component MySelf;\n";
+            sRule += "[Input] public DateTime Today;\n";
+            sRule += "private System.IO.StreamWriter logfile;\n";
+            sRule += "[EventHandler] public void OnEnd_Simulation()\n";
+            sRule += "{\n";
+            sRule += "logfile.Close();\n";
             sRule += "}\n";
             sRule += "[EventHandler] public void OnStart_Simulation()\n";
             sRule += "{\n";
@@ -265,6 +277,7 @@ namespace CSUserInterface
             sRule += "               else\n";
             sRule += "                  throw new Exception(\"Nothing returned from expression '\" + testCondition + \"'\");\n";
             sRule += "               //Console.WriteLine(\" p=\" + p +\" a=\" + _arc + \"cond=\" + testCondition + \" score=\" + score);\n";
+            sRule += "               logfile.WriteLine(Today.ToShortDateString() + \",\" + p + \",\" + s.Name + \",\" + g.FindArcTarget(_arc) + \",\" + testCondition + \",\" + score);\n";
             sRule += "            }\n";
             sRule += "            if (score > bestScore) {\n";
             sRule += "               bestScore = score;\n";
@@ -281,6 +294,7 @@ namespace CSUserInterface
             sRule += "         if (getState(bestPaddock) != \"\") MySimulation.Publish(\"transition_from_\" + getState(bestPaddock));\n";
             sRule += "         MySimulation.Publish(\"transition\");\n";
             sRule += "         setState (bestPaddock, g.FindArcTarget(bestArc));\n";
+            sRule += "         logfile.WriteLine(Today.ToShortDateString() + \",\" + bestPaddock + \",\" + getState(bestPaddock));\n";
             sRule += "         foreach (string action in s.arcs[bestArc].action ) {\n";
             sRule += "            MySimulation.Publish(action);\n";
             sRule += "            //Console.WriteLine(\" best=\" + bestPaddock + \" action=\" + action);\n";
