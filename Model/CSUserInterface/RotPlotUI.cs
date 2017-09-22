@@ -277,7 +277,7 @@ namespace CSUserInterface
             sRule += "               else\n";
             sRule += "                  throw new Exception(\"Nothing returned from expression '\" + testCondition + \"'\");\n";
             sRule += "               //Console.WriteLine(\" p=\" + p +\" a=\" + _arc + \"cond=\" + testCondition + \" score=\" + score);\n";
-            sRule += "               logfile.WriteLine(Today.ToShortDateString() + \",\" + p + \",\" + s.Name + \",\" + g.FindArcTarget(_arc) + \",\" + testCondition + \",\" + score);\n";
+            sRule += "               logfile.WriteLine(Today.ToShortDateString() + \",\" + p + \",\" + s.Name + \",\" + g.FindArcTarget(_arc) + \",\" + testCondition + \",\" + c);\n";
             sRule += "            }\n";
             sRule += "            if (score > bestScore) {\n";
             sRule += "               bestScore = score;\n";
