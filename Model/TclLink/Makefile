@@ -52,4 +52,8 @@ ifeq ($(PLATFORM),WIN32VS)
 endif
 
 CIDataTypes.tcl: ../DataTypes/Datatypes.xml TclComponent.macro
+ifeq ($(PLATFORM),WIN32VS)
 	$(APSIM)/Model/ProcessDataTypesInterface.exe ../DataTypes/Datatypes.xml TclComponent.macro
+else
+	mono $(APSIM)/Model/ProcessDataTypesInterface.exe ../DataTypes/Datatypes.xml TclComponent.macro
+endif
