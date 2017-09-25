@@ -536,15 +536,6 @@
          <WorkingDirectory>%APSIM%/Model/TclLink</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
-      <Job name="Compile Tests">
-         <DependsOn>Compile CSGeneral</DependsOn>
-         <DependsOn>Compile ApsimFile</DependsOn>
-         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
-         <DependsOn>Compile CMPServices</DependsOn>
-         <DependsOn>Compile DotNetProxies</DependsOn>
-         <WorkingDirectory>%APSIM%/Model/Tests</WorkingDirectory>
-         <CommandLine>make</CommandLine>
-      </Job>
       <Job name="Compile Textoutput">
          <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
          <DependsOn>Compile CMPServices</DependsOn>
@@ -888,13 +879,18 @@
       </Job>
    </Target>
    <Target name="RunAll">
-      <DependsOn>Tests</DependsOn>
+      <DependsOn>Post-Compile</DependsOn>
       <Job name="Unit tests">
          <WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
          <CommandLine>%APSIM%/Model/Build/RunAllUnitTests.bat</CommandLine>
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
+      <Job name="Compile Tests">
+         <WorkingDirectory>%APSIM%/Model/Tests</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
       <Job name="Apsim NUNIT tests">
+         <DependsOn>Compile Tests</DependsOn>
          <WorkingDirectory>%APSIM%/Model</WorkingDirectory>
          <CommandLine>APSIM.Tests.exe --out=%APSIM%/Model/Tests/APSIM.Tests.out  --workers=1 --noresult</CommandLine>
       </Job>   
