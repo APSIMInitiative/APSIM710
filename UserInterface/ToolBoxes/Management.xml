@@ -3113,7 +3113,7 @@ endif
       ]]></text>
       </script>
     </manager>
-    <manager name="Residue percipitation interception">
+    <manager name="Residue precipitation interception">
       <script>
         <text>!initialise variables
 
@@ -5913,22 +5913,22 @@ endif
           <event>start_of_day</event>
         </script>
       </manager>
-      <manager name="End pasture on a fixed date">
+	  <manager name="End pasture on a fixed date">
         <ui>
-          <category type="category" description="Kill pasture on given date" />
-          <crop type="modulename" description=" Select the name of pasture to end:">AgPasture</crop>
-          <date type="date" description=" Enter the date to end the pasture (dd/mmm/yyyy):">10/07/1980</date>
+          <category type="category" description="Harvesting criteria" />
+          <crop type="list" listvalues="agpasture,ryegrass_clover,ryegrass_clover_paspalum,ryegrass,clover" description="Enter name of pasture to end:">agpasture</crop>
+          <date type="date" description="Enter ending date :">02/02/2012</date>
+          <fraction2kill type="text" description="Fraction of the live biomass to kill">1.0</fraction2kill>
         </ui>
         <script>
-          <text>
-if (today = date('[date]') then
-   [crop] KillCrop KillFracion = 0
-endif
-
-     </text>
+        <text>
+         if (today = date('[date]') then
+               [crop]  KillCrop KillFraction = [fraction2kill]
+         endif
+		</text>
           <event>end_of_day</event>
         </script>
-      </manager>
+      </manager>	  
       <manager name="Sow pasture on a fixed date">
         <ui>
           <category type="category" description="Sowing pasture on a given date" />
