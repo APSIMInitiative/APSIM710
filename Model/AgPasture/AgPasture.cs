@@ -3097,7 +3097,7 @@ public class AgPasture
             if (mySpecies[s].newGrowthN < mySpecies[s].NdemandLux)
             {
                 // all Nremob and/or Nfix were used up, check demand from the soil
-                mySpecies[s].soilNdemand = mySpecies[s].NdemandLux - mySpecies[s].newGrowthN;
+                mySpecies[s].soilNdemand = mySpecies[s].NdemandLux * mySpecies[s].myGlfSoilFertility - mySpecies[s].newGrowthN;
                 swardSoilNDemand += mySpecies[s].soilNdemand;
             }
             else
