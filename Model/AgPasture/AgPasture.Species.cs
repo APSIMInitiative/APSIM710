@@ -499,7 +499,7 @@ public class Species
     internal double dNLitter = 0.0; //N in dDMLitter
 
     /// <summary>Some Description</summary>
-    internal double dDMRootSen = 0.0; //daily root sennesce
+    internal double dDMRootSen = 0.0; //daily root senescence
 
     /// <summary>Some Description</summary>
     internal double dNRootSen = 0.0; //N in dDMRootSen
@@ -783,13 +783,13 @@ public class Species
         get { return leaves.NDead + stems.NDead + stolons.NDead; }
     }
 
-    /// <summary>N remobiliesed N during senescence</summary>
+    /// <summary>N remobilised N during senescence</summary>
     internal double NSenescedRemobilisable
     {
         get { return leaves.NSenesced + stems.NSenesced + stolons.NSenesced + roots.NSenesced; }
     }
 
-    /// <summary>N remobiliesed N during senescence</summary>
+    /// <summary>N remobilised N during senescence</summary>
     internal double NLuxuryRemobilisable
     {
         get { return leaves.NLuxury + stems.NLuxury + stolons.NLuxury + roots.NLuxury; }
@@ -860,7 +860,7 @@ public class Species
     /// <summary>Set plant state at emergence</summary>
     internal void SetEmergenceState()
     {
-        // init DM for each pool
+        // initial DM for each pool
         leaves.tissue[0].DM = emergenceDM[0];
         leaves.tissue[1].DM = emergenceDM[1];
         leaves.tissue[2].DM = emergenceDM[2];
@@ -876,12 +876,12 @@ public class Species
         roots.tissue[0].DM = emergenceDM[11];
         roots.tissue[1].DM = 0.0;
 
-        // init roots
+        // initial roots
         rootDepth = myRootDepthMinimum;
         layerBottomRootZone = GetRootZoneBottomLayer();
         rootFraction = CurrentRootDistributionTarget();
 
-        //Init total N in each pool
+        // initial total N in each pool
         leaves.tissue[0].Nconc = leaves.NConcOptimum;
         leaves.tissue[1].Nconc = leaves.NConcOptimum * NcRel2;
         leaves.tissue[2].Nconc = leaves.NConcOptimum * NcRel3;
@@ -897,10 +897,10 @@ public class Species
         roots.tissue[0].Nconc = roots.NConcOptimum;
         roots.tissue[1].Nconc = 0.0;
 
-        // init pheno stage
+        // initial phenology stage
         phenoStage = 1;
 
-        // init the aggregated variables (LAI, height, etc)
+        // initial the aggregated variables (LAI, height, etc.)
         UpdateAggregatedVariables();
     }
 
@@ -923,7 +923,7 @@ public class Species
         double doyIniPlateau = doyWinterSolstice;
         doyIniPlateau += 0.5 * yearLength / (1 + Math.Exp(-myReproSeasonTimingCoeff * (Math.Abs(MetFile.Latitude) - myReproSeasonReferenceLatitude)));
 
-        // compute the duration of the main phase (with max allocation to shoot)
+        // compute the duration of the main phase (with maximum allocation to shoot)
         reproSeasonInterval[1] = (yearLength / 24.0);
         reproSeasonInterval[1] += (yearLength * 11.0 / 24.0) * Math.Pow(1 - (Math.Abs(MetFile.Latitude) / 90.0), myReproSeasonDurationCoeff);
 
@@ -1191,7 +1191,7 @@ public class Species
         double carbon_m2 = 0.5 * (Pl1 + Pl2) * swardCoverGreen * intRadnFrac * myLightPartitioningFactor / myLightExtinctionCoefficient;
         carbon_m2 *= 0.000001 * tau * (12.0 / 44.0);
         // tau: from second => day;
-        // 0.000001: gtom mg/m^2 => kg/m^2_ground/day;
+        // 0.000001: from mg/m^2 => kg/m^2_ground/day;
         // (12.0 / 44.0): from CO2 to carbohydrate (DM)
 
         // Fraction of total radiation available to this plant
@@ -1232,7 +1232,7 @@ public class Species
         //convert C to DM
         dGrowthPot /= CarbonFractionDM;
 
-        // phenologically related reduction of annual species (from IJ)
+        // phenology related reduction of annual species (from IJ)
         if (isAnnual)
             dGrowthPot *= AnnualSpeciesGrowthFactor();
 
@@ -1630,7 +1630,7 @@ public class Species
                    + (toStol * stolons.NConcOptimum) + (toRoot * roots.NConcOptimum);
 
         NdemandOpt *= NVariationDueToCO2();
-        //this will reduce the N stress under under elevated [co2] for the same soilN
+        //this will reduce the N stress under elevated [co2] for the same soilN
 
         //N demand for new growth assuming luxury uptake (maximum [N])
         NdemandLux = (toLeaf * leaves.NConcMaximum) + (toStem * stems.NConcMaximum)
@@ -1688,7 +1688,7 @@ public class Species
     {
         if (NdemandLux <= NSenescedRemobilisable + NFixed)
         {
-            // Nremob and/or Nfix are able to supply all N
+            // N remobilised and/or fixed are able to supply all N
             NSenesced2NewGrowth = Math.Max(0.0, NdemandLux - NFixed);
         }
         else
@@ -2754,7 +2754,7 @@ public class Species
 
     /// <summary>Defines a generic organ of a plant</summary>
     /// <remarks>
-    /// Each organ (leaf, stem, etc) is defined as a collection of four tissues
+    /// Each organ (leaf, stem, etc.) is defined as a collection of four tissues
     /// Each tissue has a record of DM and N amounts
     /// Methods to compute DM and N for total and 'green' tissue is given
     /// </remarks>
@@ -3248,7 +3248,7 @@ public class Species
         /// <summary>N in defoliated material</summary>
         internal double Ndefoliated;
 
-        /// <summary>N remobilsed from senesced tissue</summary>
+        /// <summary>N remobilised from senesced tissue</summary>
         internal double Nremob;
     }
 

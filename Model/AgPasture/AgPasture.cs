@@ -1311,7 +1311,7 @@ public class AgPasture
 
         mySpecies = new Species[NumSpecies];
 
-        // set links to static members (clock, MetData, dlayer, CO2, etc)
+        // set links to static members (clock, MetData, dlayer, CO2, etc.)
         Species.Clock = myClock;
         Species.MetFile = MetData;
         Species.CO2 = co2;
@@ -1331,7 +1331,7 @@ public class AgPasture
                     mySpecies[s1].dlayer = dlayer;
                     mySpecies[s1].xf = xf;
 
-                    // check max root depth
+                    // check maximum root depth
                     if (InitialRootDepth[s1] > Epsilon)
                         RootDepthMaximum[s2] = InitialRootDepth[s1];
                     else
@@ -1709,7 +1709,7 @@ public class AgPasture
         ////- Harvest limits and preferences >>>  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
         if (dmshoot.Length < NumSpecies)
         {
-            // Assume a minimum dm shoot in case the initial DM is not supplied (usefull when user defines 'extra species')
+            // Assume a minimum dm shoot in case the initial DM is not supplied (useful when user defines 'extra species')
             int baseLength = dmshoot.Length;
             Array.Resize(ref dmshoot, NumSpecies);
             for (int i = baseLength - 1; i < NumSpecies; i++)
@@ -1717,7 +1717,7 @@ public class AgPasture
         }
         if (dmroot.Length < NumSpecies)
         {
-            // Assume a minimum dm root in case the initial DM is not supplied (usefull when user defines 'extra species')
+            // Assume a minimum dm root in case the initial DM is not supplied (useful when user defines 'extra species')
             int baseLength = dmroot.Length;
             Array.Resize(ref dmroot, NumSpecies);
             for (int i = baseLength - 1; i < NumSpecies; i++)
@@ -1737,7 +1737,7 @@ public class AgPasture
     /// <param name="myVariable"></param>
     private void breakCode(string myVariable)
     {
-        throw new Exception("Number of values for paramater \"" + myVariable + "\" is smaller than number of species");
+        throw new Exception("Number of values for parameter \"" + myVariable + "\" is smaller than number of species");
     }
 
     /// <summary>Set parameter values for each species in the sward</summary>
@@ -2134,7 +2134,7 @@ public class AgPasture
                 // Update the DM and N of each tissue
                 mySpecies[s].DoUpdateTissues();
 
-                // Update the aggregated variables (LAI, height, etc)
+                // Update the aggregated variables (LAI, height, etc.)
                 mySpecies[s].UpdateAggregatedVariables();
             }
 
@@ -2206,7 +2206,7 @@ public class AgPasture
         {
             gft = swardGLFTemp;
         }
-        // Note: swardGLFTemp is for gross photosythesis.
+        // Note: swardGLFTemp is for gross photosynthesis.
         // This is different from that for net production as used in other APSIM crop models, and is
         // assumed in calculation of temperature effect on transpiration (in micromet).
         // Here we passed it as sqrt - (Doing so by a comparison of swardGLFTemp and that
@@ -3096,7 +3096,7 @@ public class AgPasture
 
             if (mySpecies[s].newGrowthN < mySpecies[s].NdemandLux)
             {
-                // all Nremob and/or Nfix were used up, check demand from the soil
+                // all N remobilised and/or fixed were used up, check demand from the soil
                 mySpecies[s].soilNdemand = mySpecies[s].NdemandLux * mySpecies[s].myGlfSoilFertility - mySpecies[s].newGrowthN;
                 swardSoilNDemand += mySpecies[s].soilNdemand;
             }
@@ -3152,7 +3152,7 @@ public class AgPasture
     /// </summary>
     /// <remarks>
     /// The method has been modified to consider the existence of SoilCNPatches in SoilNitrogen
-    /// This implies using NN_PlantAvailable instead of NN (with NN being nh4 or no3). It means
+    /// This implies using nxx_PlantAvailable instead of nxx (with nxx being nh4 or no3). It means
     /// plants access is limited to patches with very high N content
     /// </remarks>
     /// <returns>Amount of N available to plants</returns>
@@ -3291,7 +3291,7 @@ public class AgPasture
     /// <remarks>
     /// This is an implementation of uptake option 3 of Plant1
     /// The method has been modified to consider the existence of SoilCNPatches in SoilNitrogen
-    /// This implies using NN_PlantAvailable instead of NN (with NN being nh4 or no3). It means
+    /// This implies using nxx_PlantAvailable instead of nxx (with nxx being nh4 or no3). It means
     /// plants access is limited to patches with very high N content
     /// </remarks>
     /// <returns>Amount of N available to plants</returns>
@@ -3435,7 +3435,7 @@ public class AgPasture
     /// </summary>
     /// <remarks>
     /// The method has been modified to consider the existence of SoilCNPatches in SoilNitrogen
-    /// This implies using NN_PlantAvailable instead of NN (with NN being nh4 or no3). It means
+    /// This implies using nxx_PlantAvailable instead of nxx (with nxx being nh4 or no3). It means
     /// plants access is limited to patches with very high N content
     /// </remarks>
     /// <returns>Amount of N available to plants</returns>
@@ -3573,7 +3573,7 @@ public class AgPasture
     /// </summary>
     /// <remarks>
     /// The method has been modified to consider the existence of SoilCNPatches in SoilNitrogen
-    /// This implies using NN_PlantAvailable instead of NN (with NN being nh4 or no3). It means
+    /// This implies using nxx_PlantAvailable instead of nxx (with nxx being nh4 or no3). It means
     /// plants access is limited to patches with very high N content
     /// </remarks>
     /// <returns>Amount of N available to plants</returns>
@@ -4069,7 +4069,7 @@ public class AgPasture
                 availableNO3_bylayer[sLayer] = fracH2O * no3[sLayer] / totN;
 
                 //if we have no3 and nh4 in this layer then calculate our uptake multiplier, otherwise set it to 0
-                //the idea behind the multiplier is that it allows us to calculate the max amount of N we can extract
+                //the idea behind the multiplier is that it allows us to calculate the maximum amount of N we can extract
                 //without forcing any of the layers below 0 AND STILL MAINTAINING THE RATIO as calculated with fracH2O
                 //NOTE: it doesn't matter whether we use nh4 or no3 for this calculation, we will get the same answer regardless
                 uptake_multiplier = nh4[sLayer] * no3[sLayer] > Epsilon
@@ -4102,7 +4102,8 @@ public class AgPasture
 
         if (shortfall_withwater > Epsilon)
         {
-            //this cap should not be needed because shortfall is already capped via the math.min in the scaled_demand calcs (leave it here though)
+            //this cap should not be needed because shortfall is already capped via the math.min in the 
+            //  scaled_demand calculations (leave it here though)
             double scaled_diff = Math.Min(shortfall_withwater / avail_withwater, 1);
 
             availableNH4_bylayer =
@@ -4156,7 +4157,7 @@ public class AgPasture
         BiomassRemoved.Invoke(BR);
     }
 
-    /// <summary>Returns scenesced roots into fresh organic matter pool in soil</summary>
+    /// <summary>Returns senesced roots into fresh organic matter pool in soil</summary>
     /// <param name="rootSen">DM amount</param>
     /// <param name="NinRootSen">N amount</param>
     private void DoIncorpFomEvent(double rootSen, double NinRootSen)
@@ -4650,7 +4651,7 @@ public class AgPasture
 
         for (int i = 0; i < removeData.dm.Length; i++) //for each major pool (green or dead)
         {
-            for (int j = 0; j < removeData.dm[i].dlt.Length; j++) //for each plant part (leaves, stems, etc)
+            for (int j = 0; j < removeData.dm[i].dlt.Length; j++) //for each plant part (leaves, stems, etc.)
             {
                 if (removeData.dm[i].pool == "green" && removeData.dm[i].part[j] == "leaf")
                 {
