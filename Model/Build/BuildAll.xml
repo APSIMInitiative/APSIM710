@@ -778,6 +778,7 @@
    <!-- ############### Release target ############### -->
    <Target name="Release">
       <DependsOn>BobBuildAndRun</DependsOn>
+	  <!--
       <Job name="Compile InsertFilesIntoSetup">
          <WorkingDirectory>%APSIM%/Release/InsertFilesIntoSetup</WorkingDirectory>
          <CommandLine>make</CommandLine>
@@ -795,6 +796,18 @@
          <CommandLine>%APSIM%\Release\CreateMSI.bat %PatchFileNameShort%.ApsimSetup ApsimSetup /WithExclusions</CommandLine>
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
+	  -->
+      <Job name="Create Bootleg MSI">
+         <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
+         <CommandLine>%APSIM%\Release\CreateInstall.bat %PatchFileNameShort%.Bootleg Bootleg</CommandLine>
+         <CommandLineUnix>/bin/true</CommandLineUnix>
+      </Job>
+      <Job name="Create Release MSI">
+         <WorkingDirectory>%APSIM%\Release</WorkingDirectory>
+         <CommandLine>%APSIM%\Release\CreateInstall.bat %PatchFileNameShort%.ApsimSetup ApsimSetup</CommandLine>
+         <CommandLineUnix>/bin/true</CommandLineUnix>
+      </Job>
+	  
       <Job name="Create SFX Binaries">
        <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
        <CommandLine>%APSIM%/Release/Release.bat %PatchFileNameShort%</CommandLine>
