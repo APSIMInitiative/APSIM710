@@ -172,7 +172,7 @@ void PlantHerbage::sendPartsRemoved(protocol::QueryValueData& queryData)
             for (unsigned int part = 0; part < crop.dm[pool].part.size(); part++)
             {
                i ++;
-               dmPartsRemoved[i] =  crop.dm[pool].dlt[part];
+               dmPartsRemoved[i] = (float) crop.dm[pool].dlt[part];
             }
          }
 
@@ -198,7 +198,7 @@ void PlantHerbage::doGrazed(protocol::RemoveHerbageType &grazed)
       {
          for (unsigned int part = 0; part < crop.dm[pool].part.size(); part++)
          {
-            dmTotal +=  crop.dm[pool].dlt[part];
+            dmTotal += (float) crop.dm[pool].dlt[part];
          }
       }
 
@@ -300,27 +300,27 @@ void PlantHerbage::doDmdPoolsToHerbageParts(protocol::RemoveHerbageType &grazed,
       dm.pool = "senesced";
       dm.part.push_back("leaf");
       dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += grazed.herbage[pool]*partFractionVeg[pool].senesced.leaf;
+      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += (float)(grazed.herbage[pool]*partFractionVeg[pool].senesced.leaf);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       dm.part.push_back("stem");
       dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += grazed.herbage[pool]*partFractionVeg[pool].senesced.stem;
+      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += (float)(grazed.herbage[pool]*partFractionVeg[pool].senesced.stem);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       dm.part.push_back("pod");
       dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += grazed.herbage[pool]*partFractionVeg[pool].senesced.pod;
+      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += (float)(grazed.herbage[pool]*partFractionVeg[pool].senesced.pod);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       dm.part.push_back("meal");
       dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsSeed(); pool++) dmPart += grazed.seed[pool]*partFractionSeed[pool].senesced.meal;
+      for (int pool = 0; pool < numDmdPoolsSeed(); pool++) dmPart += (float)(grazed.seed[pool]*partFractionSeed[pool].senesced.meal);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       dm.part.push_back("oil");
       dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsSeed(); pool++) dmPart += grazed.seed[pool]*partFractionSeed[pool].senesced.oil;
+      for (int pool = 0; pool < numDmdPoolsSeed(); pool++) dmPart += (float)(grazed.seed[pool]*partFractionSeed[pool].senesced.oil);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       crop.dm.push_back(dm);
@@ -942,12 +942,12 @@ void PlantHerbage::proportion (float dmdAvg, float dmdMax, float dmdMin, float d
    // Assumes dmd of classes decreases by an constant amount over each class.
 
    const float ClassWidth = cDmdValueVeg[0] - cDmdValueVeg[1];
-   const float MAXDMD = cDmdValueVeg[0] + ClassWidth/2.0;
-   const float MINDMD = cDmdValueVeg[cNumDmdPoolsVeg-1] - ClassWidth/2.0;
+   const float MAXDMD = (float)(cDmdValueVeg[0] + ClassWidth/2.0);
+   const float MINDMD = (float)(cDmdValueVeg[cNumDmdPoolsVeg-1] - ClassWidth/2.0);
 //   const float MAXDMD = 0.8;
 //   const float MINDMD = 0.3;
-   const float errorMargin = 1.0e-5;
-   const float roundingMargin = 1.0e-2;
+   const float errorMargin = 1.0e-5f;
+   const float roundingMargin = 1.0e-2f;
 
    //Local Varialbes
 
@@ -999,7 +999,7 @@ void PlantHerbage::proportion (float dmdAvg, float dmdMax, float dmdMin, float d
    }
 
 
-   float x = (dmdMax == dmdMin) ? 0.0 : (dmdAvg - dmdMin) / (dmdMax - dmdMin);
+   float x = (dmdMax == dmdMin) ? 0.0f : (dmdAvg - dmdMin) / (dmdMax - dmdMin);
    int startDmd = (MAXDMD - dmdMax) / ClassWidth + errorMargin;  // index of first (highest) pool to distribute average to
    int endDmd = (MAXDMD - dmdMin) / ClassWidth + errorMargin;    // index of last (lowest) pool to distribute average to
    int numPools = (endDmd - startDmd) + 1;               // number of pools the average will be distributed over
@@ -1014,31 +1014,31 @@ void PlantHerbage::proportion (float dmdAvg, float dmdMax, float dmdMin, float d
       case 2:
          {
             dmdFraction[startDmd] = x;
-            dmdFraction[startDmd+1] = 1.0-x;
+            dmdFraction[startDmd+1] = (float)(1.0-x);
          }
          break;
       case 3:
          {
             dmdFraction[startDmd] = pow(x, 2);
-            dmdFraction[startDmd+1] = 2.0 * x * (1.0-x);
-            dmdFraction[startDmd+2] = pow(1.0-x, 2);
+            dmdFraction[startDmd+1] = (float)(2.0 * x * (1.0-x));
+            dmdFraction[startDmd+2] = (float)pow(1.0-x, 2);
          }
          break;
       case 4:
          {
             dmdFraction[startDmd] = pow(x, 3);
-            dmdFraction[startDmd+1] = 3.0 * pow(x, 2) * (1.0-x);
-            dmdFraction[startDmd+2] = 3.0 * x * pow(1.0-x, 2);
-            dmdFraction[startDmd+3] = pow(1.0-x, 3);
+            dmdFraction[startDmd+1] = (float)(3.0 * pow(x, 2) * (1.0-x));
+            dmdFraction[startDmd+2] = (float)(3.0 * x * pow(1.0-x, 2));
+            dmdFraction[startDmd+3] = (float)pow(1.0-x, 3);
          }
          break;
       case 5:
          {
             dmdFraction[startDmd] = pow(x, 4);
-            dmdFraction[startDmd+1] = 4.0 * pow(x, 3) * (1.0-x);
-            dmdFraction[startDmd+2] = 6.0 * pow(x, 2) * pow(1.0-x, 2);
-            dmdFraction[startDmd+3] = 4.0 * x * pow(1.0-x,3);
-            dmdFraction[startDmd+4] = pow(1.0-x, 4);
+            dmdFraction[startDmd+1] = (float) (4.0 * pow(x, 3) * (1.0-x));
+            dmdFraction[startDmd+2] = (float) (6.0 * pow(x, 2) * pow(1.0-x, 2));
+            dmdFraction[startDmd+3] = (float) (4.0 * x * pow(1.0-x,3));
+            dmdFraction[startDmd+4] = (float)pow(1.0-x, 4);
          }
          break;
       default:
@@ -1069,11 +1069,11 @@ void PlantHerbage::proportion (float dmdUnripe, float dmdRipe, float dmdFraction
 //   const float MAXDMD = cDmdValueSeed[0];
 //   const float MINDMD = cDmdValueSeed[cNumDmdPoolsSeed-1];
    const float ClassWidth = cDmdValueSeed[0] - cDmdValueSeed[1];
-   const float MAXDMD = cDmdValueSeed[0] + ClassWidth/2.0;
-   const float MINDMD = cDmdValueSeed[cNumDmdPoolsSeed-1] - ClassWidth/2.0;
+   const float MAXDMD = (float)(cDmdValueSeed[0] + ClassWidth/2.0);
+   const float MINDMD = (float)(cDmdValueSeed[cNumDmdPoolsSeed-1] - ClassWidth/2.0);
 //   const float MAXDMD = 0.8;
 //   const float MINDMD = 0.3;
-   const float errorMargin = 1.0e-5;
+   const float errorMargin = 1.0e-5f;
 
    //Local Varialbes
 
@@ -1191,7 +1191,7 @@ float PlantHerbage::bD ( void )
 
 float PlantHerbage::heightRatioVeg (void)
 {
-      return  divide(100.0, 0.03*bD(), 0.0);
+      return  divide(100.0f, (float)(0.03*bD()), 0.0f);
 }
 
 float PlantHerbage::heightRatioSeed (void)
@@ -1206,7 +1206,7 @@ float PlantHerbage::dmdValueVeg ( int pool )
 
 float PlantHerbage::protDgVeg ( int pool )
 {
-      return cDmdValueVeg[pool] + 0.1;
+      return (float)(cDmdValueVeg[pool] + 0.1);
 }
 
 int PlantHerbage::numDmdPoolsVeg ( void )
@@ -1221,7 +1221,7 @@ float PlantHerbage::dmdValueSeed ( int pool )
 
 float PlantHerbage::protDgSeed ( int pool )
 {
-      return cDmdValueSeed[pool] + 0.1;
+      return (float)(cDmdValueSeed[pool] + 0.1);
 }
 
 int PlantHerbage::numDmdPoolsSeed ( void )
@@ -1362,11 +1362,11 @@ float PlantHerbage::divide (float dividend, float divisor, float default_value)
 
    {
    //Constant Values
-   const float LARGEST = 1.0e30;    //largest acceptable no. for quotient
-   const float SMALLEST = 1.0e-30;  //smallest acceptable no. for quotient
+   const float LARGEST = 1.0e30f;    //largest acceptable no. for quotient
+   const float SMALLEST = 1.0e-30f;  //smallest acceptable no. for quotient
    const float nought = 0.0;
    const float one = 1.0;
-   const float granularity = 1.0e-6;
+   const float granularity = 1.0e-6f;
 
    //Local Varialbes
    float quotient;

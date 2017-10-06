@@ -189,11 +189,11 @@ float ResiduePartType::divide (float dividend, float divisor, float default_valu
 
    {
    //Constant Values
-   const float LARGEST = 1.0e30;    //largest acceptable no. for quotient
-   const float SMALLEST = 1.0e-30;  //smallest acceptable no. for quotient
-   const float nought = 0.0;
-   const float one = 1.0;
-   const float granularity = 1.0e-6;
+   const float LARGEST = 1.0e30f;    //largest acceptable no. for quotient
+   const float SMALLEST = 1.0e-30f;  //smallest acceptable no. for quotient
+   const float nought = 0.0f;
+   const float one = 1.0f;
+   const float granularity = 1.0e-6f;
 
    //Local Varialbes
    float quotient;
@@ -259,9 +259,9 @@ ResiduePartType ResiduePartType::divide (const ResiduePartType &dividend, const 
    ResiduePartType quotient;
 
    //Implementation
-   quotient.carbohydrate = divide(dividend.carbohydrate, divisor.carbohydrate, default_value);
-   quotient.cellulose = divide(dividend.cellulose, divisor.cellulose, default_value);
-   quotient.lignin = divide(dividend.lignin, divisor.lignin, default_value);
+   quotient.carbohydrate = divide(dividend.carbohydrate, divisor.carbohydrate, (float)default_value);
+   quotient.cellulose = divide(dividend.cellulose, divisor.cellulose, (float)default_value);
+   quotient.lignin = divide(dividend.lignin, divisor.lignin, (float)default_value);
 
    return quotient;
    }
@@ -503,11 +503,11 @@ float ResiduePool::divide (float dividend, float divisor, float default_value) c
 
    {
    //Constant Values
-   const float LARGEST = 1.0e30;    //largest acceptable no. for quotient
-   const float SMALLEST = 1.0e-30;  //smallest acceptable no. for quotient
-   const float nought = 0.0;
-   const float one = 1.0;
-   const float granularity = 1.0e-6;
+   const float LARGEST = 1.0e30f;    //largest acceptable no. for quotient
+   const float SMALLEST = 1.0e-30f;  //smallest acceptable no. for quotient
+   const float nought = 0.0f;
+   const float one = 1.0f;
+   const float granularity = 1.0e-6f;
 
    //Local Varialbes
    float quotient;

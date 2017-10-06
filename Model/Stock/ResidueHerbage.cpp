@@ -102,7 +102,7 @@ void ResidueHerbage::doGrazed(protocol::RemoveHerbageType &grazed)
       {
          for (unsigned int part = 0; part < crop.dm[pool].part.size(); part++)
          {
-            dmTotal +=  crop.dm[pool].dlt[part];
+            dmTotal += (float) crop.dm[pool].dlt[part];
          }
       }
 
@@ -147,8 +147,8 @@ void ResidueHerbage::proportion (float dmdAvg, float dmdMax, float dmdMin, float
    const float MINDMD = cDmdValueVeg[cNumDmdPoolsVeg-1];
 //   const float MAXDMD = 0.8;
 //   const float MINDMD = 0.3;
-   const float errorMargin = 1.0e-5;
-   const float roundingMargin = 1.0e-2;
+   const float errorMargin = 1.0e-5f;
+   const float roundingMargin = 1.0e-2f;
 
    //Local Varialbes
 
@@ -215,31 +215,31 @@ void ResidueHerbage::proportion (float dmdAvg, float dmdMax, float dmdMin, float
       case 2:
          {
             dmdFraction[startDmd] = x;
-            dmdFraction[startDmd+1] = 1.0-x;
+            dmdFraction[startDmd+1] = (float)(1.0-x);
          }
          break;
       case 3:
          {
             dmdFraction[startDmd] = pow(x, 2);
-            dmdFraction[startDmd+1] = 2.0 * x * (1.0-x);
-            dmdFraction[startDmd+2] = pow(1.0-x, 2);
+            dmdFraction[startDmd+1] = (float)(2.0 * x * (1.0-x));
+            dmdFraction[startDmd+2] = (float)(pow(1.0-x, 2));
          }
          break;
       case 4:
          {
             dmdFraction[startDmd] = pow(x, 3);
-            dmdFraction[startDmd+1] = 3.0 * pow(x, 2) * (1.0-x);
-            dmdFraction[startDmd+2] = 3.0 * x * pow(1.0-x, 2);
-            dmdFraction[startDmd+3] = pow(1.0-x, 3);
+            dmdFraction[startDmd+1] = (float)(3.0 * pow(x, 2) * (1.0-x));
+            dmdFraction[startDmd+2] = (float)(3.0 * x * pow(1.0-x, 2));
+            dmdFraction[startDmd+3] = (float)(pow(1.0-x, 3));
          }
          break;
       case 5:
          {
             dmdFraction[startDmd] = pow(x, 4);
-            dmdFraction[startDmd+1] = 4.0 * pow(x, 3) * (1.0-x);
-            dmdFraction[startDmd+2] = 6.0 * pow(x, 2) * pow(1.0-x, 2);
-            dmdFraction[startDmd+3] = 4.0 * x * pow(1.0-x,3);
-            dmdFraction[startDmd+4] = pow(1.0-x, 4);
+            dmdFraction[startDmd+1] = (float)(4.0 * pow(x, 3) * (1.0-x));
+            dmdFraction[startDmd+2] = (float)(6.0 * pow(x, 2) * pow(1.0-x, 2));
+            dmdFraction[startDmd+3] = (float)(4.0 * x * pow(1.0-x,3));
+            dmdFraction[startDmd+4] = (float)(pow(1.0-x, 4));
          }
          break;
       default:
@@ -269,7 +269,7 @@ void ResidueHerbage::dmdClass (float dmdMax, float dmdMin, float &dmdClassMax, f
 
    const float MAXDMD = cDmdValueVeg[0];
    const float MINDMD = cDmdValueVeg[cNumDmdPoolsVeg-1];
-   const float errorMargin = 1.0e-5;
+   const float errorMargin = 1.0e-5f;
 
    //Local Varialbes
 
@@ -345,12 +345,12 @@ float ResidueHerbage::bD ( void )
 
 float ResidueHerbage::heightRatioVeg (void)
 {
-      return  divide(100.0, 0.03*bD(), 0.0);
+      return  divide(100.0f, (float)(0.03*bD()), 0.0f);
 }
 
 float ResidueHerbage::heightRatioSeed (void)
 {
-      return  1.0;
+      return  1.0f;
 }
 
 float ResidueHerbage::dmdValueVeg ( int pool )
@@ -365,12 +365,12 @@ float ResidueHerbage::dmdValueSeed ( int pool )
 
 float ResidueHerbage::protDgVeg ( int pool )
 {
-      return cDmdValueVeg[pool] + 0.1;
+      return (float)(cDmdValueVeg[pool] + 0.1);
 }
 
 float ResidueHerbage::protDgSeed ( int pool )
 {
-      return cDmdValueSeed[pool] + 0.1;
+      return (float)(cDmdValueSeed[pool] + 0.1);
 }
 
 int ResidueHerbage::numDmdPoolsVeg ( void )
@@ -453,17 +453,17 @@ void ResidueHerbage::doDmdPoolsToHerbageParts(protocol::RemoveHerbageType &graze
       dm.pool = "standing";
       dm.part.push_back("carbohydrate");
       float dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += grazed.herbage[pool]*partFractionVeg[pool].standing.carbohydrate;
+      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += (float)(grazed.herbage[pool]*partFractionVeg[pool].standing.carbohydrate);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       dm.part.push_back("cellulose");
       dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += grazed.herbage[pool]*partFractionVeg[pool].standing.cellulose;
+      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += (float)(grazed.herbage[pool]*partFractionVeg[pool].standing.cellulose);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       dm.part.push_back("lignin");
       dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += grazed.herbage[pool]*partFractionVeg[pool].standing.lignin;
+      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += (float)(grazed.herbage[pool]*partFractionVeg[pool].standing.lignin);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       crop.dm.push_back(dm);
@@ -473,17 +473,17 @@ void ResidueHerbage::doDmdPoolsToHerbageParts(protocol::RemoveHerbageType &graze
       dm.pool = "lying";
       dm.part.push_back("carbohydrate");
       dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += grazed.herbage[pool]*partFractionVeg[pool].lying.carbohydrate;
+      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += (float)(grazed.herbage[pool]*partFractionVeg[pool].lying.carbohydrate);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       dm.part.push_back("cellulose");
       dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += grazed.herbage[pool]*partFractionVeg[pool].lying.cellulose;
+      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += (float)(grazed.herbage[pool]*partFractionVeg[pool].lying.cellulose);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       dm.part.push_back("lignin");
       dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += grazed.herbage[pool]*partFractionVeg[pool].lying.lignin;
+      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += (float)(grazed.herbage[pool]*partFractionVeg[pool].lying.lignin);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       crop.dm.push_back(dm);
@@ -988,11 +988,11 @@ float ResidueHerbage::divide (float dividend, float divisor, float default_value
 
    {
    //Constant Values
-   const float LARGEST = 1.0e30;    //largest acceptable no. for quotient
-   const float SMALLEST = 1.0e-30;  //smallest acceptable no. for quotient
-   const float nought = 0.0;
-   const float one = 1.0;
-   const float granularity = 1.0e-6;
+   const float LARGEST = 1.0e30f;    //largest acceptable no. for quotient
+   const float SMALLEST = 1.0e-30f;  //smallest acceptable no. for quotient
+   const float nought = 0.0f;
+   const float one = 1.0f;
+   const float granularity = 1.0e-6f;
 
    //Local Varialbes
    float quotient;

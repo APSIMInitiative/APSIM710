@@ -352,7 +352,7 @@ void NonHerbageConverter::addUrine (protocol::AddExcretaurineType urine)
     num_layers = values.size();
 
     for (layer = 0; layer != num_layers; layer++) {urea[layer] = 0.0;}
-    urea[0] = urine.urea * c.fractionUrineAdded;
+    urea[0] = (float)(urine.urea * c.fractionUrineAdded);
     std::vector<float> ureaValues(urea, urea+num_layers);
     system->setVariable (dltUreaID, ureaValues);
 
@@ -362,7 +362,7 @@ void NonHerbageConverter::addUrine (protocol::AddExcretaurineType urine)
        num_layers = values.size();
 
        for (layer = 0; layer != num_layers; layer++) {labileP[layer] = 0.0;}
-       labileP[0] = urine.pox * c.fractionUrineAdded;
+       labileP[0] = (float)(urine.pox * c.fractionUrineAdded);
        std::vector<float> labilePValues(labileP, labileP+num_layers);
        system->setVariable (dltLabilePID, labilePValues);
     }

@@ -68,7 +68,7 @@ void HerbageConverter::doInit1(const protocol::Init1Data& initData)
 void HerbageConverter::doInit2(void)
    {
          ostringstream msg;
-         msg << "Herbage model:- " << herbage_model << endl << ends;
+         msg << "Herbage model:- " << herbage_model << "\n" << ends;
          system->writeString (msg.str().c_str());
 
       plant2StockSent = false;
@@ -96,14 +96,14 @@ void HerbageConverter::respondToEvent(unsigned int& fromID, unsigned int& eventI
          for (unsigned int pool = 0; pool < feed.herbage.size(); pool++)
          {
             msg1 << "   dm pool " << (pool+1) << " (" << feed.herbage[pool].dmd << ") = " << grazed.herbage[pool] << " (kg/ha)" << endl;
-            dmTotal1 +=  grazed.herbage[pool];
+            dmTotal1 += (float) grazed.herbage[pool];
          }
 
          msg1 << endl << "Remove Seed un/ripe pools:-" << endl;
          for (unsigned int pool = 0; pool < feed.seed.size(); pool++)
          {
             msg1 << "   dm pool " << (pool+1) << " (" << feed.seed[pool].dmd << ") = " << grazed.seed[pool] << " (kg/ha)" << endl;
-            dmTotal1 +=  grazed.seed[pool];
+            dmTotal1 += (float) grazed.seed[pool];
          }
 
          msg1 << endl << "   dm total = " << dmTotal1 << " (kg/ha)" << endl << ends;
@@ -183,7 +183,7 @@ void HerbageConverter::sendFeedOnOffer(protocol::QueryValueData& queryData)
       {
          for (int i = 0; i != num_parts; i++)
          {
-            dmFeedOnOffer[i] = feed.herbage[i].dm;
+            dmFeedOnOffer[i] = (float)feed.herbage[i].dm;
          }
       }
       else
@@ -196,7 +196,7 @@ void HerbageConverter::sendFeedOnOffer(protocol::QueryValueData& queryData)
       {
          for (int i = 0; i != num_seed_parts; i++)
          {
-            dmFeedOnOffer[num_parts + i] = feed.seed[i].dm;
+            dmFeedOnOffer[num_parts + i] = (float)feed.seed[i].dm;
          }
       }
       else
@@ -214,7 +214,7 @@ void HerbageConverter::sendFeedRemoved(protocol::QueryValueData& queryData)
       {
          for (int i = 0; i != num_parts; i++)
          {
-            dmFeedRemoved[i] = grazed.herbage[i];
+            dmFeedRemoved[i] = (float)grazed.herbage[i];
          }
       }
       else
@@ -227,7 +227,7 @@ void HerbageConverter::sendFeedRemoved(protocol::QueryValueData& queryData)
       {
          for (int i = 0; i != num_seed_parts; i++)
          {
-            dmFeedRemoved[num_parts + i] = grazed.seed[i];
+            dmFeedRemoved[num_parts + i] = (float)grazed.seed[i];
          }
       }
       else
@@ -245,7 +245,7 @@ void HerbageConverter::sendDmdFeedRemoved(protocol::QueryValueData& queryData)
       {
          for (int i = 0; i != num_parts; i++)
          {
-            dmdFeedRemoved[i] = grazed.herbage[i];
+            dmdFeedRemoved[i] = (float)grazed.herbage[i];
          }
       }
       else
@@ -258,7 +258,7 @@ void HerbageConverter::sendDmdFeedRemoved(protocol::QueryValueData& queryData)
       {
          for (int i = 0; i != num_seed_parts; i++)
          {
-            dmdFeedRemoved[num_parts + i] = grazed.seed[i];
+            dmdFeedRemoved[num_parts + i] = (float)grazed.seed[i];
          }
       }
       else
@@ -277,8 +277,8 @@ void HerbageConverter::sendDmdAvgFeedRemoved(protocol::QueryValueData& queryData
       {
          for (int i = 0; i != num_parts; i++)
          {
-            dmdFeedRemoved += feed.herbage[i].dmd * grazed.herbage[i];
-            dmTotal1 +=  grazed.herbage[i];
+            dmdFeedRemoved += (float)(feed.herbage[i].dmd * grazed.herbage[i]);
+            dmTotal1 +=  (float)grazed.herbage[i];
          }
       }
 
@@ -287,8 +287,8 @@ void HerbageConverter::sendDmdAvgFeedRemoved(protocol::QueryValueData& queryData
       {
          for (int i = 0; i != num_seed_parts; i++)
          {
-            dmdFeedRemoved += feed.seed[i].dmd * grazed.seed[i];
-            dmTotal1 +=  grazed.seed[i];
+            dmdFeedRemoved += (float)(feed.seed[i].dmd * grazed.seed[i]);
+            dmTotal1 +=  (float)grazed.seed[i];
          }
       }
       if (dmTotal1 > 0)
@@ -468,11 +468,11 @@ float HerbageConverter::divide (float dividend, float divisor, float default_val
 
    {
    //Constant Values
-   const float LARGEST = 1.0e30;    //largest acceptable no. for quotient
-   const float SMALLEST = 1.0e-30;  //smallest acceptable no. for quotient
+   const float LARGEST = 1.0e30f;    //largest acceptable no. for quotient
+   const float SMALLEST = 1.0e-30f;  //smallest acceptable no. for quotient
    const float nought = 0.0;
    const float one = 1.0;
-   const float granularity = 1.0e-6;
+   const float granularity = 1.0e-6f;
 
    //Local Varialbes
    float quotient;

@@ -291,11 +291,11 @@ float PlantPartType::divide (const float dividend, const float divisor, float de
 
    {
    //Constant Values
-   const float LARGEST = 1.0e30;    //largest acceptable no. for quotient
-   const float SMALLEST = 1.0e-30;  //smallest acceptable no. for quotient
-   const float nought = 0.0;
-   const float one = 1.0;
-   const float granularity = 1.0e-6;
+   const float LARGEST = 1.0e30f;    //largest acceptable no. for quotient
+   const float SMALLEST = 1.0e-30f;  //smallest acceptable no. for quotient
+   const float nought = 0.0f;
+   const float one = 1.0f;
+   const float granularity = 1.0e-6f;
 
    //Local Varialbes
    float quotient;
@@ -612,7 +612,7 @@ int main(void)
       cout << "copy constructor test FAILED" << endl;
 
       cout << endl << "Test assignment operator:" << endl;
-      s.setValue(50.0, 5.0, 0.5, 60.0, 6.0, 0.6); // change object
+      s.setValue(50.0f, 5.0f, 0.5f, 60.0f, 6.0f, 0.6f); // change object
 
       if (s.total() != p.total())
       {
@@ -624,36 +624,36 @@ int main(void)
             cout << "assignment operator test FAILED DIFFERENCE TEST" << endl;
 
       cout << endl << "Test multiply operator:" << endl;
-      s.setValue(50.0, 5.0, 0.5, 60.0, 6.0, 0.6); // change object
+      s.setValue(50.0f, 5.0f, 0.5f, 60.0f, 6.0f, 0.6f); // change object
       PlantPool k = p * s;
       if (k.total() != 3856.0)
             cout << "multiply operator test FAILED" << endl;
 
       cout << endl << "Test simple multiply operator:" << endl;
-      s.setValue(50.0, 5.0, 0.5, 60.0, 6.0, 0.6); // change object
+      s.setValue(50.0f, 5.0f, 0.5f, 60.0f, 6.0f, 0.6f); // change object
        k = s * 2.0;
       if (k.total() != 396.0)
             cout << "simple multiply operator test FAILED" << endl;
 
       cout << endl << "Test divide operator:" << endl;
-      s.setValue(50.0, 5.0, 0.5, 60.0, 6.0, 0.6); // change object
+      s.setValue(50.0f, 5.0f, 0.5f, 60.0f, 6.0f, 0.6f); // change object
        k = s/p;
       if (k.total() < 16.58332 || k.total() > 16.58334)
             cout << "divide operator test FAILED" << endl;
 
       cout << endl << "Test simple divide operator:" << endl;
-      s.setValue(50.0, 5.0, 0.5, 60.0, 6.0, 0.6); // change object
+      s.setValue(50.0f, 5.0f, 0.5f, 60.0f, 6.0f, 0.6f); // change object
        k = s / 2.0;
       if (k.total() != 99.0)
             cout << "simple divide operator test FAILED" << endl;
 
       PlantPool t;
-      t.setValue(50.0, 5.0, 0.5, 60.0, 6.0, 0.6); // change object
+      t.setValue(50.0f, 5.0f, 0.5f, 60.0f, 6.0f, 0.6f); // change object
       cout << endl << "Display PlantPool t" << endl;
       t.display();
 
       PlantPool x;
-      x.setValue(50.0, 5.0, 0.5, 60.0, 6.0, 0.6); // change object
+      x.setValue(50.0f, 5.0f, 0.5f, 60.0f, 6.0f, 0.6f); // change object
 
       cout << endl << "Display PlantPool x - static binding" << endl;
       x.display();

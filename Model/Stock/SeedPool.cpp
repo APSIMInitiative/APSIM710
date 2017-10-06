@@ -275,11 +275,11 @@ float SeedPartType::divide (const float dividend, const float divisor, float def
 
    {
    //Constant Values
-   const float LARGEST = 1.0e30;    //largest acceptable no. for quotient
-   const float SMALLEST = 1.0e-30;  //smallest acceptable no. for quotient
-   const float nought = 0.0;
-   const float one = 1.0;
-   const float granularity = 1.0e-6;
+   const float LARGEST = 1.0e30f;    //largest acceptable no. for quotient
+   const float SMALLEST = 1.0e-30f;  //smallest acceptable no. for quotient
+   const float nought = 0.0f;
+   const float one = 1.0f;
+   const float granularity = 1.0e-6f;
 
    //Local Varialbes
    float quotient;
