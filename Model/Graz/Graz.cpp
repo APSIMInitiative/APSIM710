@@ -13,10 +13,10 @@
 #include "Graz.h"
 using namespace std;
 
-const float gm2kg = 1.0/1000.0;           // constant to convert g to kg
-const float kg2gm = 1000.0;               // conversion of kilograms to grams
-const float ha2sm = 10000.0;              // conversion of hectares to sq metres
-const float sm2ha = 1.0/10000.0;          // constant to convert m^2 to hectares
+const float gm2kg = 1.0f/1000.0f;           // constant to convert g to kg
+const float kg2gm = 1000.0f;               // conversion of kilograms to grams
+const float ha2sm = 10000.0f;              // conversion of hectares to sq metres
+const float sm2ha = 1.0f/10000.0f;          // constant to convert m^2 to hectares
 
 #define min(a, b)  (((a) < (b)) ? (a) : (b))
 #define max(a, b)  (((a) > (b)) ? (a) : (b))
@@ -137,16 +137,16 @@ void grazComponent::onPrepare(void)
 //        cout << avail.Cohorts[cohort].Organ << " " << avail.Cohorts[cohort].AgeID << endl;
         if (Str_i_Eq(avail.element[cohort].Organ , "leaf") &&
             Str_i_Eq(avail.element[cohort].AgeID , "green")) 
-           green_leaf = avail.element[cohort].Weight;        // comes in kg/ha
+           green_leaf = (float)avail.element[cohort].Weight;        // comes in kg/ha
         else if (Str_i_Eq(avail.element[cohort].Organ , "stem") &&
                  Str_i_Eq(avail.element[cohort].AgeID , "green"))
-           green_stem = avail.element[cohort].Weight;
+           green_stem = (float)avail.element[cohort].Weight;
         else if (Str_i_Eq(avail.element[cohort].Organ , "leaf") &&
                  Str_i_Eq(avail.element[cohort].AgeID , "senesced"))
-           dead_leaf = avail.element[cohort].Weight;
+           dead_leaf = (float)avail.element[cohort].Weight;
         else if (Str_i_Eq(avail.element[cohort].Organ , "stem") &&
                  Str_i_Eq(avail.element[cohort].AgeID , "senesced")) 
-           dead_stem = avail.element[cohort].Weight;
+           dead_stem = (float)avail.element[cohort].Weight;
         }
       if (green_leaf < 0 || green_stem < 0 || dead_leaf < 0 || dead_stem < 0 )
          throw std::runtime_error("Missing parts in AvailableToAnimalType??");
@@ -200,14 +200,14 @@ void grazComponent::eat(void)
 
    green_pool = green_leaf + green_stem;
    dead_pool = dead_leaf + dead_stem;
-   tsdm = max(green_pool + dead_pool, 0.0);
+   tsdm = max(green_pool + dead_pool, 0.0f);
 
-   green_prop = divide (green_pool, tsdm, 0.0);
-   green_prop_leaf = divide (green_leaf, green_pool, 0.0);
-   dead_prop_leaf = divide (dead_leaf, dead_pool, 0.0);
+   green_prop = (float)divide (green_pool, tsdm, 0.0);
+   green_prop_leaf = (float)divide (green_leaf, green_pool, 0.0);
+   dead_prop_leaf = (float)divide (dead_leaf, dead_pool, 0.0);
 
-   mod_green_prop = (green_prop - 0.10) / 0.90;
-   mod_green_prop = max (mod_green_prop, (float)0.0);
+   mod_green_prop = (float)((green_prop - 0.10) / 0.90);
+   mod_green_prop = max (mod_green_prop, 0.0f);
 
    // If green is less than 10%, no active selection for green by stock
    if (mod_green_prop > 0.0) {
@@ -219,7 +219,7 @@ void grazComponent::eat(void)
    // Calculate utilization and its effects on intake
    prop_consumed = 0.0;
    if (acc_growth > 0.01) {
-      prop_consumed = divide(acc_eaten, acc_growth, 0.0);
+      prop_consumed = (float)divide(acc_eaten, acc_growth, 0.0);
       prop_consumed = bound(prop_consumed, 0.0, 1.0);
    } 
 
@@ -227,73 +227,73 @@ void grazComponent::eat(void)
    intake_restr_growth = intake_util_intercept + intake_util_slope * prop_consumed;
 
    // restriction by low tsdm:
-   intake_restr_tsdm = divide (tsdm, yld_eat_restr, 0.0);
+   intake_restr_tsdm = (float)divide (tsdm, yld_eat_restr, 0.0);
    intake_restr = min (intake_restr_tsdm, intake_restr_growth) ;
    intake_restr = bound (intake_restr, 0.0, 1.0);
 
    // This is the animal lwg model. calculate intake per head
-   anim_intake = intake_restr * (graz_pot_lwg () + 1.058) / 0.304;
-   anim_intake = max(anim_intake, 0.0);
+   anim_intake = (float)(intake_restr * (graz_pot_lwg () + 1.058) / 0.304);
+   anim_intake = max(anim_intake, 0.0f);
    
    // Restrict intake such that the herd cannot eat more than is
    //     in sward, then adjust individual animal intake accordingly
    stock_equiv = graz_stock_equiv ();
    tsdm_eaten = bound (stock_equiv * anim_intake, 0.0, tsdm);
 
-   anim_intake = divide(tsdm_eaten, stock_equiv, 0.0);
+   anim_intake = (float)divide(tsdm_eaten, stock_equiv, 0.0);
 
    //  Lwg calculation.
    if (allow_supplements) {
       // if supplementing, there is no restriction effect on LWG
       dlt_lwg = graz_pot_lwg();
    } else {
-      dlt_lwg = anim_intake * 0.304 - 1.058;
+      dlt_lwg = (float)(anim_intake * 0.304 - 1.058);
    }
 
    //  Restrict the lwg, so that alw never goes below minimum
    // not in spaghetti !!!
    dlt_lwg = max (MIN_ALW - alw, dlt_lwg);
 
-   curve_factor = divide (0.5 * leaf_diet - leaf_diet,
+   curve_factor = (float)divide (0.5 * leaf_diet - leaf_diet,
                           0.5 * leaf_diet - 0.5, 0.0);
 
    green_eaten = green_diet * tsdm_eaten;
    green_eaten = min(green_pool, green_eaten);
-   dead_eaten = (1.0 - green_diet) * tsdm_eaten;
+   dead_eaten = (float)((1.0 - green_diet) * tsdm_eaten);
    dead_eaten = min(dead_pool, dead_eaten);
 
    green_leaf_eaten = green_eaten *
           graz_comp_curve(green_prop_leaf, curve_factor);
-   green_leaf_eaten = max(min(green_leaf, green_leaf_eaten), 0.0);
+   green_leaf_eaten = max(min(green_leaf, green_leaf_eaten), 0.0f);
 
    dead_leaf_eaten = dead_eaten *
           graz_comp_curve(dead_prop_leaf, curve_factor);
-   dead_leaf_eaten = max(min(dead_leaf, dead_leaf_eaten), 0.0);
+   dead_leaf_eaten = max(min(dead_leaf, dead_leaf_eaten), 0.0f);
 
    green_stem_eaten = green_eaten - green_leaf_eaten;
-   green_stem_eaten = max(min(green_stem, green_stem_eaten), 0.0);
+   green_stem_eaten = max(min(green_stem, green_stem_eaten), 0.0f);
 
    dead_stem_eaten = dead_eaten - dead_leaf_eaten ;
-   dead_stem_eaten = max(min(dead_stem, dead_stem_eaten), 0.0);
+   dead_stem_eaten = max(min(dead_stem, dead_stem_eaten), 0.0f);
 
    // Trampling
-   float trampledFraction = max(0.0, divide(1.0, prop_can_eat, 0.0) - 1.0);
+   float trampledFraction = (float)max(0.0, divide(1.0, prop_can_eat, 0.0) - 1.0);
 
    // Apportion equally to green/dead leaf and stem
    // Limit the trampling so that we don't trample more than is actually there.
    if (tsdm_eaten > 0 && trampledFraction > 0) 
    	{
-        green_leaf_trampled = max(0.0, min(green_leaf - green_leaf_eaten, trampledFraction * green_leaf_eaten));
-        dead_leaf_trampled = max(0.0, min(dead_leaf - dead_leaf_eaten, trampledFraction * dead_leaf_eaten));
-        green_stem_trampled = max(0.0, min(green_stem - green_stem_eaten, trampledFraction * green_stem_eaten));
-        dead_stem_trampled = max(0.0, min(dead_stem - dead_stem_eaten, trampledFraction * dead_stem_eaten));
+        green_leaf_trampled = max(0.0f, min(green_leaf - green_leaf_eaten, trampledFraction * green_leaf_eaten));
+        dead_leaf_trampled = max(0.0f, min(dead_leaf - dead_leaf_eaten, trampledFraction * dead_leaf_eaten));
+        green_stem_trampled = max(0.0f, min(green_stem - green_stem_eaten, trampledFraction * green_stem_eaten));
+        dead_stem_trampled = max(0.0f, min(dead_stem - dead_stem_eaten, trampledFraction * dead_stem_eaten));
         }
     }
 
 // Calculate stock equivalent
 float grazComponent::graz_stock_equiv (void)
    {
-   float a = divide (alw, std_alw, 0.0);
+   float a = (float)divide (alw, std_alw, 0.0);
    return (stocking_rate * (pow(a, metabol_expon)));
    }
 
@@ -310,13 +310,13 @@ float grazComponent::graz_pot_lwg (void)
       throw ("Unknown month??");
 
    if (season[month] == SUMMER) {
-       return(divide (summer_lwg, DAYS_PER_SEASON, 0.0));
+       return((float)divide (summer_lwg, DAYS_PER_SEASON, 0.0f));
    } else if (season[month] == AUTUMN) {
-       return(divide (autumn_lwg, DAYS_PER_SEASON, 0.0));
+       return((float)divide (autumn_lwg, DAYS_PER_SEASON, 0.0f));
    } else if (season[month] == WINTER) {
-       return( divide (winter_lwg, DAYS_PER_SEASON, 0.0));
+       return((float)divide (winter_lwg, DAYS_PER_SEASON, 0.0f));
    } else if (season[month] == SPRING) {
-       return(divide (spring_lwg, DAYS_PER_SEASON, 0.0));
+       return((float)divide (spring_lwg, DAYS_PER_SEASON, 0.0f));
    }
    throw ("Unknown season??");
 }
@@ -328,7 +328,7 @@ float grazComponent::graz_comp_curve(float ndx, float a)
 //*     in the range [0-1] to another index in the same range, but
 //*     weighted in a different way. The weighting is controlled by the a
 //*     parameter. An a value of 1 leaves the index untransformed.
-   return( divide(a * ndx, (ndx * (a - 1) + 1), 0.0));
+   return((float)divide(a * ndx, (ndx * (a - 1) + 1), 0.0f));
 }
 
 void grazComponent::event (void)
@@ -412,31 +412,31 @@ void grazComponent::update (void)
       if (gl >= 0 && green_leaf_trampled > 0) {
          chopped.dm_type.push_back(avail.element[gl].CohortID);
          chopped.dlt_crop_dm.push_back(green_leaf_trampled);
-         chopped.dlt_dm_n.push_back(avail.element[gl].N * divide(green_leaf_trampled, avail.element[gl].Weight, 0.0));
-         chopped.dlt_dm_p.push_back(avail.element[gl].P * divide(green_leaf_trampled, avail.element[gl].Weight, 0.0));
+         chopped.dlt_dm_n.push_back((float)(avail.element[gl].N * divide(green_leaf_trampled, avail.element[gl].Weight, 0.0)));
+         chopped.dlt_dm_p.push_back((float)(avail.element[gl].P * divide(green_leaf_trampled, avail.element[gl].Weight, 0.0)));
          chopped.fraction_to_residue.push_back(1.0);
       }
       if (gs >= 0 && green_stem_trampled > 0) {
          chopped.dm_type.push_back(avail.element[gs].CohortID);
          chopped.dlt_crop_dm.push_back(green_stem_trampled);
-         chopped.dlt_dm_n.push_back(avail.element[gs].N * divide(green_stem_trampled, avail.element[gs].Weight, 0.0));
-         chopped.dlt_dm_p.push_back(avail.element[gs].P * divide(green_stem_trampled, avail.element[gs].Weight, 0.0));
+         chopped.dlt_dm_n.push_back((float)(avail.element[gs].N * divide(green_stem_trampled, avail.element[gs].Weight, 0.0)));
+         chopped.dlt_dm_p.push_back((float)(avail.element[gs].P * divide(green_stem_trampled, avail.element[gs].Weight, 0.0)));
          chopped.fraction_to_residue.push_back(1.0);
       }
 
       if (dl >= 0 && dead_leaf_trampled > 0) {
          chopped.dm_type.push_back(avail.element[dl].CohortID);
          chopped.dlt_crop_dm.push_back(dead_leaf_trampled);
-         chopped.dlt_dm_n.push_back(avail.element[dl].N * divide(dead_leaf_trampled, avail.element[dl].Weight, 0.0));
-         chopped.dlt_dm_p.push_back(avail.element[dl].P * divide(dead_leaf_trampled, avail.element[dl].Weight, 0.0));
+         chopped.dlt_dm_n.push_back((float)(avail.element[dl].N * divide(dead_leaf_trampled, avail.element[dl].Weight, 0.0)));
+         chopped.dlt_dm_p.push_back((float)(avail.element[dl].P * divide(dead_leaf_trampled, avail.element[dl].Weight, 0.0)));
          chopped.fraction_to_residue.push_back(1.0);
       }
 
       if (ds >= 0 && dead_stem_trampled > 0) {
          chopped.dm_type.push_back(avail.element[ds].CohortID);
          chopped.dlt_crop_dm.push_back(dead_stem_trampled);
-         chopped.dlt_dm_n.push_back(avail.element[ds].N * divide(dead_stem_trampled, avail.element[ds].Weight, 0.0));
-         chopped.dlt_dm_p.push_back(avail.element[ds].P * divide(dead_stem_trampled, avail.element[ds].Weight, 0.0));
+         chopped.dlt_dm_n.push_back((float)(avail.element[ds].N * divide(dead_stem_trampled, avail.element[ds].Weight, 0.0)));
+         chopped.dlt_dm_p.push_back((float)(avail.element[ds].P * divide(dead_stem_trampled, avail.element[ds].Weight, 0.0)));
          chopped.fraction_to_residue.push_back(1.0);
       }
          
@@ -473,11 +473,11 @@ double divide (double dividend, double divisor, double default_value)
    double quotient;
 
    //Implementation
-   if(isEqual(divisor, 0.0))  //dividing by 0
+   if(isEqual((float)divisor, 0.0f))  //dividing by 0
       {
       quotient = default_value;
       }
-   else if(isEqual(dividend, 0.0))      //multiplying by 0
+   else if(isEqual((float)dividend, 0.0f))      //multiplying by 0
       {
       quotient = 0.0;
       }
@@ -535,7 +535,7 @@ float bound(float var, float lower, float upper)
    float high;             //temporary variable constrained
                            //to upper limit of variable
 
-   numeric_limits<float> mathInfo;
+   numeric_limits<float> mathInfo = numeric_limits<float>();
    float epsilon =  mathInfo.epsilon();
 
    //check that lower & upper bounds are valid
