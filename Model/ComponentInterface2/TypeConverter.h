@@ -57,7 +57,7 @@ class EXPORT TypeConverter
       TypeConverter(int source, std::vector<float>& dest)
          {
          dest.erase(dest.begin(), dest.end());
-         dest.push_back(source);
+         dest.push_back((float)source);
          }
       TypeConverter(int source, std::vector<double>& dest)
          {
@@ -117,7 +117,7 @@ class EXPORT TypeConverter
       TypeConverter(double source, std::vector<float>& dest)
          {
          dest.erase(dest.begin(), dest.end());
-         dest.push_back(source);
+         dest.push_back((float)source);
          }
       TypeConverter(double source, std::vector<double>& dest)
          {
@@ -194,7 +194,7 @@ class EXPORT TypeConverter
          if (values.size() != 1)
             throw std::runtime_error("Data type conversion error. Cannot convert from integer array to single");
          else
-            dest = values[0];
+            dest = (float)values[0];
          }
       TypeConverter(const std::vector<int>& source, double& dest)
          {
@@ -208,7 +208,7 @@ class EXPORT TypeConverter
       TypeConverter(const std::vector<int>& source, std::vector<bool>& dest)
          {
          dest.erase(dest.begin(), dest.end());
-         std::copy(source.begin(), source.end(), back_inserter(dest));
+		 for (unsigned int i = 0; i < source.size(); i++) { dest.push_back(source[i] != 0); }
          }
       TypeConverter(const std::vector<int>& source, std::vector<int>& dest)
          {
@@ -217,7 +217,7 @@ class EXPORT TypeConverter
       TypeConverter(const std::vector<int>& source, std::vector<float>& dest)
          {
          dest.erase(dest.begin(), dest.end());
-         std::copy(source.begin(), source.end(), back_inserter(dest));
+		 for (unsigned int i = 0; i < source.size(); i++) { dest.push_back((float)source[i]); }
          }
       TypeConverter(const std::vector<int>& source, std::vector<double>& dest)
          {
@@ -266,7 +266,7 @@ class EXPORT TypeConverter
       TypeConverter(const std::vector<float>& source, std::vector<bool>& dest)
          {
          dest.erase(dest.begin(), dest.end());
-         std::copy(source.begin(), source.end(), back_inserter(dest));
+		 for (unsigned int i = 0; i < source.size(); i++) { dest.push_back(source[i] != 0.0f); }
          }
       TypeConverter(const std::vector<float>& source, std::vector<int>& dest)
          {
@@ -310,7 +310,7 @@ class EXPORT TypeConverter
          if (values.size() != 1)
             throw std::runtime_error("Data type conversion error. Cannot convert from double array to single");
          else
-            dest = values[0];
+            dest = (float)values[0];
          }
 
       TypeConverter(const std::vector<double>& source, double& dest)
@@ -325,7 +325,7 @@ class EXPORT TypeConverter
       TypeConverter(const std::vector<double>& source, std::vector<bool>& dest)
          {
          dest.erase(dest.begin(), dest.end());
-         std::copy(source.begin(), source.end(), back_inserter(dest));
+		 for (unsigned int i = 0; i < source.size(); i++) { dest.push_back(source[i] != 0.0); }
          }
       TypeConverter(const std::vector<double>& source, std::vector<int>& dest)
          {
@@ -335,7 +335,7 @@ class EXPORT TypeConverter
       TypeConverter(const std::vector<double>& source, std::vector<float>& dest)
          {
          dest.erase(dest.begin(), dest.end());
-         std::copy(source.begin(), source.end(), back_inserter(dest));
+		 for (unsigned int i = 0; i < source.size(); i++) { dest.push_back((float)source[i]); }
          }
       TypeConverter(const std::vector<double>& source, std::vector<double>& dest)
          {

@@ -164,12 +164,12 @@ unsigned StringVariant::doRegistration()
 // ------------------------------------------------------------------
 float StringVariant::asFloat()
    {
-   return atof(value->values[0].c_str());
+   return (float)atof(value->values[0].c_str());
    }
 // ------------------------------------------------------------------
 // return the value of this variable as an integer
 // ------------------------------------------------------------------
-float StringVariant::asInteger()
+int StringVariant::asInteger()
    {
    return atoi(value->values[0].c_str());
    }

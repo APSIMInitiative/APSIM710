@@ -286,7 +286,7 @@ inline void pack(MessageData& messageData, const std::vector<T>& values)
 template <class T>
 inline std::string DDML(std::vector<T>& value)
    {
-   T dummy;
+   T dummy = T();
    std::string ddml = DDML(dummy);
    addAttributeToXML(ddml, "array=\"T\"");
    return ddml;

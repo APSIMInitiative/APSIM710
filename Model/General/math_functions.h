@@ -433,7 +433,7 @@ void StringContainerToDoubleContainer (const container1& StringContainer,
    for (typename container1::const_iterator i = StringContainer.begin();
                                    i != StringContainer.end();
                                    i++)
-      DoubleContainer.push_back ( atof( (*i).c_str() ));
+      DoubleContainer.push_back (atof( (*i).c_str() ));
    }
 
 // ------------------------------------------------------------------

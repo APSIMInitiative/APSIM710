@@ -769,7 +769,7 @@ void CMPComponentInterface::onInit2(const Message& message)
    if ((tickID = nameToRegistrationID("tick", respondToEventReg)) == 0)
    	  {
    	  // We need a tick to determine when to write the "day = ..." heading to a summary file.
-      Null dummy;
+      Null dummy = Null();
    	  tickID = RegisterWithPM("tick", "", "", respondToEventReg, new PackableWrapper< Null >(dummy));
    	  }
    }
@@ -884,7 +884,7 @@ std::string CMPComponentInterface::getExecutableFileName(void) {return dllName; 
 // the variable name probing works
 void CMPComponentInterface::notifyFutureEvent(const std::string& name)
    {
-   Null dummy;
+   Null dummy = Null();
    RegisterWithPM(name, "", "", eventReg, new PackableWrapper< Null >(dummy));
    }
 

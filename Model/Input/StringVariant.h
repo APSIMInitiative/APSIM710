@@ -34,7 +34,7 @@ class EXPORT StringVariant
       void setVariable(protocol::QuerySetValueData& setValueData);
       unsigned doRegistration(void);
       float asFloat(void);
-      float asInteger(void);
+      int asInteger(void);
       std::string getName(void);
       std::string getUnits(void);
       void setTemporalValue(Value* value);
