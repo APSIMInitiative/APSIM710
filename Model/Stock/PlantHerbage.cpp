@@ -460,7 +460,7 @@ void PlantHerbage::getStage()
          }
          if (cropStageName == "maturity")
          {
-            cropMatureStageNo = cropStageNo;
+            cropMatureStageNo = (int)cropStageNo;
          }
          else
          {  // leave as is
@@ -698,11 +698,11 @@ void PlantHerbage::initialiseData ( void )
 
       for (int pool = 0; pool < maxDmdPoolsVeg; pool++)
          cDmdValueVeg[pool] = 0.0;
-      cNumDmdPoolsVeg = 0.0;
+      cNumDmdPoolsVeg = 0;
 
       for (int pool = 0; pool < maxDmdPoolsSeed; pool++)
          cDmdValueSeed[pool] = 0.0;
-      cNumDmdPoolsSeed = 0.0;
+      cNumDmdPoolsSeed = 0;
 
       for (int part = 0; part < max_part; part++)
       {
@@ -1000,8 +1000,8 @@ void PlantHerbage::proportion (float dmdAvg, float dmdMax, float dmdMin, float d
 
 
    float x = (dmdMax == dmdMin) ? 0.0f : (dmdAvg - dmdMin) / (dmdMax - dmdMin);
-   int startDmd = (MAXDMD - dmdMax) / ClassWidth + errorMargin;  // index of first (highest) pool to distribute average to
-   int endDmd = (MAXDMD - dmdMin) / ClassWidth + errorMargin;    // index of last (lowest) pool to distribute average to
+   int startDmd = (int)((MAXDMD - dmdMax) / ClassWidth + errorMargin);  // index of first (highest) pool to distribute average to
+   int endDmd = (int)((MAXDMD - dmdMin) / ClassWidth + errorMargin);    // index of last (lowest) pool to distribute average to
    int numPools = (endDmd - startDmd) + 1;               // number of pools the average will be distributed over
 
    switch (numPools)

@@ -201,8 +201,8 @@ void ResidueHerbage::proportion (float dmdAvg, float dmdMax, float dmdMin, float
 
 
    float x = (dmdAvg - dmdMin) / (dmdMax - dmdMin);
-   int startDmd = (MAXDMD - dmdMax)*10.0 + errorMargin;
-   int endDmd = (MAXDMD - dmdMin)*10.0 + errorMargin;
+   int startDmd = (int)((MAXDMD - dmdMax)*10.0 + errorMargin);
+   int endDmd = (int)((MAXDMD - dmdMin)*10.0 + errorMargin);
    int numPools = (endDmd - startDmd) + 1;
 
    switch (numPools)
@@ -303,7 +303,7 @@ void ResidueHerbage::dmdClass (float dmdMax, float dmdMin, float &dmdClassMax, f
 
    for (int dmdClassNum = 0; dmdClassNum < cNumDmdPoolsVeg; dmdClassNum++)
    {           // Assume dmdValue in descending order
-      dmdClassMax = dmdClassNum;
+      dmdClassMax = (float)dmdClassNum;
       if (fabs(dmdMax - cDmdValueVeg[dmdClassNum]) < errorMargin)
       {
          break;
@@ -312,7 +312,7 @@ void ResidueHerbage::dmdClass (float dmdMax, float dmdMin, float &dmdClassMax, f
 
    for (int dmdClassNum = 0; dmdClassNum < cNumDmdPoolsVeg; dmdClassNum++)
    {           // Assume dmdValue in descending order
-      dmdClassMin = dmdClassNum;
+      dmdClassMin = (float)dmdClassNum;
       if (fabs(dmdMin - cDmdValueVeg[dmdClassNum]) < errorMargin)
       {
          break;

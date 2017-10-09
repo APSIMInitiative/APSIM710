@@ -8,12 +8,12 @@ using namespace std;
 #define singleArrayTypeDDML "<type  array=\"T\" kind=\"single\"/>"
 #define singleTypeDDML "<type  kind=\"single\"/>"
 
-      const float kg2g = 1000.0 ;
-      const float ha2sm = 10000.0 ;
-      const float g2kg = 1.0/kg2g ;
-      const float sm2ha = 1.0/ha2sm ;
-      const float cmol2mol = 1.0/100.0 ;
-      const float mm2m = 1.0/1000.0;
+      const float kg2g = 1000.0f ;
+      const float ha2sm = 10000.0f ;
+      const float g2kg = 1.0f/kg2g ;
+      const float sm2ha = 1.0f/ha2sm ;
+      const float cmol2mol = 1.0f/100.0f ;
+      const float mm2m = 1.0f/1000.0f;
 
 // ------------------------------------------------------------------
 // Return a blank string when requested to indicate that we
@@ -296,8 +296,7 @@ void PastureConverter::doburnPasture(unsigned int& fromID, unsigned int& eventID
 void PastureConverter::dospraytopPasture(unsigned int& fromID, unsigned int& eventID, protocol::Variant& variant)
 //===========================================================================
 {
-   char* null = "";
-   publish (spraytopID, null);
+   publishNull (spraytopID);
 }
 
 // ------------------------------------------------------------------
@@ -335,11 +334,11 @@ void PastureConverter::doAddFOM(unsigned int& fromID, unsigned int& eventID, pro
          msg << "P = " << FOMAdded.fom[layer].p  << " (kg/ha); ";
          msg << "S = " << FOMAdded.fom[layer].s  << " (kg/ha); ";
          msg << "ash_alk = " << FOMAdded.fom[layer].ash_alk  << " (mol/ha) " << endl;
-         weightTotal +=  FOMAdded.fom[layer].weight;
-         NTotal +=  FOMAdded.fom[layer].n;
-         PTotal +=  FOMAdded.fom[layer].p;
-         STotal +=  FOMAdded.fom[layer].s;
-         ashAlkTotal +=  FOMAdded.fom[layer].ash_alk;
+         weightTotal += (float) FOMAdded.fom[layer].weight;
+         NTotal +=  (float)FOMAdded.fom[layer].n;
+         PTotal +=  (float)FOMAdded.fom[layer].p;
+         STotal +=  (float)FOMAdded.fom[layer].s;
+         ashAlkTotal +=  (float)FOMAdded.fom[layer].ash_alk;
       }
 
       msg << endl << "  Totals: ";
@@ -358,9 +357,9 @@ void PastureConverter::doAddFOM(unsigned int& fromID, unsigned int& eventID, pro
 
    for (int layer = 0; layer < numLayers; layer++)
    {
-      dltDMincorp.push_back(FOMAdded.fom[layer].weight);
-      dltNincorp.push_back(FOMAdded.fom[layer].n);
-      dltPincorp.push_back(FOMAdded.fom[layer].p);
+      dltDMincorp.push_back((float)FOMAdded.fom[layer].weight);
+      dltNincorp.push_back((float)FOMAdded.fom[layer].n);
+      dltPincorp.push_back((float)FOMAdded.fom[layer].p);
    }
 
    protocol::FOMLayerType IncorpFOM;
@@ -459,7 +458,7 @@ void PastureConverter::sendCO2 (protocol::QueryValueData& queryData)
 float PastureConverter::vpd(float cSVPFract, float maxt, float mint) //(INPUT)
 //==========================================================================
 {
-      return (max (cSVPFract * ( svp(maxt) - svp(mint)), 0.01));
+      return (max (cSVPFract * ( svp(maxt) - svp(mint)), 0.01f));
 }
 
 //==========================================================================
@@ -478,8 +477,8 @@ float PastureConverter::svp(float temp) //(INPUT)  fraction of distance between 
       const double ES0 = 6.1078;            // Teten coefficients -SATURATION VAPOR PRESSURE (MB) OVER WATER AT 0C
       const double TC_B = 17.269388;        // Teten coefficients
       const double TC_C = 237.3;            // Teten coefficients
-      const float mb2kpa = 100.0/1000.0;    // convert pressure mbar to kpa 1000 mbar = 100 kpa
+      const float mb2kpa = 100.0f/1000.0f;    // convert pressure mbar to kpa 1000 mbar = 100 kpa
 
-   return  (ES0 * exp(TC_B * temp / (TC_C + temp)) * mb2kpa);
+	  return  (float)(ES0 * exp(TC_B * temp / (TC_C + temp)) * mb2kpa);
    }
 

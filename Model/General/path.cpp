@@ -689,7 +689,7 @@ bool DirectoryExists (const std::string &d)
   if (attribs == INVALID_FILE_ATTRIBUTES) {
     return false;
   }
-  return (attribs & FILE_ATTRIBUTE_DIRECTORY);
+  return (attribs & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY;
 #else
     //directory test
     struct stat statbuf;
