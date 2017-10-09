@@ -36,7 +36,7 @@ void StringVariant::sendVariable(QueryValueData& queryData, bool useMainValue)
       std::vector<int>   integerArray;
       switch (type)
          {
-         case Real:         StringContainerToDoubleContainer(valueToUse->values, realArray);
+         case Real:         StringContainerToFloatContainer(valueToUse->values, realArray);
                             parent->sendVariable(queryData, realArray[0]);
                             break;
          case Integer:      StringContainerToIntegerContainer(valueToUse->values, integerArray);
@@ -44,7 +44,7 @@ void StringVariant::sendVariable(QueryValueData& queryData, bool useMainValue)
                             break;
          case String:       parent->sendVariable(queryData, valueToUse->values[0]);
                             break;
-         case RealArray:    StringContainerToDoubleContainer(valueToUse->values, realArray);
+         case RealArray:    StringContainerToFloatContainer(valueToUse->values, realArray);
                             parent->sendVariable(queryData, realArray);
                             break;
          case IntegerArray: StringContainerToIntegerContainer(valueToUse->values, integerArray);

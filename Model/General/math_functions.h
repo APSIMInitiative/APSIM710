@@ -437,6 +437,18 @@ void StringContainerToDoubleContainer (const container1& StringContainer,
    }
 
 // ------------------------------------------------------------------
+template <class container1, class container2>
+void StringContainerToFloatContainer(const container1& StringContainer,
+	container2& FloatContainer)
+{
+	FloatContainer.erase(FloatContainer.begin(), FloatContainer.end());
+	for (typename container1::const_iterator i = StringContainer.begin();
+		i != StringContainer.end();
+		i++)
+		FloatContainer.push_back(strtof((*i).c_str(), NULL));
+}
+
+// ------------------------------------------------------------------
 //  Short description:
 //    convert a container of strings to a container of doubles.
 

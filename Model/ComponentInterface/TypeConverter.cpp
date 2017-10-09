@@ -70,7 +70,7 @@ class SingleFromInt4 : public TypeConverter
          {
          int value;
          messageData >> value;
-         float result = value;
+         float result = (float)value;
 
          bufferMessageData << result;
          }
@@ -266,7 +266,7 @@ class SingleFromDouble : public TypeConverter
          {
          double value;
          messageData >> value;
-         float result = value;
+         float result = (float)value;
 
          bufferMessageData << result;
          }
