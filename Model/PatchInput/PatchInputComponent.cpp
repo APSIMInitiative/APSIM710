@@ -223,7 +223,7 @@ GDate PatchInputComponent::advanceToTodaysPatchData(unsigned int fromID)
          else
             return GDate(infin);
          }
-      catch (const std::exception& err) // probably caused by a leap year exception. ?? WELL WHY NOT TEST FOR IT ??
+      catch (...)//const std::exception& err) // probably caused by a leap year exception. ?? WELL WHY NOT TEST FOR IT ??
          {
          }
       }
@@ -256,7 +256,7 @@ void PatchInputComponent::respondToEvent(unsigned int& fromID, unsigned int& eve
       variant.unpack(newmet);
       GDate d;                        // There should be a better way for this - FIXME!!
       unsigned int year, month, day; 
-      d.Set(newmet.today);
+      d.Set((unsigned long)newmet.today);
       d.Get_dmy(day, month, year);
       gTodaysDate = GDate(day, month, year);
 
@@ -299,13 +299,13 @@ void PatchInputComponent::respondToEvent(unsigned int& fromID, unsigned int& eve
       variant.unpack(data);
       for (unsigned i = 0; i != data.size(); i++)
          {
-         GDate d(data[i].today);
+         GDate d((unsigned long)(data[i].today));
          unsigned dayNumber = d.Get_day_of_year();
          if (d.Is_leap_year())
             dayNumber--;
 
          patchDataByDayNumber.insert(make_pair(dayNumber, data[i]));
-         patchDataByDate.insert(make_pair(data[i].today, data[i]));
+         patchDataByDate.insert(make_pair((unsigned long)(data[i].today), data[i]));
          }
       }
    else if (eventID != tickID)  // stop the tick event going to base class.

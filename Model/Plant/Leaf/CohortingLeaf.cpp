@@ -225,16 +225,16 @@ void CohortingLeaf::get_node_no_fx(protocol::Component *system, protocol::QueryV
       for (unsigned int cohort = 0; cohort < gLeafArea.size(); cohort++)
          {
 
-         if ((cohort == (gLeafArea.size()-1)) && gLeafAge[cohort]>cGrowthPeriod[cohort+1])
+         if ((cohort == (gLeafArea.size()-1)) && gLeafAge[cohort]>cGrowthPeriod[cohort+1.0f])
             {
             // We are dealing with the top node
-            node_no_fx = cohort + 1;
+            node_no_fx = cohort + 1.0f;
             break;
             }
-         else if (gLeafAge[cohort]>cGrowthPeriod[cohort+1] && gLeafAge[cohort+1]<=cGrowthPeriod[cohort+1+1])
+         else if (gLeafAge[cohort]>cGrowthPeriod[cohort+1.0f] && gLeafAge[cohort+1]<=cGrowthPeriod[cohort+1.0f+1.0f])
             {
             // This is the expanded node
-            node_no_fx = cohort+1; //+divide(gLeafAge[cohort+1],cGrowthPeriod[cohort+1+1],0.0);
+            node_no_fx = cohort+1.0f; //+divide(gLeafAge[cohort+1],cGrowthPeriod[cohort+1+1],0.0);
             break;
             }
          }
@@ -394,8 +394,8 @@ void CohortingLeaf::initialiseAreas(void)
    // Fill cohorts until no more area available
    for (int cohort = 0; cohort < cLeafNumberAtEmerg; cohort++)
       {
-      gLeafArea.push_back(cAreaPot[cohort+1]);
-      gLeafAreaMax.push_back(cAreaPot[cohort+1]);
+      gLeafArea.push_back(cAreaPot[cohort+1.0f]);
+      gLeafAreaMax.push_back(cAreaPot[cohort+1.0f]);
       gLeafAreaSen.push_back(0.0);
       gLeafAge.push_back(0.0);
       gDltLeafAreaPot.push_back(0.0);
@@ -542,8 +542,8 @@ void CohortingLeaf::leaf_area_potential (float tt)
    {
    for (unsigned int cohort = 0; cohort != gLeafArea.size(); cohort++)
       {
-      if (cGrowthPeriod[cohort+1] - gLeafAge[cohort] > 0.0)
-         gDltLeafAreaPot[cohort] = cAreaPot[cohort+1] * (gLeavesPerNode+gDltLeavesPerNode) * u_bound(divide(tt, cGrowthPeriod[cohort+1], 0.0), 1.0);
+      if (cGrowthPeriod[cohort+1.0f] - gLeafAge[cohort] > 0.0)
+         gDltLeafAreaPot[cohort] = (cAreaPot[cohort+1.0f]) * (gLeavesPerNode+gDltLeavesPerNode) * u_bound((float)divide(tt, cGrowthPeriod[cohort+1.0f], 0.0), 1.0f);
       else
          gDltLeafAreaPot[cohort] = 0.0;
       }
@@ -593,15 +593,15 @@ void CohortingLeaf::leaf_area_sen(float swdef_photo)
 
     // Age senescence for each cohort
     for (unsigned int cohort = 0; cohort != gLeafArea.size(); cohort++)
-       if (gLeafAge[cohort] > (cGrowthPeriod[cohort+1] + cLagPeriod[cohort+1]) &&
-           gLeafAge[cohort] < (cGrowthPeriod[cohort+1] + cLagPeriod[cohort+1] + cSenescingPeriod[cohort+1]))
+       if (gLeafAge[cohort] > (cGrowthPeriod[cohort+1.0f] + cLagPeriod[cohort+1.0f]) &&
+           gLeafAge[cohort] < (cGrowthPeriod[cohort+1.0f] + cLagPeriod[cohort+1.0f] + cSenescingPeriod[cohort+1.0f]))
           {
 //          float qq = (gLeafAreaMax[cohort]*dltTT)/cSenescingPeriod[cohort];
 //          if (qq > gLeafAreaMax[cohort])
 //             dltSLA_age[cohort] = gLeafAreaMax[cohort];
 //          else
 //             dltSLA_age[cohort] = qq;
-          float tt_remaining = (float)max(0.0,cGrowthPeriod[cohort+1] + cLagPeriod[cohort+1] + cSenescingPeriod[cohort+1] - gLeafAge[cohort]);
+          float tt_remaining = (float)max(0.0,cGrowthPeriod[cohort+1.0f] + cLagPeriod[cohort+1.0f] + cSenescingPeriod[cohort+1.0f] - gLeafAge[cohort]);
           float senfr = (float)min(1.0,divide(dltTT,tt_remaining,0.0));
           dltSLA_age[cohort] = gLeafArea[cohort]*senfr;
           }

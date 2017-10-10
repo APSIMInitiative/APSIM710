@@ -146,7 +146,7 @@ void RootPart::read()
    string st;
    scienceAPI.readOptional("MaxRootDepth", st);
    if (st != "" && Is_numerical(st.c_str()))
-      MaxRootDepth = atof(st.c_str());
+      MaxRootDepth = (float)atof(st.c_str());
    else
       MaxRootDepth = 0;
    scienceAPI.readOptional("crop_type", crop_type);
@@ -184,15 +184,15 @@ void RootPart::read()
                          
    rel_root_advance.read(scienceAPI,
                          "x_temp_root_advance", "(oc)", -10.0f, 60.0f,
-                         "y_rel_root_advance", "()", 0.0, 1.0f);
+                         "y_rel_root_advance", "()", 0.0f, 1.0f);
 
    root_depth_rate.read(scienceAPI,
-                         "stage_code_list", "()", 0.0, 100.0f,
-                         "root_depth_rate", "(mm/day)", 0.0, 1000.0f);
+                         "stage_code_list", "()", 0.0f, 100.0f,
+                         "root_depth_rate", "(mm/day)", 0.0f, 1000.0f);
 
    ws_root_fac.read(scienceAPI,
-                         "x_ws_root", "()", 0.0, 1.0f,
-                         "y_ws_root_fac", "()", 0.0, 1.0f);
+                         "x_ws_root", "()", 0.0f, 1.0f,
+                         "y_ws_root_fac", "()", 0.0f, 1.0f);
 
 // NIH This really should be inherited from simple part.
     c.MaintenanceCoefficient.readOptional(scienceAPI

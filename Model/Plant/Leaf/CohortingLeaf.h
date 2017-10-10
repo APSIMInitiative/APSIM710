@@ -33,9 +33,9 @@ class CohortingLeaf : public Leaf {
    float getLeafNo(void);
    float senFract (void);
    float dmGreenDemand(void)
-     { return(divide (dltLAI_stressed, cSLAMin * smm2sm, 0.0));};   // Maximum DM this part can take today
+     { return((float)divide (dltLAI_stressed, cSLAMin * smm2sm, 0.0));};   // Maximum DM this part can take today
 
-   float dltLeafAreaPot(void) {return (divide(dltLAI_stressed, plant->population().Density(), 0.0) * sm2smm);};
+   float dltLeafAreaPot(void) {return ((float)divide(dltLAI_stressed, plant->population().Density(), 0.0) * sm2smm);};
    void CanopyExpansion (int option, float, float, float);
    void leaf_area_stressed(float);
    void actual(void);

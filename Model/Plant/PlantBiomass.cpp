@@ -439,7 +439,7 @@ void cproc_rue_n_gradients(int   day,                  // !day of the year
 
    for(int i = 0; i < 5; i++)
       {
-      LAI[i]  = lai_green / 5.0;
+      LAI[i]  = (float)(lai_green / 5.0);
       }
 
         //==========================================================
@@ -468,7 +468,7 @@ void cproc_rue_n_gradients(int   day,                  // !day of the year
 //        80
 	      for(J = 0; J < 9; J++)
             {
-	         AVSLN = 0.7 + 0.3 * float(J - 1);
+	         AVSLN = (float)(0.7 + 0.3 * float(J - 1));
 //
 //	Set up loop for Gaussian integration of diurnal response
 //	using three times of day
@@ -476,7 +476,7 @@ void cproc_rue_n_gradients(int   day,                  // !day of the year
 	         for(ITIME = 0; ITIME < 3; ITIME++)
                {
 
-	            TIME = 0.06 + 0.19 * float(ITIME - 1);
+	            TIME = (float)(0.06 + 0.19 * float(ITIME - 1));
 //
 //	Calculate global radiation from latitude, day of year, and time of day
 //

@@ -89,7 +89,7 @@ float fruitOilPart::energyAdjustHI (float harvestIndex)
 //=======================================================================================
 // Returns an adjustment factor for converting biomass to account for oil (high c) content
    {
-   return divide (1.0
+   return (float)divide (1.0
                  , 1.0 + harvestIndex*(gGrain_energy - 1.0)
                  , 0.0);
    }
@@ -103,7 +103,7 @@ float fruitOilPart::addEnergy (float DM)
 float fruitOilPart::removeEnergy (float DM)
 //=======================================================================================
    {
-   return divide (DM, gGrain_energy, 0.0);
+   return (float)divide (DM, gGrain_energy, 0.0);
    }
 
 float fruitOilPart::dltDmGreen(void)
@@ -129,7 +129,7 @@ void fruitOilPart::doDMDemandGrain (float dlt_dm_grain_demand)
    {
    float dltDmOil = removeEnergy (dlt_dm_grain_demand) * cGrain_oil_conc;
    float dltDmOilConversion =  removeEnergy (dlt_dm_grain_demand) * (gGrain_energy - 1.0f);
-   DMGreenDemand = max(0.0, dltDmOil + dltDmOilConversion);
+   DMGreenDemand = max(0.0f, dltDmOil + dltDmOilConversion);
    if (isnan(DMGreenDemand)) {throw new runtime_error("DMGreenDemand is NAN in fruitOilPart::doDMDemandGrain");};
    }
 
@@ -144,7 +144,7 @@ float fruitOilPart::giveDmGreen(float delta)
 void fruitOilPart::doDmRetranslocate(float DMAvail, float DMDemandDifferentialTotal)
 //=======================================================================================
    {
-   float dltDM = DMAvail * divide (dmDemandDifferential(), DMDemandDifferentialTotal, 0.0);
+   float dltDM = (float)(DMAvail * divide (dmDemandDifferential(), DMDemandDifferentialTotal, 0.0));
    Retranslocation.SetNonStructuralDM((float)divide (dltDM, cCarbo_oil_conv_ratio, 0.0));
    dmOil_conv_retranslocate = dltDM - Retranslocation.DM();
    }

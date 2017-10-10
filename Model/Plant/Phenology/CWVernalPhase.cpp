@@ -73,7 +73,7 @@ float CWVernalPhase::crown_temp_nwheat (float maxt, float mint, float snow)
    else
         cn = mint;
 
-   return ((cn+cx)/2.0);
+   return (float)((cn+cx)/2.0);
    }
 
 //+  Mission Statement
@@ -121,15 +121,15 @@ float CWVernalPhase::wheat_vernaliz_days(float g_maxt    //Daily maximum Tempera
           {
           // Cold
           float vd,vd1,vd2;
-          vd1 = 1.4 - 0.0778 * tempcr;
-          vd2 = 0.5 + 13.44 / pow(g_maxt-g_mint + 3., 2) * tempcr;
+          vd1 = (float)(1.4 - 0.0778 * tempcr);
+          vd2 = (float)(0.5 + 13.44 / pow(g_maxt-g_mint + 3., 2) * tempcr);
           vd = min (vd1, vd2);
           dlt_cumvd = l_bound (vd, 0.0);
           }
       if (g_maxt > 30. && g_cumvd + dlt_cumvd < 10.)
           {
           // high temperature will reduce vernalization
-          dlt_cumvd = - 0.5*(g_maxt - 30.);
+          dlt_cumvd = - (float)(0.5*(g_maxt - 30.0));
           dlt_cumvd = - min(-(dlt_cumvd), g_cumvd);
           }
       }
@@ -149,8 +149,8 @@ float CWVernalPhase::wheat_vernaliz_effect(float p_vern_sens
     if (plant.phenology().inPhase("eme2ej"))
         {
         if (reqvd < 0.0) { reqvd = 50.0; }
-        vern_sens_fac =  p_vern_sens* 0.0054545 + 0.0003;
-        vfac = 1. - vern_sens_fac * (reqvd - (cumvd+dlt_cumvd));
+        vern_sens_fac =  (float)(p_vern_sens* 0.0054545 + 0.0003);
+        vfac = (float)(1.0 - vern_sens_fac * (reqvd - (cumvd+dlt_cumvd)));
         vern_effect = bound (vfac, 0.0, 1.0);
         }
     return vern_effect;

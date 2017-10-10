@@ -36,10 +36,10 @@ class GenericLeaf : public Leaf {
    float getNodeNo(void);
    float getDltNodeNo(void);
    float senFract (void)
-     { return(divide (dltSLAI, gLAI + dltLAI, 0.0)); };             // fraction of canopy senescing
+     { return((float)divide (dltSLAI, gLAI + dltLAI, 0.0)); };             // fraction of canopy senescing
    float dmGreenDemand(void)
-     { return(divide (dltLAI_stressed, cSLAMin * smm2sm, 0.0));};   // Maximum DM this part can take today (PFR)
-   float dltLeafAreaPot(void) {return (divide(dltLAI_stressed, plant->population().Density(), 0.0) * sm2smm);};
+     { return((float)divide (dltLAI_stressed, cSLAMin * smm2sm, 0.0));};   // Maximum DM this part can take today (PFR)
+   float dltLeafAreaPot(void) {return ((float)divide(dltLAI_stressed, plant->population().Density(), 0.0) * sm2smm);};
 
    void CanopyExpansion (int option, float, float, float);
    void leaf_area_stressed(float);

@@ -448,7 +448,7 @@ void fruitGrainPart::doNDemand2(float /*dlt_dm*/             // (INPUT)  Whole p
 float fruitGrainPart::dmGrainWetTotal(void)
 //=======================================================================================
    {
-   return (divide(Total.DM(), (1.0 - cGrn_water_cont), 0.0));
+   return (float)(divide(Total.DM(), (1.0 - cGrn_water_cont), 0.0));
    }
 
 float fruitGrainPart::grainWaterContent(void) {return cGrn_water_cont;}

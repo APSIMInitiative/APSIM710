@@ -47,13 +47,13 @@ void accumulate (float value,             //  (INPUT) value to add to array
          new_index = (int) (p_index + min (1.0, dlt_index));
          if (reals_are_equal((float)fmod((double)p_index,(double)1.0),0.0))
             {
-            fract_in_old = 1.0f - divide(index_devel - 1.0, dlt_index, 0.0);
+            fract_in_old = (float)(1.0 - divide(index_devel - 1.0, dlt_index, 0.0));
             portion_in_old = fract_in_old * (value + array[current_index])-
                                  array[current_index];
             }
          else
             {
-            fract_in_old = 1.0f - divide(index_devel - 1.0, dlt_index, 0.0);
+            fract_in_old = (float)(1.0 - divide(index_devel - 1.0, dlt_index, 0.0));
             portion_in_old = fract_in_old * value;
             }
          portion_in_new = value - portion_in_old;

@@ -387,8 +387,8 @@ void Phenology::onHarvest()
    string existingStage = stageName();
    lookupFunction stage_reduction_harvest;
    stage_reduction_harvest.read(scienceAPI,
-                                "stage_code_list" , "()", 1.0, 100.0,
-                                "stage_stem_reduction_harvest" , "()", 1.0, 100.0);
+                                "stage_code_list" , "()", 1.0f, 100.0f,
+                                "stage_stem_reduction_harvest" , "()", 1.0f, 100.0f);
 
    currentStage = stage_reduction_harvest[currentStage];
 

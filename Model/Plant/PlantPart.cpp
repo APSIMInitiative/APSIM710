@@ -168,7 +168,7 @@ void plantPart::prepare(void)
 void plantPart::doNFixRetranslocate(float NFix, float NDemandDifferentialTotal)
 //=======================================================================================
    {
-   Growth.AddN(NFix * divide (nDemandDifferential(), NDemandDifferentialTotal, 0.0));
+   Growth.AddN((float)(NFix * divide (nDemandDifferential(), NDemandDifferentialTotal, 0.0)));
    }
 
 void plantPart::doNPartition(float nSupply, float n_demand_sum, float n_capacity_sum)

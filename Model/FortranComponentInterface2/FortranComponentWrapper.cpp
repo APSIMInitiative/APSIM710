@@ -241,7 +241,7 @@ extern "C" int EXPORT STDCALL ReadDoubleArray
    string unitsDesc = FortranString(units, unitsLength).toString();
    vector<int> valueVec;
    bool result = currentWrapper->scienceAPI().read(variableName, unitsDesc,
-                                                   *optional != 0, valueVec, *lower, *upper);
+                                                   *optional != 0, valueVec, (int)*lower, (int)*upper);
 
    if ((int)valueVec.size() > *maxValues) currentWrapper->componentInterface().error("Too many elements for array " + variableName, true);
 

@@ -52,7 +52,7 @@ void fruitGrainPartFN::onInit1(protocol::Component *system)
 float fruitGrainPartFN::grainWt(void)
    //===========================================================================
 {
-   return divide (Total.DM(), gGrain_no, 0.0);
+   return (float)divide (Total.DM(), gGrain_no, 0.0);
 }
 
 void fruitGrainPartFN::get_grain_size(protocol::Component *system, protocol::QueryValueData &qd)
@@ -145,10 +145,10 @@ void fruitGrainPartFN::readSpeciesParameters(protocol::Component *system, vector
    {
    fruitGrainPart::readSpeciesParameters(system, sections);
 
-   rel_grainfill.read(scienceAPI, "x_temp_grainfill", "oC", 0.0, 80.0
-                                   , "y_rel_grainfill", "-", 0.0, 1.0);
-   rel_grain_n_fill.read(scienceAPI, "x_temp_grain_n_fill", "oC", 0.0, 40.0
-                                   , "y_rel_grain_n_fill", "-", 0.0, 1.0);
+   rel_grainfill.read(scienceAPI, "x_temp_grainfill", "oC", 0.0f, 80.0f
+                                   , "y_rel_grainfill", "-", 0.0f, 1.0f);
+   rel_grain_n_fill.read(scienceAPI, "x_temp_grain_n_fill", "oC", 0.0f, 40.0f
+                                   , "y_rel_grain_n_fill", "-", 0.0f, 1.0f);
    scienceAPI.read("potential_grain_n_filling_rate", cPotential_grain_n_filling_rate, 0.0f, 1.0f);
    scienceAPI.read("minimum_grain_n_filling_rate", cMinimum_grain_n_filling_rate, 0.0f, 1.0f);
    scienceAPI.read("crit_grainfill_rate", cCrit_grainfill_rate, 0.0f, 1.0f);
@@ -207,7 +207,7 @@ void fruitGrainPartFN::doDMDemandGrain(void)
 
           dlt_dm_yield = bound (dlt_dm_yield, 0.0, myParent->dltDmGrainMax());
 
-          gDlt_dm_grain_demand  = max(0.0, oilPart->addEnergy(dlt_dm_yield));// adding grain energy to potential new grain wt to get grain demand
+          gDlt_dm_grain_demand  = max(0.0f, oilPart->addEnergy(dlt_dm_yield));// adding grain energy to potential new grain wt to get grain demand
 
           // check that grain growth will not result in daily n conc below minimum conc
           // for daily grain growth
@@ -217,7 +217,7 @@ void fruitGrainPartFN::doDMDemandGrain(void)
           //      gDlt_dm_grain_demand = dlt_dm_grain_demand;
 
           oilPart->doDMDemandGrain(gDlt_dm_grain_demand);
-          mealPart->doDMDemandGrain(max(0.0, gDlt_dm_grain_demand - oilPart->dmGreenDemand()));
+          mealPart->doDMDemandGrain(max(0.0f, gDlt_dm_grain_demand - oilPart->dmGreenDemand()));
           }
      else
           gDlt_dm_grain_demand = 0.0;

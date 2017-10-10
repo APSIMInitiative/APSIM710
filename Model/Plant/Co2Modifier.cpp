@@ -123,15 +123,15 @@ float Co2Modifier::plant_rue_co2_modifier(float co2,                 //!CO2 leve
    // Implementation Section ----------------------------------
    if (c.photosynthetic_pathway == photosynthetic_pathway_C3)
       {
-      TT  = divide(163.0 - temp, 5.0 - 0.1 * temp, 0.0);
+      TT  = (float)divide(163.0 - temp, 5.0 - 0.1 * temp, 0.0);
 
-      first = (co2 - TT) * (350.0 + 2.0 * TT);
-      second = (co2 + 2.0 * TT)*(350.0 - TT);
-      return divide( first, second, 1.0);
+      first = (float)((co2 - TT) * (350.0 + 2.0 * TT));
+      second = (float)((co2 + 2.0 * TT)*(350.0 - TT));
+      return (float)divide( first, second, 1.0);
       }
     else if (c.photosynthetic_pathway == photosynthetic_pathway_C4)
       {
-      return 0.000143 * co2 + 0.95; //Mark Howden, personal communication
+      return (float)(0.000143 * co2 + 0.95); //Mark Howden, personal communication
       }
 
     return 1.0;

@@ -84,7 +84,7 @@ void Arbitrator::partitionDM()
 float Arbitrator::RelativeGrowthRate(void)
    {
    // the dlt_dm_pot_rue is only tops, thus either adjust it for roots or leave roots out of the divisor.
-   return divide(TotalPotentialGrowthRate(), plant.All().Green.DM(), 0.0);
+   return (float)divide(TotalPotentialGrowthRate(), plant.All().Green.DM(), 0.0);
    }
 float Arbitrator::TotalPotentialGrowthRate(void)
    {
@@ -125,12 +125,12 @@ void Arbitrator::doNPartition(float g_n_fix_pot, float nDemandTotal, float& nFix
    // find the proportion of uptake to be distributed to
    // each plant part and distribute it.
    double nUptakeSum = plant.root().nUptake();     // total plant N uptake (g/m^2)
-   if (reals_are_equal(nUptakeSum, 0.0))
+   if (reals_are_equal((float)nUptakeSum, 0.0f))
       nUptakeSum = 0.0;
-   plant.All().doNPartition(nUptakeSum, nDemandTotal, plant.All().nCapacity());
+   plant.All().doNPartition((float)nUptakeSum, nDemandTotal, plant.All().nCapacity());
 
    // Check Mass Balance
-   if (!reals_are_equal(plant.All().Growth.N() - nUptakeSum, 0.0))
+   if (!reals_are_equal((float)(plant.All().Growth.N() - nUptakeSum), 0.0f))
       {
       string msg ="Crop dlt_n_green mass balance is off: dlt_n_green_sum ="
                     + ftoa(plant.All().Growth.N(), ".6")
@@ -141,7 +141,7 @@ void Arbitrator::doNPartition(float g_n_fix_pot, float nDemandTotal, float& nFix
    Debug("Arbitrator.nUptakeSum=%f", nUptakeSum);
 
    // Retranslocate N Fixed
-   float nFixDemandTotal = l_bound (nDemandTotal - nUptakeSum, 0.0); // total demand for N fixation (g/m^2)
+   float nFixDemandTotal = l_bound ((float)(nDemandTotal - nUptakeSum), 0.0f); // total demand for N fixation (g/m^2)
    nFixUptake = bound (g_n_fix_pot, 0.0, nFixDemandTotal);
 
    plant.All().doNFixRetranslocate (nFixUptake, nFixDemandTotal);

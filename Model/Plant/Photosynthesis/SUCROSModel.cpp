@@ -23,7 +23,7 @@ float SUCROSModel::PotentialDM (float radiationInterceptedGreen)
 //   return radiationInterceptedGreen  * plant.phenology().doInterpolation(RUE) * stress_factor * plant.getCo2Modifier()->rue();
 
    float GrossPhotosythesis;
-   GrossPhotosythesis = DailyCanopyGrossPhotosythesis(plant.leaf().getLAI(),
+   GrossPhotosythesis = (float)(DailyCanopyGrossPhotosythesis(plant.leaf().getLAI(),
                                                       plant.environment().Latitude(),
                                                       plant.environment().dayOfYear(),
                                                       plant.environment().radn(),
@@ -33,7 +33,7 @@ float SUCROSModel::PotentialDM (float radiationInterceptedGreen)
                                                       min(min(plant.getNfactPhoto(),plant.getOxdefPhoto()),plant.getPfactPhoto()))
                        * 30./44.  // Convert CO2 to CH2O
                        * 0.1      // Convert kg/ha to g/m2
-                       * (1.0/1.45);  // Convert CHO to biomass - Growth Respiration
+                       * (1.0/1.45));  // Convert CHO to biomass - Growth Respiration
 
    //co2 lost =  GrossPhotosythesis * (1-(1.0/1.45));??
 
@@ -232,7 +232,7 @@ float SUCROSModel::LeafMaxGrossPhotosynthesis(float fTemp,float fCO2,float nFact
 
 // Original Code
 //   fCO2Func= min((float)2.3,(fCO2I-fCO2Cmp)/(fCO2I340-fCO2Cmp)); //For C3 crops
-     fCO2Func = (49.57/34.26)*(1.-exp(-0.208*(fCO2-60.)/49.57));
+     fCO2Func = (float)((49.57/34.26)*(1.-exp(-0.208*(fCO2-60.)/49.57)));
 //   fCO2Func= min((float)2.3,pow((fCO2I-fCO2Cmp)/(fCO2I340-fCO2Cmp),0.5)); //For C3 crops
 
    //------------------------------------------------------------------------
@@ -288,7 +288,7 @@ float SUCROSModel::LeafLightUseEfficiency(float fTemp, float fCO2)
 //   fEffPAR   = fMaxLUE*(fCO2-fCO2PhotoCmp)/(fCO2+2*fCO2PhotoCmp);
 //   fEffPAR = fMaxLUE*(1.0 - exp(-0.00305*fCO2-0.222))/(1.0 - exp(-0.00305*340.0-0.222));
    float Ft = (float)(0.6667 - 0.0067*fTemp);
-   fEffPAR = Ft*(1.0 - exp(-0.00305*fCO2-0.222))/(1.0 - exp(-0.00305*340.0-0.222));
+   fEffPAR = (float)(Ft*(1.0 - exp(-0.00305*fCO2-0.222))/(1.0 - exp(-0.00305*340.0-0.222)));
 
    return fEffPAR;
    }

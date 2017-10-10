@@ -25,7 +25,7 @@ WholePlantSeasonalPpArbitrator::WholePlantSeasonalPpArbitrator(ScienceAPI& scien
       if (PartitionRules[i] == "frac")
          {
          vector <float> frac;
-         scienceAPI.read("frac_"+PartitionParts[i], frac, 0.0, 1.0);
+         scienceAPI.read("frac_"+PartitionParts[i], frac, 0.0f, 1.0f);
          Fracs.push_back(frac);
          }
       else

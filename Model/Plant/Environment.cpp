@@ -73,7 +73,7 @@ float Environment::vpd(float svp_fract, float maxt, float mint) const
    {
    float vpd;
    if (vpSource == "apsim" && NewMet.vp > 0.0)
-     vpd = max(0.0, svp_fract * svp(maxt) + (1.0 - svp_fract) * svp(mint) - NewMet.vp * mb2kpa);
+     vpd = max(0.0f, svp_fract * svp(maxt) + (1.0f - svp_fract) * svp(mint) - NewMet.vp * mb2kpa);
    else
      vpd = svp_fract * (svp(maxt) - svp(mint));
    return vpd;
@@ -84,9 +84,9 @@ float Environment::svp(float temp) const
 //==========================================================================
 // function to get saturation vapour pressure for a given temperature in oC (kpa)
    {
-   float val = 6.1078 *
+   float val = (float)(6.1078 *
             exp(17.269 * temp / (237.3 + temp)) *
-            mb2kpa;
+            mb2kpa);
    return val;
    }
 
@@ -147,7 +147,7 @@ float Environment::Q0(float lat, int day) 						// (PFR)
    float LATr =    (float)(lat * 2. * 3.14159265 / 360.0);
    float HS = acos(-tan(LATr) * tan(DECr));
 
-   return  86400. * 1360. * (HS * sin(LATr) * sin(DECr) + cos(LATr) * cos(DECr) * sin(HS)) / 3.14159265 / 1000000.;
+   return  (float)(86400. * 1360. * (HS * sin(LATr) * sin(DECr) + cos(LATr) * cos(DECr) * sin(HS)) / 3.14159265 / 1000000.);
    }
 
 std::string Environment::TodayString(void)

@@ -573,12 +573,16 @@ void CompositePart::removeBiomass2(float chop_fr)
       (*part)->removeBiomass2(chop_fr);
 }
 
+//=======================================================================================
+// Iterates through each plant part and adds a dm cohort to avail vector
 void  CompositePart::get_AvailableToAnimal(protocol::AvailableToAnimalType &avail)
 {
    vector <plantPart *>::iterator part;
    for (part =  myParts.begin(); part != myParts.end(); part++)
       (*part)->get_AvailableToAnimal(avail);
 }
+
+//=======================================================================================
 void  CompositePart::set_RemovedByAnimal(const protocol::RemovedByAnimalType &removed)
 {
    vector <plantPart *>::iterator part;
@@ -586,14 +590,13 @@ void  CompositePart::set_RemovedByAnimal(const protocol::RemovedByAnimalType &re
       (*part)->set_RemovedByAnimal(removed);
 }
 
-   
+//=======================================================================================
 void CompositePart::onHarvest(float cutting_height, float remove_fr,
                            vector<string> &dm_type,
                            vector<float> &dlt_crop_dm,
                            vector<float> &dlt_dm_n,
                            vector<float> &dlt_dm_p,
                            vector<float> &fraction_to_residue)
-   // ====================================================================
 {
    vector <plantPart *>::iterator part;
    for (part =  myParts.begin(); part != myParts.end(); part++)
@@ -605,8 +608,8 @@ void CompositePart::onHarvest(float cutting_height, float remove_fr,
                          fraction_to_residue);
 }
 
-void CompositePart::onEmergence()
 //=======================================================================================
+void CompositePart::onEmergence()
    {
    vector <plantPart *>::iterator part;
    for (part =  myParts.begin(); part != myParts.end(); part++)
@@ -1075,7 +1078,7 @@ void CompositePart::doDmRetranslocate(float DMAvail, float DMDemandDifferentialT
 //=======================================================================================
    {
    float dm_demand_differential = dmDemandDifferential ();
-   float dlt_dm_green_retrans = DMAvail * divide (dm_demand_differential, DMDemandDifferentialTotal, 0.0);
+   float dlt_dm_green_retrans = (float)(DMAvail * divide (dm_demand_differential, DMDemandDifferentialTotal, 0.0));
 
    // get available carbohydrate from local supply pools
    float demand_differential = dm_demand_differential - dlt_dm_green_retrans;
@@ -1156,7 +1159,7 @@ void CompositePart::doNFixRetranslocate(float NFix, float NDemandDifferentialTot
 
         // now distribute the n fixed to plant parts
 
-   NFix = NFix * divide (n_demand_differential, NDemandDifferentialTotal, 0.0);
+   NFix = (float)(NFix * divide (n_demand_differential, NDemandDifferentialTotal, 0.0));
    vector <plantPart *>::iterator part;
    for (part =  myParts.begin(); part != myParts.end(); part++)      //FIXME later
        (*part)->doNFixRetranslocate (NFix, n_demand_differential);
@@ -1347,7 +1350,7 @@ float CompositePart::nRetransDemand(void)
 void CompositePart::doPPartition(float p_uptake, float total_p_demand)
    //============================================================================
 {
-   float myP = p_uptake * divide(pDemand(), total_p_demand,  0.0); // Amount of P for this composite part
+   float myP = (float)(p_uptake * divide(pDemand(), total_p_demand,  0.0)); // Amount of P for this composite part
    for (vector <plantPart *>::iterator part = myParts.begin(); part != myParts.end(); part++)
       {
       (*part)->doPPartition(myP, pDemand());

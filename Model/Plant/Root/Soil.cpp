@@ -237,17 +237,17 @@ void Soil::onBiocharDecomposed(protocol::BiocharDecomposedType &b)
 
 		vector<double> scratch = b.dlt_ll;
 		//LL effects
-		for (int i = 0; i < scratch.size(); i++)
-			ll15_dep[i] = ll15_dep[i] + scratch[i];
+		for (size_t i = 0; i < scratch.size(); i++)
+			ll15_dep[i] = (float)(ll15_dep[i] + scratch[i]);
 		scratch = b.dlt_kl;
 		//KL effects
-		for (int i = 0; i < scratch.size(); i++)
-			kl[i] = kl_old[i] * scratch[i];
+		for (size_t i = 0; i < scratch.size(); i++)
+			kl[i] = (float)(kl_old[i] * scratch[i]);
 
 		scratch = b.dlt_xf;
 		//XF effects (untested) 
-		for (int i = 0; i < scratch.size(); i++)
-			xf[i] = xf[i] + scratch[i];
+		for (size_t i = 0; i < scratch.size(); i++)
+			xf[i] = (float)(xf[i] + scratch[i]);
 
 		
 
@@ -464,7 +464,7 @@ float Soil::root_proportion (int layer, float root_depth)
    depth_to_root  = min(depth_to_layer_bottom, root_depth);
    depth_of_root_in_layer = (float)max(0.0, depth_to_root-depth_to_layer_top);
 
-   return (divide (depth_of_root_in_layer, dlayer[layer], 0.0));
+   return ((float)divide (depth_of_root_in_layer, dlayer[layer], 0.0));
    }
 
 void Soil::doPotentialExtractableSW(float root_depth)
@@ -550,7 +550,7 @@ void Soil::crop_check_sw_params()
     int num_layers;
     // Implementation Section ----------------------------------
 
-    float epsilon = 100.0 * numeric_limits<float>::epsilon();
+    float epsilon = 100.0f * numeric_limits<float>::epsilon();
     num_layers = count_of_real_vals (dlayer, max_layer);  //XX index_of_real_vals
     for(layer = 0; layer <= num_layers; layer++)
     {
@@ -765,7 +765,7 @@ void Soil::doWaterUptakeInternal (float sw_demand, float root_depth)
          // distribute demand proportionately in all layers.
          for(int layer = 0; layer <= deepest_layer; layer++)
             {
-            dlt_sw_dep[layer] = -1.0f * divide (sw_supply[layer], sw_supply_sum, 0.0) * sw_demand;
+            dlt_sw_dep[layer] = (float)(-1.0 * divide (sw_supply[layer], sw_supply_sum, 0.0) * sw_demand);
             }
          }
       else
@@ -791,7 +791,7 @@ float Soil::peswTotal(float root_depth)
       pesw.push_back(sw_dep[layer] - ll_dep[layer]);
       pesw[layer] = l_bound (pesw[layer], 0.0);
       }
-   return std::accumulate(pesw.begin(), pesw.end(), 0.0);
+   return (float)std::accumulate(pesw.begin(), pesw.end(), 0.0);
    }
 
 float Soil::swSupply(float root_depth)
@@ -1027,13 +1027,13 @@ float Soil::getModifiedKL(int i)
       {
       float KLSaltFactor = 1.0;
       if (cl.size() > 0)
-         KLSaltFactor = min(1.0, ClA * exp(ClB * cl[i]));
+         KLSaltFactor = min(1.0f, ClA * exp(ClB * cl[i]));
         
       else if (esp.size() > 0)
-        KLSaltFactor = min(1.0, ESPA * exp(ESPB * esp[i]));
+        KLSaltFactor = min(1.0f, ESPA * exp(ESPB * esp[i]));
 
       else if (ec.size() > 0)
-        KLSaltFactor = min(1.0, ECA * exp(ECB * ec[i]));
+        KLSaltFactor = min(1.0f, ECA * exp(ECB * ec[i]));
 
       if (KLSaltFactor != 1.0)
          HaveModifiedKLValues = true;

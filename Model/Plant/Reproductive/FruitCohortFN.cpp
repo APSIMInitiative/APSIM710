@@ -101,15 +101,15 @@ void FruitCohortFN::readCultivarParameters (protocol::Component *system, const s
 {
       fruitPhenology->readCultivarParameters(system, cultivar);
 
-      rel_grainfill.read(scienceAPI, "x_temp_grainfill", "oC", 0.0, 80.0
-                                      , "y_rel_grainfill", "-", 0.0, 1.0);
+      rel_grainfill.read(scienceAPI, "x_temp_grainfill", "oC", 0.0f, 80.0f
+                                      , "y_rel_grainfill", "-", 0.0f, 1.0f);
 
       scienceAPI.read("potential_fruit_filling_rate", p.potential_fruit_filling_rate, 0.0f, 1.0f);  //'(g/fruit/degday)'
-      fracPod.read(scienceAPI, "x_fruit_stage_no_partition", "-", 0.0, 20.0
-                              , "y_fruit_frac_pod", "-", 0.0, 2.0);
+      fracPod.read(scienceAPI, "x_fruit_stage_no_partition", "-", 0.0f, 20.0f
+                              , "y_fruit_frac_pod", "-", 0.0f, 2.0f);
 
-      sdr_min.read(scienceAPI, "x_stage_supply_demand_ratio", "-", 1.0, 100.0
-                             , "y_supply_demand_ratio_min", "-", 0.0, 2.0);
+      sdr_min.read(scienceAPI, "x_stage_supply_demand_ratio", "-", 1.0f, 100.0f
+                             , "y_supply_demand_ratio_min", "-", 0.0f, 2.0f);
 
       scienceAPI.read("dm_fruit_max", p.dm_fruit_max, 0.0f, 100.0f);
 
@@ -190,7 +190,7 @@ float FruitCohortFN::potentialCohortGrainFillRate(void)
 float FruitCohortFN::dltDmFruitMax(void)
    //===========================================================================
 {
-   float dlt_dm_fruit_max = p.dm_fruit_max - divide (Green.DM(), fruit_no, 0.0);
+   float dlt_dm_fruit_max = (float)(p.dm_fruit_max - divide (Green.DM(), fruit_no, 0.0));
    return l_bound (dlt_dm_fruit_max, 0.0);                             //cohort dm demand - cohort stuff
 }
 

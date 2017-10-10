@@ -12,8 +12,8 @@ class Biomass
       virtual float N()  const {return privateN;}
       virtual float P()  const {return privateP;}
 
-      virtual float StructuralDM() const {return (fabs(privateStructuralDM) > 10e-20) ? privateStructuralDM : 0.0 ;}
-      virtual float NonStructuralDM() const {return (fabs(privateNonStructuralDM) > 10e-20) ? privateNonStructuralDM : 0.0 ;}
+      virtual float StructuralDM() const {return (fabs(privateStructuralDM) > 10e-20) ? privateStructuralDM : 0.0f ;}
+      virtual float NonStructuralDM() const {return (fabs(privateNonStructuralDM) > 10e-20) ? privateNonStructuralDM : 0.0f ;}
 
 
       virtual void AddStructuralDM(float amount)  ;
@@ -28,10 +28,10 @@ class Biomass
 
       virtual void SetNonStructuralDM(float amount)  {privateNonStructuralDM = amount;   CheckBounds();};
 
-      float Pconc() {return divide(P(),DM(),0.0);};
-      float Nconc() {return divide(N(),DM(),0.0);};
-	  float NconcPercent() {return DM() > 1.0E-4 ? divide(N(),DM(),0.0)*fract2pcnt : 0.0;};
-	  float PconcPercent() {return DM() > 1.0E-4 ? divide(P(),DM(),0.0)*fract2pcnt : 0.0;};
+      float Pconc() {return (float)divide(P(),DM(),0.0);};
+      float Nconc() {return (float)divide(N(),DM(),0.0);};
+	  float NconcPercent() {return DM() > 1.0E-4 ? (float)(divide(N(),DM(),0.0)*fract2pcnt) : 0.0f;};
+	  float PconcPercent() {return DM() > 1.0E-4 ? (float)(divide(P(),DM(),0.0)*fract2pcnt) : 0.0f;};
 
       Biomass operator + (const Biomass& rhs);
       Biomass operator - (const Biomass& rhs);

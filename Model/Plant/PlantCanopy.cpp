@@ -101,8 +101,8 @@ void crop_leaf_area_sen_water2(int   day_of_year,                //(INPUT)  day 
    if (sw_demand_ratio < sen_threshold)
       {
       ave_lai_equilib_water = crop_running_ave(day_of_year, year, lai_equilib_water, 10);
-      *dlt_slai_water = divide((lai - ave_lai_equilib_water), sen_water_time_const, 0.0);
-      *dlt_slai_water = l_bound (*dlt_slai_water, 0.0);
+      *dlt_slai_water = (float)divide((lai - ave_lai_equilib_water), sen_water_time_const, 0.0);
+      *dlt_slai_water = l_bound (*dlt_slai_water, 0.0f);
       }
    else
       {
@@ -141,8 +141,8 @@ void crop_leaf_area_sen_light2 (float radn_int,                //(INPUT)
       {
       ave_lai_equilib_light = crop_running_ave (day_of_year, year, lai_equilib_light, 10);
 
-      *dlt_slai_light = divide (lai - ave_lai_equilib_light, sen_light_time_const , 0.0);
-      *dlt_slai_light = l_bound (*dlt_slai_light, 0.0);
+      *dlt_slai_light = (float)divide (lai - ave_lai_equilib_light, sen_light_time_const , 0.0);
+      *dlt_slai_light = l_bound (*dlt_slai_light, 0.0f);
       }
    else
       {
@@ -441,7 +441,7 @@ void cproc_leaf_no_pot1 (interpolationFunction &node_app_rate_fn,          // (I
    if (inNodeFormationPhase)
       {
       float node_app_rate = node_app_rate_fn.value(node_no_now);
-      *dlt_node_no_pot = divide (g_dlt_tt, node_app_rate, 0.0);
+      *dlt_node_no_pot = (float)divide (g_dlt_tt, node_app_rate, 0.0);
       }
    else
       {
@@ -508,7 +508,7 @@ void cproc_leaf_no_pot4 (interpolationFunction &node_app_rate_fn,          // (I
          {
          throw std::invalid_argument("PhotoPhyllochron phases do not align with NodeFormationPhase");
          }
-      *dlt_node_no_pot = divide (g_dlt_tt, node_app_rate, 0.0);             // Fractional daily increase in nodes/stem
+      *dlt_node_no_pot = (float)divide (g_dlt_tt, node_app_rate, 0.0);             // Fractional daily increase in nodes/stem
       }
    else
       {
@@ -630,7 +630,7 @@ void cproc_leaf_no_pot2 (float *c_x_node_no_app,       //(INPUT)
 
    if (stage_is_between (start_node_app, end_node_app, g_current_stage))
       {
-      *dlt_node_no_pot = divide (g_dlt_tt, node_app_rate, 0.0);
+      *dlt_node_no_pot = (float)divide (g_dlt_tt, node_app_rate, 0.0);
       }
    else
       {
@@ -739,8 +739,8 @@ void cproc_leaf_area_pot_tpla (int  begin_stage,                 // (INPUT)  sta
       tpla_inflection = tt_begin_to_endTPLA * c_tpla_inflection_ratio;
 
       //scc end of changes for tpla (more below)
-      temp = 1.0 + exp(-1 * p_tpla_prod_coef * (tt_since_begin - tpla_inflection));
-      *g_tpla_today = divide (tpla_max, temp, 0.0);
+      temp = (float)(1.0 + exp(-1 * p_tpla_prod_coef * (tt_since_begin - tpla_inflection)));
+      *g_tpla_today = (float)divide (tpla_max, temp, 0.0);
 
       if (*g_tpla_today <  g_tpla_yesterday)
          {
@@ -792,11 +792,11 @@ float leaf_size_bellshapecurve (float c_x0_const,
    largest_leaf = c_x0_const + (c_x0_slope * g_leaf_no_final);
    area_max = c_y0_const + (c_y0_slope * g_leaf_no_final);
 
-   breadth  = cAConst + divide (cASlope1,
-                                1.0 + cASlope2 * g_leaf_no_final, 0.0);
+   breadth  = (float)(cAConst + divide (cASlope1,
+                                1.0 + cASlope2 * g_leaf_no_final, 0.0));
 
-   skewness = cBConst + divide (cBSlope1,
-                                 1.0 + cBSlope2 * g_leaf_no_final, 0.0);
+   skewness = (float)(cBConst + divide (cBSlope1,
+                                 1.0 + cBSlope2 * g_leaf_no_final, 0.0));
 
    area = area_max * exp (breadth * pow((leaf_no - largest_leaf), 2)
                            + skewness * pow((leaf_no - largest_leaf),3));
@@ -921,7 +921,7 @@ void legnew_cover (
         lai_canopy = g_lai * canopy_fac;          // lai in hedgerow
                                                   // interception on row area basis
         cover_green_leaf_canopy = (float)(1.0 - exp(-extinct_coef*lai_canopy)) ;
-        *g_cover_green = divide (cover_green_leaf_canopy, canopy_fac
+        *g_cover_green = (float)divide (cover_green_leaf_canopy, canopy_fac
         , 0.0)             ;                      // interception on ground area basis
 
         }
@@ -1065,7 +1065,7 @@ void legnew_canopy_fac (
 
     area_avail = plant_spacing_effective * row_spacing_effective;
     area_actual = width_inter_row * width_intra_row;
-    *g_canopy_fac = divide (area_avail, area_actual, 0.0);
+    *g_canopy_fac = (float)divide (area_avail, area_actual, 0.0);
 
     }
 //+  Purpose
@@ -1138,7 +1138,7 @@ void cproc_leaf_no_pot3(
     if (inNodeFormationPhase)
         {
         node_app_rate = node_app_rate_fn.value(node_no_now);
-        *dlt_node_no_pot = divide (g_dlt_tt, node_app_rate, 0.0);
+        *dlt_node_no_pot = (float)divide (g_dlt_tt, node_app_rate, 0.0);
         }
     else
         {
@@ -1334,9 +1334,9 @@ float legopt_leaf_area_sen_age1
     // get area senesced from highest leaf no.
     if (dying_node >= 0)
         {
-        area_sen_dying_node = divide ( leaf_no_dead - sum_real_array(g_leaf_no, dying_node)
+        area_sen_dying_node = (float)(divide ( leaf_no_dead - sum_real_array(g_leaf_no, dying_node)
                                       , g_leaf_no[dying_node]
-                                      , 0.0) * g_leaf_area[dying_node];
+                                      , 0.0) * g_leaf_area[dying_node]);
 
         slai_age = (sum_real_array (g_leaf_area, dying_node)
                       + area_sen_dying_node)

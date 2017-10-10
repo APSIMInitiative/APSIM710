@@ -197,7 +197,7 @@ void cproc_sw_demand1(float dlt_dm_pot_rue,      //(INPUT)  potential dry matter
    {
    // get potential transpiration from potential
    // carbohydrate production and transpiration efficiency
-   *sw_demand = divide (dlt_dm_pot_rue, transp_eff, 0.0);
+   *sw_demand = (float)divide (dlt_dm_pot_rue, transp_eff, 0.0);
    }
 
 //==========================================================================
@@ -240,7 +240,7 @@ void cproc_transp_eff_co2_1(float vpd,        // (INPUT)
 
    vpd = l_bound (vpd, 0.01f);
 
-   *transp_eff = divide (transp_eff_cf, vpd, 0.0) / g2mm;
+   *transp_eff = (float)(divide (transp_eff_cf, vpd, 0.0) / g2mm);
 
    *transp_eff = *transp_eff * co2_modifier;
    }   

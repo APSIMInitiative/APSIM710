@@ -60,7 +60,7 @@ void FloretPart::doDmDemand2(float dlt_dm_supply)
 void FloretPart::doDmRetranslocate(float DMAvail, float DMDemandDifferentialTotal)
 //=======================================================================================
    {
-   Retranslocation.AddNonStructuralDM(DMAvail * divide (dmDemandDifferential(), DMDemandDifferentialTotal, 0.0));
+   Retranslocation.AddNonStructuralDM((float)(DMAvail * divide (dmDemandDifferential(), DMDemandDifferentialTotal, 0.0)));
    }
 
 float FloretPart::dltDmRetranslocateSupply(float DemandDifferential)
@@ -119,7 +119,7 @@ void FloretPart::readSpeciesParameters(protocol::Component *system, vector<strin
 float FloretPart::coverTotal(void)
 //=======================================================================================
 {
-   return 1.0 - (1.0 - coverFloret.green) * (1.0 - coverFloret.sen);
+   return (float)(1.0 - (1.0 - coverFloret.green) * (1.0 - coverFloret.sen));
 }
 
 float FloretPart::coverGreen(void)
@@ -153,7 +153,7 @@ void FloretPart::doCover (PlantSpatial &spatial)
 
    if (gPai > 0.0)
       {
-      coverA = 1.0 - exp(-cExtinctionCoeffFloret * gPai*spatial.canopyFac());
+      coverA = (float)(1.0 - exp(-cExtinctionCoeffFloret * gPai*spatial.canopyFac()));
       cover = (float)divide (coverA, spatial.canopyFac(), 0.0);
       }
    else
@@ -229,7 +229,7 @@ void FloretPart::doSWDemand(float SWDemandMaxFactor)         //(OUTPUT) crop wat
 
    float SWDemandMax = SWDemandMaxFactor * coverGreen() ;
    sw_demand = u_bound(sw_demand_te, SWDemandMax);
-   transpEff = transpEff * divide(sw_demand_te, sw_demand, 1.0);
+   transpEff = (float)(transpEff * divide(sw_demand_te, sw_demand, 1.0));
 }
 
 

@@ -83,7 +83,7 @@ void Grain::readParams (void)
    scienceAPI.read("PGRt0", "", 0, PGRt0);
    scienceAPI.read("PGRt1", "", 0, PGRt1);
    scienceAPI.read("GNmax", "", 0, GNmax);
-   GNmaxProlific = -1.0; scienceAPI.read("GNmaxProlific", "", 1, GNmaxProlific);
+   GNmaxProlific = (int)-1.0; scienceAPI.read("GNmaxProlific", "", 1, GNmaxProlific);
    scienceAPI.read("PGRbase", "", 0, PGRbase);
    PGRprolific = -1.0; scienceAPI.read("PGRprolific", "", 1, PGRprolific);
    scienceAPI.read("GNk", "", 0, GNk);

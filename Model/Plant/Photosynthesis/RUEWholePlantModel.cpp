@@ -26,7 +26,7 @@ float RUEWholePlantModel::PotentialDM (float radiationInterceptedGreen)
    double stress_factor = min(min(min(plant.getTempStressPhoto(), plant.getNfactPhoto())
                                , plant.getOxdefPhoto()), plant.getPfactPhoto());
 
-   return radiationInterceptedGreen  * getRUE() * Diffuse_factor * stress_factor * plant.getCo2Modifier()->rue();
+   return (float)(radiationInterceptedGreen  * getRUE() * Diffuse_factor * stress_factor * plant.getCo2Modifier()->rue());
 
    }
 

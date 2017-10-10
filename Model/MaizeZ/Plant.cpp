@@ -152,15 +152,15 @@ void Plant::onSowCrop(SowType &sow)
 
    if (sow.plants == 0)
       throw std::runtime_error("plant density ('plants') not specified");
-   plantDensity = sow.plants;
+   plantDensity = (float)sow.plants;
    checkRange(scienceAPI, plantDensity, 0.0, 1000.0, "plants");
 
    if (sow.sowing_depth == 0)
       throw std::runtime_error("sowing depth not specified");
-   sowingDepth = sow.sowing_depth;
+   sowingDepth = (float)sow.sowing_depth;
    checkRange(scienceAPI,sowingDepth, 0.0, 100.0, "sowing_depth");
 
-   rowSpacing = sow.row_spacing ;
+   rowSpacing = (float)sow.row_spacing ;
    if (sow.row_spacing == 0)
       rowSpacing = (float)rowSpacingDefault;
    // row spacing was originally in metres

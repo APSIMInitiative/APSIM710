@@ -71,7 +71,7 @@ void PlantPartArea::readSpeciesParameters(protocol::Component *, vector<string> 
 float PlantPartArea::coverTotal(void)
 //=======================================================================================
 {
-   return 1.0 - (1.0 - cover.green) * (1.0 - cover.sen);
+   return (float)(1.0 - (1.0 - cover.green) * (1.0 - cover.sen));
 }
 
 float PlantPartArea::coverGreen(void)
@@ -103,8 +103,8 @@ void PlantPartArea::doCover (PlantSpatial &spatial)
 
    if (partAI > 0.0)
       {
-      coverA = 1.0 - exp(-cExtinctionCoeff * partAI*spatial.canopyFac());
-      cover.green = divide (coverA, spatial.canopyFac(), 0.0);
+      coverA = (float)(1.0 - exp(-cExtinctionCoeff * partAI*spatial.canopyFac()));
+      cover.green = (float)divide (coverA, spatial.canopyFac(), 0.0);
       }
    else
       cover.green = 0.0;
@@ -198,7 +198,7 @@ void fruitPodPart::doDmDemand(float dlt_dm_supply)
 void fruitPodPart::doDmRetranslocate(float DMAvail, float DMDemandDifferentialTotal)
 //=======================================================================================
    {
-   Retranslocation.AddNonStructuralDM(DMAvail * divide (dmDemandDifferential(), DMDemandDifferentialTotal, 0.0));
+   Retranslocation.AddNonStructuralDM((float)(DMAvail * divide (dmDemandDifferential(), DMDemandDifferentialTotal, 0.0)));
    Debug("pod.Retranslocation=%f", Retranslocation.NonStructuralDM());
    }
 
@@ -242,8 +242,8 @@ void fruitPodPart::readSpeciesParameters(protocol::Component *system, vector<str
 
    //    plant_transp_eff
 
-   TECoeff.read(scienceAPI, "stage_code", "-", 0.0, 100.0
-                          , "transp_eff_cf", "-", 0.0, 1.0);
+   TECoeff.read(scienceAPI, "stage_code", "-", 0.0f, 100.0f
+                          , "transp_eff_cf", "-", 0.0f, 1.0f);
    string partition_option;
    scienceAPI.read("partition_option", partition_option);
 
@@ -251,16 +251,16 @@ void fruitPodPart::readSpeciesParameters(protocol::Component *system, vector<str
       {
       delete fracPod;
       fracPod = new lookupFunction();
-      fracPod->read(scienceAPI, "stage_code", "-", 0.0, 100.0
-                              , "frac_pod", "-", 0.0, 2.0);
+      fracPod->read(scienceAPI, "stage_code", "-", 0.0f, 100.0f
+                              , "frac_pod", "-", 0.0f, 2.0f);
 
       }
    else if (partition_option == "2" || partition_option == "allometric" || partition_option == "wholeplantgenericxy")
       {
       delete fracPod;
       fracPod = new interpolationFunction();
-      fracPod->read(scienceAPI, "x_stage_no_partition", "-", 0.0, 20.0
-                             , "y_frac_pod", "-", 0.0, 2.0);
+      fracPod->read(scienceAPI, "x_stage_no_partition", "-", 0.0f, 20.0f
+                             , "y_frac_pod", "-", 0.0f, 2.0f);
 
       }
    else
@@ -372,7 +372,7 @@ void fruitPodPart::doSWDemand(float SWDemandMaxFactor)         //(OUTPUT) crop w
 
    float SWDemandMax = SWDemandMaxFactor * coverGreen() ;
    sw_demand = u_bound(sw_demand_te, SWDemandMax);
-   transpEff = transpEff * divide(sw_demand_te, sw_demand, 1.0);
+   transpEff = (float)(transpEff * divide(sw_demand_te, sw_demand, 1.0));
    Debug("Pod.sw_demand=%f", sw_demand);
    Debug("Pod.transpEff=%f", transpEff);
 }
@@ -381,6 +381,6 @@ float fruitPodPart::removePodFraction (float DM)
     //===========================================================================
 {
    float frac_pod = plant->phenology().doInterpolation(*fracPod);
-   return divide(DM, 1.0 + frac_pod, 0.0);
+   return (float)divide(DM, 1.0 + frac_pod, 0.0);
 }
 

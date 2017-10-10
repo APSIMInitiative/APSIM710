@@ -572,7 +572,7 @@ float CWeather::SaturatedVapourPressure(float fHour,float fLatitude,float fTminP
 
 float CWeather::WindSpeedDailyMean()
 {
-	float  fWind = m_fWindSpeed * 1000.0/ (24.0 *3600);
+	float  fWind = (float)(m_fWindSpeed * 1000.0/ (24.0 * 3600.0));
 
 	return fWind; //m/s
 
@@ -582,7 +582,7 @@ float CWeather::WindSpeedDaytimeMean()
 {
 	float  fWind = WindSpeedDailyMean();
 
-	return fWind *(4.0/3.0); //m/s
+	return (float)(fWind *(4.0/3.0)); //m/s
 
 }
 
@@ -591,7 +591,7 @@ float CWeather::WindSpeedNighttimeMean()
 {
 	float  fWind = WindSpeedDailyMean();
 
-	return fWind *(2.0/3.0); //m/s
+	return (float)(fWind *(2.0/3.0)); //m/s
 
 }
 

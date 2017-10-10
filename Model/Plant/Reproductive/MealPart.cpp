@@ -29,7 +29,7 @@ void fruitMealPart::doNDemand (float n_demand)                      //remove
 void fruitMealPart::doDMDemandGrain (float dm_demand)
 //     ===========================================================
 {
-    DMGreenDemand = max(dm_demand, 0.0);
+    DMGreenDemand = (float)max(dm_demand, 0.0);
 }
 
 float fruitMealPart::nDemandGrain2(void)
