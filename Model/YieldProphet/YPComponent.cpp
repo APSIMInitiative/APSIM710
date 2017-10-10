@@ -146,7 +146,7 @@ double YPComponent::interpFromArray(std::vector<double>& values, const std::stri
 // ------------------------------------------------------------------
 void YPComponent::getStaticVariables()
    {
-   protocol::Variant* variant;
+   //protocol::Variant* variant;
    //bool ok;
    if (dul.size() == 0)
       {

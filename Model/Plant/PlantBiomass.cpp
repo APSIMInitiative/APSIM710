@@ -481,13 +481,13 @@ void cproc_rue_n_gradients(int   day,                  // !day of the year
 //	Calculate global radiation from latitude, day of year, and time of day
 //
 	            NEWLAT = (PI / 180) * LAT;
-	            SOLARDEC = (PI / 180) * 23.45 * sin(double((2 * PI * (284 + day) / 365)));
+	            SOLARDEC = (float)((PI / 180) * 23.45 * sin(double((2 * PI * (284 + day) / 365))));
 	            DAYL = acos(-1 * tan(NEWLAT) * tan(SOLARDEC));
 //	            SOLAR = 24 * 3600 * 1360 * (DAYL * sin(NEWLAT) * sin(SOLARDEC) +
 //                     cos(NEWLAT) * cos(SOLARDEC) * sin(DAYL)) / (PI * 1000000);
-	            DAYL = (180 / PI) * (2.0 / 15.0) * DAYL;
-	            ALPHA = sin(NEWLAT) * sin(SOLARDEC) + cos(NEWLAT) * cos(SOLARDEC) *
-                          cos((PI / 12) * DAYL * (TIME - 0.5));
+	            DAYL = (float)((180 / PI) * (2.0 / 15.0) * DAYL);
+	            ALPHA = (float)(sin(NEWLAT) * sin(SOLARDEC) + cos(NEWLAT) * cos(SOLARDEC) *
+                          cos((PI / 12) * DAYL * (TIME - 0.5)));
 	            ALPHA = asin(ALPHA);
 //	            ALPHA1 = ALPHA * 180 / PI;
 //	            SOLAR1 = RATIO * SOLAR;
@@ -495,11 +495,11 @@ void cproc_rue_n_gradients(int   day,                  // !day of the year
                SOLAR1 = radiation; //ew - use the actual daily radation for the calculation
 
 //	            IMAX = SOLAR1*(1.0 + sin(2 * PI * 0.5 + 1.5 * PI)) / (DAYL * 60 * 60);
-	            ITOT = SOLAR1 * (1.0 + sin(2 * PI * TIME + 1.5 * PI)) / (DAYL * 60 * 60);
+	            ITOT = (float)(SOLAR1 * (1.0 + sin(2 * PI * TIME + 1.5 * PI)) / (DAYL * 60 * 60));
 
 
 //             IDIF = 0.0
-	            IDIF = 0.17 * 1360 * sin(ALPHA) / 1000000;
+	            IDIF = (float)(0.17 * 1360 * sin(ALPHA) / 1000000);
 //
 //       Increase IDIF by 20% for glasshouse conditions
 //
@@ -524,7 +524,7 @@ void cproc_rue_n_gradients(int   day,                  // !day of the year
 //
 	            K = G / sin(ALPHA);
 	            SUMLAI[0] = LAI[0];
-	            SUMF[0] = 1.0 - exp(-1 * K * SUMLAI[0]);
+	            SUMF[0] = (float)(1.0 - exp(-1 * K * SUMLAI[0]));
 	            F[0] = SUMF[0];
 	            SLAISN[0] = SUMF[0] / K ;
 	            LAISUN[0] = SLAISN[0];
@@ -533,12 +533,12 @@ void cproc_rue_n_gradients(int   day,                  // !day of the year
 	            for(L = 1; L < 5; L++)
                   {
 	               SUMLAI[L] = SUMLAI[L - 1] + LAI[L];
-   	            SUMF[L] = 1.0 - exp(-1 * K* SUMLAI[L]);
+   	            SUMF[L] = (float)(1.0 - exp(-1 * K* SUMLAI[L]));
 
-	               F[L] = max(SUMF[L] - SUMF[L - 1], 0.000001 );
+	               F[L] = max(SUMF[L] - SUMF[L - 1], 0.000001f );
 	               SLAISN[L] = SUMF[L] / K;
 
-	               LAISUN[L] = max(SLAISN[L] - SLAISN[L - 1], 0.000001 );
+	               LAISUN[L] = max(SLAISN[L] - SLAISN[L - 1], 0.000001f );
 	               LAISH[L] = LAI[L] - LAISUN[L];
                   }
 	            LAICAN = SUMLAI[4];
@@ -565,17 +565,17 @@ void cproc_rue_n_gradients(int   day,                  // !day of the year
 //
 //	Calculate SLN for each layer using SLNGRAD
 //
-	            CON = AVSLN + SLNGRAD * (LAICAN / 2.0);
-	            SLN[0] = (CON + (CON - SLNGRAD*SUMLAI[0])) / 2.0;
+	            CON = (float)(AVSLN + SLNGRAD * (LAICAN / 2.0));
+	            SLN[0] = (float)((CON + (CON - SLNGRAD*SUMLAI[0])) / 2.0);
 
                for(L = 1; L < 5; L++)
                   {
 	               SLNTOP = CON - SLNGRAD * SUMLAI[L - 1];
 	               SLNBOT = CON - SLNGRAD * SUMLAI[L];
-	               SLN[L] = (SLNTOP + SLNBOT) / 2.0;
+	               SLN[L] = (float)((SLNTOP + SLNBOT) / 2.0);
 	               if (SLN[L] <= 0.61)
                      {
-                     SLN[L] = 0.61;
+                     SLN[L] = 0.61f;
                      }
                   }
 //
@@ -584,10 +584,10 @@ void cproc_rue_n_gradients(int   day,                  // !day of the year
 //
 	            for(L = 0; L < 5; L++)
                   {
-	               PMAX[L] = A * (2.0 / (1.0 + exp(-0.9 * (SLN[L] - 0.6))) - 1.0);
-	               CSUN[L] = LAISUN[L]*PMAX[L]*(1.0 - exp(-5000.0 * ISUN[L] / PMAX[L]));
-	               CSH[L] = LAISH[L] * PMAX[L] * (1.0 - exp(-5000.0 * ISH[L] / PMAX[L]));
-                  RUE[L] = B / 1000.0 * (CSUN[L] + CSH[L])/ (F[L] * ITOT);
+	               PMAX[L] = (float)(A * (2.0 / (1.0 + exp(-0.9 * (SLN[L] - 0.6))) - 1.0));
+	               CSUN[L] = (float)(LAISUN[L]*PMAX[L]*(1.0 - exp(-5000.0 * ISUN[L] / PMAX[L])));
+	               CSH[L] = (float)(LAISH[L] * PMAX[L] * (1.0 - exp(-5000.0 * ISH[L] / PMAX[L])));
+                  RUE[L] = (float)(B / 1000.0 * (CSUN[L] + CSH[L])/ (F[L] * ITOT));
                   }
 //	Calculate assimilation and radiation intercepted for the entire canopy
 //
@@ -596,7 +596,7 @@ void cproc_rue_n_gradients(int   day,                  // !day of the year
                   {
 	               BIOMAS[ITIME - 1] = BIOMAS[ITIME - 1] + CSUN[L] + CSH[L];
                   }
-	            BIOMAS[ITIME - 1] = B / 1000.0 * BIOMAS[ITIME - 1];
+	            BIOMAS[ITIME - 1] = (float)(B / 1000.0 * BIOMAS[ITIME - 1]);
 	            RADINT[ITIME - 1] = SUMF[4] * ITOT;
                DIR[ITIME - 1] = IDIR;
 	            DIF[ITIME - 1] = IDIF;
@@ -605,8 +605,8 @@ void cproc_rue_n_gradients(int   day,                  // !day of the year
 //	Calculate BIO, RAD & RUE for the day; Gaussian integration
 //	Calculate DIRRAD & DIFRAD for the day; Gaussian integration
 //
-            BIO = 3600.0 * DAYL * (BIOMAS[0] + 1.6 * BIOMAS[1] + BIOMAS[2]) / 3.6;
-	         RAD = 3600.0 * DAYL * (RADINT[0] + 1.6 * RADINT[1] + RADINT[2]) / 3.6;
+            BIO = (float)(3600.0 * DAYL * (BIOMAS[0] + 1.6 * BIOMAS[1] + BIOMAS[2]) / 3.6);
+	         RAD = (float)(3600.0 * DAYL * (RADINT[0] + 1.6 * RADINT[1] + RADINT[2]) / 3.6);
 	         RUEDAY = BIO / RAD;
 //	         DIRRAD = 3600.0 * DAYL * (DIR[0] + 1.6 * DIR[1] + DIR[2]) / 3.6;
 //	         DIFRAD = 3600.0 * DAYL * (DIF[0] + 1.6 * DIF[1] + DIF[2]) / 3.6;
