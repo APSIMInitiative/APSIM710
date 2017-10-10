@@ -564,13 +564,22 @@ namespace ApsimFile
     {
         private static string ProcessSingleSimulation(ApsimFile copiedFile, string SimulationPath, SortedDictionary<string, string> factorInstance, int uniqueId, string destFolder = "")
         {
+            if (copiedFile == null)
+                throw new Exception("copiedFile is null in ProcessSingleSimulation");
+            if (factorInstance == null)
+                throw new Exception("factorInstance is null in ProcessSingleSimulation");
+
             Component Simulation = copiedFile.Find(SimulationPath);
+
+            if (Simulation == null)
+                throw new Exception("Simulation is null in ProcessSingleSimulation");
+
             string rootName = Simulation.Name;
+            int totalCount = 0;
             try
             {
                 FactorBuilder builder = new FactorBuilder();
                 List<FactorItem> items = builder.BuildFactorItems(copiedFile.FactorComponent, SimulationPath);
-                int totalCount = 0;
 
                 foreach (FactorItem item in items)
                 {
@@ -583,7 +592,10 @@ namespace ApsimFile
             }
             catch (Exception ex)
             {
-                throw new Exception("Error encountered creating Factorials\n" + ex.Message);
+                throw new Exception("Error encountered creating Factorials. \r\n" +
+                                    "SimulationPath: " + SimulationPath + "\r\n" +
+                                    "Total count: " + totalCount +
+                                    "Exception: " + ex.ToString());
             }
         }
 

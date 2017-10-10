@@ -406,17 +406,21 @@ namespace CSGeneral
             }
             return "";
         }
+        /// <summary>
+        /// Set the value of the specified attribute
+        /// </summary>
+        /// <param name="Node"></param>
+        /// <param name="AttributeName"></param>
+        /// <param name="AttributeValue"></param>
         public static void SetAttribute(XmlNode Node, string AttributeName, string AttributeValue)
         {
-            // ----------------------------------------
-            // Set the value of the specified attribute
-            // ----------------------------------------
-            if (Attribute(Node, AttributeName) != AttributeValue)
+            XmlAttribute attribute = Node.Attributes[AttributeName];
+            if (attribute == null)
             {
-                XmlNode attr = Node.OwnerDocument.CreateNode(XmlNodeType.Attribute, AttributeName, "");
-                attr.Value = AttributeValue;
-                Node.Attributes.SetNamedItem(attr);
+                attribute = Node.OwnerDocument.CreateNode(XmlNodeType.Attribute, AttributeName, "") as XmlAttribute;
+                Node.Attributes.SetNamedItem(attribute);
             }
+            attribute.Value = AttributeValue;
         }
         public static void DeleteAttribute(XmlNode Node, string AttributeName)
         {

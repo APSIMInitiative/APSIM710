@@ -12,7 +12,9 @@ using CMPServices;
 
 public class Types
 {
-    private static Types Singleton = null;
+    private static object syncRoot = new Object();
+
+    private static volatile Types Singleton = null;
     private static Assembly ProbeInfoAssembly = null;
     private static string ProbeInfoAssemblyFileName = null;
     private XmlDocument TypesDoc = new XmlDocument();
@@ -21,8 +23,16 @@ public class Types
     {
         get
         {
+            // Perform double checked locking to avoid doing the lock when unnecessary - quicker
+            // https://stackoverflow.com/questions/12316406/thread-safe-c-sharp-singleton-pattern
             if (Singleton == null)
-                Singleton = new Types();
+            {
+                lock (syncRoot)
+                {
+                    if (Singleton == null)
+                        Singleton = new Types();
+                }
+            }
             return Singleton;
         }
     }

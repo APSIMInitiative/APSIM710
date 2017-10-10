@@ -77,6 +77,7 @@ public class ApsimToSim
             XmlNode ApsimToSim = Types.Instance.ApsimToSim(Child.Type);
             if (ApsimToSim != null)
             {
+                ApsimToSim = ApsimToSim.CloneNode(deep: true);
                 if (ApsimToSim.FirstChild.Name == "component" && XmlHelper.Attribute(ApsimToSim.FirstChild, "class") == "")
                 {
                     string dllName = Types.Instance.MetaData(Child.Type, "dll");
@@ -93,7 +94,7 @@ public class ApsimToSim
                         else if (dllName != "")
                             className = dllName + "." + className;
                     }
-                    if (className != "")
+                    if (className != "" && className != null)
                         XmlHelper.SetAttribute(ApsimToSim.FirstChild, "class", className);
                 }
                 else if (ApsimToSim.FirstChild.Name == "system" && Child.Type == "area" && XmlHelper.Attribute(ApsimToSim.FirstChild, "class") == "")
