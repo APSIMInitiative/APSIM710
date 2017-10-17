@@ -29,8 +29,8 @@ void Population::onInit1(protocol::Component*)
    scienceAPI.read("swdf_pheno_limit", swdf_pheno_limit, 0.0f, 1000.0f);
    scienceAPI.read("swdf_photo_limit", swdf_photo_limit, 0.0f, 1000.0f);
    scienceAPI.read("swdf_photo_rate", swdf_photo_rate, 0.0f, 1.0f);
-   PlantDeathTemperature.read(scienceAPI, "x_weighted_temp", "oC", 0.0, 100.0,
-                                          "y_plant_death", "0-1", 0.0, 100.0);
+   PlantDeathTemperature.read(scienceAPI, "x_weighted_temp", "oC", 0.0f, 100.0f,
+                                          "y_plant_death", "0-1", 0.0f, 100.0f);
    }
 
 void Population::Zero()

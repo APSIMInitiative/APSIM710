@@ -102,8 +102,8 @@ void PlantFruitCohorting::readCultivarParameters (protocol::Component *system, c
       dltDM.setSize(c.days_assimilate_ave);
 // Temporarily remove
 //      scienceAPI.read("fruit_phen_end", c.fruit_phen_end, 0.0f, 1.0f);
-      rel_fruit_site.read(scienceAPI, "x_temp_fruit_site", "oC", 0.0, 50.0
-                                    , "y_rel_fruit_site", "-", 0.0, 1.0);
+      rel_fruit_site.read(scienceAPI, "x_temp_fruit_site", "oC", 0.0f, 50.0f
+                                    , "y_rel_fruit_site", "-", 0.0f, 1.0f);
 
    CompositePart::readCultivarParameters(system, cultivar);
 }

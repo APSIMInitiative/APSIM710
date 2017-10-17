@@ -663,6 +663,8 @@ void Plant::onDetachCropBiomass(float detachRate)
       }
    plant_remove_biomass_update(dmRemoved);
    }
+   //=======================================================================================
+   // Get the leaf, stem and seed dm for this plant
 void Plant::get_AvailableToAnimal(protocol::Component *systemInterface, protocol::QueryValueData &q)
    {
    protocol::AvailableToAnimalType dm;
@@ -1525,7 +1527,7 @@ void Plant::plant_read_species_const (void)
     plant.readSpeciesParameters(parent, search_order);
     plantSpatial.read(scienceAPI);
 
-    scienceAPI.read("n_fix_rate", c.n_fix_rate, 0.0, 1.0);
+    scienceAPI.read("n_fix_rate", c.n_fix_rate, 0.0f, 1.0f);
     scienceAPI.read("eo_crop_factor_default", c.eo_crop_factor_default, 0.0f, 100.0f);
 
     scienceAPI.read("n_supply_preference", c.n_supply_preference);
