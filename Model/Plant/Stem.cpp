@@ -2,7 +2,14 @@
 
 #include "Stem.h"
 #include "Population.h"
+#include "Phenology/Phenology.h"
 using namespace std;
+
+Stem::Stem(ScienceAPI& scienceAPI, plantInterface *p, const string &name)
+	: SimplePart(scienceAPI, p, name)
+{
+
+};
 
 void Stem::onHarvest(float cutting_height, float remove_fr,
                               vector<string> &dm_type,
@@ -61,4 +68,5 @@ void Stem::removeBiomass2(float )
    if (c.width.isInitialised())
       Width = c.width.value(dm_plant);
    }
+
 

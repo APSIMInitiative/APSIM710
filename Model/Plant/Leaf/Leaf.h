@@ -5,13 +5,12 @@
 #include "../Photosynthesis/PhotosynthesisModel.h"
 
 // Abstract class for leaf objects
-class Leaf : public SimplePart {
-  public:
+class Leaf : public SimplePart 
+{
+public:
    Leaf(ScienceAPI& scienceAPI, plantInterface *p, const string &name);
 
    virtual ~Leaf() {delete Photosynthesis;};
-//   virtual void  get_AvailableToAnimal(protocol::AvailableToAnimalType &avail);
-//   virtual void  set_RemovedByAnimal(protocol::RemovedByAnimalType &removed);
 
    virtual void onHarvest(float height, float remove_fr,
                           vector<string> &dm_type,
