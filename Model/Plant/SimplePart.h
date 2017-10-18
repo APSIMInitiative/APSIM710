@@ -1,14 +1,15 @@
 #ifndef SimplePartH
 #define SimplePartH
 
-
 #include "PlantPart.h"
+#include "Phenology/Phenology.h"
 
 class SimplePart : public plantPart
    {
    private:
 
  protected:
+	 double ashAlk; // mol/kg
 //1) Need to make Senesced() method in SimplePart
 //2) Make a Total() method = Green+Senesced
 //3) Make Grain and GrainTotal methods which return Green or Total if it is a grain part.
@@ -98,7 +99,7 @@ class SimplePart : public plantPart
       interpolationFunction MaintenanceRespiration20CBase; // Plant and Food implementation
    } c;
 
-   plantInterface *plant;                 // The plant we are attached to
+  // plantInterface *plant;                 // The plant we are attached to
 
 public:
 
@@ -131,7 +132,10 @@ public:
    virtual void zeroDltDmGreen(void);
    virtual float dltLeafAreaPot(void) {throw std::runtime_error("SimplePart::dltLeafAreaPot() called");};
    virtual float giveDmGreen(float) ;           // Arbitrator gives this part dm; return amount used
-
+   // the animal interface
+   virtual void  get_AvailableToAnimal(protocol::AvailableToAnimalType &avail);
+   virtual void  set_RemovedByAnimal(const protocol::RemovedByAnimalType &dm);
+   virtual float phenology(void) { return plant->phenology().stageNum(); };	// the growth stage number for the host plant
 protected:
    virtual void zeroDltNSenescedTrans(void);
    virtual void zeroAllGlobals(void);
@@ -167,9 +171,6 @@ protected:
 
    virtual void doPDemand(void);
    virtual void doPSenescence(void);
-
-   virtual void  get_AvailableToAnimal(protocol::AvailableToAnimalType &avail); 
-   virtual void  set_RemovedByAnimal(const protocol::RemovedByAnimalType &dm);
 
    virtual void collectDetachedForResidue(vector<string> &part_name
                                           , vector<float> &dm_residue

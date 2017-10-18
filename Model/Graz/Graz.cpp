@@ -131,23 +131,28 @@ void grazComponent::onPrepare(void)
       scienceAPI.get(prefix + "AvailableToAnimal", false, avail);
 
       green_leaf = green_stem = dead_leaf = dead_stem = -1.0;
-//        cout << "getAvail:" << endl;
-      for (unsigned cohort = 0; cohort < avail.element.size(); cohort++) 
-      { 
-//        cout << avail.Cohorts[cohort].Organ << " " << avail.Cohorts[cohort].AgeID << endl;
-        if (Str_i_Eq(avail.element[cohort].Organ , "leaf") &&
-            Str_i_Eq(avail.element[cohort].AgeID , "green")) 
-           green_leaf = (float)avail.element[cohort].Weight;        // comes in kg/ha
-        else if (Str_i_Eq(avail.element[cohort].Organ , "stem") &&
-                 Str_i_Eq(avail.element[cohort].AgeID , "green"))
-           green_stem = (float)avail.element[cohort].Weight;
-        else if (Str_i_Eq(avail.element[cohort].Organ , "leaf") &&
-                 Str_i_Eq(avail.element[cohort].AgeID , "senesced"))
-           dead_leaf = (float)avail.element[cohort].Weight;
-        else if (Str_i_Eq(avail.element[cohort].Organ , "stem") &&
-                 Str_i_Eq(avail.element[cohort].AgeID , "senesced")) 
-           dead_stem = (float)avail.element[cohort].Weight;
-        }
+	  for (unsigned cohort = 0; cohort < avail.element.size(); cohort++)
+	  {
+		  // remove herbage only from the digestible pool. When sent back to RemovedByAnimal the
+		  // idm and ddm pools are treated as one. By using the ddm it means that the DMD value
+		  // is effectively used.
+		  if (Str_i_Eq(avail.element[cohort].Organ, "leaf") &&
+			  Str_i_Eq(avail.element[cohort].AgeID, "green") &&
+			  Str_i_Eq(avail.element[cohort].Chem, "ddm"))
+			  green_leaf = (float)avail.element[cohort].Weight;        // comes in kg/ha
+		  else if (Str_i_Eq(avail.element[cohort].Organ, "stem") &&
+			  Str_i_Eq(avail.element[cohort].AgeID, "green") &&
+			  Str_i_Eq(avail.element[cohort].Chem, "ddm"))
+			  green_stem = (float)avail.element[cohort].Weight;
+		  else if (Str_i_Eq(avail.element[cohort].Organ, "leaf") &&
+			  Str_i_Eq(avail.element[cohort].AgeID, "senesced") &&
+			  Str_i_Eq(avail.element[cohort].Chem, "ddm"))
+			  dead_leaf = (float)avail.element[cohort].Weight;
+		  else if (Str_i_Eq(avail.element[cohort].Organ, "stem") &&
+			  Str_i_Eq(avail.element[cohort].AgeID, "senesced") &&
+			  Str_i_Eq(avail.element[cohort].Chem, "ddm"))
+			  dead_stem = (float)avail.element[cohort].Weight;
+	  }
       if (green_leaf < 0 || green_stem < 0 || dead_leaf < 0 || dead_stem < 0 )
          throw std::runtime_error("Missing parts in AvailableToAnimalType??");
 
@@ -392,20 +397,24 @@ void grazComponent::update (void)
       {
       int gl= -1, gs= -1, dl= -1, ds = -1;
       for (unsigned cohort = 0; cohort < avail.element.size(); cohort++) 
-      { 
-        if (Str_i_Eq(avail.element[cohort].Organ , "leaf") &&
-            Str_i_Eq(avail.element[cohort].AgeID , "green")) 
-           gl = cohort;
-        else if (Str_i_Eq(avail.element[cohort].Organ , "stem") &&
-                 Str_i_Eq(avail.element[cohort].AgeID , "green"))
-           gs = cohort;
-        else if (Str_i_Eq(avail.element[cohort].Organ , "leaf") &&
-                 Str_i_Eq(avail.element[cohort].AgeID , "senesced"))
-           dl = cohort;
-        else if (Str_i_Eq(avail.element[cohort].Organ , "stem") &&
-                 Str_i_Eq(avail.element[cohort].AgeID , "senesced")) 
-           ds = cohort;
-        }
+	  {
+		  if (Str_i_Eq(avail.element[cohort].Organ, "leaf") &&
+			  Str_i_Eq(avail.element[cohort].AgeID, "green") &&
+			  Str_i_Eq(avail.element[cohort].Chem, "ddm"))
+			  gl = cohort;
+		  else if (Str_i_Eq(avail.element[cohort].Organ, "stem") &&
+			  Str_i_Eq(avail.element[cohort].AgeID, "green") &&
+			  Str_i_Eq(avail.element[cohort].Chem, "ddm"))
+			  gs = cohort;
+		  else if (Str_i_Eq(avail.element[cohort].Organ, "leaf") &&
+			  Str_i_Eq(avail.element[cohort].AgeID, "senesced") &&
+			  Str_i_Eq(avail.element[cohort].Chem, "ddm"))
+			  dl = cohort;
+		  else if (Str_i_Eq(avail.element[cohort].Organ, "stem") &&
+			  Str_i_Eq(avail.element[cohort].AgeID, "senesced") &&
+			  Str_i_Eq(avail.element[cohort].Chem, "ddm"))
+			  ds = cohort;
+	  }
 
       BiomassRemovedType chopped;
       chopped.crop_type = avail.element[gl].CohortID;

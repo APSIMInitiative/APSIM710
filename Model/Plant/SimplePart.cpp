@@ -133,7 +133,7 @@ float SimplePart::n_conc_min(void)
 float SimplePart::dltNSenescedRetrans(void)
    //===========================================================================
 {
-   return abs(dlt.n_senesced_retrans > 10e-20) ? dlt.n_senesced_retrans : 0.0;
+   return abs(dlt.n_senesced_retrans > 10e-20) ? dlt.n_senesced_retrans : 0.0f;
 }
 
 
@@ -208,6 +208,7 @@ void SimplePart::zeroDltNSenescedTrans(void)
 void SimplePart::readConstants(protocol::Component *, const string &)
 //=======================================================================================
     {
+	scienceAPI.readOptional("leaf_ashalk", ashAlk, 0.0, 10.0);
     vector<string> parts;
     scienceAPI.readOptional("stress_determinants", parts);
     if (find_if(parts.begin(), parts.end(), CaseInsensitiveStringComparison(myName)) != parts.end())
@@ -439,7 +440,7 @@ void SimplePart::update(void)
    double n_sen_retrans = 0;
    if (fabs(dlt.n_senesced_retrans) > 10e-20)
        n_sen_retrans = dlt.n_senesced_retrans;
-   Green = Green + Biomass(0,n_sen_retrans, 0,0);
+   Green = Green + Biomass(0, (float)n_sen_retrans, 0, 0);
    relativeGrowthRate = (float)divide (Growth.DM(), plant->All().Growth.DM(), 0.0);
 
 
@@ -470,42 +471,80 @@ void SimplePart::removeBiomass(void)
    Green = Green - GreenRemoved;
    Senesced = Senesced - SenescedRemoved;
    }
-void  SimplePart::get_AvailableToAnimal(protocol::AvailableToAnimalType &avail)
-{
-   protocol::AvailableToAnimalelementType cohort;
 
-   cohort.CohortID = plant->Name();
-   cohort.Organ = myName;
-   cohort.AgeID = "green";
-   cohort.Bottom = 0.0;
-   cohort.Top =    height();
-   cohort.Chem =   "ddm";
-   cohort.Weight = Green.DM() * gm2kg / sm2ha;
-   cohort.N =      Green.N()* gm2kg / sm2ha;
-   cohort.P =      Green.P()* gm2kg / sm2ha;
-   cohort.S =      0.0;
-   cohort.AshAlk = 0.0;
-   avail.element.push_back(cohort);
-   cohort.AgeID = "senesced";
-   cohort.Weight = Senesced.DM()* gm2kg / sm2ha;
-   cohort.N =      Senesced.N()* gm2kg / sm2ha;
-   cohort.P =      Senesced.P()* gm2kg / sm2ha;
-   avail.element.push_back(cohort);
-   }
+//=======================================================================================
+void SimplePart::get_AvailableToAnimal(protocol::AvailableToAnimalType &avail)
+{
+	protocol::AvailableToAnimalelementType cohort;
+
+	// get the pheno stage
+	float sn = plant->phenology().stageNum();
+
+	cohort.CohortID = plant->Name();
+	cohort.Organ = this->myName;
+	cohort.Bottom = 0.0;
+	cohort.Top = height();
+
+	//green
+	double dmd = Green.DigestibilityAvg.value();	// get the dmd for the current growth stage
+	// digestible
+	cohort.AgeID = "green";
+	cohort.Chem = "ddm";
+	cohort.Weight = (Green.DM() * gm2kg / sm2ha) * dmd;	// kg/ha
+	cohort.N = (Green.N()* gm2kg / sm2ha) * dmd;	// kg/ha
+	cohort.P = (Green.P()* gm2kg / sm2ha) * dmd;	// kg/ha
+	cohort.S = 0.0;									// kg/ha
+	cohort.AshAlk = Green.AshAlk() * cohort.Weight;	// mol/kg -> mol/ha
+	avail.element.push_back(cohort);
+	// indigestible	
+	cohort.Chem = "idm";
+	cohort.Weight = (Green.DM() * gm2kg / sm2ha) * (1.0 - dmd);
+	cohort.N = (Green.N()* gm2kg / sm2ha) * (1.0 - dmd);
+	cohort.P = (Green.P()* gm2kg / sm2ha) * (1.0 - dmd);
+	cohort.S = 0.0;
+	cohort.AshAlk = Green.AshAlk() * cohort.Weight;
+	avail.element.push_back(cohort);
+
+	// senesced
+	dmd = Senesced.DigestibilityAvg.value();		// get the dmd for the current growth stage
+	// digestible
+	cohort.AgeID = "senesced";
+	cohort.Chem = "ddm";
+	cohort.Weight = (Senesced.DM()* gm2kg / sm2ha) * dmd;
+	cohort.N = (Senesced.N()* gm2kg / sm2ha) * dmd;
+	cohort.P = (Senesced.P()* gm2kg / sm2ha) * dmd;
+	cohort.S = 0.0;									// kg/ha
+	cohort.AshAlk = Senesced.AshAlk() * cohort.Weight;
+	avail.element.push_back(cohort);
+	// indigestible	
+	cohort.Chem = "idm";
+	cohort.Weight = (Senesced.DM() * gm2kg / sm2ha) * (1.0 - dmd);
+	cohort.N = (Senesced.N()* gm2kg / sm2ha) * (1.0 - dmd);
+	cohort.P = (Senesced.P()* gm2kg / sm2ha) * (1.0 - dmd);
+	cohort.S = 0.0;
+	cohort.AshAlk = Senesced.AshAlk() * cohort.Weight;
+
+	avail.element.push_back(cohort);
+}
+
+//=======================================================================================
+// Remove dry matter from the pools
 void  SimplePart::set_RemovedByAnimal(const protocol::RemovedByAnimalType &dm)
 {
-   for (vector<protocol::RemovedByAnimalelementType>::const_iterator cohort = dm.element.begin(); cohort != dm.element.end(); cohort++)
-   {
-      if (Str_i_Eq(cohort->Organ, myName) )
-         {
-         if (Str_i_Eq(cohort->AgeID, "green") )
-            {//cout << myName << " avail = " << Green.DM() << ", wt removed = " << cohort->WeightRemoved << endl;
-            giveDmGreenRemoved(  cohort->WeightRemoved * kg2gm / ha2sm);}
-         else if (Str_i_Eq(cohort->AgeID, "senesced") )
-             {//cout << myName << " avail = " << Senesced.DM() << ", wt removed = " << cohort->WeightRemoved << endl;
-             giveDmSenescedRemoved( cohort->WeightRemoved * kg2gm / ha2sm);}
-         }
-   }
+	for (vector<protocol::RemovedByAnimalelementType>::const_iterator cohort = dm.element.begin(); cohort != dm.element.end(); cohort++)
+	{
+		if (Str_i_Eq(cohort->Organ, myName))
+		{
+			if (Str_i_Eq(cohort->AgeID, "green"))
+			{
+				giveDmGreenRemoved((float)(cohort->WeightRemoved * kg2gm / ha2sm));
+			}
+			else if (Str_i_Eq(cohort->AgeID, "senesced"))
+			{
+				giveDmSenescedRemoved((float)(cohort->WeightRemoved * kg2gm / ha2sm));
+			}
+		}
+	}
 }
 
 void SimplePart::doRemoveBiomass(protocol::RemoveCropBiomassType dmRemoved, bool c_remove_biomass_report)
@@ -867,14 +906,14 @@ void SimplePart::doNSenescence(void)
 void SimplePart::doNSenescedRetrans(float navail, float n_demand_tot)
 //=======================================================================================
    {
-   dlt.n_senesced_retrans = navail * divide (NDemand, n_demand_tot, 0.0);
+   dlt.n_senesced_retrans = (float)(navail * divide (NDemand, n_demand_tot, 0.0));
    Debug(string(name() + ".dlt.n_senesced_retrans=%f").c_str(), dlt.n_senesced_retrans);
    }
 
 void SimplePart::doNFixRetranslocate(float NFix, float NDemandDifferentialTotal)
 //=======================================================================================
    {
-   Growth.AddN(NFix * divide (nDemandDifferential(), NDemandDifferentialTotal, 0.0));
+   Growth.AddN((float)(NFix * divide (nDemandDifferential(), NDemandDifferentialTotal, 0.0)));
    }
 
 void SimplePart::doNRetranslocate( float N_supply, float g_grain_n_demand)
@@ -893,10 +932,10 @@ void SimplePart::doNRetranslocate( float N_supply, float g_grain_n_demand)
       // Retranslocate what is needed
       AmountNToRetranslocate = g_grain_n_demand * divide (availableRetranslocateN(), N_supply, 0.0);
       }
-   if (reals_are_equal(AmountNToRetranslocate, 0.0))
+   if (reals_are_equal((float)AmountNToRetranslocate, 0.0f))
       Retranslocation.SetN(0);
    else
-      Retranslocation.SetN(-AmountNToRetranslocate);
+      Retranslocation.SetN((float)-AmountNToRetranslocate);
 
 
    Debug(string(name() + ".Retranslocation.N=%f").c_str(), Retranslocation.N());
@@ -979,8 +1018,8 @@ float SimplePart::availableRetranslocateN(void)
 //    from each plant part.
    {
    double N_min = g.n_conc_min * Green.DM();
-   double N_avail = l_bound (Green.N() - N_min, 0.0);
-   return (N_avail * c.n_retrans_fraction);
+   double N_avail = l_bound ((float)(Green.N() - N_min), 0.0f);
+   return (float)(N_avail * c.n_retrans_fraction);
    }
 
 void SimplePart::collectDetachedForResidue(vector<string> &part_name
@@ -1140,7 +1179,7 @@ float SimplePart::pRetransDemand(void)
 void SimplePart::doPPartition(float p_uptake, float total_p_demand)
 //=======================================================================================
    {
-   Growth.SetP(p_uptake * divide(pDemand(), total_p_demand, 0.0));
+   Growth.SetP((float)(p_uptake * divide(pDemand(), total_p_demand, 0.0)));
    }
 
 void SimplePart::doPRetranslocate(float total_p_supply, float total_p_demand)

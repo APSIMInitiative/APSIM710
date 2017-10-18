@@ -112,6 +112,7 @@ public:                                             // member functions
    virtual void  update(void);
    virtual float dmGreenDemand(void);
    virtual void  zeroDltNSenescedTrans(void);
+   // the animal interface
    virtual void  get_AvailableToAnimal(protocol::AvailableToAnimalType &cohort);
    virtual void  set_RemovedByAnimal(const protocol::RemovedByAnimalType &removed);
 

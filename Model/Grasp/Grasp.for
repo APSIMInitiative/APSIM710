@@ -2121,7 +2121,7 @@ c      need to be changed. FIXME!
       g%dmAvailable%element(1)%AgeID = 'green'
       g%dmAvailable%element(1)%Bottom = 0.0
       g%dmAvailable%element(1)%Top =    g%canopy_height
-      g%dmAvailable%element(1)%Chem =   'digestible'
+      g%dmAvailable%element(1)%Chem =   'ddm'
       g%dmAvailable%element(1)%Weight = g%dm_green(leaf)
       g%dmAvailable%element(1)%N =      g%n_green(leaf)
       g%dmAvailable%element(1)%P =      0.0
@@ -2133,7 +2133,7 @@ c      need to be changed. FIXME!
       g%dmAvailable%element(2)%AgeID = 'senesced'
       g%dmAvailable%element(2)%Bottom = 0.0
       g%dmAvailable%element(2)%Top =    g%canopy_height
-      g%dmAvailable%element(2)%Chem =   'digestible'
+      g%dmAvailable%element(2)%Chem =   'ddm'
       g%dmAvailable%element(2)%Weight = g%dm_dead(leaf)
       g%dmAvailable%element(2)%N =      g%n_dead(leaf)
       g%dmAvailable%element(2)%P =      0.0
@@ -2145,7 +2145,7 @@ c      need to be changed. FIXME!
       g%dmAvailable%element(3)%AgeID = 'green'
       g%dmAvailable%element(3)%Bottom = 0.0
       g%dmAvailable%element(3)%Top =    g%canopy_height
-      g%dmAvailable%element(3)%Chem =   'digestible'
+      g%dmAvailable%element(3)%Chem =   'ddm'
       g%dmAvailable%element(3)%Weight = g%dm_green(stem)
       g%dmAvailable%element(3)%N =      g%n_green(stem)
       g%dmAvailable%element(3)%P =      0.0
@@ -2157,7 +2157,7 @@ c      need to be changed. FIXME!
       g%dmAvailable%element(4)%AgeID = 'senesced'
       g%dmAvailable%element(4)%Bottom = 0.0
       g%dmAvailable%element(4)%Top =    g%canopy_height
-      g%dmAvailable%element(4)%Chem =   'digestible'
+      g%dmAvailable%element(4)%Chem =   'ddm'
       g%dmAvailable%element(4)%Weight = g%dm_dead(stem)
       g%dmAvailable%element(4)%N =      g%n_dead(stem)
       g%dmAvailable%element(4)%P =      0.0
