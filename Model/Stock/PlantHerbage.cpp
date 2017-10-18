@@ -270,27 +270,27 @@ void PlantHerbage::doDmdPoolsToHerbageParts(protocol::RemoveHerbageType &grazed,
       dm.pool = "green";
       dm.part.push_back("leaf");
       float dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += grazed.herbage[pool]*partFractionVeg[pool].green.leaf;
+      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart = (float)(dmPart + grazed.herbage[pool]*partFractionVeg[pool].green.leaf);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       dm.part.push_back("stem");
       dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += grazed.herbage[pool]*partFractionVeg[pool].green.stem;
+      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart = (float)(dmPart + grazed.herbage[pool]*partFractionVeg[pool].green.stem);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       dm.part.push_back("pod");
       dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += grazed.herbage[pool]*partFractionVeg[pool].green.pod;
+      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart = (float)(dmPart + grazed.herbage[pool]*partFractionVeg[pool].green.pod);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       dm.part.push_back("meal");
       dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsSeed(); pool++) dmPart += grazed.seed[pool]*partFractionSeed[pool].green.meal;
+      for (int pool = 0; pool < numDmdPoolsSeed(); pool++) dmPart = (float)(dmPart + grazed.seed[pool]*partFractionSeed[pool].green.meal);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       dm.part.push_back("oil");
       dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsSeed(); pool++) dmPart += grazed.seed[pool]*partFractionSeed[pool].green.oil;
+      for (int pool = 0; pool < numDmdPoolsSeed(); pool++) dmPart = (float)(dmPart + grazed.seed[pool]*partFractionSeed[pool].green.oil);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       crop.dm.push_back(dm);
@@ -300,27 +300,27 @@ void PlantHerbage::doDmdPoolsToHerbageParts(protocol::RemoveHerbageType &grazed,
       dm.pool = "senesced";
       dm.part.push_back("leaf");
       dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += (float)(grazed.herbage[pool]*partFractionVeg[pool].senesced.leaf);
+      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart = (float)(dmPart + grazed.herbage[pool]*partFractionVeg[pool].senesced.leaf);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       dm.part.push_back("stem");
       dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += (float)(grazed.herbage[pool]*partFractionVeg[pool].senesced.stem);
+      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart = (float)(dmPart + grazed.herbage[pool]*partFractionVeg[pool].senesced.stem);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       dm.part.push_back("pod");
       dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart += (float)(grazed.herbage[pool]*partFractionVeg[pool].senesced.pod);
+      for (int pool = 0; pool < numDmdPoolsVeg(); pool++) dmPart = (float)(dmPart + grazed.herbage[pool]*partFractionVeg[pool].senesced.pod);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       dm.part.push_back("meal");
       dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsSeed(); pool++) dmPart += (float)(grazed.seed[pool]*partFractionSeed[pool].senesced.meal);
+      for (int pool = 0; pool < numDmdPoolsSeed(); pool++) dmPart = (float)(dmPart + grazed.seed[pool]*partFractionSeed[pool].senesced.meal);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       dm.part.push_back("oil");
       dmPart = 0.0;
-      for (int pool = 0; pool < numDmdPoolsSeed(); pool++) dmPart += (float)(grazed.seed[pool]*partFractionSeed[pool].senesced.oil);
+      for (int pool = 0; pool < numDmdPoolsSeed(); pool++) dmPart = (float)(dmPart + grazed.seed[pool]*partFractionSeed[pool].senesced.oil);
       dm.dlt.push_back(dmPart * kg2g / ha2sm);
 
       crop.dm.push_back(dm);
