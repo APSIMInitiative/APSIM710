@@ -7,26 +7,29 @@
 class ScienceAPI;
 class Delta;
 class Pool : public Biomass
-   {
-   public:
-      Pool(plantInterface& plant, ScienceAPI& scienceAPI, const std::string& Name, const std::string& PartName,
-           bool DoRegistrations = true);
-      void Init ();
+{
+public:
+	Pool(plantInterface& plant, ScienceAPI& scienceAPI, const std::string& Name, const std::string& PartName,
+		bool DoRegistrations = true);
+	void Init();
 
-      StageBasedInterpolationFunction DigestibilityMax;
-      StageBasedInterpolationFunction DigestibilityAvg;
-      StageBasedInterpolationFunction DigestibilityMin;
+	StageBasedInterpolationFunction DigestibilityMax;
+	StageBasedInterpolationFunction DigestibilityAvg;
+	StageBasedInterpolationFunction DigestibilityMin;
 
-      virtual Biomass& operator = (const Biomass& Pool2);
+	virtual Biomass& operator = (const Biomass& Pool2);
+	double AshAlk() {
+		return ashAlk;
+	}
+protected:
+	std::string PartName;
+	std::string Name;
+	ScienceAPI& scienceAPI;
+	plantInterface& Plant;
+	double ashAlk;	//read from parameters - mol/kg
 
-   protected:
-      std::string PartName;
-      std::string Name;
-      ScienceAPI& scienceAPI;
-      plantInterface& Plant;
-
-      void DoRegistrations();
-      virtual void CheckBounds();
-   };
+	void DoRegistrations();
+	virtual void CheckBounds();
+};
 
 #endif

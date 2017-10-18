@@ -29,6 +29,10 @@ void Pool::DoRegistrations()
 
    scienceAPI.exposeFunction(PartName+Name+"nconc", "%", "N concentration in "+Name+" "+PartName, FloatGetter(&Pool::NconcPercent));
    scienceAPI.exposeFunction(PartName+Name+"pconc", "%", "P concentration in "+Name+" "+PartName, FloatGetter(&Pool::PconcPercent));
+
+   ashAlk = 0.0;
+   scienceAPI.readOptional(PartName + "_ashalk", ashAlk, 0.0, 10.0);
+
    }
 void Pool::Init()
    {
