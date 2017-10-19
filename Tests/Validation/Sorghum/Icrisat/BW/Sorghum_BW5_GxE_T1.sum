@@ -46,39 +46,37 @@ Paddock:
      INPUT File name: BW5_GxE.met
 
 ------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        harvesting
      Output variables:
-        today format dd/mm/yyyy as Date
         DaysAfterSowing as Das
         Stage
-        Biomass
-        GreenWt
         Biomass units g/m^2 as BiomassWt
+        GrainSize
+        GrainNo
+        MaxLAI as LaiAnth
         RootGreenWt
         LeafGreenWt
         StemGreenWt
         RachisGreenWt
         GrainGreenWt
-        BiomassN
+        biomass_n
         RootGreenN
         LeafGreenN
         StemGreenN
         RachisGreenN
         GrainGreenN
         GrainGreenNConc
-        GrainNo
         LeafNo
-        LAI
-        SLAI
         ESW
         no3() as NO3
         SLN
-        WaterSD
-        sw
+        sw()
         HI
         TPLA
         SPLA
-        GrainSize
-        biomass_n
+        Yield
+        Biomass
 
      Output file = Sorghum_BW5_GxE_T1.out
      Format = normal
@@ -120,7 +118,6 @@ Paddock:
        sorghum sow plants =10, sowing_depth = 30, cultivar = m35-1, row_spacing = 0.5, skip = solid, tiller_no_fertile = 0 ()
      endif
      if (paddock_is_fallow() = 0) then
-        outputfile do_output
      endif
      END of rules
      
@@ -405,15 +402,15 @@ Paddock:
 9 February 1997(Day of year=40), sorghum: 
      Stage 9 EndGrainFill  DAS = 122
      		Biomass       = 1106.50 		 LAI            =   1.70
-     		Stover N Conc =   3.59 		 Extractable SW = 330.00
+     		Stover N Conc =   3.59 		 Extractable SW = 329.85
 12 February 1997(Day of year=43), sorghum: 
      Stage 10 Maturity  DAS = 125
      		Biomass       = 1114.93 		 LAI            =   1.60
-     		Stover N Conc =   3.47 		 Extractable SW = 326.75
+     		Stover N Conc =   3.47 		 Extractable SW = 326.60
 13 February 1997(Day of year=44), sorghum: 
      Stage 11 HarvestRipe  DAS = 126
      		Biomass       = 1117.28 		 LAI            =   1.57
-     		Stover N Conc =   3.43 		 Extractable SW = 325.79
+     		Stover N Conc =   3.43 		 Extractable SW = 325.63
 13 February 1997(Day of year=44), paddock.Harvesting rule: 
      Manager sending message :- sorghum harvest
      

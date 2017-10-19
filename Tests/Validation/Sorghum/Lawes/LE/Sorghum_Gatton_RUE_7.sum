@@ -46,39 +46,37 @@ Paddock:
      INPUT File name: Gatton_RUE.met
 
 ------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        harvesting
      Output variables:
-        today format dd/mm/yyyy as Date
         DaysAfterSowing as Das
         Stage
-        Biomass
-        GreenWt
         Biomass units g/m^2 as BiomassWt
+        GrainSize
+        GrainNo
+        MaxLAI as LaiAnth
         RootGreenWt
         LeafGreenWt
         StemGreenWt
         RachisGreenWt
         GrainGreenWt
-        BiomassN
+        biomass_n
         RootGreenN
         LeafGreenN
         StemGreenN
         RachisGreenN
         GrainGreenN
         GrainGreenNConc
-        GrainNo
-        GrainSize
         LeafNo
-        LAI
-        SLAI
         ESW
         no3() as NO3
         SLN
-        WaterSD
-        sw
+        sw()
         HI
         TPLA
         SPLA
-        biomass_n
+        Yield
+        Biomass
 
      Output file = Sorghum_Gatton_RUE_7.out
      Format = normal
@@ -123,9 +121,6 @@ Paddock:
      SECTION:- start_of_day
      if (paddock_is_fallow() = 1 and today = date('2/12/1999')) then
        sorghum sow plants =10, sowing_depth = 40, cultivar = csh13r, row_spacing = 0.5, skip = solid, tiller_no_fertile = 0.9 ()
-     endif
-     if (paddock_is_fallow() = 0) then
-        outputfile do_output
      endif
      END of rules
      
@@ -353,7 +348,7 @@ Paddock:
 2 February 2000(Day of year=33), sorghum: 
      Stage 6 FlagLeaf  DAS = 62
      		Biomass       = 861.18 		 LAI            =   6.91
-     		Stover N Conc =  12.68 		 Extractable SW = 184.28
+     		Stover N Conc =  12.68 		 Extractable SW = 181.54
 4 February 2000(Day of year=35), paddock.operations: 
       Sending apply message to irrigation
 11 February 2000(Day of year=42), paddock.operations: 
@@ -367,27 +362,27 @@ Paddock:
 16 February 2000(Day of year=47), sorghum: 
      Stage 7 Flowering  DAS = 76
      		Biomass       = 1274.90 		 LAI            =   6.17
-     		Stover N Conc =  17.41 		 Extractable SW = 170.98
+     		Stover N Conc =  17.41 		 Extractable SW = 168.11
 21 February 2000(Day of year=52), sorghum: 
      Stage 8 StartGrainFill  DAS = 81
      		Biomass       = 1430.13 		 LAI            =   6.01
-     		Stover N Conc =  18.93 		 Extractable SW = 138.72
+     		Stover N Conc =  18.93 		 Extractable SW = 135.85
 25 February 2000(Day of year=56), paddock.operations: 
       Sending apply message to irrigation
 3 March 2000(Day of year=63), paddock.operations: 
       Sending apply message to irrigation
 29 March 2000(Day of year=89), sorghum: 
      Stage 9 EndGrainFill  DAS = 118
-     		Biomass       = 2286.26 		 LAI            =   5.62
-     		Stover N Conc =  13.47 		 Extractable SW =  35.26
+     		Biomass       = 2278.42 		 LAI            =   5.62
+     		Stover N Conc =  13.60 		 Extractable SW =  34.18
 31 March 2000(Day of year=91), sorghum: 
      Stage 10 Maturity  DAS = 120
-     		Biomass       = 2302.06 		 LAI            =   5.62
-     		Stover N Conc =  13.20 		 Extractable SW =  31.58
+     		Biomass       = 2293.63 		 LAI            =   5.62
+     		Stover N Conc =  13.33 		 Extractable SW =  30.63
 1 April 2000(Day of year=92), sorghum: 
      Stage 11 HarvestRipe  DAS = 121
-     		Biomass       = 2309.45 		 LAI            =   5.62
-     		Stover N Conc =  13.07 		 Extractable SW =  29.92
+     		Biomass       = 2300.75 		 LAI            =   5.62
+     		Stover N Conc =  13.20 		 Extractable SW =  29.02
 1 April 2000(Day of year=92), paddock.Harvesting rule: 
      Manager sending message :- sorghum harvest
      
@@ -395,16 +390,16 @@ Paddock:
      Flowering (DAS)       = 76 		 Maturity (DAS)          = 120
      Flowering day         = 47 		 Maturity day            = 91
      Maximum LAI           = 6.9 		 Number of leaves        = 19.6
-     Total above ground biomass    (kg/ha) = 23159.6
-     Green above ground biomass    (kg/ha) = 22328.0
+     Total above ground biomass    (kg/ha) = 23070.3
+     Green above ground biomass    (kg/ha) = 22238.6
      Senesced above ground biomass (kg/ha) = 831.7
-     Stover (kg/ha)        = 14886.4 	 Grain yield (kg/ha)     = 8273.2
-     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 9509.4
-     Weight 1000 grains(g) = 33.3 		 Grains/m^2              = 24826.6
+     Stover (kg/ha)        = 14833.7 	 Grain yield (kg/ha)     = 8236.6
+     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 9467.3
+     Weight 1000 grains(g) = 33.2 		 Grains/m^2              = 24826.6
      Grains/head           = 2482.7
-     Grain N percent    (%)     =      1.58 	 Grain N            (kg/ha) =   130.62
-     Total N content    (kg/ha) =    261.28 	 Senesced N content (kg/ha) =    21.85
-     Green N content    (kg/ha) =    119.67
+     Grain N percent    (%)     =      1.57 	 Grain N            (kg/ha) =   129.63
+     Total N content    (kg/ha) =    261.67 	 Senesced N content (kg/ha) =    21.85
+     Green N content    (kg/ha) =    121.06
      
      Average Stress Indices:                          Water Photo  Water Expan  N Photo
         Emergence           to End of juvenile           1.0          1.0        0.9
@@ -416,13 +411,13 @@ Paddock:
      
      Crop harvested.
         Organic matter removed from system:-      From Tops		From Roots
-                         DM (kg/ha) =               8273.20		    0.00
-                         N  (kg/ha) =                130.62		    0.00
+                         DM (kg/ha) =               8236.57		    0.00
+                         N  (kg/ha) =                129.63		    0.00
      Manager sending message :- sorghum end_crop
      Crop ended.
      Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
-                         DM (kg/ha) =              14886.45		 5480.71
-                         N  (kg/ha) =                130.67		   10.86
+                         DM (kg/ha) =              14833.73		 5480.71
+                         N  (kg/ha) =                132.05		   10.86
                          P  (kg/ha) =                  0.00		    0.00
 3 April 2000(Day of year=94), clock: 
      Simulation is terminating due to end criteria being met.

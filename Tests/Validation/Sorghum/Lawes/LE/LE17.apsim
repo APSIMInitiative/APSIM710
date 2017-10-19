@@ -1,326 +1,4 @@
-<folder version="32" name="LE17">
-  <folder name="shared">
-    <variables name="My Variables">
-      <variable array="No" description="Date (dd/mm/yyyy)">today format dd/mm/yyyy as Date</variable>
-      <variable array="No" description="Total LAI">DaysAfterSowing as Das</variable>
-      <variable array="No" description="Senesced LAI">Stage</variable>
-      <variable array="Yes" description="Nitrogen in dead parts">Biomass</variable>
-      <variable array="No" description="Nitrogen concentration in the grain">GreenWt</variable>
-      <variable array="No" description="Grain Number">Biomass units g/m^2 as BiomassWt</variable>
-      <variable array="Yea" description="NO3">RootGreenWt</variable>
-      <variable description="Days after Sowing">LeafGreenWt</variable>
-      <variable description="Plant stage">StemGreenWt</variable>
-      <variable description="Biomass weight">RachisGreenWt</variable>
-      <variable description="Weight of roots">GrainGreenWt</variable>
-      <variable description="Weight of stems">BiomassN</variable>
-      <variable description="Weight of leaf">RootGreenN</variable>
-      <variable description="Weight of leaf">LeafGreenN</variable>
-      <variable description="Weight of grain">StemGreenN</variable>
-      <variable description="N in total biomass">RachisGreenN</variable>
-      <variable description="N in roots">GrainGreenN</variable>
-      <variable description="N in stems">GrainGreenNConc</variable>
-      <variable description="N in heads">GrainNo</variable>
-      <variable>GrainSize</variable>
-      <variable description="N in leaves">LeafNo</variable>
-      <variable description="N in grain">LAI</variable>
-      <variable description="Water stress">SLAI</variable>
-      <variable description="number ">ESW</variable>
-      <variable description="Leaf area index">no3() as NO3</variable>
-      <variable description="Extractable Soil Water (mm)">SLN</variable>
-      <variable array="T" description="NO3 - layered (kg/ha)">WaterSD</variable>
-      <variable description="Specific leaf nitrogen">sw</variable>
-      <variable>HI</variable>
-      <variable>TPLA</variable>
-      <variable>SPLA</variable>
-      <variable>biomass_n</variable>
-    </variables>
-    <sorghum>
-      <sorghumConstants name="standard">
-        <crop_type type="text" description="crop_type">sorghum</crop_type>
-        <default_crop_class type="text" description="default_crop_class">plant</default_crop_class>
-        <stage_names type="text" description="stage_names">sowing germination emergence end_of_juvenile floral_initiation flag_leaf flowering start_grain_fill end_grain_fill maturity harvest_ripe end_crop</stage_names>
-        <stage_code type="text" description="stage_code">1   2   3    4      5     6     7    8    9    10   11   12</stage_code>
-        <pesw_germ type="text" description="pesw_germ">0</pesw_germ>
-        <shoot_lag type="text" description="shoot_lag">15</shoot_lag>
-        <shoot_rate type="text" description="shoot_rate">0.6</shoot_rate>
-        <twilight type="text" description="twilight">-2.2</twilight>
-        <x_temp type="text" description="x_temp">11 30  42</x_temp>
-        <y_tt type="text" description="y_tt">0  19   0</y_tt>
-        <x_temp_fm type="text" description="x_temp_fm">5.7 23.5</x_temp_fm>
-        <y_tt_fm type="text" description="y_tt_fm">0   17.8</y_tt_fm>
-        <SorghumCanopy type="text" description="SorghumCanopy">Canopy --------------------------------------------------</SorghumCanopy>
-        <leaf_no_at_emerg type="text" description="leaf_no_at_emerg">1</leaf_no_at_emerg>
-        <leaf_no_seed type="text" description="leaf_no_seed">4</leaf_no_seed>
-        <leaf_no_min type="text" description="leaf_no_min">10</leaf_no_min>
-        <leaf_no_max type="text" description="leaf_no_max">40</leaf_no_max>
-        <leaf_init_rate type="text" description="leaf_init_rate">21.6</leaf_init_rate>
-        <leaf_app_rate1 type="text" description="leaf_app_rate1">41</leaf_app_rate1>
-        <leaf_app_rate2 type="text" description="leaf_app_rate2">20</leaf_app_rate2>
-        <leaf_no_rate_change type="text" description="leaf_no_rate_change">3.5</leaf_no_rate_change>
-        <leaf_app_rate type="text" description="leaf_app_rate">41</leaf_app_rate>
-        <rue type="text" description="rue">0   0  1.25  1.25  1.25 1.25  1.25 1.25 1.25 1.25    0    0</rue>
-        <row_spacing_default type="text" description="row_spacing_default">750</row_spacing_default>
-        <x_row_spacing type="text" description="x_row_spacing">0.20   0.50   1.00</x_row_spacing>
-        <y_extinct_coef type="text" description="y_extinct_coef">0.70   0.40   0.40</y_extinct_coef>
-        <x_ave_temp type="text" description="x_ave_temp">8 20 35 50</x_ave_temp>
-        <y_stress_photo type="text" description="y_stress_photo">0  1  1  0</y_stress_photo>
-        <leaf_no_correction type="text" description="leaf_no_correction">1.52</leaf_no_correction>
-        <x_lai type="text" description="x_lai">0.1    4</x_lai>
-        <y_lai_sla_max type="text" description="y_lai_sla_max">50000 25000</y_lai_sla_max>
-        <lai_sla_min type="text" description="lai_sla_min">8000  8000</lai_sla_min>
-        <sla_max type="text" description="sla_max">45000</sla_max>
-        <sla_min type="text" description="sla_min">8000</sla_min>
-        <initial_tpla type="text" description="initial_tpla">200</initial_tpla>
-        <tiller_coef type="text" description="tiller_coef">0.66</tiller_coef>
-        <tpla_inflection_ratio type="text" description="tpla_inflection_ratio">0.66</tpla_inflection_ratio>
-        <height_max type="text" description="height_max">3500</height_max>
-        <height_stem_slope type="text" description="height_stem_slope">250</height_stem_slope>
-        <Biomass type="text" description="Biomass">Biomass --------------------------------------------------</Biomass>
-        <dm_leaf_init type="text" description="dm_leaf_init">0.1</dm_leaf_init>
-        <dm_root_init type="text" description="dm_root_init">0.1</dm_root_init>
-        <dm_stem_init type="text" description="dm_stem_init">0.1</dm_stem_init>
-        <stem_trans_frac type="text" description="stem_trans_frac">0.2</stem_trans_frac>
-        <leaf_trans_frac type="text" description="leaf_trans_frac">0.15</leaf_trans_frac>
-        <retransRate type="text" description="retransRate">0.15</retransRate>
-        <ratio_root_shoot type="text" description="ratio_root_shoot">0   0   1    1     0.33  0.33  0.087  0    0     0    0    0</ratio_root_shoot>
-        <partition_rate_leaf type="text" description="partition_rate_leaf">0.006</partition_rate_leaf>
-        <frac_stem2flower type="text" description="frac_stem2flower">0.3</frac_stem2flower>
-        <grn_water_cont type="text" description="grn_water_cont">0.13</grn_water_cont>
-        <GrainTempWindow type="text" description="GrainTempWindow">-150 50</GrainTempWindow>
-        <GrainTempOrdinals type="text" description="GrainTempOrdinals">36 40</GrainTempOrdinals>
-        <Roots type="text" description="Roots">ROOTS --------------------------------------------------</Roots>
-        <root_depth_rate type="text" description="root_depth_rate">0 27.0  27.0  27.0 27.0  27.0   27.0   0      0       0    0    0</root_depth_rate>
-        <x_sw_ratio type="text" description="x_sw_ratio">0   0.25</x_sw_ratio>
-        <y_sw_fac_root type="text" description="y_sw_fac_root">0   1</y_sw_fac_root>
-        <initial_root_depth type="text" description="initial_root_depth">50</initial_root_depth>
-        <specific_root_length type="text" description="specific_root_length">100000</specific_root_length>
-        <x_plant_rld type="text" description="x_plant_rld">0.0  0.1</x_plant_rld>
-        <y_rel_root_rate type="text" description="y_rel_root_rate">1.0  1.0</y_rel_root_rate>
-        <transp_eff_cf type="text" description="transp_eff_cf">0.009 0.009 0.009 0.009 0.009 0.009  0.009  0.009  0.009  0.009   0.009   0.009</transp_eff_cf>
-        <svp_fract type="text" description="svp_fract">0.75</svp_fract>
-        <x_sw_demand_ratio type="text" description="x_sw_demand_ratio">0.1 1.1</x_sw_demand_ratio>
-        <y_swdef_leaf type="text" description="y_swdef_leaf">0   1</y_swdef_leaf>
-        <x_sw_avail_ratio type="text" description="x_sw_avail_ratio">0 0.2 1.0</x_sw_avail_ratio>
-        <y_swdef_pheno type="text" description="y_swdef_pheno">0 1.0 1.0</y_swdef_pheno>
-        <Nitrogen type="text" description="Nitrogen">Nitrogen --------------------------------------------------</Nitrogen>
-        <no3_diffn_const type="text" description="no3_diffn_const">2</no3_diffn_const>
-        <maxUptakeRate type="text" description="maxUptakeRate">0.029</maxUptakeRate>
-        <initialRootNConc type="text" description="initialRootNConc">0.02</initialRootNConc>
-        <targetRootNConc type="text" description="targetRootNConc">0.002</targetRootNConc>
-        <initialLeafSLN type="text" description="initialLeafSLN">1.5</initialLeafSLN>
-        <targetLeafSLN type="text" description="targetLeafSLN">1.5</targetLeafSLN>
-        <newLeafSLN type="text" description="newLeafSLN">1</newLeafSLN>
-        <senescedLeafSLN type="text" description="senescedLeafSLN">0.3</senescedLeafSLN>
-        <initialStemNConc type="text" description="initialStemNConc">0.01</initialStemNConc>
-        <x_stem_n type="text" description="x_stem_n">3         5       7         10</x_stem_n>
-        <targetStemNConc type="text" description="targetStemNConc">0.055   0.016   0.01      0.005</targetStemNConc>
-        <structStemNConc type="text" description="structStemNConc">0.012  0.012   0.005   0.0015</structStemNConc>
-        <initialRachisNConc type="text" description="initialRachisNConc">0</initialRachisNConc>
-        <targetRachisNConc type="text" description="targetRachisNConc">0.01</targetRachisNConc>
-        <structRachisNConc type="text" description="structRachisNConc">0.003</structRachisNConc>
-        <stemDilnNSlope type="text" description="stemDilnNSlope">0.0062</stemDilnNSlope>
-        <stemDilnNInt type="text" description="stemDilnNInt">-0.001</stemDilnNInt>
-        <rachisDilnNSlope type="text" description="rachisDilnNSlope">0.0062</rachisDilnNSlope>
-        <rachisDilnNInt type="text" description="rachisDilnNInt">-0.001</rachisDilnNInt>
-        <leafDilnNSlope type="text" description="leafDilnNSlope">0.0043</leafDilnNSlope>
-        <leafDilnNInt type="text" description="leafDilnNInt">-0.0017</leafDilnNInt>
-        <grainFillRate type="text" description="grainFillRate">0.001</grainFillRate>
-        <grainFillIntercept type="text" description="grainFillIntercept">0.0000319</grainFillIntercept>
-        <grainFillSlope type="text" description="grainFillSlope">0.4026</grainFillSlope>
-        <targetGrainNConc type="text" description="targetGrainNConc">0.0175</targetGrainNConc>
-        <nUptakeCease type="text" description="nUptakeCease">570</nUptakeCease>
-        <nSupplyFrac type="text" description="nSupplyFrac">5</nSupplyFrac>
-        <Senescence type="text" description="Senescence">Senescence --------------------------------------------------</Senescence>
-        <dm_root_sen_frac type="text" description="dm_root_sen_frac">0.002</dm_root_sen_frac>
-        <lai_sen_light type="text" description="lai_sen_light">4</lai_sen_light>
-        <sen_light_slope type="text" description="sen_light_slope">0.008</sen_light_slope>
-        <x_temp_senescence type="text" description="x_temp_senescence">0.0 6.0</x_temp_senescence>
-        <y_senescence_fac type="text" description="y_senescence_fac">1   0</y_senescence_fac>
-        <sen_rate_water type="text" description="sen_rate_water">0.05</sen_rate_water>
-        <dead_detach_frac type="text" description="dead_detach_frac">0 0 0 0 0</dead_detach_frac>
-        <dm_leaf_detach_frac type="text" description="dm_leaf_detach_frac">0</dm_leaf_detach_frac>
-        <sen_light_time_const type="text" description="sen_light_time_const">10</sen_light_time_const>
-        <sen_radn_crit type="text" description="sen_radn_crit">2</sen_radn_crit>
-        <frost_kill type="text" description="frost_kill">1</frost_kill>
-        <sen_water_time_const type="text" description="sen_water_time_const">10</sen_water_time_const>
-        <sen_threshold type="text" description="sen_threshold">0.25</sen_threshold>
-        <spla_slope type="text" description="spla_slope">81.5</spla_slope>
-        <tt_emerg_limit type="text" description="tt_emerg_limit">150</tt_emerg_limit>
-        <days_germ_limit type="text" description="days_germ_limit">40</days_germ_limit>
-        <swdf_photo_limit type="text" description="swdf_photo_limit">99</swdf_photo_limit>
-        <swdf_photo_rate type="text" description="swdf_photo_rate">0</swdf_photo_rate>
-        <swdf_pheno_limit type="text" description="swdf_pheno_limit">99</swdf_pheno_limit>
-        <x_weighted_temp type="text" description="x_weighted_temp">55.0  60.0</x_weighted_temp>
-        <y_plant_death type="text" description="y_plant_death">0.0   1.0</y_plant_death>
-        <stress_determinants type="text" description="stress_determinants">leaf stem grain</stress_determinants>
-        <Phosphorous type="text" description="Phosphorous">Phosphorous --------------------------------------------------</Phosphorous>
-        <yield_parts type="text" description="yield_parts">grain</yield_parts>
-        <retrans_parts type="text" description="retrans_parts">leaf stem  flower</retrans_parts>
-        <pfact_photo_slope type="text" description="pfact_photo_slope">2.5</pfact_photo_slope>
-        <pfact_expansion_slope type="text" description="pfact_expansion_slope">2.5</pfact_expansion_slope>
-        <pfact_pheno_slope type="text" description="pfact_pheno_slope">6</pfact_pheno_slope>
-        <pfact_grain_slope type="text" description="pfact_grain_slope">20</pfact_grain_slope>
-        <p_uptake_factor type="text" description="p_uptake_factor">1.5</p_uptake_factor>
-        <x_p_stage_code type="text" description="x_p_stage_code">3       4      5      6      7      8      10</x_p_stage_code>
-        <y_p_conc_max_leaf type="text" description="y_p_conc_max_leaf">0.0059  0.0054 0.0040 0.0029 0.0026 0.0025 0.0022</y_p_conc_max_leaf>
-        <y_p_conc_min_leaf type="text" description="y_p_conc_min_leaf">0.003   0.003  0.0029 0.0011 0.0011 0.0008 0.0006</y_p_conc_min_leaf>
-        <y_p_conc_sen_leaf type="text" description="y_p_conc_sen_leaf">0.0005  0.0005 0.0005 0.0005 0.0005 0.0005 0.0005</y_p_conc_sen_leaf>
-        <y_p_conc_max_stem type="text" description="y_p_conc_max_stem">0.0057  0.0038 0.0037 0.0018 0.0016 0.0013 0.0013</y_p_conc_max_stem>
-        <y_p_conc_min_stem type="text" description="y_p_conc_min_stem">0.003   0.003  0.002  0.0006 0.0006 0.0002 0.0002</y_p_conc_min_stem>
-        <y_p_conc_sen_stem type="text" description="y_p_conc_sen_stem">0.0002  0.0002 0.0002 0.0002 0.0002 0.0002 0.0002</y_p_conc_sen_stem>
-        <y_p_conc_max_root type="text" description="y_p_conc_max_root">0.0010  0.0010 0.0010 0.0010 0.0010 0.0010 0.0010</y_p_conc_max_root>
-        <y_p_conc_min_root type="text" description="y_p_conc_min_root">0.0010  0.0010 0.0010 0.0010 0.0010 0.0010 0.0010</y_p_conc_min_root>
-        <y_p_conc_sen_root type="text" description="y_p_conc_sen_root">0.0010  0.0010 0.0010 0.0010 0.0010 0.0010 0.0010</y_p_conc_sen_root>
-        <y_p_conc_max_flower type="text" description="y_p_conc_max_flower">0.0057  0.0038 0.0037 0.0018 0.0016 0.0013 0.0013</y_p_conc_max_flower>
-        <y_p_conc_min_flower type="text" description="y_p_conc_min_flower">0.003   0.003  0.002  0.0006 0.0006 0.0002 0.0002</y_p_conc_min_flower>
-        <y_p_conc_sen_flower type="text" description="y_p_conc_sen_flower">0.0002  0.0002 0.0002 0.0002 0.0002 0.0002 0.0002</y_p_conc_sen_flower>
-        <y_p_conc_max_grain type="text" description="y_p_conc_max_grain">0.001   0.001  0.001  0.001  0.052  0.0044  0.0034</y_p_conc_max_grain>
-        <y_p_conc_min_grain type="text" description="y_p_conc_min_grain">0.001   0.001  0.001  0.001  0.001  0.0015  0.0015</y_p_conc_min_grain>
-        <y_p_conc_sen_grain type="text" description="y_p_conc_sen_grain">0.001   0.001  0.001  0.001  0.001  0.0015  0.0015</y_p_conc_sen_grain>
-        <y_p_conc_max_energy type="text" description="y_p_conc_max_energy">0.001   0.001  0.001  0.001  0.001  0.001  0.001</y_p_conc_max_energy>
-        <y_p_conc_min_energy type="text" description="y_p_conc_min_energy">0.001   0.001  0.001  0.001  0.001  0.001  0.001</y_p_conc_min_energy>
-        <y_p_conc_sen_energy type="text" description="y_p_conc_sen_energy">0.001   0.001  0.001  0.001  0.001  0.001  0.001</y_p_conc_sen_energy>
-        <p_conc_init_leaf type="text" description="p_conc_init_leaf">0.0059</p_conc_init_leaf>
-        <p_conc_init_stem type="text" description="p_conc_init_stem">0.0057</p_conc_init_stem>
-        <p_conc_init_root type="text" description="p_conc_init_root">0.01</p_conc_init_root>
-        <p_conc_init_flower type="text" description="p_conc_init_flower">0.0057</p_conc_init_flower>
-        <p_conc_init_grain type="text" description="p_conc_init_grain">0.0052</p_conc_init_grain>
-        <p_conc_init_energy type="text" description="p_conc_init_energy">0</p_conc_init_energy>
-        <Bounds type="text" description="Bounds">Bounds --------------------------------------------------</Bounds>
-        <ll_ub type="text" description="ll_ub">1000</ll_ub>
-        <kl_ub type="text" description="kl_ub">1</kl_ub>
-        <minsw type="text" description="minsw">0.00001</minsw>
-        <latitude_ub type="text" description="latitude_ub">90</latitude_ub>
-        <latitude_lb type="text" description="latitude_lb">-90</latitude_lb>
-        <maxt_ub type="text" description="maxt_ub">55</maxt_ub>
-        <maxt_lb type="text" description="maxt_lb">0</maxt_lb>
-        <mint_ub type="text" description="mint_ub">40</mint_ub>
-        <mint_lb type="text" description="mint_lb">-10</mint_lb>
-        <radn_ub type="text" description="radn_ub">50</radn_ub>
-        <radn_lb type="text" description="radn_lb">1</radn_lb>
-        <dlayer_ub type="text" description="dlayer_ub">1000</dlayer_ub>
-        <dlayer_lb type="text" description="dlayer_lb">0</dlayer_lb>
-        <dul_dep_ub type="text" description="dul_dep_ub">1000</dul_dep_ub>
-        <dul_dep_lb type="text" description="dul_dep_lb">0</dul_dep_lb>
-        <sw_dep_ub type="text" description="sw_dep_ub">1000</sw_dep_ub>
-        <sw_dep_lb type="text" description="sw_dep_lb">0</sw_dep_lb>
-        <sw_ub type="text" description="sw_ub">1</sw_ub>
-        <sw_lb type="text" description="sw_lb">0</sw_lb>
-        <no3_ub type="text" description="no3_ub">10000</no3_ub>
-        <no3_lb type="text" description="no3_lb">0</no3_lb>
-        <no3_min_ub type="text" description="no3_min_ub">10000</no3_min_ub>
-        <no3_min_lb type="text" description="no3_min_lb">0</no3_min_lb>
-        <nh4_ub type="text" description="nh4_ub">10000</nh4_ub>
-        <nh4_lb type="text" description="nh4_lb">0</nh4_lb>
-        <nh4_min_ub type="text" description="nh4_min_ub">10000</nh4_min_ub>
-        <nh4_min_lb type="text" description="nh4_min_lb">0</nh4_min_lb>
-        <head_grain_no_max_ub type="text" description="head_grain_no_max_ub">45000</head_grain_no_max_ub>
-        <grain_gth_rate_ub type="text" description="grain_gth_rate_ub">20</grain_gth_rate_ub>
-        <tt_emerg_to_endjuv_ub type="text" description="tt_emerg_to_endjuv_ub">500</tt_emerg_to_endjuv_ub>
-        <pp_endjuv_to_init_ub type="text" description="pp_endjuv_to_init_ub">200</pp_endjuv_to_init_ub>
-        <tt_flower_to_maturity_ub type="text" description="tt_flower_to_maturity_ub">1000</tt_flower_to_maturity_ub>
-        <tt_maturity_to_ripe_ub type="text" description="tt_maturity_to_ripe_ub">1000</tt_maturity_to_ripe_ub>
-        <tt_flower_to_start_grain_ub type="text" description="tt_flower_to_start_grain_ub">1000</tt_flower_to_start_grain_ub>
-        <tt_flag_to_flower_ub type="text" description="tt_flag_to_flower_ub">1000</tt_flag_to_flower_ub>
-        <x_co2_te_modifier type="text" description="x_co2_te_modifier">350</x_co2_te_modifier>
-        <y_co2_te_modifier type="text" description="y_co2_te_modifier">1</y_co2_te_modifier>
-        <Water>WATER --------------------------------------------------</Water>
-      </sorghumConstants>
-      <sorghumGenotype name="Buster">
-        <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
-        <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
-        <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
-        <photoperiod_slope type="text" description="photoperiod_slope">11.5</photoperiod_slope>
-        <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">160</tt_endjuv_to_init>
-        <tt_flag_to_flower type="text" description="tt_flag_to_flower">170</tt_flag_to_flower>
-        <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
-        <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">761</tt_flower_to_maturity>
-        <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
-        <main_stem_coef type="text" description="main_stem_coef">2.9</main_stem_coef>
-        <tpla_prod_coef type="text" description="tpla_prod_coef">0.018</tpla_prod_coef>
-        <dm_per_seed type="text" description="dm_per_seed">0.00083</dm_per_seed>
-        <x_stem_wt type="text" description="x_stem_wt">0    80</x_stem_wt>
-        <y_height type="text" description="y_height">0  2000</y_height>
-        <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
-      </sorghumGenotype>
-      <sorghumGenotype name="QL41xQL36">
-        <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
-        <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
-        <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
-        <photoperiod_slope type="text" description="photoperiod_slope">12.5</photoperiod_slope>
-        <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">179</tt_endjuv_to_init>
-        <tt_flag_to_flower type="text" description="tt_flag_to_flower">170</tt_flag_to_flower>
-        <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
-        <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">761</tt_flower_to_maturity>
-        <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
-        <main_stem_coef type="text" description="main_stem_coef">2.9</main_stem_coef>
-        <tpla_prod_coef type="text" description="tpla_prod_coef">0.018</tpla_prod_coef>
-        <dm_per_seed type="text" description="dm_per_seed">0.00083</dm_per_seed>
-        <x_stem_wt type="text" description="x_stem_wt">0    80</x_stem_wt>
-        <y_height type="text" description="y_height">0  2000</y_height>
-        <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
-      </sorghumGenotype>
-      <sorghumGenotype name="M35-1">
-        <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
-        <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
-        <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
-        <photoperiod_slope type="text" description="photoperiod_slope">61</photoperiod_slope>
-        <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">252</tt_endjuv_to_init>
-        <tt_flag_to_flower type="text" description="tt_flag_to_flower">170</tt_flag_to_flower>
-        <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
-        <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">761</tt_flower_to_maturity>
-        <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
-        <main_stem_coef type="text" description="main_stem_coef">2.82</main_stem_coef>
-        <tpla_prod_coef type="text" description="tpla_prod_coef">0.011</tpla_prod_coef>
-        <dm_per_seed type="text" description="dm_per_seed">0.001427844</dm_per_seed>
-        <x_stem_wt type="text" description="x_stem_wt">0    80</x_stem_wt>
-        <y_height type="text" description="y_height">0  2000</y_height>
-        <partition_rate_leaf type="text" description="partition_rate_leaf">0.018</partition_rate_leaf>
-        <nUptakeCease type="text" description="nUptakeCease">10</nUptakeCease>
-        <leaf_init_rate type="text" description="leaf_init_rate">26.1</leaf_init_rate>
-        <targetLeafSLN type="text" description="targetLeafSLN">1.2</targetLeafSLN>
-        <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
-      </sorghumGenotype>
-      <sorghumGenotype name="CSH13R">
-        <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
-        <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
-        <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
-        <photoperiod_slope type="text" description="photoperiod_slope">17</photoperiod_slope>
-        <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">228</tt_endjuv_to_init>
-        <tt_flag_to_flower type="text" description="tt_flag_to_flower">170</tt_flag_to_flower>
-        <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
-        <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">761</tt_flower_to_maturity>
-        <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
-        <main_stem_coef type="text" description="main_stem_coef">2.95</main_stem_coef>
-        <tpla_prod_coef type="text" description="tpla_prod_coef">0.014</tpla_prod_coef>
-        <dm_per_seed type="text" description="dm_per_seed">0.0015</dm_per_seed>
-        <x_stem_wt type="text" description="x_stem_wt">0    80</x_stem_wt>
-        <y_height type="text" description="y_height">0  2000</y_height>
-        <rue type="text" description="rue">0   0  1.6  1.6  1.6 1.6  1.6 1.6 1.6 1.6    0    0</rue>
-        <partition_rate_leaf type="text" description="partition_rate_leaf">0.018</partition_rate_leaf>
-        <targetLeafSLN type="text" description="targetLeafSLN">1.2</targetLeafSLN>
-        <leaf_init_rate type="text" description="leaf_init_rate">23.2</leaf_init_rate>
-        <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
-      </sorghumGenotype>
-      <sorghumGenotype name="ATX623xRTX430">
-        <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
-        <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
-        <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
-        <photoperiod_slope type="text" description="photoperiod_slope">13</photoperiod_slope>
-        <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">202</tt_endjuv_to_init>
-        <tt_flag_to_flower type="text" description="tt_flag_to_flower">170</tt_flag_to_flower>
-        <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
-        <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">761</tt_flower_to_maturity>
-        <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
-        <main_stem_coef type="text" description="main_stem_coef">2.9</main_stem_coef>
-        <tpla_prod_coef type="text" description="tpla_prod_coef">0.018</tpla_prod_coef>
-        <dm_per_seed type="text" description="dm_per_seed">0.00083</dm_per_seed>
-        <x_stem_wt type="text" description="x_stem_wt">0    80</x_stem_wt>
-        <y_height type="text" description="y_height">0  2000</y_height>
-        <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
-      </sorghumGenotype>
-    </sorghum>
-  </folder>
+<folder version="37" creator="Apsim 7.9-r4092" name="LE17">
   <simulation name="Sorghum_LE17_T1">
     <clock>
       <start_date type="date" description="Select the start date of the simulation">27/11/1997</start_date>
@@ -331,12 +9,6 @@
       <filename name="filename" input="yes">LE17.met</filename>
     </metfile>
     <area name="paddock">
-      <outputfile>
-        <filename output="yes">Sorghum_LE17_T1.out</filename>
-        <title>Sorghum_LE17_T1</title>
-        <events />
-        <variables name="My Variables" shortcut="/LE17/shared/My Variables" />
-      </outputfile>
       <folder name="Manager folder">
         <manager name="Sow SkipRow on a fixed date">
           <ui>
@@ -351,15 +23,12 @@
             <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
             <ftn type="text" description="Enter Fertile Tiller No. : ">1</ftn>
           </ui>
-          <script name="start_of_day">
+          <script>
             <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
             endif
-            if (paddock_is_fallow() = 0) then
-               outputfile do_output
-            endif
-          </text>
+           </text>
             <event>start_of_day</event>
           </script>
         </manager>
@@ -381,135 +50,108 @@
           </ui>
         </manager>
       </folder>
-      <soil name="CooperLab">
-        <Langitude description="Longitude (WGS84)" />
-        <Comment type="multiedit" description="Comments" />
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+      <Soil name="CooperLab">
         <SoilType description="Soil description">Gatton</SoilType>
         <LocalName>Gatton CSIRO</LocalName>
         <Site>Gatton CSIRO</Site>
         <NearestTown description="Nearest town">Unknown</NearestTown>
         <Region>SE Queensland</Region>
-        <State />
-        <Country />
         <NaturalVegetation description="Natural vegetation">Unknown</NaturalVegetation>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source" />
-        <Comments />
         <Water>
-          <Layer>
-            <Thickness units="mm">200</Thickness>
-            <KS units="mm/day" />
-            <BD units="g/cc">1.320</BD>
-            <AirDry units="mm/mm">0.100</AirDry>
-            <LL15 units="mm/mm">0.300</LL15>
-            <DUL units="mm/mm">0.410</DUL>
-            <SAT units="mm/mm">0.460</SAT>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <KS units="mm/day" />
-            <BD>1.300</BD>
-            <AirDry>0.150</AirDry>
-            <LL15>0.300</LL15>
-            <DUL>0.430</DUL>
-            <SAT>0.480</SAT>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <KS units="mm/day" />
-            <BD>1.230</BD>
-            <AirDry>0.280</AirDry>
-            <LL15>0.350</LL15>
-            <DUL>0.460</DUL>
-            <SAT>0.510</SAT>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <KS units="mm/day" />
-            <BD>1.270</BD>
-            <AirDry>0.280</AirDry>
-            <LL15>0.320</LL15>
-            <DUL>0.440</DUL>
-            <SAT>0.490</SAT>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <KS units="mm/day" />
-            <BD>1.370</BD>
-            <AirDry>0.280</AirDry>
-            <LL15>0.290</LL15>
-            <DUL>0.400</DUL>
-            <SAT>0.450</SAT>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <KS units="mm/day" />
-            <BD>1.350</BD>
-            <AirDry>0.300</AirDry>
-            <LL15>0.310</LL15>
-            <DUL>0.410</DUL>
-            <SAT>0.460</SAT>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <KS units="mm/day" />
-            <BD>1.350</BD>
-            <AirDry>0.300</AirDry>
-            <LL15>0.310</LL15>
-            <DUL>0.380</DUL>
-            <SAT>0.430</SAT>
-          </Layer>
           <SoilCrop name="Sorghum">
-            <Layer>
-              <Thickness units="mm">200</Thickness>
-              <LL units="mm/mm">0.300</LL>
-              <KL units="/day">0.080</KL>
-              <XF units="0-1">1</XF>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <LL>0.300</LL>
-              <KL>0.080</KL>
-              <XF>1</XF>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <LL>0.350</LL>
-              <KL>0.080</KL>
-              <XF>1</XF>
-            </Layer>
-            <Layer>
-              <Thickness>300</Thickness>
-              <LL>0.320</LL>
-              <KL>0.080</KL>
-              <XF>1</XF>
-            </Layer>
-            <Layer>
-              <Thickness>300</Thickness>
-              <LL>0.290</LL>
-              <KL>0.060</KL>
-              <XF>1</XF>
-            </Layer>
-            <Layer>
-              <Thickness>300</Thickness>
-              <LL>0.310</LL>
-              <KL>0.040</KL>
-              <XF>1</XF>
-            </Layer>
-            <Layer>
-              <Thickness>300</Thickness>
-              <LL>0.310</LL>
-              <KL>0.020</KL>
-              <XF>1</XF>
-            </Layer>
+            <Thickness>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.300</double>
+              <double>0.300</double>
+              <double>0.350</double>
+              <double>0.320</double>
+              <double>0.290</double>
+              <double>0.310</double>
+              <double>0.310</double>
+            </LL>
+            <KL>
+              <double>0.080</double>
+              <double>0.080</double>
+              <double>0.080</double>
+              <double>0.080</double>
+              <double>0.060</double>
+              <double>0.040</double>
+              <double>0.020</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
           </SoilCrop>
+          <Thickness>
+            <double>200</double>
+            <double>200</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <BD>
+            <double>1.320</double>
+            <double>1.300</double>
+            <double>1.230</double>
+            <double>1.270</double>
+            <double>1.370</double>
+            <double>1.350</double>
+            <double>1.350</double>
+          </BD>
+          <AirDry>
+            <double>0.100</double>
+            <double>0.150</double>
+            <double>0.280</double>
+            <double>0.280</double>
+            <double>0.280</double>
+            <double>0.300</double>
+            <double>0.300</double>
+          </AirDry>
+          <LL15>
+            <double>0.300</double>
+            <double>0.300</double>
+            <double>0.350</double>
+            <double>0.320</double>
+            <double>0.290</double>
+            <double>0.310</double>
+            <double>0.310</double>
+          </LL15>
+          <DUL>
+            <double>0.410</double>
+            <double>0.430</double>
+            <double>0.460</double>
+            <double>0.440</double>
+            <double>0.400</double>
+            <double>0.410</double>
+            <double>0.380</double>
+          </DUL>
+          <SAT>
+            <double>0.460</double>
+            <double>0.480</double>
+            <double>0.510</double>
+            <double>0.490</double>
+            <double>0.450</double>
+            <double>0.460</double>
+            <double>0.430</double>
+          </SAT>
         </Water>
-        <SoilWat>
+        <SoilWater>
           <SummerCona>3.5</SummerCona>
           <SummerU>6</SummerU>
           <SummerDate>1-Nov</SummerDate>
@@ -519,349 +161,143 @@
           <DiffusConst>88</DiffusConst>
           <DiffusSlope>35.4</DiffusSlope>
           <Salb>0.13</Salb>
-          <Cn2Bare>91</Cn2Bare>
-          <CnRed>20</CnRed>
-          <CnCov>0.8</CnCov>
-          <Slope>
-          </Slope>
-          <DischargeWidth>
-          </DischargeWidth>
-          <CatchmentArea>
-          </CatchmentArea>
-          <MaxPond>
-          </MaxPond>
-          <Layer>
-            <Thickness units="mm">200</Thickness>
-            <SWCON units="0-1">0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <SWCON>0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <SWCON>0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-        </SoilWat>
+          <CN2Bare>91</CN2Bare>
+          <CNRed>20</CNRed>
+          <CNCov>0.8</CNCov>
+          <Thickness>
+            <double>200</double>
+            <double>200</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <SWCON>
+            <double>0.500</double>
+            <double>0.500</double>
+            <double>0.500</double>
+            <double>0.500</double>
+            <double>0.500</double>
+            <double>0.500</double>
+            <double>0.500</double>
+          </SWCON>
+        </SoilWater>
         <SoilOrganicMatter>
-          <RootCn>30</RootCn>
+          <RootCN>30</RootCN>
           <RootWt>1500</RootWt>
-          <SoilCn>12.5</SoilCn>
+          <SoilCN>12.5</SoilCN>
           <EnrACoeff>7.4</EnrACoeff>
           <EnrBCoeff>0.2</EnrBCoeff>
-          <Layer>
-            <Thickness units="mm">200</Thickness>
-            <OC units="Total %">1.300</OC>
-            <FBiom units="0-1">0.030</FBiom>
-            <FInert units="0-1">0.310</FInert>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <OC>0.650</OC>
-            <FBiom>0.010</FBiom>
-            <FInert>0.380</FInert>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <OC>0.320</OC>
-            <FBiom>0</FBiom>
-            <FInert>0.470</FInert>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <OC>0.110</OC>
-            <FBiom>0</FBiom>
-            <FInert>0.700</FInert>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <OC>0.110</OC>
-            <FBiom>0</FBiom>
-            <FInert>0.900</FInert>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <OC>0.110</OC>
-            <FBiom>0</FBiom>
-            <FInert>0.950</FInert>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <OC>0.110</OC>
-            <FBiom>0</FBiom>
-            <FInert>0.950</FInert>
-          </Layer>
+          <Thickness>
+            <double>200</double>
+            <double>200</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <OC>
+            <double>1.300</double>
+            <double>0.650</double>
+            <double>0.320</double>
+            <double>0.110</double>
+            <double>0.110</double>
+            <double>0.110</double>
+            <double>0.110</double>
+          </OC>
+          <FBiom>
+            <double>0.030</double>
+            <double>0.010</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+          </FBiom>
+          <FInert>
+            <double>0.310</double>
+            <double>0.380</double>
+            <double>0.470</double>
+            <double>0.700</double>
+            <double>0.900</double>
+            <double>0.950</double>
+            <double>0.950</double>
+          </FInert>
         </SoilOrganicMatter>
         <Analysis>
-          <Layer>
-            <Thickness units="mm">200</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH units="1:5 water">7.700</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH>8.300</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH>8.400</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH>8.500</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH>8.500</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH>8.500</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH>8.600</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
+          <Thickness>
+            <double>200</double>
+            <double>200</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <PH>
+            <double>7.700</double>
+            <double>8.300</double>
+            <double>8.400</double>
+            <double>8.500</double>
+            <double>8.500</double>
+            <double>8.500</double>
+            <double>8.600</double>
+          </PH>
         </Analysis>
         <Sample name="Initial nitrogen">
           <Date type="date" description="Sample date:" />
-          <Layer>
-            <Thickness units="mm">200</Thickness>
-            <NO3 units="ppm">5.18717876249422</NO3>
-            <NH4 units="ppm">0.1</NH4>
-            <SW units="mm/mm" />
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <NO3>2.41329436407467</NO3>
-            <NH4>0.1</NH4>
-            <SW units="mm/mm" />
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <NO3>6.50018058597877</NO3>
-            <NH4>0.1</NH4>
-            <SW units="mm/mm" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3>6.34423361172192</NO3>
-            <NH4>0.1</NH4>
-            <SW units="mm/mm" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3>6.81416577744233</NO3>
-            <NH4>0.1</NH4>
-            <SW units="mm/mm" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3>6.70303115210986</NO3>
-            <NH4>0.1</NH4>
-            <SW units="mm/mm" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3>3.0920520757827</NO3>
-            <NH4>0.1</NH4>
-            <SW units="mm/mm" />
-          </Layer>
+          <Thickness>
+            <double>200</double>
+            <double>200</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <NO3>
+            <double>5.18717876249422</double>
+            <double>2.41329436407467</double>
+            <double>6.50018058597877</double>
+            <double>6.34423361172192</double>
+            <double>6.81416577744233</double>
+            <double>6.70303115210986</double>
+            <double>3.0920520757827</double>
+          </NO3>
+          <NH4>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+          </NH4>
         </Sample>
         <Sample name="Initial water">
           <Date type="date" description="Sample date:" />
-          <Layer>
-            <Thickness units="mm">200</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW units="mm/mm">0.340</SW>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW>0.412</SW>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW>0.439</SW>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW>0.434</SW>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW>0.405</SW>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW>0.399</SW>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW>0.389</SW>
-          </Layer>
+          <Thickness>
+            <double>200</double>
+            <double>200</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <SW>
+            <double>0.340</double>
+            <double>0.412</double>
+            <double>0.439</double>
+            <double>0.434</double>
+            <double>0.405</double>
+            <double>0.399</double>
+            <double>0.389</double>
+          </SW>
         </Sample>
-      </soil>
+      </Soil>
       <irrigation name="Irrigation">
         <automatic_irrigation type="text" description="switch">off</automatic_irrigation>
         <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600.0</asw_depth>
@@ -926,10 +362,44 @@
           <action>fertiliser apply amount = 59 (kg/ha), depth = 50 (mm), type = NO3_N ()</action>
         </operation>
       </operations>
-      <sorghum shortcut="/LE17/shared/sorghum">
-        <sorghumConstants name="standard" shortcut="/LE17/shared/sorghum/standard" />
-        <sorghumGenotype name="Buster" shortcut="/LE17/shared/sorghum/Buster" />
-      </sorghum>
+      <sorghum />
+      <outputfile>
+        <filename output="yes">Sorghum_LE17_T1.out</filename>
+        <title>Sorghum_LE17_T1</title>
+        <variables name="My Variables">
+          <variable>DaysAfterSowing as Das</variable>
+          <variable>Stage</variable>
+          <variable>Biomass units g/m^2 as BiomassWt</variable>
+          <variable>GrainSize</variable>
+          <variable>GrainNo</variable>
+          <variable>MaxLAI as LaiAnth</variable>
+          <variable>RootGreenWt</variable>
+          <variable>LeafGreenWt</variable>
+          <variable>StemGreenWt</variable>
+          <variable>RachisGreenWt</variable>
+          <variable>GrainGreenWt</variable>
+          <variable>biomass_n</variable>
+          <variable>RootGreenN</variable>
+          <variable>LeafGreenN</variable>
+          <variable>StemGreenN</variable>
+          <variable>RachisGreenN</variable>
+          <variable>GrainGreenN</variable>
+          <variable>GrainGreenNConc</variable>
+          <variable>LeafNo</variable>
+          <variable>ESW</variable>
+          <variable>no3() as NO3</variable>
+          <variable>SLN</variable>
+          <variable>sw()</variable>
+          <variable>HI</variable>
+          <variable>TPLA</variable>
+          <variable>SPLA</variable>
+          <variable>Yield</variable>
+          <variable>Biomass</variable>
+        </variables>
+        <events name="My Variables Events">
+          <event>harvesting</event>
+        </events>
+      </outputfile>
     </area>
   </simulation>
   <simulation name="Sorghum_LE17_T2">
@@ -942,12 +412,6 @@
       <filename name="filename" input="yes">LE17.met</filename>
     </metfile>
     <area name="paddock">
-      <outputfile>
-        <filename output="yes">Sorghum_LE17_T2.out</filename>
-        <title>Sorghum_LE17_T2</title>
-        <events />
-        <variables name="My Variables" shortcut="/LE17/shared/My Variables" />
-      </outputfile>
       <folder name="Manager folder">
         <manager name="Sow SkipRow on a fixed date">
           <ui>
@@ -962,13 +426,10 @@
             <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
             <ftn type="text" description="Enter Fertile Tiller No. : ">1</ftn>
           </ui>
-          <script name="start_of_day">
+          <script>
             <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
-            endif
-            if (paddock_is_fallow() = 0) then
-               outputfile do_output
             endif
           </text>
             <event>start_of_day</event>
@@ -992,135 +453,108 @@
           </ui>
         </manager>
       </folder>
-      <soil name="CooperLab">
-        <Langitude description="Longitude (WGS84)" />
-        <Comment type="multiedit" description="Comments" />
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+      <Soil name="CooperLab">
         <SoilType description="Soil description">Gatton</SoilType>
         <LocalName>Gatton CSIRO</LocalName>
         <Site>Gatton CSIRO</Site>
         <NearestTown description="Nearest town">Unknown</NearestTown>
         <Region>SE Queensland</Region>
-        <State />
-        <Country />
         <NaturalVegetation description="Natural vegetation">Unknown</NaturalVegetation>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source" />
-        <Comments />
         <Water>
-          <Layer>
-            <Thickness units="mm">200</Thickness>
-            <KS units="mm/day" />
-            <BD units="g/cc">1.320</BD>
-            <AirDry units="mm/mm">0.100</AirDry>
-            <LL15 units="mm/mm">0.300</LL15>
-            <DUL units="mm/mm">0.410</DUL>
-            <SAT units="mm/mm">0.460</SAT>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <KS units="mm/day" />
-            <BD>1.300</BD>
-            <AirDry>0.150</AirDry>
-            <LL15>0.300</LL15>
-            <DUL>0.430</DUL>
-            <SAT>0.480</SAT>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <KS units="mm/day" />
-            <BD>1.230</BD>
-            <AirDry>0.280</AirDry>
-            <LL15>0.350</LL15>
-            <DUL>0.460</DUL>
-            <SAT>0.510</SAT>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <KS units="mm/day" />
-            <BD>1.270</BD>
-            <AirDry>0.280</AirDry>
-            <LL15>0.320</LL15>
-            <DUL>0.440</DUL>
-            <SAT>0.490</SAT>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <KS units="mm/day" />
-            <BD>1.370</BD>
-            <AirDry>0.280</AirDry>
-            <LL15>0.290</LL15>
-            <DUL>0.400</DUL>
-            <SAT>0.450</SAT>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <KS units="mm/day" />
-            <BD>1.350</BD>
-            <AirDry>0.300</AirDry>
-            <LL15>0.310</LL15>
-            <DUL>0.410</DUL>
-            <SAT>0.460</SAT>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <KS units="mm/day" />
-            <BD>1.350</BD>
-            <AirDry>0.300</AirDry>
-            <LL15>0.310</LL15>
-            <DUL>0.380</DUL>
-            <SAT>0.430</SAT>
-          </Layer>
           <SoilCrop name="Sorghum">
-            <Layer>
-              <Thickness units="mm">200</Thickness>
-              <LL units="mm/mm">0.300</LL>
-              <KL units="/day">0.080</KL>
-              <XF units="0-1">1</XF>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <LL>0.300</LL>
-              <KL>0.080</KL>
-              <XF>1</XF>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <LL>0.350</LL>
-              <KL>0.080</KL>
-              <XF>1</XF>
-            </Layer>
-            <Layer>
-              <Thickness>300</Thickness>
-              <LL>0.320</LL>
-              <KL>0.080</KL>
-              <XF>1</XF>
-            </Layer>
-            <Layer>
-              <Thickness>300</Thickness>
-              <LL>0.290</LL>
-              <KL>0.060</KL>
-              <XF>1</XF>
-            </Layer>
-            <Layer>
-              <Thickness>300</Thickness>
-              <LL>0.310</LL>
-              <KL>0.040</KL>
-              <XF>1</XF>
-            </Layer>
-            <Layer>
-              <Thickness>300</Thickness>
-              <LL>0.310</LL>
-              <KL>0.020</KL>
-              <XF>1</XF>
-            </Layer>
+            <Thickness>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.300</double>
+              <double>0.300</double>
+              <double>0.350</double>
+              <double>0.320</double>
+              <double>0.290</double>
+              <double>0.310</double>
+              <double>0.310</double>
+            </LL>
+            <KL>
+              <double>0.080</double>
+              <double>0.080</double>
+              <double>0.080</double>
+              <double>0.080</double>
+              <double>0.060</double>
+              <double>0.040</double>
+              <double>0.020</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
           </SoilCrop>
+          <Thickness>
+            <double>200</double>
+            <double>200</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <BD>
+            <double>1.320</double>
+            <double>1.300</double>
+            <double>1.230</double>
+            <double>1.270</double>
+            <double>1.370</double>
+            <double>1.350</double>
+            <double>1.350</double>
+          </BD>
+          <AirDry>
+            <double>0.100</double>
+            <double>0.150</double>
+            <double>0.280</double>
+            <double>0.280</double>
+            <double>0.280</double>
+            <double>0.300</double>
+            <double>0.300</double>
+          </AirDry>
+          <LL15>
+            <double>0.300</double>
+            <double>0.300</double>
+            <double>0.350</double>
+            <double>0.320</double>
+            <double>0.290</double>
+            <double>0.310</double>
+            <double>0.310</double>
+          </LL15>
+          <DUL>
+            <double>0.410</double>
+            <double>0.430</double>
+            <double>0.460</double>
+            <double>0.440</double>
+            <double>0.400</double>
+            <double>0.410</double>
+            <double>0.380</double>
+          </DUL>
+          <SAT>
+            <double>0.460</double>
+            <double>0.480</double>
+            <double>0.510</double>
+            <double>0.490</double>
+            <double>0.450</double>
+            <double>0.460</double>
+            <double>0.430</double>
+          </SAT>
         </Water>
-        <SoilWat>
+        <SoilWater>
           <SummerCona>3.5</SummerCona>
           <SummerU>6</SummerU>
           <SummerDate>1-Nov</SummerDate>
@@ -1130,349 +564,143 @@
           <DiffusConst>88</DiffusConst>
           <DiffusSlope>35.4</DiffusSlope>
           <Salb>0.13</Salb>
-          <Cn2Bare>91</Cn2Bare>
-          <CnRed>20</CnRed>
-          <CnCov>0.8</CnCov>
-          <Slope>
-          </Slope>
-          <DischargeWidth>
-          </DischargeWidth>
-          <CatchmentArea>
-          </CatchmentArea>
-          <MaxPond>
-          </MaxPond>
-          <Layer>
-            <Thickness units="mm">200</Thickness>
-            <SWCON units="0-1">0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <SWCON>0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <SWCON>0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-        </SoilWat>
+          <CN2Bare>91</CN2Bare>
+          <CNRed>20</CNRed>
+          <CNCov>0.8</CNCov>
+          <Thickness>
+            <double>200</double>
+            <double>200</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <SWCON>
+            <double>0.500</double>
+            <double>0.500</double>
+            <double>0.500</double>
+            <double>0.500</double>
+            <double>0.500</double>
+            <double>0.500</double>
+            <double>0.500</double>
+          </SWCON>
+        </SoilWater>
         <SoilOrganicMatter>
-          <RootCn>30</RootCn>
+          <RootCN>30</RootCN>
           <RootWt>1500</RootWt>
-          <SoilCn>12.5</SoilCn>
+          <SoilCN>12.5</SoilCN>
           <EnrACoeff>7.4</EnrACoeff>
           <EnrBCoeff>0.2</EnrBCoeff>
-          <Layer>
-            <Thickness units="mm">200</Thickness>
-            <OC units="Total %">1.300</OC>
-            <FBiom units="0-1">0.030</FBiom>
-            <FInert units="0-1">0.310</FInert>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <OC>0.650</OC>
-            <FBiom>0.010</FBiom>
-            <FInert>0.380</FInert>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <OC>0.320</OC>
-            <FBiom>0</FBiom>
-            <FInert>0.470</FInert>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <OC>0.110</OC>
-            <FBiom>0</FBiom>
-            <FInert>0.700</FInert>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <OC>0.110</OC>
-            <FBiom>0</FBiom>
-            <FInert>0.900</FInert>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <OC>0.110</OC>
-            <FBiom>0</FBiom>
-            <FInert>0.950</FInert>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <OC>0.110</OC>
-            <FBiom>0</FBiom>
-            <FInert>0.950</FInert>
-          </Layer>
+          <Thickness>
+            <double>200</double>
+            <double>200</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <OC>
+            <double>1.300</double>
+            <double>0.650</double>
+            <double>0.320</double>
+            <double>0.110</double>
+            <double>0.110</double>
+            <double>0.110</double>
+            <double>0.110</double>
+          </OC>
+          <FBiom>
+            <double>0.030</double>
+            <double>0.010</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+          </FBiom>
+          <FInert>
+            <double>0.310</double>
+            <double>0.380</double>
+            <double>0.470</double>
+            <double>0.700</double>
+            <double>0.900</double>
+            <double>0.950</double>
+            <double>0.950</double>
+          </FInert>
         </SoilOrganicMatter>
         <Analysis>
-          <Layer>
-            <Thickness units="mm">200</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH units="1:5 water">7.700</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH>8.300</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH>8.400</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH>8.500</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH>8.500</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH>8.500</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH>8.600</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
+          <Thickness>
+            <double>200</double>
+            <double>200</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <PH>
+            <double>7.700</double>
+            <double>8.300</double>
+            <double>8.400</double>
+            <double>8.500</double>
+            <double>8.500</double>
+            <double>8.500</double>
+            <double>8.600</double>
+          </PH>
         </Analysis>
         <Sample name="Initial nitrogen">
           <Date type="date" description="Sample date:" />
-          <Layer>
-            <Thickness units="mm">200</Thickness>
-            <NO3 units="ppm">17.363</NO3>
-            <NH4 units="ppm">0.1</NH4>
-            <SW units="mm/mm" />
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <NO3>8.078</NO3>
-            <NH4>0.1</NH4>
-            <SW units="mm/mm" />
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <NO3>21.758</NO3>
-            <NH4>0.1</NH4>
-            <SW units="mm/mm" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3>21.236</NO3>
-            <NH4>0.1</NH4>
-            <SW units="mm/mm" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3>22.809</NO3>
-            <NH4>0.1</NH4>
-            <SW units="mm/mm" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3>22.437</NO3>
-            <NH4>0.1</NH4>
-            <SW units="mm/mm" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3>10.35</NO3>
-            <NH4>0.1</NH4>
-            <SW units="mm/mm" />
-          </Layer>
+          <Thickness>
+            <double>200</double>
+            <double>200</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <NO3>
+            <double>17.363</double>
+            <double>8.078</double>
+            <double>21.758</double>
+            <double>21.236</double>
+            <double>22.809</double>
+            <double>22.437</double>
+            <double>10.35</double>
+          </NO3>
+          <NH4>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+          </NH4>
         </Sample>
         <Sample name="Initial water">
           <Date type="date" description="Sample date:" />
-          <Layer>
-            <Thickness units="mm">200</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW units="mm/mm">0.340</SW>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW>0.412</SW>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW>0.439</SW>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW>0.434</SW>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW>0.405</SW>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW>0.399</SW>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW>0.389</SW>
-          </Layer>
+          <Thickness>
+            <double>200</double>
+            <double>200</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <SW>
+            <double>0.340</double>
+            <double>0.412</double>
+            <double>0.439</double>
+            <double>0.434</double>
+            <double>0.405</double>
+            <double>0.399</double>
+            <double>0.389</double>
+          </SW>
         </Sample>
-      </soil>
+      </Soil>
       <irrigation name="Irrigation">
         <automatic_irrigation type="text" description="switch">off</automatic_irrigation>
         <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600.0</asw_depth>
@@ -1537,10 +765,7 @@
           <action>fertiliser apply amount = 59 (kg/ha), depth = 50 (mm), type = NO3_N ()</action>
         </operation>
       </operations>
-      <sorghum shortcut="/LE17/shared/sorghum">
-        <sorghumConstants name="standard" shortcut="/LE17/shared/sorghum/standard" />
-        <sorghumGenotype name="M35-1" shortcut="/LE17/shared/sorghum/M35-1" />
-      </sorghum>
+      <sorghum />
     </area>
   </simulation>
   <simulation name="Sorghum_LE17_T3">
@@ -1553,12 +778,6 @@
       <filename name="filename" input="yes">LE17.met</filename>
     </metfile>
     <area name="paddock">
-      <outputfile>
-        <filename output="yes">Sorghum_LE17_T3.out</filename>
-        <title>Sorghum_LE17_T3</title>
-        <events />
-        <variables name="My Variables" shortcut="/LE17/shared/My Variables" />
-      </outputfile>
       <folder name="Manager folder">
         <manager name="Sow SkipRow on a fixed date">
           <ui>
@@ -1573,13 +792,10 @@
             <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
             <ftn type="text" description="Enter Fertile Tiller No. : ">1</ftn>
           </ui>
-          <script name="start_of_day">
+          <script>
             <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
-            endif
-            if (paddock_is_fallow() = 0) then
-               outputfile do_output
             endif
           </text>
             <event>start_of_day</event>
@@ -1603,135 +819,108 @@
           </ui>
         </manager>
       </folder>
-      <soil name="CooperLab">
-        <Langitude description="Longitude (WGS84)" />
-        <Comment type="multiedit" description="Comments" />
-        <ASC_Order description="Australian Soil Classification Order" />
-        <ASC_Sub-order description="Australian Soil Classification Sub-Order" />
+      <Soil name="CooperLab">
         <SoilType description="Soil description">Gatton</SoilType>
         <LocalName>Gatton CSIRO</LocalName>
         <Site>Gatton CSIRO</Site>
         <NearestTown description="Nearest town">Unknown</NearestTown>
         <Region>SE Queensland</Region>
-        <State />
-        <Country />
         <NaturalVegetation description="Natural vegetation">Unknown</NaturalVegetation>
-        <ApsoilNumber description="Apsoil number" />
-        <Latitude description="Latitude (WGS84)" />
-        <Longitude />
-        <LocationAccuracy description="Location accuracy" />
-        <DataSource type="multiedit" description="Data source" />
-        <Comments />
         <Water>
-          <Layer>
-            <Thickness units="mm">200</Thickness>
-            <KS units="mm/day" />
-            <BD units="g/cc">1.320</BD>
-            <AirDry units="mm/mm">0.100</AirDry>
-            <LL15 units="mm/mm">0.300</LL15>
-            <DUL units="mm/mm">0.410</DUL>
-            <SAT units="mm/mm">0.460</SAT>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <KS units="mm/day" />
-            <BD>1.300</BD>
-            <AirDry>0.150</AirDry>
-            <LL15>0.300</LL15>
-            <DUL>0.430</DUL>
-            <SAT>0.480</SAT>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <KS units="mm/day" />
-            <BD>1.230</BD>
-            <AirDry>0.280</AirDry>
-            <LL15>0.350</LL15>
-            <DUL>0.460</DUL>
-            <SAT>0.510</SAT>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <KS units="mm/day" />
-            <BD>1.270</BD>
-            <AirDry>0.280</AirDry>
-            <LL15>0.320</LL15>
-            <DUL>0.440</DUL>
-            <SAT>0.490</SAT>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <KS units="mm/day" />
-            <BD>1.370</BD>
-            <AirDry>0.280</AirDry>
-            <LL15>0.290</LL15>
-            <DUL>0.400</DUL>
-            <SAT>0.450</SAT>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <KS units="mm/day" />
-            <BD>1.350</BD>
-            <AirDry>0.300</AirDry>
-            <LL15>0.310</LL15>
-            <DUL>0.410</DUL>
-            <SAT>0.460</SAT>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <KS units="mm/day" />
-            <BD>1.350</BD>
-            <AirDry>0.300</AirDry>
-            <LL15>0.310</LL15>
-            <DUL>0.380</DUL>
-            <SAT>0.430</SAT>
-          </Layer>
           <SoilCrop name="Sorghum">
-            <Layer>
-              <Thickness units="mm">200</Thickness>
-              <LL units="mm/mm">0.300</LL>
-              <KL units="/day">0.080</KL>
-              <XF units="0-1">1</XF>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <LL>0.300</LL>
-              <KL>0.080</KL>
-              <XF>1</XF>
-            </Layer>
-            <Layer>
-              <Thickness>200</Thickness>
-              <LL>0.350</LL>
-              <KL>0.080</KL>
-              <XF>1</XF>
-            </Layer>
-            <Layer>
-              <Thickness>300</Thickness>
-              <LL>0.320</LL>
-              <KL>0.080</KL>
-              <XF>1</XF>
-            </Layer>
-            <Layer>
-              <Thickness>300</Thickness>
-              <LL>0.290</LL>
-              <KL>0.060</KL>
-              <XF>1</XF>
-            </Layer>
-            <Layer>
-              <Thickness>300</Thickness>
-              <LL>0.310</LL>
-              <KL>0.040</KL>
-              <XF>1</XF>
-            </Layer>
-            <Layer>
-              <Thickness>300</Thickness>
-              <LL>0.310</LL>
-              <KL>0.020</KL>
-              <XF>1</XF>
-            </Layer>
+            <Thickness>
+              <double>200</double>
+              <double>200</double>
+              <double>200</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.300</double>
+              <double>0.300</double>
+              <double>0.350</double>
+              <double>0.320</double>
+              <double>0.290</double>
+              <double>0.310</double>
+              <double>0.310</double>
+            </LL>
+            <KL>
+              <double>0.080</double>
+              <double>0.080</double>
+              <double>0.080</double>
+              <double>0.080</double>
+              <double>0.060</double>
+              <double>0.040</double>
+              <double>0.020</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
           </SoilCrop>
+          <Thickness>
+            <double>200</double>
+            <double>200</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <BD>
+            <double>1.320</double>
+            <double>1.300</double>
+            <double>1.230</double>
+            <double>1.270</double>
+            <double>1.370</double>
+            <double>1.350</double>
+            <double>1.350</double>
+          </BD>
+          <AirDry>
+            <double>0.100</double>
+            <double>0.150</double>
+            <double>0.280</double>
+            <double>0.280</double>
+            <double>0.280</double>
+            <double>0.300</double>
+            <double>0.300</double>
+          </AirDry>
+          <LL15>
+            <double>0.300</double>
+            <double>0.300</double>
+            <double>0.350</double>
+            <double>0.320</double>
+            <double>0.290</double>
+            <double>0.310</double>
+            <double>0.310</double>
+          </LL15>
+          <DUL>
+            <double>0.410</double>
+            <double>0.430</double>
+            <double>0.460</double>
+            <double>0.440</double>
+            <double>0.400</double>
+            <double>0.410</double>
+            <double>0.380</double>
+          </DUL>
+          <SAT>
+            <double>0.460</double>
+            <double>0.480</double>
+            <double>0.510</double>
+            <double>0.490</double>
+            <double>0.450</double>
+            <double>0.460</double>
+            <double>0.430</double>
+          </SAT>
         </Water>
-        <SoilWat>
+        <SoilWater>
           <SummerCona>3.5</SummerCona>
           <SummerU>6</SummerU>
           <SummerDate>1-Nov</SummerDate>
@@ -1741,349 +930,143 @@
           <DiffusConst>88</DiffusConst>
           <DiffusSlope>35.4</DiffusSlope>
           <Salb>0.13</Salb>
-          <Cn2Bare>91</Cn2Bare>
-          <CnRed>20</CnRed>
-          <CnCov>0.8</CnCov>
-          <Slope>
-          </Slope>
-          <DischargeWidth>
-          </DischargeWidth>
-          <CatchmentArea>
-          </CatchmentArea>
-          <MaxPond>
-          </MaxPond>
-          <Layer>
-            <Thickness units="mm">200</Thickness>
-            <SWCON units="0-1">0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <SWCON>0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <SWCON>0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <SWCON>0.500</SWCON>
-            <MWCON units="0-1" />
-            <KLAT units="mm/d" />
-          </Layer>
-        </SoilWat>
+          <CN2Bare>91</CN2Bare>
+          <CNRed>20</CNRed>
+          <CNCov>0.8</CNCov>
+          <Thickness>
+            <double>200</double>
+            <double>200</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <SWCON>
+            <double>0.500</double>
+            <double>0.500</double>
+            <double>0.500</double>
+            <double>0.500</double>
+            <double>0.500</double>
+            <double>0.500</double>
+            <double>0.500</double>
+          </SWCON>
+        </SoilWater>
         <SoilOrganicMatter>
-          <RootCn>30</RootCn>
+          <RootCN>30</RootCN>
           <RootWt>1500</RootWt>
-          <SoilCn>12.5</SoilCn>
+          <SoilCN>12.5</SoilCN>
           <EnrACoeff>7.4</EnrACoeff>
           <EnrBCoeff>0.2</EnrBCoeff>
-          <Layer>
-            <Thickness units="mm">200</Thickness>
-            <OC units="Total %">1.300</OC>
-            <FBiom units="0-1">0.030</FBiom>
-            <FInert units="0-1">0.310</FInert>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <OC>0.650</OC>
-            <FBiom>0.010</FBiom>
-            <FInert>0.380</FInert>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <OC>0.320</OC>
-            <FBiom>0</FBiom>
-            <FInert>0.470</FInert>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <OC>0.110</OC>
-            <FBiom>0</FBiom>
-            <FInert>0.700</FInert>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <OC>0.110</OC>
-            <FBiom>0</FBiom>
-            <FInert>0.900</FInert>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <OC>0.110</OC>
-            <FBiom>0</FBiom>
-            <FInert>0.950</FInert>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <OC>0.110</OC>
-            <FBiom>0</FBiom>
-            <FInert>0.950</FInert>
-          </Layer>
+          <Thickness>
+            <double>200</double>
+            <double>200</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <OC>
+            <double>1.300</double>
+            <double>0.650</double>
+            <double>0.320</double>
+            <double>0.110</double>
+            <double>0.110</double>
+            <double>0.110</double>
+            <double>0.110</double>
+          </OC>
+          <FBiom>
+            <double>0.030</double>
+            <double>0.010</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+            <double>0</double>
+          </FBiom>
+          <FInert>
+            <double>0.310</double>
+            <double>0.380</double>
+            <double>0.470</double>
+            <double>0.700</double>
+            <double>0.900</double>
+            <double>0.950</double>
+            <double>0.950</double>
+          </FInert>
         </SoilOrganicMatter>
         <Analysis>
-          <Layer>
-            <Thickness units="mm">200</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH units="1:5 water">7.700</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH>8.300</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH>8.400</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH>8.500</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH>8.500</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH>8.500</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <Rocks units="%" />
-            <Texture />
-            <MunsellColour />
-            <EC units="1:5 dS/m" />
-            <PH>8.600</PH>
-            <CL units="mg/kg" />
-            <Boron units="Hot water mg/kg" />
-            <CEC units="cmol+/kg" />
-            <Ca units="cmol+/kg" />
-            <Mg units="cmol+/kg" />
-            <Na units="cmol+/kg" />
-            <K units="cmol+/kg" />
-            <ESP units="%" />
-            <Mn units="mg/kg" />
-            <Al units="cmol+/kg" />
-            <ParticleSizeSand units="%" />
-            <ParticleSizeSilt units="%" />
-            <ParticleSizeClay units="%" />
-          </Layer>
+          <Thickness>
+            <double>200</double>
+            <double>200</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <PH>
+            <double>7.700</double>
+            <double>8.300</double>
+            <double>8.400</double>
+            <double>8.500</double>
+            <double>8.500</double>
+            <double>8.500</double>
+            <double>8.600</double>
+          </PH>
         </Analysis>
         <Sample name="Initial nitrogen">
           <Date type="date" description="Sample date:" />
-          <Layer>
-            <Thickness units="mm">200</Thickness>
-            <NO3 units="ppm">17.363</NO3>
-            <NH4 units="ppm">0.100</NH4>
-            <SW units="mm/mm" />
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <NO3>8.078</NO3>
-            <NH4>0.100</NH4>
-            <SW units="mm/mm" />
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <NO3>21.758</NO3>
-            <NH4>0.100</NH4>
-            <SW units="mm/mm" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3>21.236</NO3>
-            <NH4>0.100</NH4>
-            <SW units="mm/mm" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3>22.809</NO3>
-            <NH4>0.100</NH4>
-            <SW units="mm/mm" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3>22.437</NO3>
-            <NH4>0.100</NH4>
-            <SW units="mm/mm" />
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3>10.350</NO3>
-            <NH4>0.100</NH4>
-            <SW units="mm/mm" />
-          </Layer>
+          <Thickness>
+            <double>200</double>
+            <double>200</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <NO3>
+            <double>17.363</double>
+            <double>8.078</double>
+            <double>21.758</double>
+            <double>21.236</double>
+            <double>22.809</double>
+            <double>22.437</double>
+            <double>10.350</double>
+          </NO3>
+          <NH4>
+            <double>0.100</double>
+            <double>0.100</double>
+            <double>0.100</double>
+            <double>0.100</double>
+            <double>0.100</double>
+            <double>0.100</double>
+            <double>0.100</double>
+          </NH4>
         </Sample>
         <Sample name="Initial water">
           <Date type="date" description="Sample date:" />
-          <Layer>
-            <Thickness units="mm">200</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW units="mm/mm">0.340</SW>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW>0.412</SW>
-          </Layer>
-          <Layer>
-            <Thickness>200</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW>0.439</SW>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW>0.434</SW>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW>0.405</SW>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW>0.399</SW>
-          </Layer>
-          <Layer>
-            <Thickness>300</Thickness>
-            <NO3 units="ppm" />
-            <NH4 units="ppm" />
-            <SW>0.389</SW>
-          </Layer>
+          <Thickness>
+            <double>200</double>
+            <double>200</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <SW>
+            <double>0.340</double>
+            <double>0.412</double>
+            <double>0.439</double>
+            <double>0.434</double>
+            <double>0.405</double>
+            <double>0.399</double>
+            <double>0.389</double>
+          </SW>
         </Sample>
-      </soil>
+      </Soil>
       <irrigation name="Irrigation">
         <automatic_irrigation type="text" description="switch">on</automatic_irrigation>
         <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600.0</asw_depth>
@@ -2148,10 +1131,13 @@
           <action>fertiliser apply amount = 59 (kg/ha), depth = 50 (mm), type = NO3_N ()</action>
         </operation>
       </operations>
-      <sorghum shortcut="/LE17/shared/sorghum">
-        <sorghumConstants name="standard" shortcut="/LE17/shared/sorghum/standard" />
-        <sorghumGenotype name="CSH13R" shortcut="/LE17/shared/sorghum/CSH13R" />
-      </sorghum>
+      <sorghum />
+      <outputfile shortcut="/LE17/Sorghum_LE17_T1/paddock/outputfile">
+        <filename output="yes">Sorghum_LE17_T3.out</filename>
+        <title>Sorghum_LE17_T3</title>
+        <variables name="My Variables" shortcut="/LE17/Sorghum_LE17_T1/paddock/outputfile/My Variables" />
+        <events name="My Variables Events" shortcut="/LE17/Sorghum_LE17_T1/paddock/outputfile/My Variables Events" />
+      </outputfile>
     </area>
   </simulation>
 </folder>

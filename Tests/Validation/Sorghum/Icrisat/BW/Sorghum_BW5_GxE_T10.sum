@@ -46,39 +46,37 @@ Paddock:
      INPUT File name: BW5_GxE.met
 
 ------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        harvesting
      Output variables:
-        today format dd/mm/yyyy as Date
         DaysAfterSowing as Das
         Stage
-        Biomass
-        GreenWt
         Biomass units g/m^2 as BiomassWt
+        GrainSize
+        GrainNo
+        MaxLAI as LaiAnth
         RootGreenWt
         LeafGreenWt
         StemGreenWt
         RachisGreenWt
         GrainGreenWt
-        BiomassN
+        biomass_n
         RootGreenN
         LeafGreenN
         StemGreenN
         RachisGreenN
         GrainGreenN
         GrainGreenNConc
-        GrainNo
         LeafNo
-        LAI
-        SLAI
         ESW
         no3() as NO3
         SLN
-        WaterSD
-        sw
+        sw()
         HI
         TPLA
         SPLA
-        GrainSize
-        biomass_n
+        Yield
+        Biomass
 
      Output file = Sorghum_BW5_GxE_T10.out
      Format = normal
@@ -111,7 +109,6 @@ Paddock:
        sorghum sow plants =10, sowing_depth = 30, cultivar = csh13r, row_spacing = 0.5, skip = solid, tiller_no_fertile = 0 ()
      endif
      if (paddock_is_fallow() = 0) then
-        outputfile do_output
      endif
      END of rules
      

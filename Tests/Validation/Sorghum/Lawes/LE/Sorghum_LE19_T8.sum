@@ -38,7 +38,7 @@ Paddock:
         post
         end_step
      Simulation start date =  9/11/1998
-     Simulation end date   =  7/03/1999
+     Simulation end date   = 10/03/1999
      Time step =           = 1440 (mins)
 
 ------- met Initialisation ----------------------------------------------------
@@ -46,39 +46,37 @@ Paddock:
      INPUT File name: LE19.met
 
 ------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        harvesting
      Output variables:
-        today format dd/mm/yyyy as Date
         DaysAfterSowing as Das
         Stage
-        Biomass
-        GreenWt
         Biomass units g/m^2 as BiomassWt
+        GrainSize
+        GrainNo
+        MaxLAI as LaiAnth
         RootGreenWt
         LeafGreenWt
         StemGreenWt
         RachisGreenWt
         GrainGreenWt
-        BiomassN
+        biomass_n
         RootGreenN
         LeafGreenN
         StemGreenN
         RachisGreenN
         GrainGreenN
         GrainGreenNConc
-        GrainNo
-        GrainSize
         LeafNo
-        LAI
-        SLAI
         ESW
         no3() as NO3
         SLN
-        WaterSD
-        sw
+        sw()
         HI
         TPLA
         SPLA
-        biomass_n
+        Yield
+        Biomass
 
      Output file = Sorghum_LE19_T8.out
      Format = normal
@@ -111,9 +109,6 @@ Paddock:
      SECTION:- start_of_day
      if (paddock_is_fallow() = 1 and today = date('11/11/1998')) then
        sorghum sow plants =10, sowing_depth = 30, cultivar = csh13r, row_spacing = 0.5, skip = solid, tiller_no_fertile = 0.3 ()
-     endif
-     if (paddock_is_fallow() = 0) then
-        outputfile do_output
      endif
      END of rules
      
@@ -325,8 +320,8 @@ Paddock:
      		Stover N Conc =   2.84 		 Extractable SW =  86.54
 10 January 1999(Day of year=10), sorghum: 
      Stage 6 FlagLeaf  DAS = 60
-     		Biomass       = 665.23 		 LAI            =   5.99
-     		Stover N Conc =  11.71 		 Extractable SW = 159.02
+     		Biomass       = 664.24 		 LAI            =   5.99
+     		Stover N Conc =  11.70 		 Extractable SW = 147.40
 23 January 1999(Day of year=23), paddock.operations: 
       Sending apply message to fertiliser
 23 January 1999(Day of year=23), fertiliser: 
@@ -336,20 +331,60 @@ Paddock:
                                          added at depth   50.00 (layer   1)
 23 January 1999(Day of year=23), sorghum: 
      Stage 7 Flowering  DAS = 73
-     		Biomass       = 1096.30 		 LAI            =   5.94
-     		Stover N Conc =  15.23 		 Extractable SW = 122.55
+     		Biomass       = 1093.21 		 LAI            =   5.94
+     		Stover N Conc =  15.19 		 Extractable SW = 113.69
 27 January 1999(Day of year=27), sorghum: 
      Stage 8 StartGrainFill  DAS = 77
-     		Biomass       = 1205.67 		 LAI            =   5.94
-     		Stover N Conc =  16.38 		 Extractable SW = 115.10
+     		Biomass       = 1198.60 		 LAI            =   5.94
+     		Stover N Conc =  16.33 		 Extractable SW = 107.31
 5 March 1999(Day of year=64), sorghum: 
      Stage 9 EndGrainFill  DAS = 114
-     		Biomass       = 2131.05 		 LAI            =   5.18
-     		Stover N Conc =   9.42 		 Extractable SW = 112.54
+     		Biomass       = 2114.52 		 LAI            =   5.19
+     		Stover N Conc =   9.41 		 Extractable SW =  98.18
 7 March 1999(Day of year=66), sorghum: 
      Stage 10 Maturity  DAS = 116
-     		Biomass       = 2193.18 		 LAI            =   4.68
-     		Stover N Conc =   8.55 		 Extractable SW =  95.46
-7 March 1999(Day of year=66), clock: 
+     		Biomass       = 2172.75 		 LAI            =   4.71
+     		Stover N Conc =   8.57 		 Extractable SW =  82.11
+8 March 1999(Day of year=67), sorghum: 
+     Stage 11 HarvestRipe  DAS = 117
+     		Biomass       = 2198.92 		 LAI            =   4.48
+     		Stover N Conc =   8.22 		 Extractable SW =  75.07
+8 March 1999(Day of year=67), paddock.Harvesting rule: 
+     Manager sending message :- sorghum harvest
+     
+     Harvest
+     Flowering (DAS)       = 73 		 Maturity (DAS)          = 116
+     Flowering day         = 23 		 Maturity day            = 66
+     Maximum LAI           = 6.0 		 Number of leaves        = 19.6
+     Total above ground biomass    (kg/ha) = 22200.5
+     Green above ground biomass    (kg/ha) = 21668.8
+     Senesced above ground biomass (kg/ha) = 531.7
+     Stover (kg/ha)        = 13902.0 	 Grain yield (kg/ha)     = 8298.4
+     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 9538.4
+     Weight 1000 grains(g) = 36.7 		 Grains/m^2              = 22582.3
+     Grains/head           = 2258.2
+     Grain N percent    (%)     =      1.65 	 Grain N            (kg/ha) =   136.89
+     Total N content    (kg/ha) =    219.12 	 Senesced N content (kg/ha) =    16.22
+     Green N content    (kg/ha) =     75.67
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 0.9          0.9        1.0
+        Flag leaf           to Flowering                 1.0          1.0        1.0
+        Flowering           to Start grain fill          0.9          0.8        1.0
+        Start grain fill    to End grain fill            0.9          0.9        1.0
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =               8298.42		    0.00
+                         N  (kg/ha) =                136.89		    0.00
+     Manager sending message :- sorghum end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =              13902.04		 4850.25
+                         N  (kg/ha) =                 82.23		    9.66
+                         P  (kg/ha) =                  0.00		    0.00
+10 March 1999(Day of year=69), clock: 
      Simulation is terminating due to end criteria being met.
 

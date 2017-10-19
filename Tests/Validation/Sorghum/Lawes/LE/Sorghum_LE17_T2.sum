@@ -14,7 +14,6 @@ Title                  = Sorghum_LE17_T2
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
-   Component                   "outputfile" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "operations" = %apsim%\Model\Operations.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
@@ -44,44 +43,6 @@ Paddock:
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
      INPUT File name: LE17.met
-
-------- outputfile Initialisation ---------------------------------------------
-     Output variables:
-        today format dd/mm/yyyy as Date
-        DaysAfterSowing as Das
-        Stage
-        Biomass
-        GreenWt
-        Biomass units g/m^2 as BiomassWt
-        RootGreenWt
-        LeafGreenWt
-        StemGreenWt
-        RachisGreenWt
-        GrainGreenWt
-        BiomassN
-        RootGreenN
-        LeafGreenN
-        StemGreenN
-        RachisGreenN
-        GrainGreenN
-        GrainGreenNConc
-        GrainNo
-        GrainSize
-        LeafNo
-        LAI
-        SLAI
-        ESW
-        no3() as NO3
-        SLN
-        WaterSD
-        sw
-        HI
-        TPLA
-        SPLA
-        biomass_n
-
-     Output file = Sorghum_LE17_T2.out
-     Format = normal
 
 ------- paddock.accum Initialisation ------------------------------------------
      Initialising
@@ -121,9 +82,6 @@ Paddock:
      SECTION:- start_of_day
      if (paddock_is_fallow() = 1 and today = date('4/12/1997')) then
        sorghum sow plants =10, sowing_depth = 25, cultivar = m35-1, row_spacing = 0.5, skip = solid, tiller_no_fertile = 1 ()
-     endif
-     if (paddock_is_fallow() = 0) then
-        outputfile do_output
      endif
      END of rules
      
@@ -360,15 +318,15 @@ Paddock:
 11 February 1998(Day of year=42), sorghum: 
      Stage 6 FlagLeaf  DAS = 69
      		Biomass       = 821.75 		 LAI            =   6.75
-     		Stover N Conc =  14.35 		 Extractable SW = 145.68
+     		Stover N Conc =  14.35 		 Extractable SW = 139.07
 24 February 1998(Day of year=55), sorghum: 
      Stage 7 Flowering  DAS = 82
-     		Biomass       = 1120.45 		 LAI            =   6.11
-     		Stover N Conc =  19.99 		 Extractable SW =  86.08
+     		Biomass       = 1111.07 		 LAI            =   6.11
+     		Stover N Conc =  19.85 		 Extractable SW =  78.58
 1 March 1998(Day of year=60), sorghum: 
      Stage 8 StartGrainFill  DAS = 87
-     		Biomass       = 1225.43 		 LAI            =   6.11
-     		Stover N Conc =  20.34 		 Extractable SW =  60.81
+     		Biomass       = 1207.09 		 LAI            =   6.11
+     		Stover N Conc =  20.21 		 Extractable SW =  55.27
 5 March 1998(Day of year=64), paddock.operations: 
       Sending apply message to irrigation
 18 March 1998(Day of year=77), paddock.operations: 

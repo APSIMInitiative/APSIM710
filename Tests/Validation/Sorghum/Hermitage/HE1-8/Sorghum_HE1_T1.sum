@@ -14,7 +14,7 @@ Title                  = Sorghum_HE1_T1
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
-   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "operations" = %apsim%\Model\Operations.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
@@ -23,7 +23,7 @@ Paddock:
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
    Component                    "HRS Water" = %apsim%\Model\SoilWat.dll
    Component                 "HRS Nitrogen" = %apsim%\Model\SoilN.dll
-   Component                      "Sorghum" = %apsim%\Model\Sorghum.dll
+   Component                      "sorghum" = %apsim%\Model\Sorghum.dll
 
 ------- clock Initialisation --------------------------------------------------
      Sequencer phases:
@@ -43,42 +43,40 @@ Paddock:
 
 ------- met Initialisation ----------------------------------------------------
      Sparse data is not allowed
-     INPUT File name: HE1.met
+     INPUT File name: HE1996.met
 
-------- outputfile Initialisation ---------------------------------------------
+------- Outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        harvesting
      Output variables:
-        today format dd/mm/yyyy as Date
-        daysAfterSowing as Das
+        DaysAfterSowing as Das
         Stage
-        Biomass
-        GreenWt
         Biomass units g/m^2 as BiomassWt
+        GrainSize
+        GrainNo
+        MaxLAI as LaiAnth
         RootGreenWt
         LeafGreenWt
         StemGreenWt
         RachisGreenWt
         GrainGreenWt
         biomass_n
-        GreenN
         RootGreenN
         LeafGreenN
         StemGreenN
         RachisGreenN
         GrainGreenN
         GrainGreenNConc
-        GrainNo
-        GrainSize
-        HI
         LeafNo
-        LAI
-        SLAI
         ESW
         no3() as NO3
         SLN
-        WaterSD
-        sw
+        sw()
+        HI
         TPLA
         SPLA
+        Yield
+        Biomass
 
      Output file = Sorghum_HE1_T1.out
      Format = normal
@@ -123,9 +121,6 @@ Paddock:
      SECTION:- start_of_day
      if (paddock_is_fallow() = 1 and today = date('9/01/1997')) then
        sorghum sow plants =10, sowing_depth = 30, cultivar = ql41xql36, row_spacing = 500, skip = solid, tiller_no_fertile = 0 ()
-     endif
-     if (paddock_is_fallow() = 0) then
-        outputfile do_output
      endif
      END of rules
      
@@ -294,7 +289,7 @@ Paddock:
       Sending apply message to irrigation
 9 January 1997(Day of year=9), paddock.Sow SkipRow on a fixed date: 
      Manager sending message :- sorghum sow  plants = 10, sowing_depth = 30, cultivar = ql41xql36, row_spacing = 500, skip = solid, tiller_no_fertile = 0
-9 January 1997(Day of year=9), Sorghum: 
+9 January 1997(Day of year=9), sorghum: 
      Sowing initiate
      
                  Crop Sowing Data
@@ -335,11 +330,11 @@ Paddock:
              200.0     0.040          0.330       1.000
          ---------------------------------------------------
      
-10 January 1997(Day of year=10), Sorghum: 
+10 January 1997(Day of year=10), sorghum: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   0.00
-14 January 1997(Day of year=14), Sorghum: 
+14 January 1997(Day of year=14), sorghum: 
      Stage 3 Emergence  DAS = 5
      		Biomass       =   0.00 		 LAI            =   0.00
      		Stover N Conc =   0.00 		 Extractable SW =   9.03
@@ -347,7 +342,7 @@ Paddock:
       Sending apply message to irrigation
 21 January 1997(Day of year=21), paddock.operations: 
       Sending apply message to irrigation
-24 January 1997(Day of year=24), Sorghum: 
+24 January 1997(Day of year=24), sorghum: 
      Stage 4 EndOfJuvenile  DAS = 15
      		Biomass       =   2.64 		 LAI            =   0.01
      		Stover N Conc =   0.07 		 Extractable SW =  66.17
@@ -355,7 +350,7 @@ Paddock:
       Sending apply message to irrigation
 7 February 1997(Day of year=38), paddock.operations: 
       Sending apply message to irrigation
-11 February 1997(Day of year=42), Sorghum: 
+11 February 1997(Day of year=42), sorghum: 
      Stage 5 FloralInitiation  DAS = 33
      		Biomass       =  28.33 		 LAI            =   0.51
      		Stover N Conc =   0.82 		 Extractable SW = 130.77
@@ -366,7 +361,7 @@ Paddock:
    - Reading Fertiliser Type Parameters
         59.00 of N as nitrate (no3_n)
                                          added at depth   50.00 (layer   1)
-9 March 1997(Day of year=68), Sorghum: 
+9 March 1997(Day of year=68), sorghum: 
      Stage 6 FlagLeaf  DAS = 59
      		Biomass       = 412.32 		 LAI            =   4.17
      		Stover N Conc =   8.70 		 Extractable SW = 119.58
@@ -380,11 +375,11 @@ Paddock:
    - Reading Fertiliser Type Parameters
         59.00 of N as nitrate (no3_n)
                                          added at depth   50.00 (layer   1)
-25 March 1997(Day of year=84), Sorghum: 
+25 March 1997(Day of year=84), sorghum: 
      Stage 7 Flowering  DAS = 75
      		Biomass       = 758.85 		 LAI            =   4.17
      		Stover N Conc =  12.39 		 Extractable SW = 124.88
-31 March 1997(Day of year=90), Sorghum: 
+31 March 1997(Day of year=90), sorghum: 
      Stage 8 StartGrainFill  DAS = 81
      		Biomass       = 878.30 		 LAI            =   4.17
      		Stover N Conc =  13.71 		 Extractable SW =  95.95
@@ -394,15 +389,15 @@ Paddock:
       Sending apply message to irrigation
 2 May 1997(Day of year=122), paddock.operations: 
       Sending apply message to irrigation
-29 May 1997(Day of year=149), Sorghum: 
+29 May 1997(Day of year=149), sorghum: 
      Stage 9 EndGrainFill  DAS = 140
      		Biomass       = 1544.26 		 LAI            =   3.05
      		Stover N Conc =   6.51 		 Extractable SW =  89.67
-4 June 1997(Day of year=155), Sorghum: 
+4 June 1997(Day of year=155), sorghum: 
      Stage 10 Maturity  DAS = 146
      		Biomass       = 1568.13 		 LAI            =   2.86
      		Stover N Conc =   6.16 		 Extractable SW =  86.59
-5 June 1997(Day of year=156), Sorghum: 
+5 June 1997(Day of year=156), sorghum: 
      Stage 11 HarvestRipe  DAS = 147
      		Biomass       = 1571.02 		 LAI            =   2.84
      		Stover N Conc =   6.12 		 Extractable SW =  86.45

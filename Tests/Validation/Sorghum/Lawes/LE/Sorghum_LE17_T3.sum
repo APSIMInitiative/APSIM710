@@ -46,39 +46,37 @@ Paddock:
      INPUT File name: LE17.met
 
 ------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        harvesting
      Output variables:
-        today format dd/mm/yyyy as Date
         DaysAfterSowing as Das
         Stage
-        Biomass
-        GreenWt
         Biomass units g/m^2 as BiomassWt
+        GrainSize
+        GrainNo
+        MaxLAI as LaiAnth
         RootGreenWt
         LeafGreenWt
         StemGreenWt
         RachisGreenWt
         GrainGreenWt
-        BiomassN
+        biomass_n
         RootGreenN
         LeafGreenN
         StemGreenN
         RachisGreenN
         GrainGreenN
         GrainGreenNConc
-        GrainNo
-        GrainSize
         LeafNo
-        LAI
-        SLAI
         ESW
         no3() as NO3
         SLN
-        WaterSD
-        sw
+        sw()
         HI
         TPLA
         SPLA
-        biomass_n
+        Yield
+        Biomass
 
      Output file = Sorghum_LE17_T3.out
      Format = normal
@@ -121,9 +119,6 @@ Paddock:
      SECTION:- start_of_day
      if (paddock_is_fallow() = 1 and today = date('4/12/1997')) then
        sorghum sow plants =10, sowing_depth = 25, cultivar = csh13r, row_spacing = 0.5, skip = solid, tiller_no_fertile = 1 ()
-     endif
-     if (paddock_is_fallow() = 0) then
-        outputfile do_output
      endif
      END of rules
      
@@ -351,8 +346,8 @@ Paddock:
       Sending apply message to irrigation
 3 February 1998(Day of year=34), sorghum: 
      Stage 6 FlagLeaf  DAS = 61
-     		Biomass       = 836.68 		 LAI            =   6.76
-     		Stover N Conc =  12.95 		 Extractable SW = 124.01
+     		Biomass       = 834.60 		 LAI            =   6.75
+     		Stover N Conc =  12.95 		 Extractable SW = 117.46
 10 February 1998(Day of year=41), paddock.operations: 
       Sending apply message to irrigation
       Sending apply message to fertiliser
@@ -363,28 +358,28 @@ Paddock:
                                          added at depth   50.00 (layer   1)
 16 February 1998(Day of year=47), sorghum: 
      Stage 7 Flowering  DAS = 74
-     		Biomass       = 1171.41 		 LAI            =   6.00
-     		Stover N Conc =  17.60 		 Extractable SW = 110.74
+     		Biomass       = 1157.50 		 LAI            =   6.00
+     		Stover N Conc =  17.62 		 Extractable SW = 103.37
 20 February 1998(Day of year=51), sorghum: 
      Stage 8 StartGrainFill  DAS = 78
-     		Biomass       = 1287.42 		 LAI            =   5.94
-     		Stover N Conc =  19.73 		 Extractable SW =  86.96
+     		Biomass       = 1267.82 		 LAI            =   5.93
+     		Stover N Conc =  19.71 		 Extractable SW =  80.70
 5 March 1998(Day of year=64), paddock.operations: 
       Sending apply message to irrigation
 18 March 1998(Day of year=77), paddock.operations: 
       Sending apply message to irrigation
 30 March 1998(Day of year=89), sorghum: 
      Stage 9 EndGrainFill  DAS = 116
-     		Biomass       = 2183.83 		 LAI            =   5.89
-     		Stover N Conc =  19.12 		 Extractable SW =  81.58
+     		Biomass       = 2145.51 		 LAI            =   5.89
+     		Stover N Conc =  19.18 		 Extractable SW =  80.26
 2 April 1998(Day of year=92), sorghum: 
      Stage 10 Maturity  DAS = 119
-     		Biomass       = 2242.39 		 LAI            =   5.84
-     		Stover N Conc =  18.11 		 Extractable SW =  65.82
+     		Biomass       = 2203.36 		 LAI            =   5.84
+     		Stover N Conc =  18.18 		 Extractable SW =  64.69
 3 April 1998(Day of year=93), sorghum: 
      Stage 11 HarvestRipe  DAS = 120
-     		Biomass       = 2252.90 		 LAI            =   5.78
-     		Stover N Conc =  17.92 		 Extractable SW =  66.47
+     		Biomass       = 2213.88 		 LAI            =   5.78
+     		Stover N Conc =  17.99 		 Extractable SW =  65.33
 3 April 1998(Day of year=93), paddock.Harvesting rule: 
      Manager sending message :- sorghum harvest
      
@@ -392,34 +387,34 @@ Paddock:
      Flowering (DAS)       = 74 		 Maturity (DAS)          = 119
      Flowering day         = 47 		 Maturity day            = 92
      Maximum LAI           = 6.8 		 Number of leaves        = 19.6
-     Total above ground biomass    (kg/ha) = 22765.4
-     Green above ground biomass    (kg/ha) = 22156.8
-     Senesced above ground biomass (kg/ha) = 608.6
-     Stover (kg/ha)        = 14591.6 	 Grain yield (kg/ha)     = 8173.8
-     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 9395.2
-     Weight 1000 grains(g) = 36.4 		 Grains/m^2              = 22460.3
-     Grains/head           = 2246.0
-     Grain N percent    (%)     =      1.69 	 Grain N            (kg/ha) =   137.77
-     Total N content    (kg/ha) =    317.00 	 Senesced N content (kg/ha) =    16.86
-     Green N content    (kg/ha) =    172.95
+     Total above ground biomass    (kg/ha) = 22375.1
+     Green above ground biomass    (kg/ha) = 21768.8
+     Senesced above ground biomass (kg/ha) = 606.3
+     Stover (kg/ha)        = 14376.1 	 Grain yield (kg/ha)     = 7999.1
+     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 9194.3
+     Weight 1000 grains(g) = 36.2 		 Grains/m^2              = 22086.8
+     Grains/head           = 2208.7
+     Grain N percent    (%)     =      1.69 	 Grain N            (kg/ha) =   135.55
+     Total N content    (kg/ha) =    315.48 	 Senesced N content (kg/ha) =    16.81
+     Green N content    (kg/ha) =    173.60
      
      Average Stress Indices:                          Water Photo  Water Expan  N Photo
         Emergence           to End of juvenile           1.0          1.0        0.9
         End of juvenile     to Floral initiation         1.0          1.0        1.0
         Floral initiation   to Flag leaf                 0.9          0.9        1.0
         Flag leaf           to Flowering                 0.9          0.9        1.0
-        Flowering           to Start grain fill          0.8          0.8        1.0
+        Flowering           to Start grain fill          0.8          0.7        1.0
         Start grain fill    to End grain fill            0.8          0.7        1.0
      
      Crop harvested.
         Organic matter removed from system:-      From Tops		From Roots
-                         DM (kg/ha) =               8173.82		    0.00
-                         N  (kg/ha) =                137.77		    0.00
+                         DM (kg/ha) =               7999.05		    0.00
+                         N  (kg/ha) =                135.55		    0.00
      Manager sending message :- sorghum end_crop
      Crop ended.
      Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
-                         DM (kg/ha) =              14591.60		 5322.08
-                         N  (kg/ha) =                179.23		   10.58
+                         DM (kg/ha) =              14376.08		 5269.87
+                         N  (kg/ha) =                179.94		   10.47
                          P  (kg/ha) =                  0.00		    0.00
 9 April 1998(Day of year=99), clock: 
      Simulation is terminating due to end criteria being met.
