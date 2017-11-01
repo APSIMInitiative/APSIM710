@@ -3059,7 +3059,7 @@ public class AgPasture
             {
                 if (mySpecies[s].isLegume)
                 {
-                    mySpecies[s].NFixed = mySpecies[s].myMinimumNFixation * mySpecies[s].NdemandOpt;
+                    mySpecies[s].NFixed = mySpecies[s].myMinimumNFixation * mySpecies[s].NdemandOpt * mySpecies[s].myGlfSoilFertility;
                     swardNFixed += mySpecies[s].NFixed;
                 }
             }
@@ -3077,7 +3077,7 @@ public class AgPasture
                     if (mySpecies[s].isLegume)
                     {
                         double moreNfixation = (mySpecies[s].myMaximumNFixation - mySpecies[s].myMinimumNFixation) * (1.0 - Nstress);
-                        moreNfixation = Math.Max(0.0, Math.Min(1.0, moreNfixation)) * mySpecies[s].NdemandOpt;
+                        moreNfixation = Math.Max(0.0, Math.Min(1.0, moreNfixation)) * mySpecies[s].NdemandOpt * mySpecies[s].myGlfSoilFertility;
                         mySpecies[s].NFixed += moreNfixation;
                         swardNFixed += moreNfixation;
                     }
@@ -3094,7 +3094,7 @@ public class AgPasture
         {
             mySpecies[s].CalcNRemobSenescent();
 
-            if (mySpecies[s].newGrowthN < mySpecies[s].NdemandLux)
+            if (mySpecies[s].newGrowthN < mySpecies[s].NdemandLux * mySpecies[s].myGlfSoilFertility)
             {
                 // all N remobilised and/or fixed were used up, check demand from the soil
                 mySpecies[s].soilNdemand = mySpecies[s].NdemandLux * mySpecies[s].myGlfSoilFertility - mySpecies[s].newGrowthN;
@@ -3804,7 +3804,7 @@ public class AgPasture
                 {
                     // consider each species separately
                     // check whether demand for optimum growth has been satisfied
-                    if (mySpecies[s].NdemandOpt > mySpecies[s].newGrowthN)
+                    if (mySpecies[s].NdemandOpt * mySpecies[s].myGlfSoilFertility > mySpecies[s].newGrowthN)
                     {
                         // plant still needs more N for optimum growth, check whether luxury N already in the plants can be used
                         mySpecies[s].CalcNRemobLuxury();
@@ -3827,7 +3827,7 @@ public class AgPasture
                     {
                         // soil cannot supply all N needed. Uptake the available N and partition it between species
                         // check whether demand for optimum growth has been satisfied
-                        if (mySpecies[s].NdemandOpt > mySpecies[s].newGrowthN)
+                        if (mySpecies[s].NdemandOpt * mySpecies[s].myGlfSoilFertility > mySpecies[s].newGrowthN)
                         {
                             // plant still needs more N for optimum growth, check whether luxury N already in the plants can be used
                             mySpecies[s].CalcNRemobLuxury();

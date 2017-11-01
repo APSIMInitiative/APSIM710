@@ -1643,20 +1643,21 @@ public class Species
     {
         double SoilNavailable = soilAvailableNH4.Sum() + soilAvailableNO3.Sum();
         double Nstress = 1.0;
-        if (NdemandOpt > Epsilon && (NdemandOpt > SoilNavailable + myMinimumNFixation))
-            Nstress = SoilNavailable / (NdemandOpt - myMinimumNFixation);
+        double adjNdemand = NdemandOpt * myGlfSoilFertility;
+        if (adjNdemand > Epsilon && (adjNdemand > SoilNavailable + myMinimumNFixation))
+            Nstress = SoilNavailable / (adjNdemand - myMinimumNFixation);
 
         if (Nstress <= 0.999)
         {
             // more fixation under N stress
             double moreNfixation = (myMaximumNFixation - myMinimumNFixation) * (1 - Nstress);
             moreNfixation = Math.Max(0.0, Math.Min(1.0, moreNfixation));
-            NFixed = (myMinimumNFixation + moreNfixation) * NdemandOpt;
+            NFixed = (myMinimumNFixation + moreNfixation) * adjNdemand;
         }
         else
         {
             // minimum fixation even if not needed
-            NFixed = myMinimumNFixation * NdemandOpt;
+            NFixed = myMinimumNFixation * adjNdemand;
         }
     }
 
@@ -1686,10 +1687,10 @@ public class Species
     /// <summary>Computes the amount of N remobilised from senescent material used in new growth</summary>
     internal void CalcNRemobSenescent()
     {
-        if (NdemandLux <= NSenescedRemobilisable + NFixed)
+        if (NdemandLux * myGlfSoilFertility <= NSenescedRemobilisable + NFixed)
         {
             // N remobilised and/or fixed are able to supply all N
-            NSenesced2NewGrowth = Math.Max(0.0, NdemandLux - NFixed);
+            NSenesced2NewGrowth = Math.Max(0.0, NdemandLux * myGlfSoilFertility - NFixed);
         }
         else
         {
@@ -1737,7 +1738,7 @@ public class Species
     /// <summary>Computes the amount of N remobilisation from luxury N to be used in new growth</summary>
     internal void CalcNRemobLuxury()
     {
-        double remainingNdemand = NdemandOpt - newGrowthN;
+        double remainingNdemand = NdemandOpt * myGlfSoilFertility - newGrowthN;
         if ((remainingNdemand > Epsilon) && (NLuxuryRemobilisable > Epsilon))
         {
             // there is still N demand, check N luxury 
