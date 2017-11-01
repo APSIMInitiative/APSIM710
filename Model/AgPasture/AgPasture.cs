@@ -4537,19 +4537,38 @@ public class AgPasture
             }
             else
             {
-                // Use current values
-                NewState.NAmount[0] = NewState.DMWeight[0] * mySpecies[sp].leaves.tissue[0].Nconc;
-                NewState.NAmount[1] = NewState.DMWeight[1] * mySpecies[sp].leaves.tissue[1].Nconc;
-                NewState.NAmount[2] = NewState.DMWeight[2] * mySpecies[sp].leaves.tissue[2].Nconc;
-                NewState.NAmount[3] = NewState.DMWeight[3] * mySpecies[sp].leaves.tissue[3].Nconc;
-                NewState.NAmount[4] = NewState.DMWeight[4] * mySpecies[sp].stems.tissue[0].Nconc;
-                NewState.NAmount[5] = NewState.DMWeight[5] * mySpecies[sp].stems.tissue[1].Nconc;
-                NewState.NAmount[6] = NewState.DMWeight[6] * mySpecies[sp].stems.tissue[2].Nconc;
-                NewState.NAmount[7] = NewState.DMWeight[7] * mySpecies[sp].stems.tissue[3].Nconc;
-                NewState.NAmount[8] = NewState.DMWeight[8] * mySpecies[sp].stolons.tissue[0].Nconc;
-                NewState.NAmount[9] = NewState.DMWeight[9] * mySpecies[sp].stolons.tissue[1].Nconc;
-                NewState.NAmount[10] = NewState.DMWeight[10] * mySpecies[sp].stolons.tissue[2].Nconc;
-                NewState.NAmount[11] = NewState.DMWeight[11] * mySpecies[sp].roots.tissue[0].Nconc;
+                if (mySpecies[sp].AboveGroundN > 0.0)
+                {
+                    // Use current values
+                    NewState.NAmount[0] = NewState.DMWeight[0] * mySpecies[sp].leaves.tissue[0].Nconc;
+                    NewState.NAmount[1] = NewState.DMWeight[1] * mySpecies[sp].leaves.tissue[1].Nconc;
+                    NewState.NAmount[2] = NewState.DMWeight[2] * mySpecies[sp].leaves.tissue[2].Nconc;
+                    NewState.NAmount[3] = NewState.DMWeight[3] * mySpecies[sp].leaves.tissue[3].Nconc;
+                    NewState.NAmount[4] = NewState.DMWeight[4] * mySpecies[sp].stems.tissue[0].Nconc;
+                    NewState.NAmount[5] = NewState.DMWeight[5] * mySpecies[sp].stems.tissue[1].Nconc;
+                    NewState.NAmount[6] = NewState.DMWeight[6] * mySpecies[sp].stems.tissue[2].Nconc;
+                    NewState.NAmount[7] = NewState.DMWeight[7] * mySpecies[sp].stems.tissue[3].Nconc;
+                    NewState.NAmount[8] = NewState.DMWeight[8] * mySpecies[sp].stolons.tissue[0].Nconc;
+                    NewState.NAmount[9] = NewState.DMWeight[9] * mySpecies[sp].stolons.tissue[1].Nconc;
+                    NewState.NAmount[10] = NewState.DMWeight[10] * mySpecies[sp].stolons.tissue[2].Nconc;
+                    NewState.NAmount[11] = NewState.DMWeight[11] * mySpecies[sp].roots.tissue[0].Nconc;
+                }
+                else
+                {
+                    // No values given and Nconc is zero, plant would not grow. use default/initial values
+                    NewState.NAmount[0] = NewState.DMWeight[0] * mySpecies[sp].leaves.NConcOptimum;
+                    NewState.NAmount[1] = NewState.DMWeight[1] * mySpecies[sp].leaves.NConcOptimum * mySpecies[sp].NcRel2;
+                    NewState.NAmount[2] = NewState.DMWeight[2] * mySpecies[sp].leaves.NConcOptimum * mySpecies[sp].NcRel3;
+                    NewState.NAmount[3] = NewState.DMWeight[3] * mySpecies[sp].leaves.NConcMinimum;
+                    NewState.NAmount[4] = NewState.DMWeight[4] * mySpecies[sp].stems.NConcOptimum;
+                    NewState.NAmount[5] = NewState.DMWeight[5] * mySpecies[sp].stems.NConcOptimum * mySpecies[sp].NcRel2;
+                    NewState.NAmount[6] = NewState.DMWeight[6] * mySpecies[sp].stems.NConcOptimum * mySpecies[sp].NcRel3;
+                    NewState.NAmount[7] = NewState.DMWeight[7] * mySpecies[sp].stems.NConcMinimum;
+                    NewState.NAmount[8] = NewState.DMWeight[8] * mySpecies[sp].stolons.NConcOptimum;
+                    NewState.NAmount[9] = NewState.DMWeight[9] * mySpecies[sp].stolons.NConcOptimum * mySpecies[sp].NcRel2;
+                    NewState.NAmount[10] = NewState.DMWeight[10] * mySpecies[sp].stolons.NConcOptimum * mySpecies[sp].NcRel3;
+                    NewState.NAmount[11] = NewState.DMWeight[11] * mySpecies[sp].roots.NConcOptimum;
+                }
             }
 
             // Set the species
