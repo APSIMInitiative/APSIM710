@@ -79,6 +79,7 @@ C     Last change:  E     5 Dec 2000    8:52 am
       g%PercentDone = 0
       g%start_date = 0
       g%end_date = 0
+      g%current_time = 0
 
       ! read in all parameters for clock module.
       call clock_read_timesteps ()

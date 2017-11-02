@@ -5349,6 +5349,7 @@ c         g%cover_surface_extra = 0.0          ! extra surface cover (0-1)
          g%runoff = 0.0                       ! runoff (mm)
 		     g%runoff_pot = 0.0                   ! potential runoff with no pond(mm)
          g%irrigation = 0.0                   ! irrigation (mm)
+         g%irrigation_will_runoff = 0
          g%obsrunoff = 0.0                    ! observed runoff (mm)
          g%tillage_cn_red = 0.0               ! reduction in CN due to tillage ()
          g%tillage_cn_rain = 0.0              ! cumulative rainfall below which
