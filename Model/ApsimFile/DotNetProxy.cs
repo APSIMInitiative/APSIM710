@@ -260,6 +260,12 @@ class DLLProber
                             string CamelName = StringManip.CamelCase(EventName + "Type");
                             if (XmlHelper.Attribute(Node, "typename") != "")
                                 CamelName = StringManip.CamelCase(XmlHelper.Attribute(Node, "typename") + "Type");
+                            // Ugly hack to prevent ambiguity between stock "buy" and supplement "buy"
+                            else if (EventName.Equals("Buy", StringComparison.OrdinalIgnoreCase) &&
+                                     compClass.Equals("Supplement", StringComparison.OrdinalIgnoreCase))
+                            {
+                                CamelName = "SupplementBuyType";
+                            }
                             else
                             {
                                 XmlNode TypeNode = XmlHelper.Find(Node, "type");
