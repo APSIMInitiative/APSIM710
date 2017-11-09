@@ -1,0 +1,3022 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.9
+Title                  = Miscanthus
+   Component                        "Clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component     "Fertilise on fixed date1" = %apsim%\Model\Manager.dll
+   Component     "Fertilise on fixed date2" = %apsim%\Model\Manager.dll
+   Component     "Fertilise on fixed date3" = %apsim%\Model\Manager.dll
+   Component     "Fertilise on fixed date4" = %apsim%\Model\Manager.dll
+   Component     "Fertilise on fixed date5" = %apsim%\Model\Manager.dll
+   Component     "Fertilise on fixed date6" = %apsim%\Model\Manager.dll
+   Component     "Fertilise on fixed date7" = %apsim%\Model\Manager.dll
+   Component        "Miscanthus management" = %apsim%\Model\Manager.dll
+   Component                "Drummer Water" = %apsim%\Model\SoilWat.dll
+   Component                    "surfaceom" = %apsim%\Model\SurfaceOM.dll
+   Component             "Drummer Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "sugar" = %apsim%\Model\Sugar.dll
+
+------- Clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 14/05/2008
+     Simulation end date   = 31/12/2014
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\BioEnergy\West Lafayette.met
+
+------- Outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy
+        year
+        biomass as MiscanthusBiomass
+        lai as MiscanthusLAI
+
+     Output file = Miscanthus.out
+     Format = normal
+
+------- paddock.accum Initialisation ------------------------------------------
+     Initialising
+
+------- paddock.Fertilise on fixed date1 Initialisation -----------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (today = date('4/08/2008') then
+     n_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+     if (n_topsoil < 1000) then
+        fertiliser apply amount = 84 (kg/ha), depth = 50 (mm), type =  urea_n ()
+     endif
+              endif
+     END of rules
+     
+
+------- paddock.Fertilise on fixed date2 Initialisation -----------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (today = date('18/05/2009') then
+     n_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+     if (n_topsoil < 1000) then
+        fertiliser apply amount = 56 (kg/ha), depth = 50 (mm), type =  urea_n ()
+     endif
+              endif
+     END of rules
+     
+
+------- paddock.Fertilise on fixed date3 Initialisation -----------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (today = date('10/05/2010') then
+     n_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+     if (n_topsoil < 1000) then
+        fertiliser apply amount = 56 (kg/ha), depth = 50 (mm), type =  urea_n ()
+     endif
+              endif
+     END of rules
+     
+
+------- paddock.Fertilise on fixed date4 Initialisation -----------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (today = date('6/05/2011') then
+     n_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+     if (n_topsoil < 1000) then
+        fertiliser apply amount = 56 (kg/ha), depth = 50 (mm), type =  urea_n ()
+     endif
+              endif
+     END of rules
+     
+
+------- paddock.Fertilise on fixed date5 Initialisation -----------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (today = date('3/04/2012') then
+     n_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+     if (n_topsoil < 1000) then
+        fertiliser apply amount = 56 (kg/ha), depth = 50 (mm), type =  urea_n ()
+     endif
+              endif
+     END of rules
+     
+
+------- paddock.Fertilise on fixed date6 Initialisation -----------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (today = date('3/04/2013') then
+     n_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+     if (n_topsoil < 1000) then
+        fertiliser apply amount = 56 (kg/ha), depth = 50 (mm), type =  urea_n ()
+     endif
+              endif
+     END of rules
+     
+
+------- paddock.Fertilise on fixed date7 Initialisation -----------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (today = date('8/05/2014') then
+     n_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+     if (n_topsoil < 1000) then
+        fertiliser apply amount = 56 (kg/ha), depth = 50 (mm), type =  urea_n ()
+     endif
+              endif
+     END of rules
+     
+
+------- paddock.Miscanthus management Initialisation --------------------------
+     Manager rules:
+     
+     SECTION:- init
+     cropcycle = 0
+     
+     SECTION:- start_of_day
+     plantlen = 177
+     totalrain = totalrain + rain
+     totaldnit = totaldnit + dnit
+     totalleach = totalleach + flow_no3
+     dah = 0
+     if (sugar.crop_status = 'alive') then
+        dah = 0
+       if (sugar.daysaftersowing = 177 and ratoon_no = 0) or
+           (sugar.daysaftersowing = ratoonlen and ratoon_no > 0) then
+           replace_kgnha = cane_wt * 10 * replace_pcn
+           sugar harvest
+           totalfertiliser = 0
+           totalirrigation = 0
+           totalrain = 0
+           totaldnit = 0
+           totalleach = 0
+           if '' = 1  then
+               if ('user_defined' = 'user_defined') then
+               '' tillage type = user_defined, f_incorp = 0 (), tillage_depth = 0
+           else
+               '' tillage type = user_defined
+           endif
+           endif
+           if (ratoon_no = 6 + 1) then
+           else
+              if ratoon_no = 1 then
+                 ratoonlen = 356
+                 sugar.plants = 20
+              elseif ratoon_no = 2 then
+                 ratoonlen = 363
+                 sugar.plants = 30
+              elseif ratoon_no = 3 then
+                 ratoonlen = 366
+                 sugar.plants = 35
+              elseif ratoon_no = 4 then
+                 ratoonlen = 368
+                 sugar.plants = 45
+              elseif ratoon_no = 5 then
+                 ratoonlen = 363
+                 sugar.plants = 55
+              elseif ratoon_no = 6 then
+                 ratoonlen = 365
+                 sugar.plants = 60
+              endif
+           endif
+        else
+        endif
+     elseif (sugar.crop_status = 'dead') then
+        sugar harvest
+        sugar end_crop
+     elseif (sugar.crop_status = 'out') and (today = date('15-may') then
+        cropcycle = cropcycle + 1
+        sugar sow plants = 10 (), cultivar = q117, sowing_depth = 100
+        sugar.plants = 20
+        dah = 0
+     else
+        dah = dah + 1
+     endif
+     if day = 313 and year = 2008 then
+           surfaceom add_surfaceom name = sugar, type = sugar, mass =  27380 (kg/ha), cnr = 482 ()
+           endif
+     END of rules
+     
+     Manager creating a new local real variable : cropcycle = 0.00000
+
+------- paddock.Drummer Water Initialisation ----------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON   Ks
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf           mm/day
+        ---------------------------------------------------------------------
+            0.-  230.  0.095  0.189  0.361  0.483  0.361  1.240  0.895  0.277165.000
+          230.-  430.  0.180  0.200  0.371  0.490  0.371  1.220  0.102  0.270152.000
+          430.-  710.  0.194  0.194  0.373  0.493  0.373  1.210  0.003  0.268165.000
+          710.-  940.  0.152  0.152  0.342  0.478  0.342  1.250  0.000  0.292232.000
+          940.- 1090.  0.075  0.075  0.174  0.441  0.174  1.350  0.000  0.575*******
+         1090.- 1900.  0.075  0.075  0.177  0.441  0.177  1.350  0.000  0.565*******
+         1900.- 2440.  0.126  0.126  0.269  0.447  0.269  1.330  0.000  0.372439.000
+         2440.- 3300.  0.126  0.126  0.267  0.446  0.267  1.330  0.000  0.375445.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  230.      43.47      39.56      39.56      28.06
+          230.-  430.      40.00      34.20      34.20      23.80
+          430.-  710.      54.32      50.12      50.12      33.60
+          710.-  940.      34.96      43.70      43.70      31.28
+          940.- 1090.      11.25      14.85      14.85      40.05
+         1090.- 1900.      60.75      82.62      82.62     213.84
+         1900.- 2440.      68.04      77.22      77.22      96.12
+         2440.- 3300.     108.36     121.26     121.26     153.94
+          ---------------------------------------------------------
+               Totals     421.15     463.53     463.53     620.69
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              78.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):           10.00 (mm^0.5)
+            CONA:                     3.90 ()
+            Eo from priestly-taylor
+
+------- paddock.surfaceom Initialisation --------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          soybean   soybean        138.0    55.2     1.4     0.0   0.027     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- paddock.Drummer Nitrogen Initialisation -------------------------------
+     
+        - Reading Parameters
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: paddock.Drummer Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: paddock.Drummer Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: paddock.Drummer Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     oc =     0.000000
+             less than lower limit of   0.1000000E-01
+     Component name: paddock.Drummer Nitrogen
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     5.80  3.24   18.20    3.70    0.00
+             2     6.20  1.25    9.30    0.80    0.00
+             3     6.50  0.92   16.00    0.80    0.00
+             4     7.10  0.44   13.80    0.40    0.00
+             5     8.00  0.00    4.60    0.10    0.00
+             6     8.00  0.00   21.90    0.20    0.00
+             7     8.10  0.00   14.50    0.00    0.00
+             8     8.10  0.00   48.79    0.00    0.00
+          ------------------------------------------------
+           Totals              147.10    5.99    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      90869.8  7572.5  1449.5   181.2   103.2     2.6
+             2      30001.6  2500.1   449.6    56.2    86.0     2.2
+             3      30809.6  2567.5   461.7    57.7    66.7     1.7
+             4      12507.8  1042.3   199.7    25.0    54.1     1.4
+             5          0.0     0.0     0.0     0.0    47.2     1.2
+             6          0.0     0.0     0.0     0.0    22.6     0.6
+             7          0.0     0.0     0.0     0.0    13.8     0.3
+             8          0.0     0.0     0.0     0.0     6.3     0.2
+          ---------------------------------------------------------
+           Totals  164188.7 13682.4  2560.4   320.1   400.0    10.0
+          ---------------------------------------------------------
+
+------- paddock.sugar Initialisation ------------------------------------------
+      Initialising
+     
+         - Reading constants
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     maxt_lb =    -20.00000
+             less than lower limit of    0.000000
+     Component name: paddock.sugar
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+------- Start of simulation  --------------------------------------------------
+14 May 2008(Day of year=135), paddock.Miscanthus management: 
+     Manager creating a new local real variable : plantlen = 177.00000
+14 May 2008(Day of year=135): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "totalrain".
+     Variables should have a value before they are used in an expression.
+     Component name: paddock.Miscanthus management
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : totalrain = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "totaldnit".
+     Variables should have a value before they are used in an expression.
+     Component name: paddock.Miscanthus management
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : totaldnit = 0.00000
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "totalleach".
+     Variables should have a value before they are used in an expression.
+     Component name: paddock.Miscanthus management
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     Manager creating a new local real variable : totalleach = 0.00000
+     Manager creating a new local real variable : dah = 0.00000
+15 May 2008(Day of year=136), paddock.Miscanthus management: 
+     Manager sending message :- sugar sow  plants = 10, cultivar = q117, sowing_depth = 100
+15 May 2008(Day of year=136), paddock.sugar: 
+     Sowing initiate
+     
+     
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Cultivar
+         Day no   mm     m^2    Name
+         ------------------------------------------------
+            136  100.0   10.0 q117
+         ------------------------------------------------
+     
+         - Reading constants from plant_crop
+15 May 2008(Day of year=136): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     frost_temp =    -30.00000
+             less than lower limit of   -20.00000
+     Component name: paddock.sugar
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+         - Reading constants from q117
+     
+        - Reading root profile parameters
+     
+     
+     
+     Sugar module is calculating its own soil uptakes
+     
+     
+     
+                         Root Profile
+       --------------------------------------------------
+         Layer depth  Kl factor   Lower limit Root Factor
+              (mm)         ()        (mm/mm)     (0-1)
+       --------------------------------------------------
+           230.000       0.080       0.189       1.000
+           200.000       0.080       0.200       1.000
+           280.000       0.080       0.194       1.000
+           230.000       0.080       0.152       1.000
+           150.000       0.080       0.075       1.000
+           810.000       0.080       0.075       0.800
+           540.000       0.080       0.126       0.700
+        -------------------------------------------------
+     
+     
+       Crop factor for bounding water use is set to 100.0 times Eo
+     
+     
+     
+16 May 2008(Day of year=137): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "ratoonlen".
+     Variables should have a value before they are used in an expression.
+     Component name: paddock.Miscanthus management
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+16 May 2008(Day of year=137), paddock.Miscanthus management: 
+     Manager creating a new local real variable : ratoonlen = 0.00000
+16 May 2008(Day of year=137), paddock.sugar: 
+      stage    2.0 sprouting
+21 June 2008(Day of year=173), paddock.sugar: 
+      stage    3.0 emergence
+                          biomass =           7.060000       lai =    0.2000000E-01
+                          stover N conc =    2.529745       extractable sw =    155.6222
+11 July 2008(Day of year=193): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     dlt_dm_green =   -0.1029606E-05
+             less than lower limit of  -0.1000000E-05
+     Component name: paddock.sugar
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+26 July 2008(Day of year=208): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     dlt_dm_green =   -0.2577413E-05
+             less than lower limit of  -0.1000000E-05
+     Component name: paddock.sugar
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+4 August 2008(Day of year=217), paddock.Fertilise on fixed date1: 
+     Manager creating a new local real variable : n_topsoil = 5.47142
+     Manager sending message :- fertiliser apply  amount = 84 (kg/ha), depth = 50 (mm), type = urea_n
+4 August 2008(Day of year=217), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        84.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+29 August 2008(Day of year=242), paddock.sugar: 
+      stage    4.0 begin_cane
+                          biomass =           1851.014       lai =     8.949694
+                          stover N conc =   0.8417478       extractable sw =    46.98517
+8 November 2008(Day of year=313): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "replace_pcn".
+     Variables should have a value before they are used in an expression.
+     Component name: paddock.Miscanthus management
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+8 November 2008(Day of year=313), paddock.Miscanthus management: 
+     Manager creating a new local real variable : replace_pcn = 0.00000
+     Manager creating a new local real variable : replace_kgnha = 0.00000
+     Manager sending message :- sugar harvest
+8 November 2008(Day of year=313), paddock.sugar: 
+     
+     
+     
+      flowering day  =    0
+      maximum lai = 9.949
+      total above ground biomass (kg/ha) =   28401.2
+      live above ground biomass (kg/ha) =   28401.2
+      green above ground biomass (kg/ha) =   21151.6
+      senesced above ground biomass (kg/ha) =    7249.6
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  18.7
+      total N content (kg/ha) =    151.63    senesced N content (kg/ha) =     26.56
+      green N content (kg/ha) =    125.07    dead N content (kg/ha) =      0.00
+     
+     
+     
+      stress indices for emergence
+      water stress 1 =   0.2336127       nitrogen stress 1 =   0.5011634E-01
+      water stress 2 =   0.1695596
+     
+     
+     
+      stress indices for begin_cane
+      water stress 1 =   0.4771959       nitrogen stress 1 =    0.000000
+      water stress 2 =   0.3935271
+     
+     
+     
+      stress indices for flowering
+      water stress 1 =    0.000000       nitrogen stress 1 =    0.000000
+      water stress 2 =    0.000000
+                                               straw residue =14220.4 kg/ha
+                                               straw N =  121.8 kg/ha
+                                               root residue = 4157.1 kg/ha
+                                               root N =   33.2 kg/ha
+     
+         - Reading constants from ratoon_crop
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     frost_temp =    -30.00000
+             less than lower limit of   -20.00000
+     Component name: paddock.sugar
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     
+         - Reading constants from q117_ratoon
+     Manager creating a new local real variable : totalfertiliser = 0.00000
+     Manager creating a new local real variable : totalirrigation = 0.00000
+     Manager sending message :- surfaceom add_surfaceom  name = sugar, type = sugar, mass = 27380 (kg/ha), cnr = 482
+24 March 2009(Day of year=83), paddock.sugar: 
+      stage    3.0 emergence
+                          biomass =           7.060000       lai =    0.2000000E-01
+                          stover N conc =    2.529745       extractable sw =    284.2129
+18 May 2009(Day of year=138), paddock.Fertilise on fixed date2: 
+     Manager sending message :- fertiliser apply  amount = 56 (kg/ha), depth = 50 (mm), type = urea_n
+18 May 2009(Day of year=138), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        56.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+9 July 2009(Day of year=190), paddock.sugar: 
+      stage    4.0 begin_cane
+                          biomass =           1005.650       lai =     5.239230
+                          stover N conc =   0.3991467       extractable sw =    481.4610
+15 August 2009(Day of year=227), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2199656       extractable sw =    382.8277
+16 August 2009(Day of year=228), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2223495       extractable sw =    367.6369
+17 August 2009(Day of year=229), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2250468       extractable sw =    372.7369
+18 August 2009(Day of year=230), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2269700       extractable sw =    420.6130
+19 August 2009(Day of year=231), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2287590       extractable sw =    420.6130
+20 August 2009(Day of year=232), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2300419       extractable sw =    437.3629
+21 August 2009(Day of year=233), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2312998       extractable sw =    438.3629
+22 August 2009(Day of year=234), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2326751       extractable sw =    438.6629
+23 August 2009(Day of year=235), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2340807       extractable sw =    438.6629
+24 August 2009(Day of year=236), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2355003       extractable sw =    438.6629
+25 August 2009(Day of year=237), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2369903       extractable sw =    438.6629
+26 August 2009(Day of year=238), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2386252       extractable sw =    438.6629
+27 August 2009(Day of year=239), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2405186       extractable sw =    438.6629
+28 August 2009(Day of year=240), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2425602       extractable sw =    438.6629
+29 August 2009(Day of year=241), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2445379       extractable sw =    449.3629
+30 August 2009(Day of year=242), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2463526       extractable sw =    449.3629
+31 August 2009(Day of year=243), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2479687       extractable sw =    449.3629
+1 September 2009(Day of year=244), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2494145       extractable sw =    449.3629
+2 September 2009(Day of year=245), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2508289       extractable sw =    449.3629
+3 September 2009(Day of year=246), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2523513       extractable sw =    449.3629
+4 September 2009(Day of year=247), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2540696       extractable sw =    449.3629
+5 September 2009(Day of year=248), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2560236       extractable sw =    449.3629
+6 September 2009(Day of year=249), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2581965       extractable sw =    449.3629
+7 September 2009(Day of year=250), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2605026       extractable sw =    449.3629
+8 September 2009(Day of year=251), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2627959       extractable sw =    449.3629
+9 September 2009(Day of year=252), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2650140       extractable sw =    453.1629
+10 September 2009(Day of year=253), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2671784       extractable sw =    453.1629
+11 September 2009(Day of year=254), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2693425       extractable sw =    453.1629
+12 September 2009(Day of year=255), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2715493       extractable sw =    453.1629
+13 September 2009(Day of year=256), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2738553       extractable sw =    453.1629
+14 September 2009(Day of year=257), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2763265       extractable sw =    453.1629
+15 September 2009(Day of year=258), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2789866       extractable sw =    453.1629
+16 September 2009(Day of year=259), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2817115       extractable sw =    453.1629
+17 September 2009(Day of year=260), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2844154       extractable sw =    453.1629
+18 September 2009(Day of year=261), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2871129       extractable sw =    453.1628
+19 September 2009(Day of year=262), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2897239       extractable sw =    453.1629
+20 September 2009(Day of year=263), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2920879       extractable sw =    453.1629
+21 September 2009(Day of year=264), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2943376       extractable sw =    453.1629
+22 September 2009(Day of year=265), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2965827       extractable sw =    453.1629
+23 September 2009(Day of year=266), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.2988115       extractable sw =    456.4629
+24 September 2009(Day of year=267), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.3009591       extractable sw =    457.2629
+25 September 2009(Day of year=268), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.3030768       extractable sw =    459.2629
+26 September 2009(Day of year=269), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.3050888       extractable sw =    463.3629
+27 September 2009(Day of year=270), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.3069640       extractable sw =    463.6629
+28 September 2009(Day of year=271), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.3086462       extractable sw =    463.6629
+29 September 2009(Day of year=272), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.3101575       extractable sw =    463.6629
+30 September 2009(Day of year=273), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.3115310       extractable sw =    463.6629
+1 October 2009(Day of year=274), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.3127818       extractable sw =    463.6629
+2 October 2009(Day of year=275), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.3138603       extractable sw =    478.6626
+3 October 2009(Day of year=276), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.3148142       extractable sw =    478.6626
+4 October 2009(Day of year=277), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.3156872       extractable sw =    479.6626
+5 October 2009(Day of year=278), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.3165176       extractable sw =    479.6626
+6 October 2009(Day of year=279), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.3173231       extractable sw =    479.6626
+7 October 2009(Day of year=280), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.3181134       extractable sw =    483.7626
+8 October 2009(Day of year=281), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.3188812       extractable sw =    483.7626
+9 October 2009(Day of year=282), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.745556
+                          stover N conc =   0.3195119       extractable sw =    519.6450
+10 October 2009(Day of year=283), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.923       lai =     7.706828
+                          stover N conc =   0.3199773       extractable sw =    531.8726
+11 October 2009(Day of year=284), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2121.653       lai =     6.635579
+                          stover N conc =   0.3188074       extractable sw =    531.0519
+12 October 2009(Day of year=285), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2053.099       lai =     6.635579
+                          stover N conc =   0.3193071       extractable sw =    530.1981
+13 October 2009(Day of year=286), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2046.243       lai =     6.635579
+                          stover N conc =   0.3197716       extractable sw =    528.8621
+14 October 2009(Day of year=287), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2045.334       lai =     6.635579
+                          stover N conc =   0.3202127       extractable sw =    527.0673
+15 October 2009(Day of year=288), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2045.243       lai =     6.635579
+                          stover N conc =   0.3206317       extractable sw =    533.2329
+16 October 2009(Day of year=289), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2045.234       lai =     6.403334
+                          stover N conc =   0.3206434       extractable sw =    530.3868
+17 October 2009(Day of year=290), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2029.942       lai =     5.987117
+                          stover N conc =   0.3203045       extractable sw =    527.1706
+18 October 2009(Day of year=291), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2001.005       lai =     5.244714
+                          stover N conc =   0.3188389       extractable sw =    523.3409
+19 October 2009(Day of year=292), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1930.219       lai =     5.244714
+                          stover N conc =   0.3191659       extractable sw =    519.2668
+20 October 2009(Day of year=293), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1923.141       lai =     5.244714
+                          stover N conc =   0.3195435       extractable sw =    515.0266
+21 October 2009(Day of year=294), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1922.137       lai =     5.244714
+                          stover N conc =   0.3200427       extractable sw =    510.7021
+22 October 2009(Day of year=295), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1922.037       lai =     5.244714
+                          stover N conc =   0.3206889       extractable sw =    506.3748
+23 October 2009(Day of year=296), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1922.027       lai =     5.244714
+                          stover N conc =   0.3213451       extractable sw =    535.6917
+24 October 2009(Day of year=297), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1922.026       lai =     5.244714
+                          stover N conc =   0.3221036       extractable sw =    531.8401
+25 October 2009(Day of year=298), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1922.026       lai =     5.244714
+                          stover N conc =   0.3228393       extractable sw =    528.1122
+26 October 2009(Day of year=299), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1922.026       lai =     5.244714
+                          stover N conc =   0.3235451       extractable sw =    524.1955
+27 October 2009(Day of year=300), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1922.026       lai =     5.244714
+                          stover N conc =   0.3242119       extractable sw =    520.3625
+28 October 2009(Day of year=301), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1922.026       lai =     5.244714
+                          stover N conc =   0.3248471       extractable sw =    523.9806
+29 October 2009(Day of year=302), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1922.026       lai =     5.244714
+                          stover N conc =   0.3255166       extractable sw =    520.2208
+30 October 2009(Day of year=303), paddock.Miscanthus management: 
+     Manager sending message :- sugar harvest
+30 October 2009(Day of year=303), paddock.sugar: 
+     
+     
+     
+      flowering day  =  302
+      maximum lai = 7.746
+      total above ground biomass (kg/ha) =   19220.3
+      live above ground biomass (kg/ha) =   19220.3
+      green above ground biomass (kg/ha) =   19220.3
+      senesced above ground biomass (kg/ha) =       0.0
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  17.7
+      total N content (kg/ha) =     62.57    senesced N content (kg/ha) =      0.00
+      green N content (kg/ha) =     62.57    dead N content (kg/ha) =      0.00
+     
+     
+     
+      stress indices for emergence
+      water stress 1 =    0.000000       nitrogen stress 1 =   0.4758107
+      water stress 2 =    0.000000
+     
+     
+     
+      stress indices for begin_cane
+      water stress 1 =    0.000000       nitrogen stress 1 =   0.4942767
+      water stress 2 =    0.000000
+     
+     
+     
+      stress indices for flowering
+      water stress 1 =    0.000000       nitrogen stress 1 =   0.9927166
+      water stress 2 =    0.000000
+                                               straw residue = 7606.9 kg/ha
+                                               straw N =   46.3 kg/ha
+                                               root residue = 3378.3 kg/ha
+                                               root N =   25.4 kg/ha
+16 March 2010(Day of year=75), paddock.sugar: 
+      stage    3.0 emergence
+                          biomass =           10.59000       lai =    0.2865000E-01
+                          stover N conc =    2.593200       extractable sw =    503.7629
+10 May 2010(Day of year=130), paddock.Fertilise on fixed date3: 
+     Manager sending message :- fertiliser apply  amount = 56 (kg/ha), depth = 50 (mm), type = urea_n
+10 May 2010(Day of year=130), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        56.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+24 May 2010(Day of year=144): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     dlt_dm_green =   -0.1493568E-05
+             less than lower limit of  -0.1000000E-05
+     Component name: paddock.sugar
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+27 June 2010(Day of year=178), paddock.sugar: 
+      stage    4.0 begin_cane
+                          biomass =           653.3934       lai =     5.120028
+                          stover N conc =   0.4257376       extractable sw =    578.8971
+1 August 2010(Day of year=213), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1605.310       lai =     7.810102
+                          stover N conc =   0.2376501       extractable sw =    489.5744
+2 August 2010(Day of year=214), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1588.675       lai =     7.810102
+                          stover N conc =   0.2409108       extractable sw =    486.5575
+3 August 2010(Day of year=215), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1587.012       lai =     7.810102
+                          stover N conc =   0.2446479       extractable sw =    486.5575
+4 August 2010(Day of year=216), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.845       lai =     7.810102
+                          stover N conc =   0.2482480       extractable sw =    495.4575
+5 August 2010(Day of year=217), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.829       lai =     7.810102
+                          stover N conc =   0.2507651       extractable sw =    515.8156
+6 August 2010(Day of year=218), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.2534800       extractable sw =    515.8156
+7 August 2010(Day of year=219), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.2567311       extractable sw =    515.8156
+8 August 2010(Day of year=220), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.2605730       extractable sw =    515.8156
+9 August 2010(Day of year=221), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.2650062       extractable sw =    515.8156
+10 August 2010(Day of year=222), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.2694382       extractable sw =    521.7770
+11 August 2010(Day of year=223), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.2743558       extractable sw =    520.2300
+12 August 2010(Day of year=224), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.2797776       extractable sw =    518.0299
+13 August 2010(Day of year=225), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.2857016       extractable sw =    514.8939
+14 August 2010(Day of year=226), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.2918713       extractable sw =    511.3520
+15 August 2010(Day of year=227), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.2981494       extractable sw =    507.5771
+16 August 2010(Day of year=228), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.3042889       extractable sw =    503.7036
+17 August 2010(Day of year=229), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.3102982       extractable sw =    499.8372
+18 August 2010(Day of year=230), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.3160173       extractable sw =    496.3616
+19 August 2010(Day of year=231), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.3217379       extractable sw =    492.7411
+20 August 2010(Day of year=232), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.3277131       extractable sw =    489.3239
+21 August 2010(Day of year=233), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.3337593       extractable sw =    493.7410
+22 August 2010(Day of year=234), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.3399680       extractable sw =    492.3066
+23 August 2010(Day of year=235), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.3464641       extractable sw =    489.6189
+24 August 2010(Day of year=236), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.3529864       extractable sw =    487.1636
+25 August 2010(Day of year=237), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.3592643       extractable sw =    484.9187
+26 August 2010(Day of year=238), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.3652415       extractable sw =    482.8596
+27 August 2010(Day of year=239), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.3711288       extractable sw =    480.9629
+28 August 2010(Day of year=240), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.3771158       extractable sw =    479.2085
+29 August 2010(Day of year=241), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.3832802       extractable sw =    477.5813
+30 August 2010(Day of year=242), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.3897324       extractable sw =    476.0707
+31 August 2010(Day of year=243), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.3966483       extractable sw =    474.6698
+1 September 2010(Day of year=244), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.4035623       extractable sw =    473.3746
+2 September 2010(Day of year=245), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.4090573       extractable sw =    492.5354
+3 September 2010(Day of year=246), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.4128539       extractable sw =    510.2841
+4 September 2010(Day of year=247), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.4163939       extractable sw =    509.1979
+5 September 2010(Day of year=248), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.4200765       extractable sw =    508.0865
+6 September 2010(Day of year=249), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.4240065       extractable sw =    506.8813
+7 September 2010(Day of year=250), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.4281502       extractable sw =    505.5180
+8 September 2010(Day of year=251), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.4325607       extractable sw =    503.9478
+9 September 2010(Day of year=252), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.4373569       extractable sw =    502.1449
+10 September 2010(Day of year=253), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.4423962       extractable sw =    500.1088
+11 September 2010(Day of year=254), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.4472852       extractable sw =    499.6618
+12 September 2010(Day of year=255), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.4520169       extractable sw =    497.2435
+13 September 2010(Day of year=256), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.4569369       extractable sw =    494.7040
+14 September 2010(Day of year=257), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.4622043       extractable sw =    492.0984
+15 September 2010(Day of year=258), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.4678023       extractable sw =    489.4814
+16 September 2010(Day of year=259), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.4734222       extractable sw =    487.2033
+17 September 2010(Day of year=260), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.4789769       extractable sw =    484.7079
+18 September 2010(Day of year=261), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.4844074       extractable sw =    482.3305
+19 September 2010(Day of year=262), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.4896223       extractable sw =    480.0981
+20 September 2010(Day of year=263), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.4946883       extractable sw =    478.0290
+21 September 2010(Day of year=264), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5001776       extractable sw =    476.1340
+22 September 2010(Day of year=265), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5061417       extractable sw =    474.9172
+23 September 2010(Day of year=266), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5123836       extractable sw =    479.7753
+24 September 2010(Day of year=267), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5187003       extractable sw =    478.3969
+25 September 2010(Day of year=268), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5246583       extractable sw =    477.1638
+26 September 2010(Day of year=269), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5302706       extractable sw =    481.1519
+27 September 2010(Day of year=270), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5352292       extractable sw =    480.1331
+28 September 2010(Day of year=271), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5389654       extractable sw =    479.1785
+29 September 2010(Day of year=272), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5422416       extractable sw =    478.2611
+30 September 2010(Day of year=273), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5454784       extractable sw =    477.3591
+1 October 2010(Day of year=274), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5488695       extractable sw =    476.4574
+2 October 2010(Day of year=275), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5525849       extractable sw =    475.5484
+3 October 2010(Day of year=276), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5562365       extractable sw =    483.7289
+4 October 2010(Day of year=277), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5595464       extractable sw =    482.7965
+5 October 2010(Day of year=278), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5624638       extractable sw =    481.8475
+6 October 2010(Day of year=279), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5648453       extractable sw =    480.8770
+7 October 2010(Day of year=280), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5672582       extractable sw =    479.8807
+8 October 2010(Day of year=281), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5700812       extractable sw =    478.8570
+9 October 2010(Day of year=282), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5735974       extractable sw =    477.8076
+10 October 2010(Day of year=283), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5779566       extractable sw =    476.7387
+11 October 2010(Day of year=284), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5830305       extractable sw =    475.6602
+12 October 2010(Day of year=285), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5886499       extractable sw =    474.5845
+13 October 2010(Day of year=286), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.5945564       extractable sw =    473.5255
+14 October 2010(Day of year=287), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.6002090       extractable sw =    476.5960
+15 October 2010(Day of year=288), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.6051649       extractable sw =    475.6054
+16 October 2010(Day of year=289), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.6093925       extractable sw =    474.6589
+17 October 2010(Day of year=290), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.6125553       extractable sw =    473.7580
+18 October 2010(Day of year=291), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.6155257       extractable sw =    472.9012
+19 October 2010(Day of year=292), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.6183639       extractable sw =    472.0864
+20 October 2010(Day of year=293), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.6210018       extractable sw =    471.3111
+21 October 2010(Day of year=294), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.6235704       extractable sw =    470.5737
+22 October 2010(Day of year=295), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.6259962       extractable sw =    469.8739
+23 October 2010(Day of year=296), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.6282001       extractable sw =    469.2122
+24 October 2010(Day of year=297), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.6305084       extractable sw =    468.5900
+25 October 2010(Day of year=298), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.6329526       extractable sw =    470.8080
+26 October 2010(Day of year=299), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.6356218       extractable sw =    470.2653
+27 October 2010(Day of year=300), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1586.827       lai =     7.810102
+                          stover N conc =   0.6384331       extractable sw =    476.3575
+28 October 2010(Day of year=301), paddock.Miscanthus management: 
+     Manager sending message :- sugar harvest
+28 October 2010(Day of year=301), paddock.sugar: 
+     
+     
+     
+      flowering day  =  300
+      maximum lai = 8.094
+      total above ground biomass (kg/ha) =   15868.3
+      live above ground biomass (kg/ha) =   15868.3
+      green above ground biomass (kg/ha) =   15868.3
+      senesced above ground biomass (kg/ha) =       0.0
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  17.7
+      total N content (kg/ha) =    101.31    senesced N content (kg/ha) =      0.00
+      green N content (kg/ha) =    101.31    dead N content (kg/ha) =      0.00
+     
+     
+     
+      stress indices for emergence
+      water stress 1 =    0.000000       nitrogen stress 1 =   0.5649372
+      water stress 2 =    0.000000
+     
+     
+     
+      stress indices for begin_cane
+      water stress 1 =    0.000000       nitrogen stress 1 =   0.5308727
+      water stress 2 =    0.000000
+     
+     
+     
+      stress indices for flowering
+      water stress 1 =    0.000000       nitrogen stress 1 =   0.9921132
+      water stress 2 =    0.000000
+                                               straw residue = 8316.4 kg/ha
+                                               straw N =   78.1 kg/ha
+                                               root residue = 2560.9 kg/ha
+                                               root N =   22.2 kg/ha
+8 March 2011(Day of year=67), paddock.sugar: 
+      stage    3.0 emergence
+                          biomass =           12.35500       lai =    0.3118500E-01
+                          stover N conc =    2.690140       extractable sw =    515.5942
+6 May 2011(Day of year=126), paddock.Fertilise on fixed date4: 
+     Manager sending message :- fertiliser apply  amount = 56 (kg/ha), depth = 50 (mm), type = urea_n
+6 May 2011(Day of year=126), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        56.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+25 May 2011(Day of year=145): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     dlt_dm_green =   -0.1057083E-05
+             less than lower limit of  -0.1000000E-05
+     Component name: paddock.sugar
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+3 July 2011(Day of year=184), paddock.sugar: 
+      stage    4.0 begin_cane
+                          biomass =           1036.758       lai =     7.932274
+                          stover N conc =   0.4465955       extractable sw =    553.7962
+6 August 2011(Day of year=218), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2046.300       lai =     7.733452
+                          stover N conc =   0.2463742       extractable sw =    354.8289
+7 August 2011(Day of year=219), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2017.457       lai =     7.733452
+                          stover N conc =   0.2511352       extractable sw =    349.0796
+8 August 2011(Day of year=220), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.573       lai =     7.733452
+                          stover N conc =   0.2558373       extractable sw =    359.9796
+9 August 2011(Day of year=221), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.284       lai =     7.733452
+                          stover N conc =   0.2593814       extractable sw =    380.5938
+10 August 2011(Day of year=222), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.255       lai =     7.733452
+                          stover N conc =   0.2629493       extractable sw =    380.5938
+11 August 2011(Day of year=223), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.253       lai =     7.733452
+                          stover N conc =   0.2667378       extractable sw =    380.5938
+12 August 2011(Day of year=224), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.2704473       extractable sw =    380.5938
+13 August 2011(Day of year=225), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.2740721       extractable sw =    380.5938
+14 August 2011(Day of year=226), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.2764081       extractable sw =    413.1474
+15 August 2011(Day of year=227), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.2786880       extractable sw =    413.6474
+16 August 2011(Day of year=228), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.2813056       extractable sw =    413.6474
+17 August 2011(Day of year=229), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.2843321       extractable sw =    413.6474
+18 August 2011(Day of year=230), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.2876232       extractable sw =    413.6474
+19 August 2011(Day of year=231), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.2912215       extractable sw =    413.6474
+20 August 2011(Day of year=232), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.2951205       extractable sw =    413.6474
+21 August 2011(Day of year=233), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.2989574       extractable sw =    424.0474
+22 August 2011(Day of year=234), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3023376       extractable sw =    433.7474
+23 August 2011(Day of year=235), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3058840       extractable sw =    433.7474
+24 August 2011(Day of year=236), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3089619       extractable sw =    446.4474
+25 August 2011(Day of year=237), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3120917       extractable sw =    449.2474
+26 August 2011(Day of year=238), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3156228       extractable sw =    449.2474
+27 August 2011(Day of year=239), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3195516       extractable sw =    449.2474
+28 August 2011(Day of year=240), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3236275       extractable sw =    449.2474
+29 August 2011(Day of year=241), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3276431       extractable sw =    449.2474
+30 August 2011(Day of year=242), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3315980       extractable sw =    449.2474
+31 August 2011(Day of year=243), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3356426       extractable sw =    449.5474
+1 September 2011(Day of year=244), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3399421       extractable sw =    449.5475
+2 September 2011(Day of year=245), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3448318       extractable sw =    449.5474
+3 September 2011(Day of year=246), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3504177       extractable sw =    449.5475
+4 September 2011(Day of year=247), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3562219       extractable sw =    450.5474
+5 September 2011(Day of year=248), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3617014       extractable sw =    450.5475
+6 September 2011(Day of year=249), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3669036       extractable sw =    450.5474
+7 September 2011(Day of year=250), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3710602       extractable sw =    450.5474
+8 September 2011(Day of year=251), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3742131       extractable sw =    450.8474
+9 September 2011(Day of year=252), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3767701       extractable sw =    459.7474
+10 September 2011(Day of year=253), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3791241       extractable sw =    460.5474
+11 September 2011(Day of year=254), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3815275       extractable sw =    460.5474
+12 September 2011(Day of year=255), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3841715       extractable sw =    460.5474
+13 September 2011(Day of year=256), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3873311       extractable sw =    460.5474
+14 September 2011(Day of year=257), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3907303       extractable sw =    460.5474
+15 September 2011(Day of year=258), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3943506       extractable sw =    466.6474
+16 September 2011(Day of year=259), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.3978036       extractable sw =    466.6474
+17 September 2011(Day of year=260), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4005338       extractable sw =    466.6474
+18 September 2011(Day of year=261), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4027804       extractable sw =    466.6474
+19 September 2011(Day of year=262), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4048729       extractable sw =    466.6474
+20 September 2011(Day of year=263), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4070499       extractable sw =    466.6474
+21 September 2011(Day of year=264), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4094796       extractable sw =    466.6474
+22 September 2011(Day of year=265), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4120994       extractable sw =    466.6474
+23 September 2011(Day of year=266), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4149061       extractable sw =    466.6474
+24 September 2011(Day of year=267), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4175238       extractable sw =    470.4474
+25 September 2011(Day of year=268), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4197123       extractable sw =    495.2915
+26 September 2011(Day of year=269), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4212969       extractable sw =    515.0444
+27 September 2011(Day of year=270), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4226199       extractable sw =    522.1443
+28 September 2011(Day of year=271), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4240220       extractable sw =    522.1443
+29 September 2011(Day of year=272), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4254423       extractable sw =    521.7106
+30 September 2011(Day of year=273), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4268327       extractable sw =    520.6382
+1 October 2011(Day of year=274), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4282514       extractable sw =    519.0055
+2 October 2011(Day of year=275), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4296537       extractable sw =    516.8705
+3 October 2011(Day of year=276), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4310955       extractable sw =    514.2924
+4 October 2011(Day of year=277), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4326142       extractable sw =    511.3411
+5 October 2011(Day of year=278), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4343880       extractable sw =    508.0982
+6 October 2011(Day of year=279), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4366165       extractable sw =    504.6530
+7 October 2011(Day of year=280), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4393716       extractable sw =    501.0972
+8 October 2011(Day of year=281), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4425629       extractable sw =    497.5182
+9 October 2011(Day of year=282), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4460925       extractable sw =    493.9953
+10 October 2011(Day of year=283), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4497520       extractable sw =    490.5955
+11 October 2011(Day of year=284), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4534552       extractable sw =    487.3722
+12 October 2011(Day of year=285), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4570628       extractable sw =    484.3646
+13 October 2011(Day of year=286), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4604199       extractable sw =    483.3979
+14 October 2011(Day of year=287), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4636158       extractable sw =    486.4828
+15 October 2011(Day of year=288), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4664847       extractable sw =    484.2159
+16 October 2011(Day of year=289), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4688445       extractable sw =    482.1816
+17 October 2011(Day of year=290), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4709459       extractable sw =    480.3563
+18 October 2011(Day of year=291), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4727778       extractable sw =    479.2122
+19 October 2011(Day of year=292), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4743669       extractable sw =    483.5203
+20 October 2011(Day of year=293), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.733452
+                          stover N conc =   0.4754702       extractable sw =    515.1559
+21 October 2011(Day of year=294), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2014.252       lai =     7.656117
+                          stover N conc =   0.4767681       extractable sw =    514.1376
+22 October 2011(Day of year=295), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2008.572       lai =     7.617837
+                          stover N conc =   0.4778084       extractable sw =    512.8088
+23 October 2011(Day of year=296), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2005.192       lai =     7.617837
+                          stover N conc =   0.4786434       extractable sw =    511.3923
+24 October 2011(Day of year=297), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2004.854       lai =     7.617837
+                          stover N conc =   0.4795350       extractable sw =    511.3163
+25 October 2011(Day of year=298), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2004.820       lai =     7.617837
+                          stover N conc =   0.4806355       extractable sw =    509.5253
+26 October 2011(Day of year=299), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2004.817       lai =     7.617837
+                          stover N conc =   0.4819540       extractable sw =    507.4881
+27 October 2011(Day of year=300), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2004.816       lai =     7.617837
+                          stover N conc =   0.4834155       extractable sw =    505.7003
+28 October 2011(Day of year=301), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2004.817       lai =     7.427391
+                          stover N conc =   0.4857716       extractable sw =    505.4819
+29 October 2011(Day of year=302), paddock.Miscanthus management: 
+     Manager sending message :- sugar harvest
+29 October 2011(Day of year=302), paddock.sugar: 
+     
+     
+     
+      flowering day  =  301
+      maximum lai = 8.214
+      total above ground biomass (kg/ha) =   20048.2
+      live above ground biomass (kg/ha) =   20048.2
+      green above ground biomass (kg/ha) =   19892.7
+      senesced above ground biomass (kg/ha) =     155.4
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  17.7
+      total N content (kg/ha) =     97.20    senesced N content (kg/ha) =      0.57
+      green N content (kg/ha) =     96.63    dead N content (kg/ha) =      0.00
+     
+     
+     
+      stress indices for emergence
+      water stress 1 =    0.000000       nitrogen stress 1 =   0.3646067
+      water stress 2 =    0.000000
+     
+     
+     
+      stress indices for begin_cane
+      water stress 1 =    0.000000       nitrogen stress 1 =   0.4055171
+      water stress 2 =    0.000000
+     
+     
+     
+      stress indices for flowering
+      water stress 1 =    0.000000       nitrogen stress 1 =   0.9952402
+      water stress 2 =    0.000000
+                                               straw residue = 7805.4 kg/ha
+                                               straw N =   64.6 kg/ha
+                                               root residue = 2812.7 kg/ha
+                                               root N =   21.4 kg/ha
+28 February 2012(Day of year=59), paddock.sugar: 
+      stage    3.0 emergence
+                          biomass =           15.88500       lai =    0.3672000E-01
+                          stover N conc =    2.815057       extractable sw =    472.7672
+3 April 2012(Day of year=94), paddock.Fertilise on fixed date5: 
+     Manager sending message :- fertiliser apply  amount = 56 (kg/ha), depth = 50 (mm), type = urea_n
+3 April 2012(Day of year=94), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        56.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+20 June 2012(Day of year=172), paddock.sugar: 
+      stage    4.0 begin_cane
+                          biomass =           1070.686       lai =     6.705184
+                          stover N conc =   0.4491803       extractable sw =    462.9600
+26 July 2012(Day of year=208), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2233.847       lai =     7.937370
+                          stover N conc =   0.2588735       extractable sw =    220.1529
+27 July 2012(Day of year=209), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2226.207       lai =     7.937370
+                          stover N conc =   0.2637741       extractable sw =    210.7669
+28 July 2012(Day of year=210), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.443       lai =     7.937370
+                          stover N conc =   0.2685146       extractable sw =    211.2669
+29 July 2012(Day of year=211), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.367       lai =     7.937370
+                          stover N conc =   0.2731900       extractable sw =    211.2669
+30 July 2012(Day of year=212), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.359       lai =     7.937370
+                          stover N conc =   0.2779214       extractable sw =    211.2669
+31 July 2012(Day of year=213), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.2826447       extractable sw =    211.2669
+1 August 2012(Day of year=214), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.2874806       extractable sw =    211.2669
+2 August 2012(Day of year=215), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.2926141       extractable sw =    211.2669
+3 August 2012(Day of year=216), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.2978641       extractable sw =    211.2669
+4 August 2012(Day of year=217), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3030508       extractable sw =    211.2669
+5 August 2012(Day of year=218), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3072855       extractable sw =    256.7500
+6 August 2012(Day of year=219), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3113559       extractable sw =    256.7500
+7 August 2012(Day of year=220), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3157033       extractable sw =    256.7501
+8 August 2012(Day of year=221), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3205513       extractable sw =    256.7500
+9 August 2012(Day of year=222), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3258360       extractable sw =    256.7500
+10 August 2012(Day of year=223), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3311730       extractable sw =    258.2500
+11 August 2012(Day of year=224), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3361874       extractable sw =    259.5500
+12 August 2012(Day of year=225), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3407559       extractable sw =    259.5500
+13 August 2012(Day of year=226), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3447395       extractable sw =    259.5500
+14 August 2012(Day of year=227), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3482727       extractable sw =    270.7500
+15 August 2012(Day of year=228), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3518480       extractable sw =    270.7500
+16 August 2012(Day of year=229), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3555897       extractable sw =    270.7500
+17 August 2012(Day of year=230), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3581544       extractable sw =    299.1987
+18 August 2012(Day of year=231), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3607700       extractable sw =    299.1987
+19 August 2012(Day of year=232), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3638490       extractable sw =    299.1988
+20 August 2012(Day of year=233), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3673330       extractable sw =    299.1988
+21 August 2012(Day of year=234), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3708668       extractable sw =    302.7987
+22 August 2012(Day of year=235), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3747253       extractable sw =    303.0987
+23 August 2012(Day of year=236), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3791024       extractable sw =    303.0988
+24 August 2012(Day of year=237), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3840799       extractable sw =    303.0988
+25 August 2012(Day of year=238), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3897727       extractable sw =    303.0988
+26 August 2012(Day of year=239), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.3959154       extractable sw =    303.0987
+27 August 2012(Day of year=240), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4004018       extractable sw =    326.0147
+28 August 2012(Day of year=241), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4029813       extractable sw =    361.3785
+29 August 2012(Day of year=242), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4054693       extractable sw =    361.3785
+30 August 2012(Day of year=243), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4084261       extractable sw =    361.3785
+31 August 2012(Day of year=244), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4120184       extractable sw =    361.3785
+1 September 2012(Day of year=245), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4162562       extractable sw =    361.3785
+2 September 2012(Day of year=246), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4192954       extractable sw =    381.5647
+3 September 2012(Day of year=247), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4218496       extractable sw =    389.9647
+4 September 2012(Day of year=248), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4247345       extractable sw =    389.9647
+5 September 2012(Day of year=249), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4281666       extractable sw =    389.9647
+6 September 2012(Day of year=250), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4320880       extractable sw =    389.9647
+7 September 2012(Day of year=251), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4364470       extractable sw =    389.9647
+8 September 2012(Day of year=252), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4391063       extractable sw =    421.7543
+9 September 2012(Day of year=253), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4416375       extractable sw =    421.7543
+10 September 2012(Day of year=254), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4444743       extractable sw =    421.7543
+11 September 2012(Day of year=255), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4475181       extractable sw =    421.7543
+12 September 2012(Day of year=256), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4506782       extractable sw =    421.7543
+13 September 2012(Day of year=257), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4542350       extractable sw =    421.7543
+14 September 2012(Day of year=258), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4579284       extractable sw =    428.3543
+15 September 2012(Day of year=259), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4616517       extractable sw =    432.6543
+16 September 2012(Day of year=260), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4653867       extractable sw =    432.6543
+17 September 2012(Day of year=261), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4690333       extractable sw =    432.6543
+18 September 2012(Day of year=262), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4726382       extractable sw =    433.4543
+19 September 2012(Day of year=263), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4761207       extractable sw =    433.4543
+20 September 2012(Day of year=264), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4791291       extractable sw =    433.4543
+21 September 2012(Day of year=265), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4818881       extractable sw =    433.7543
+22 September 2012(Day of year=266), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4845673       extractable sw =    439.3543
+23 September 2012(Day of year=267), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4871857       extractable sw =    439.3543
+24 September 2012(Day of year=268), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4897559       extractable sw =    439.3543
+25 September 2012(Day of year=269), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4918963       extractable sw =    439.3543
+26 September 2012(Day of year=270), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4938741       extractable sw =    439.6544
+27 September 2012(Day of year=271), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4959245       extractable sw =    442.4544
+28 September 2012(Day of year=272), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.4981431       extractable sw =    442.4544
+29 September 2012(Day of year=273), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.5005524       extractable sw =    442.4544
+30 September 2012(Day of year=274), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.5030585       extractable sw =    442.4544
+1 October 2012(Day of year=275), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.5057080       extractable sw =    442.4544
+2 October 2012(Day of year=276), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.5083406       extractable sw =    442.9544
+3 October 2012(Day of year=277), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.5106282       extractable sw =    446.0544
+4 October 2012(Day of year=278), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.5128064       extractable sw =    446.8544
+5 October 2012(Day of year=279), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.937370
+                          stover N conc =   0.5150297       extractable sw =    447.8544
+6 October 2012(Day of year=280), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2225.358       lai =     7.096009
+                          stover N conc =   0.5225886       extractable sw =    463.0527
+7 October 2012(Day of year=281), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2154.790       lai =     7.096009
+                          stover N conc =   0.5244768       extractable sw =    463.0527
+8 October 2012(Day of year=282), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2147.733       lai =     6.322544
+                          stover N conc =   0.5322327       extractable sw =    463.0527
+9 October 2012(Day of year=283), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2076.045       lai =     6.322544
+                          stover N conc =   0.5336512       extractable sw =    463.0527
+10 October 2012(Day of year=284), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2068.877       lai =     6.322544
+                          stover N conc =   0.5348977       extractable sw =    463.0527
+11 October 2012(Day of year=285), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2068.160       lai =     6.259318
+                          stover N conc =   0.5366936       extractable sw =    463.0527
+12 October 2012(Day of year=286), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2062.310       lai =     6.259318
+                          stover N conc =   0.5380307       extractable sw =    463.0527
+13 October 2012(Day of year=287), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2061.724       lai =     6.259318
+                          stover N conc =   0.5394939       extractable sw =    463.0527
+14 October 2012(Day of year=288), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2061.666       lai =     6.259318
+                          stover N conc =   0.5408659       extractable sw =    477.5527
+15 October 2012(Day of year=289), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2061.660       lai =     6.259318
+                          stover N conc =   0.5423636       extractable sw =    479.5527
+16 October 2012(Day of year=290), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2061.659       lai =     6.259318
+                          stover N conc =   0.5438657       extractable sw =    479.5527
+17 October 2012(Day of year=291), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2061.659       lai =     6.259318
+                          stover N conc =   0.5454929       extractable sw =    479.5527
+18 October 2012(Day of year=292), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2061.659       lai =     6.259318
+                          stover N conc =   0.5472179       extractable sw =    486.6527
+19 October 2012(Day of year=293), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2061.659       lai =     6.259318
+                          stover N conc =   0.5488622       extractable sw =    491.7527
+20 October 2012(Day of year=294), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2061.659       lai =     6.259318
+                          stover N conc =   0.5504075       extractable sw =    497.5527
+21 October 2012(Day of year=295), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2061.659       lai =     6.259318
+                          stover N conc =   0.5517462       extractable sw =    497.5528
+22 October 2012(Day of year=296), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2061.659       lai =     6.259318
+                          stover N conc =   0.5530465       extractable sw =    497.5528
+23 October 2012(Day of year=297), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2061.659       lai =     6.259318
+                          stover N conc =   0.5544211       extractable sw =    502.2347
+24 October 2012(Day of year=298), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2061.659       lai =     6.259318
+                          stover N conc =   0.5559763       extractable sw =    521.4233
+25 October 2012(Day of year=299), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2061.659       lai =     6.259318
+                          stover N conc =   0.5579519       extractable sw =    519.8218
+26 October 2012(Day of year=300), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2061.659       lai =     6.259318
+                          stover N conc =   0.5602074       extractable sw =    517.7819
+27 October 2012(Day of year=301), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2061.659       lai =     6.134132
+                          stover N conc =   0.5638439       extractable sw =    518.2026
+28 October 2012(Day of year=302), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2047.823       lai =     6.134132
+                          stover N conc =   0.5657903       extractable sw =    515.5458
+29 October 2012(Day of year=303), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2046.440       lai =     6.072791
+                          stover N conc =   0.5681855       extractable sw =    512.6574
+30 October 2012(Day of year=304), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2039.330       lai =     6.072791
+                          stover N conc =   0.5694089       extractable sw =    509.5793
+31 October 2012(Day of year=305), paddock.Miscanthus management: 
+     Manager sending message :- sugar harvest
+31 October 2012(Day of year=305), paddock.sugar: 
+     
+     
+     
+      flowering day  =  304
+      maximum lai = 8.262
+      total above ground biomass (kg/ha) =   20393.3
+      live above ground biomass (kg/ha) =   20393.3
+      green above ground biomass (kg/ha) =   20385.4
+      senesced above ground biomass (kg/ha) =       7.9
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  17.7
+      total N content (kg/ha) =    116.11    senesced N content (kg/ha) =      0.03
+      green N content (kg/ha) =    116.08    dead N content (kg/ha) =      0.00
+     
+     
+     
+      stress indices for emergence
+      water stress 1 =    0.000000       nitrogen stress 1 =   0.5042654
+      water stress 2 =    0.000000
+     
+     
+     
+      stress indices for begin_cane
+      water stress 1 =   0.1052361E-02   nitrogen stress 1 =   0.3747662
+      water stress 2 =    0.000000
+     
+     
+     
+      stress indices for flowering
+      water stress 1 =    0.000000       nitrogen stress 1 =   0.9952435
+      water stress 2 =    0.000000
+                                               straw residue = 5453.1 kg/ha
+                                               straw N =   63.4 kg/ha
+                                               root residue = 2988.9 kg/ha
+                                               root N =   24.6 kg/ha
+14 January 2013(Day of year=14): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: radn
+     Value:        0.9000000
+     Bounds:        1.0000000 to       50.0000000
+     Component name: paddock.sugar
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: radn
+     Value:        0.9000000
+     Bounds:        1.0000000 to       50.0000000
+     Component name: paddock.sugar
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+29 January 2013(Day of year=29): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: radn
+     Value:        0.9000000
+     Bounds:        1.0000000 to       50.0000000
+     Component name: paddock.sugar
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: radn
+     Value:        0.9000000
+     Bounds:        1.0000000 to       50.0000000
+     Component name: paddock.sugar
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+30 January 2013(Day of year=30): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: radn
+     Value:        0.8000000
+     Bounds:        1.0000000 to       50.0000000
+     Component name: paddock.sugar
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: radn
+     Value:        0.8000000
+     Bounds:        1.0000000 to       50.0000000
+     Component name: paddock.sugar
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+8 February 2013(Day of year=39), paddock.sugar: 
+      stage    3.0 emergence
+                          biomass =           19.41500       lai =    0.4851000E-01
+                          stover N conc =    2.704452       extractable sw =    504.2790
+3 April 2013(Day of year=93), paddock.Fertilise on fixed date6: 
+     Manager sending message :- fertiliser apply  amount = 56 (kg/ha), depth = 50 (mm), type = urea_n
+3 April 2013(Day of year=93), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        56.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+11 July 2013(Day of year=192), paddock.sugar: 
+      stage    4.0 begin_cane
+                          biomass =           458.3928       lai =     5.057921
+                          stover N conc =   0.6069257       extractable sw =    498.4305
+22 August 2013(Day of year=234), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2071.750       lai =     7.622751
+                          stover N conc =   0.2141870       extractable sw =    247.1075
+23 August 2013(Day of year=235), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2038.389       lai =     7.622751
+                          stover N conc =   0.2188783       extractable sw =    235.8263
+24 August 2013(Day of year=236), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2035.045       lai =     7.622751
+                          stover N conc =   0.2237577       extractable sw =    236.1263
+25 August 2013(Day of year=237), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.711       lai =     7.622751
+                          stover N conc =   0.2286590       extractable sw =    236.1263
+26 August 2013(Day of year=238), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.678       lai =     7.622751
+                          stover N conc =   0.2335977       extractable sw =    236.1263
+27 August 2013(Day of year=239), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.2386082       extractable sw =    236.1263
+28 August 2013(Day of year=240), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.2440769       extractable sw =    236.1263
+29 August 2013(Day of year=241), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.2500487       extractable sw =    236.1264
+30 August 2013(Day of year=242), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.2564799       extractable sw =    236.1263
+31 August 2013(Day of year=243), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.2636198       extractable sw =    237.9263
+1 September 2013(Day of year=244), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.2715471       extractable sw =    250.3263
+2 September 2013(Day of year=245), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.2787160       extractable sw =    250.3263
+3 September 2013(Day of year=246), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.2853334       extractable sw =    250.3263
+4 September 2013(Day of year=247), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.2919003       extractable sw =    250.3264
+5 September 2013(Day of year=248), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.2977130       extractable sw =    250.3264
+6 September 2013(Day of year=249), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.3029391       extractable sw =    250.3264
+7 September 2013(Day of year=250), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.3081705       extractable sw =    250.3263
+8 September 2013(Day of year=251), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.3135662       extractable sw =    250.3264
+9 September 2013(Day of year=252), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.3194078       extractable sw =    250.3264
+10 September 2013(Day of year=253), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.3257915       extractable sw =    250.3264
+11 September 2013(Day of year=254), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.3329762       extractable sw =    250.3263
+12 September 2013(Day of year=255), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.3408914       extractable sw =    250.3263
+13 September 2013(Day of year=256), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.3471140       extractable sw =    273.2850
+14 September 2013(Day of year=257), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.3539487       extractable sw =    273.2850
+15 September 2013(Day of year=258), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.3613192       extractable sw =    273.2851
+16 September 2013(Day of year=259), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.3680061       extractable sw =    277.0851
+17 September 2013(Day of year=260), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.3735602       extractable sw =    277.0851
+18 September 2013(Day of year=261), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.3781288       extractable sw =    277.3850
+19 September 2013(Day of year=262), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.3817816       extractable sw =    277.6851
+20 September 2013(Day of year=263), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.3844279       extractable sw =    307.4393
+21 September 2013(Day of year=264), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.3867049       extractable sw =    316.5393
+22 September 2013(Day of year=265), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.3893871       extractable sw =    316.5393
+23 September 2013(Day of year=266), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.3928190       extractable sw =    316.5393
+24 September 2013(Day of year=267), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.3965604       extractable sw =    316.5393
+25 September 2013(Day of year=268), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.3999426       extractable sw =    316.5393
+26 September 2013(Day of year=269), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.4032663       extractable sw =    316.5393
+27 September 2013(Day of year=270), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.4067192       extractable sw =    316.5393
+28 September 2013(Day of year=271), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.4104719       extractable sw =    316.5393
+29 September 2013(Day of year=272), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.4146035       extractable sw =    316.5393
+30 September 2013(Day of year=273), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.4190858       extractable sw =    322.3393
+1 October 2013(Day of year=274), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.4234482       extractable sw =    322.3393
+2 October 2013(Day of year=275), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.4275635       extractable sw =    322.3393
+3 October 2013(Day of year=276), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.4315646       extractable sw =    322.3393
+4 October 2013(Day of year=277), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.4355268       extractable sw =    327.9393
+5 October 2013(Day of year=278), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.4398245       extractable sw =    327.9393
+6 October 2013(Day of year=279), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.4443699       extractable sw =    338.6393
+7 October 2013(Day of year=280), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.4491580       extractable sw =    343.9393
+8 October 2013(Day of year=281), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.4537940       extractable sw =    344.7393
+9 October 2013(Day of year=282), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.4579566       extractable sw =    344.7393
+10 October 2013(Day of year=283), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.4617954       extractable sw =    344.7393
+11 October 2013(Day of year=284), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.4651811       extractable sw =    344.7393
+12 October 2013(Day of year=285), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.4684183       extractable sw =    344.7393
+13 October 2013(Day of year=286), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.4719067       extractable sw =    344.7393
+14 October 2013(Day of year=287), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.622751
+                          stover N conc =   0.4758555       extractable sw =    344.7393
+15 October 2013(Day of year=288), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2034.674       lai =     7.241614
+                          stover N conc =   0.4815252       extractable sw =    344.7393
+16 October 2013(Day of year=289), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2011.452       lai =     7.241614
+                          stover N conc =   0.4856245       extractable sw =    345.7393
+17 October 2013(Day of year=290), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2009.130       lai =     7.241614
+                          stover N conc =   0.4893125       extractable sw =    345.7393
+18 October 2013(Day of year=291), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2008.898       lai =     7.241614
+                          stover N conc =   0.4924536       extractable sw =    346.7393
+19 October 2013(Day of year=292), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2008.875       lai =     7.241614
+                          stover N conc =   0.4951457       extractable sw =    346.7393
+20 October 2013(Day of year=293), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2008.872       lai =     7.241614
+                          stover N conc =   0.4974553       extractable sw =    351.3393
+21 October 2013(Day of year=294), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2008.872       lai =     7.241614
+                          stover N conc =   0.4995396       extractable sw =    351.3393
+22 October 2013(Day of year=295), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2008.872       lai =     6.698493
+                          stover N conc =   0.5036638       extractable sw =    351.3393
+23 October 2013(Day of year=296), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1980.031       lai =     5.305206
+                          stover N conc =   0.5112262       extractable sw =    357.7393
+24 October 2013(Day of year=297), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1906.350       lai =     4.758770
+                          stover N conc =   0.5152240       extractable sw =    358.0393
+25 October 2013(Day of year=298), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1871.647       lai =     4.330481
+                          stover N conc =   0.5185090       extractable sw =    358.0393
+26 October 2013(Day of year=299), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1852.108       lai =     3.442732
+                          stover N conc =   0.5222764       extractable sw =    358.0349
+27 October 2013(Day of year=300), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1817.692       lai =     3.046818
+                          stover N conc =   0.5214865       extractable sw =    357.6383
+28 October 2013(Day of year=301), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1810.647       lai =     2.458782
+                          stover N conc =   0.5202022       extractable sw =    356.4566
+29 October 2013(Day of year=302), paddock.Miscanthus management: 
+     Manager sending message :- sugar harvest
+29 October 2013(Day of year=302), paddock.sugar: 
+     
+     
+     
+      flowering day  =  301
+      maximum lai = 8.201
+      total above ground biomass (kg/ha) =   18106.5
+      live above ground biomass (kg/ha) =   18106.5
+      green above ground biomass (kg/ha) =   17750.5
+      senesced above ground biomass (kg/ha) =     356.0
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  17.8
+      total N content (kg/ha) =     93.64    senesced N content (kg/ha) =      1.30
+      green N content (kg/ha) =     92.34    dead N content (kg/ha) =      0.00
+     
+     
+     
+      stress indices for emergence
+      water stress 1 =    0.000000       nitrogen stress 1 =   0.3732622E-01
+      water stress 2 =    0.000000
+     
+     
+     
+      stress indices for begin_cane
+      water stress 1 =    0.000000       nitrogen stress 1 =   0.2246350
+      water stress 2 =    0.000000
+     
+     
+     
+      stress indices for flowering
+      water stress 1 =    0.000000       nitrogen stress 1 =   0.9590049
+      water stress 2 =    0.000000
+                                               straw residue = 2322.5 kg/ha
+                                               straw N =   38.6 kg/ha
+                                               root residue = 2694.5 kg/ha
+                                               root N =   22.1 kg/ha
+21 December 2013(Day of year=355): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: radn
+     Value:        0.8000000
+     Bounds:        1.0000000 to       50.0000000
+     Component name: paddock.sugar
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: radn
+     Value:        0.8000000
+     Bounds:        1.0000000 to       50.0000000
+     Component name: paddock.sugar
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+22 December 2013(Day of year=356): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: radn
+     Value:        0.9000000
+     Bounds:        1.0000000 to       50.0000000
+     Component name: paddock.sugar
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: radn
+     Value:        0.9000000
+     Bounds:        1.0000000 to       50.0000000
+     Component name: paddock.sugar
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+2 April 2014(Day of year=92), paddock.sugar: 
+      stage    3.0 emergence
+                          biomass =           21.18000       lai =    0.6000000E-01
+                          stover N conc =    2.529745       extractable sw =    494.5783
+8 May 2014(Day of year=128), paddock.Fertilise on fixed date7: 
+     Manager sending message :- fertiliser apply  amount = 56 (kg/ha), depth = 50 (mm), type = urea_n
+8 May 2014(Day of year=128), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        56.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+26 May 2014(Day of year=146): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     dlt_dm_green =   -0.1104978E-05
+             less than lower limit of  -0.1000000E-05
+     Component name: paddock.sugar
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+31 May 2014(Day of year=151): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     dlt_dm_green =   -0.1298199E-05
+             less than lower limit of  -0.1000000E-05
+     Component name: paddock.sugar
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+13 July 2014(Day of year=194), paddock.sugar: 
+      stage    4.0 begin_cane
+                          biomass =           1076.544       lai =     7.858777
+                          stover N conc =   0.4883626       extractable sw =    411.3285
+24 August 2014(Day of year=236), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2127.146       lai =     7.814201
+                          stover N conc =   0.2530133       extractable sw =    314.5643
+25 August 2014(Day of year=237), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.359       lai =     7.814201
+                          stover N conc =   0.2563026       extractable sw =    305.3249
+26 August 2014(Day of year=238), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.080       lai =     7.814201
+                          stover N conc =   0.2603517       extractable sw =    306.3249
+27 August 2014(Day of year=239), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.052       lai =     7.814201
+                          stover N conc =   0.2640522       extractable sw =    318.2249
+28 August 2014(Day of year=240), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.2682379       extractable sw =    318.7249
+29 August 2014(Day of year=241), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.2729947       extractable sw =    318.7249
+30 August 2014(Day of year=242), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.2776889       extractable sw =    324.0250
+31 August 2014(Day of year=243), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.2814167       extractable sw =    337.7249
+1 September 2014(Day of year=244), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.2844464       extractable sw =    348.4249
+2 September 2014(Day of year=245), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.2878100       extractable sw =    348.7249
+3 September 2014(Day of year=246), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.2913588       extractable sw =    352.8249
+4 September 2014(Day of year=247), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.2954082       extractable sw =    352.8249
+5 September 2014(Day of year=248), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.2998736       extractable sw =    353.1249
+6 September 2014(Day of year=249), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3027717       extractable sw =    377.4406
+7 September 2014(Day of year=250), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3058519       extractable sw =    379.4406
+8 September 2014(Day of year=251), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3093900       extractable sw =    379.4406
+9 September 2014(Day of year=252), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3134326       extractable sw =    379.4406
+10 September 2014(Day of year=253), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3174622       extractable sw =    384.0406
+11 September 2014(Day of year=254), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3196633       extractable sw =    413.4737
+12 September 2014(Day of year=255), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3218876       extractable sw =    413.4737
+13 September 2014(Day of year=256), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3244255       extractable sw =    413.4737
+14 September 2014(Day of year=257), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3269594       extractable sw =    414.2737
+15 September 2014(Day of year=258), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3294051       extractable sw =    414.2737
+16 September 2014(Day of year=259), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3315727       extractable sw =    423.6737
+17 September 2014(Day of year=260), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3335812       extractable sw =    423.9738
+18 September 2014(Day of year=261), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3356341       extractable sw =    423.9738
+19 September 2014(Day of year=262), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3376998       extractable sw =    423.9738
+20 September 2014(Day of year=263), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3397427       extractable sw =    423.9737
+21 September 2014(Day of year=264), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3412712       extractable sw =    456.2355
+22 September 2014(Day of year=265), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3431183       extractable sw =    456.2352
+23 September 2014(Day of year=266), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3455160       extractable sw =    456.2348
+24 September 2014(Day of year=267), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3482018       extractable sw =    456.2343
+25 September 2014(Day of year=268), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3508578       extractable sw =    456.2339
+26 September 2014(Day of year=269), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3535718       extractable sw =    456.2334
+27 September 2014(Day of year=270), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3566763       extractable sw =    456.2329
+28 September 2014(Day of year=271), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3603046       extractable sw =    456.2325
+29 September 2014(Day of year=272), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3644710       extractable sw =    456.2320
+30 September 2014(Day of year=273), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3690642       extractable sw =    456.2316
+1 October 2014(Day of year=274), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3742370       extractable sw =    456.2313
+2 October 2014(Day of year=275), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3794536       extractable sw =    456.2309
+3 October 2014(Day of year=276), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3834952       extractable sw =    475.5446
+4 October 2014(Day of year=277), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3862078       extractable sw =    498.8553
+5 October 2014(Day of year=278), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3887802       extractable sw =    498.8552
+6 October 2014(Day of year=279), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3912077       extractable sw =    498.8550
+7 October 2014(Day of year=280), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3933451       extractable sw =    500.1547
+8 October 2014(Day of year=281), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3951347       extractable sw =    500.6545
+9 October 2014(Day of year=282), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3967359       extractable sw =    500.6541
+10 October 2014(Day of year=283), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3983407       extractable sw =    509.5540
+11 October 2014(Day of year=284), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.814201
+                          stover N conc =   0.3999910       extractable sw =    509.5539
+12 October 2014(Day of year=285), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2124.049       lai =     7.579775
+                          stover N conc =   0.4019129       extractable sw =    509.5537
+13 October 2014(Day of year=286), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2110.126       lai =     7.579775
+                          stover N conc =   0.4035259       extractable sw =    512.7557
+14 October 2014(Day of year=287), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2108.734       lai =     7.579775
+                          stover N conc =   0.4048710       extractable sw =    532.6169
+15 October 2014(Day of year=288), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2108.594       lai =     7.579775
+                          stover N conc =   0.4061343       extractable sw =    537.0046
+16 October 2014(Day of year=289), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2108.581       lai =     7.579775
+                          stover N conc =   0.4074267       extractable sw =    535.6299
+17 October 2014(Day of year=290), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2108.579       lai =     7.579775
+                          stover N conc =   0.4087811       extractable sw =    532.1360
+18 October 2014(Day of year=291), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2108.579       lai =     7.579775
+                          stover N conc =   0.4102189       extractable sw =    528.4053
+19 October 2014(Day of year=292), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2108.579       lai =     7.579775
+                          stover N conc =   0.4116794       extractable sw =    525.2897
+20 October 2014(Day of year=293), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2108.579       lai =     6.897595
+                          stover N conc =   0.4143191       extractable sw =    521.2289
+21 October 2014(Day of year=294), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2060.294       lai =     6.897595
+                          stover N conc =   0.4157136       extractable sw =    517.3635
+22 October 2014(Day of year=295), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2055.465       lai =     6.897595
+                          stover N conc =   0.4170859       extractable sw =    513.4391
+23 October 2014(Day of year=296), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           2054.852       lai =     5.980215
+                          stover N conc =   0.4206009       extractable sw =    509.2061
+24 October 2014(Day of year=297), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1980.821       lai =     5.238668
+                          stover N conc =   0.4240918       extractable sw =    505.0185
+25 October 2014(Day of year=298), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1910.782       lai =     5.238668
+                          stover N conc =   0.4256704       extractable sw =    502.4295
+26 October 2014(Day of year=299), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1903.778       lai =     5.238668
+                          stover N conc =   0.4271261       extractable sw =    498.4881
+27 October 2014(Day of year=300), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1903.078       lai =     5.133894
+                          stover N conc =   0.4292231       extractable sw =    494.7356
+28 October 2014(Day of year=301), paddock.sugar: 
+      stage    5.0 flowering
+                          biomass =           1894.335       lai =     5.133894
+                          stover N conc =   0.4311815       extractable sw =    491.2047
+29 October 2014(Day of year=302), paddock.Miscanthus management: 
+     Manager sending message :- sugar harvest
+29 October 2014(Day of year=302), paddock.sugar: 
+     
+     
+     
+      flowering day  =  301
+      maximum lai = 8.182
+      total above ground biomass (kg/ha) =   18943.4
+      live above ground biomass (kg/ha) =   18943.4
+      green above ground biomass (kg/ha) =   18933.6
+      senesced above ground biomass (kg/ha) =       9.8
+      dead above ground biomass (kg/ha) =       0.0
+      number of leaves =  17.7
+      total N content (kg/ha) =     81.67    senesced N content (kg/ha) =      0.04
+      green N content (kg/ha) =     81.64    dead N content (kg/ha) =      0.00
+     
+     
+     
+      stress indices for emergence
+      water stress 1 =    0.000000       nitrogen stress 1 =   0.4408358
+      water stress 2 =    0.000000
+     
+     
+     
+      stress indices for begin_cane
+      water stress 1 =    0.000000       nitrogen stress 1 =   0.3058234
+      water stress 2 =    0.000000
+     
+     
+     
+      stress indices for flowering
+      water stress 1 =    0.000000       nitrogen stress 1 =   0.9857715
+      water stress 2 =    0.000000
+                                               straw residue = 4144.0 kg/ha
+                                               straw N =   42.3 kg/ha
+                                               root residue = 3448.2 kg/ha
+                                               root N =   25.2 kg/ha
+31 December 2014(Day of year=365), Clock: 
+     Simulation is terminating due to end criteria being met.
+
