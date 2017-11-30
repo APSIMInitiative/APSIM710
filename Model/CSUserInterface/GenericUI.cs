@@ -331,7 +331,8 @@ namespace CSUserInterface
                         int CropRow = 0;
                         for (CropRow = 0; CropRow <= Grid.RowCount - 1; CropRow++)
                         {
-                            if (Grid.Rows[CropRow].Cells[0].Value.ToString().ToLower() == "crop")
+                            if (Grid.Rows[CropRow].Cells[0].Value != null &&
+                                Grid.Rows[CropRow].Cells[0].Value.ToString().ToLower() == "crop")
                             {
                                 break; // TODO: might not be correct. Was : Exit For
                             }
@@ -358,7 +359,8 @@ namespace CSUserInterface
                         int CropRow = 0;
                         for (CropRow = 0; CropRow <= Grid.RowCount - 1; CropRow++)
                         {
-                            if (Grid.Rows[CropRow].Cells[0].Value.ToString().ToLower() == "crop")
+                            if (Grid.Rows[CropRow].Cells[0].Value != null &&
+                                Grid.Rows[CropRow].Cells[0].Value.ToString().ToLower() == "crop")
                             {
                                 break; // TODO: might not be correct. Was : Exit For
                             }
