@@ -118,7 +118,7 @@ public class Apsim
             List<string> fileList = new List<string>();
             Utility.FindFiles(arg1, "*", ref fileList);
 			for (int j = 0; j < fileList.Count; j++)
-				parseArg(ref allRuns, ref Macros,  Path.GetFullPath(fileList[j]), null);
+				parseArg(ref allRuns, ref Macros,  Path.GetFullPath(fileList[j]), "");
         } 
         else
         {
@@ -176,7 +176,7 @@ public class Apsim
 				{
 				   // more than one file
  		           for (int j = 0; j < fileList.Count; j++)
-				      parseArg(ref allRuns, ref Macros,  Path.GetFullPath(fileList[j]), null);
+				      parseArg(ref allRuns, ref Macros,  Path.GetFullPath(fileList[j]), "");
 				}
 				else
 				   throw new Exception ("Cant make sense of '" + arg1 + "'.");
