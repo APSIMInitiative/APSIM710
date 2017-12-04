@@ -383,9 +383,9 @@ namespace ApsimFile
 					    if (! new Regex("^Apsim.*.bat$").IsMatch(input)) 
 					       pbsInputs.Add(input);
 					}
-					PBSJobList.AppendLine ("Apsim." + Convert.ToString (jobCounter) + "|" +  // Jobname
+					PBSJobList.Append("Apsim." + Convert.ToString (jobCounter) + "|" +  // Jobname
 						                     string.Join (",", pbsInputs) + "|" +             // input files
-						                     "Apsim.singularity." + Convert.ToString (jobCounter) + ".sh"); //command
+						                     "Apsim.singularity." + Convert.ToString (jobCounter) + ".sh\n"); //command
 
 					if (!multipleApsimFiles) SimsWriter.Close ();
 				    if (multipleApsimFiles) WinExeWriter.Write ("\n");
@@ -414,9 +414,9 @@ namespace ApsimFile
 				    if (! new Regex("^Apsim.*.bat$").IsMatch(input)) 
 				       pbsInputs.Add(input);
 				}
-				PBSJobList.AppendLine ("Apsim." + Convert.ToString (jobCounter) + "|" +  // Jobname
+				PBSJobList.Append("Apsim." + Convert.ToString (jobCounter) + "|" +  // Jobname
 					                   string.Join (",", pbsInputs) + "|" +             // input files
-				                       "Apsim.singularity." + Convert.ToString (jobCounter) + ".sh"); //command
+				                       "Apsim.singularity." + Convert.ToString (jobCounter) + ".sh\n"); //command
 			}
 			SubWriter.Close ();
 
