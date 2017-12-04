@@ -667,7 +667,7 @@ namespace ApsimFile
             List<string> SimFiles = new List<string>();
             foreach (string FullSimulationPath in SimsToRun)
             {
-                Notifier(0, "Opening " + FullSimulationPath);
+                if (Notifier != null) Notifier(0, "Opening " + FullSimulationPath);
                 FactorBuilder builder = new FactorBuilder();
                 List<string> allFactorials = new List<string>();
                 int totalCount = 0;
@@ -683,7 +683,7 @@ namespace ApsimFile
                 foreach (string str in allFactorials)
                 {
                     SimFiles.Add(FullSimulationPath + "@factorial=" + str);
-                    Notifier((int)(100 * ((double)sequenceNumber / totalCount)), "Found factorial " + sequenceNumber.ToString());
+                    if (Notifier != null) Notifier((int)(100 * ((double)sequenceNumber / totalCount)), "Found factorial " + sequenceNumber.ToString());
                     sequenceNumber++;
                 }
             }

@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Xml;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Linq;
 using ApsimFile;
 using CSGeneral;
@@ -39,8 +40,11 @@ namespace ApsimFile
 		// Pack this many simfiles into one "job"
 		public int numberSimsPerJob = 5;
 
+		// Estimate this many hours for completion
+		public int hoursPerJob = 1;
+
 		// Where to gather intermediate files.
-        private string WorkingFolder;
+        public string WorkingFolder;
 
 		// Where to write the zipfile. 
 		public string DestinationFolder = Directory.GetCurrentDirectory ();
@@ -54,7 +58,7 @@ namespace ApsimFile
 
 		public string Go (List<string> FilesToRun, ProgressNotifier Notifier)
 		{
-			Notifier (0, "Initialising");
+			if(Notifier != null) Notifier(0, "Initialising");
 
             WorkingFolder = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 			Directory.CreateDirectory (WorkingFolder);
@@ -67,17 +71,17 @@ namespace ApsimFile
 
 			AddFiles (jobDoc.DocumentElement, FilesToRun, Notifier);
 
-			Notifier (99, "Creating batch files");
+            if (Notifier != null) Notifier(99, "Creating batch files");
 			CreateSubmitFile (jobDoc);
 
 			StreamWriter fp = new StreamWriter (Path.Combine (WorkingFolder, "CondorApsim.xml"));
 			jobDoc.Save (fp);
 			fp.Close ();
 
-			Notifier (100, "Zipping up");
+            if (Notifier != null) Notifier(100, "Zipping up");
 			string localzip = zipUp ();
 			if (doUpload) {
-				Notifier (0, "Uploading");
+                if (Notifier != null) Notifier(0, "Uploading");
 				var values = new NameValueCollection  {
                     { "useAutoSubmit", "false" },
                     { "uploadDirectory", "/home/" + username }
@@ -102,21 +106,33 @@ namespace ApsimFile
 			return null;
 		}
 		// Add individual .apsim files to the job
-		private void AddFiles (XmlNode job, List<string> FilesToRun, ProgressNotifier Notifier)
+		public void AddFiles (XmlNode job, List<string> FilesToRun, ProgressNotifier Notifier)
 		{
 			PlugIns.LoadAll ();
 			foreach (string FileName in FilesToRun) {
-				Notifier (0, "Reading " + FileName);
+				if (Notifier != null) { Notifier(0, "Reading " + FileName); }
 				XmlDocument Doc = new XmlDocument ();
 				Doc.Load (FileName);
 
 				XmlNode apsimFileNode = job.AppendChild (job.OwnerDocument.CreateElement ("apsimfile"));
                 XmlHelper.SetAttribute (apsimFileNode, "source", FileName);
 
-				List<XmlNode> simulations = new List<XmlNode> ();
-				XmlHelper.FindAllRecursivelyByType (Doc.DocumentElement, "simulation", ref simulations);
-				
-				foreach (XmlNode simulation in simulations)
+                List<string> globalInputs = new List<string>();
+                foreach (XmlNode pluginNode in job.OwnerDocument.SelectNodes("//PlugIns/PlugIn[@enabled='yes']"))
+                {
+                    if (pluginNode.InnerText.IndexOf("%apsim%") < 0)
+                    {
+                        if (!File.Exists(pluginNode.InnerText))
+                            throw new Exception("Plugin file '" + pluginNode.InnerText + "' doesnt exist - cant send it to the cluster.");
+                        File.Copy(pluginNode.InnerText, Path.Combine(WorkingFolder, Path.GetFileName(pluginNode.InnerText)));
+                        pluginNode.InnerText = Path.GetFileName(pluginNode.InnerText);
+                        if (!globalInputs.Contains(pluginNode.InnerText)) { globalInputs.Add(pluginNode.InnerText); }
+                    }
+                }
+
+                List<XmlNode> simulations = new List<XmlNode>();
+                XmlHelper.FindAllRecursivelyByType(Doc.DocumentElement, "simulation", ref simulations);
+                foreach (XmlNode simulation in simulations)
 				if (XmlHelper.Attribute (simulation, "enabled") != "no") {
 					List<string> simsToRun = new List<string>();
 					XmlNode factorialNode = XmlHelper.FindByType (Doc.DocumentElement, "factorial");
@@ -135,7 +151,14 @@ namespace ApsimFile
 						XmlHelper.SetAttribute (simulationNode, "name", simToRun);
 						XmlHelper.SetAttribute (simulationNode, "source", XmlHelper.Attribute (apsimFileNode, "source"));
 
-						var filenames = new List<XmlNode>();
+                        foreach (var g in globalInputs)
+                        {
+                             XmlNode input = simulationNode.AppendChild(simulationNode.OwnerDocument.CreateElement("input"));
+                             XmlHelper.SetAttribute(input, "source", g);
+                             XmlHelper.SetAttribute(input, "name", g);
+                        }
+
+                        var filenames = new List<XmlNode>();
 					    filenames = simulation.SelectNodes(".//filename").Cast<XmlNode>().ToList();
                         if (factorialNode != null)
 					    {
@@ -179,7 +202,7 @@ namespace ApsimFile
                                 // When this is called by web service then can't assume src is relative to working
                                 // directory. Instead see if the file is relative to where the main file file.
                                 src = Path.Combine(Path.GetDirectoryName(FileName), Path.GetFileName(src));
-                                if (!File.Exists(src))
+                                 if (!File.Exists(src))
                                     throw new Exception("File '" + src + "' doesnt exist - cant send it to the cluster.");
                             }
 
@@ -194,12 +217,12 @@ namespace ApsimFile
 						}
 					}
 				}
-				Doc.Save(Path.Combine (WorkingFolder, Path.GetFileName (FileName)));
+                Doc.Save(Path.Combine (WorkingFolder, Path.GetFileName (FileName)));
 			}
 		}
 
 		// Create a .sub file for condor
-		private void CreateSubmitFile (XmlNode jobDoc)
+		public void CreateSubmitFile (XmlNode jobDoc)
 		{
 			StreamWriter SubWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.sub"));
 			SubWriter.WriteLine ("universe = vanilla");
@@ -270,7 +293,7 @@ namespace ApsimFile
 
 			StringBuilder PBSJobList = new StringBuilder();
 
-			File.Copy (Path.Combine (WorkingFolder, "Apsim.WINDOWS.INTEL.bat"), Path.Combine (WorkingFolder, "Apsim.WINDOWS.X86_64.bat"));
+            File.Copy (Path.Combine (WorkingFolder, "Apsim.WINDOWS.INTEL.bat"), Path.Combine (WorkingFolder, "Apsim.WINDOWS.X86_64.bat"));
 
 			List<string> inputfiles = new List<string> ();
 			if (File.Exists (SelfExtractingExecutableLocation))
@@ -282,6 +305,7 @@ namespace ApsimFile
 			StreamWriter SimsWriter = null;
 			StreamWriter WinExeWriter = null;
 			StreamWriter LinuxExeWriter = null;
+			StreamWriter Linux2ExeWriter = null;
 
 			bool multipleApsimFiles = jobDoc.SelectNodes("//apsimfile").Count > 1;
 
@@ -311,21 +335,37 @@ namespace ApsimFile
 					LinuxExeWriter.WriteLine ("#!/bin/bash");
 					LinuxExeWriter.WriteLine ("echo Running on `hostname -f` at `date`");
 
+					Linux2ExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.singularity." + Convert.ToString (jobCounter) + ".sh"));
+					Linux2ExeWriter.NewLine = "\n";
+					Linux2ExeWriter.WriteLine ("#!/bin/bash");
+					Linux2ExeWriter.WriteLine ("echo Running on `hostname -f` at `date`");
+
 					if (!multipleApsimFiles) 
 					{
 						LinuxExeWriter.WriteLine ("mono ./Temp/Model/Apsim.exe \"" + apsimFile + "\" \"Simulation=@" + simsFile + "\"");
+                        if (SelfExtractingExecutableLocation == "")
+						   Linux2ExeWriter.WriteLine ("singularity exec  -B /30days/$USER:/30days -B /90days/$USER:/90days -B $TMPDIR:/TMPDIR --pwd /TMPDIR /home/uqpdevo1/Apsim.latest.sapp Apsim.exe \"" + apsimFile + "\" \"Simulation=@" + simsFile + "\"");
+                        else
+                           Linux2ExeWriter.WriteLine("singularity exec  -B /30days/$USER:/30days -B /90days/$USER:/90days -B $TMPDIR:/TMPDIR --pwd /TMPDIR " + SelfExtractingExecutableLocation + " Apsim.exe \"" + apsimFile + "\" \"Simulation=@" + simsFile + "\"");
+
                         WinExeWriter.WriteLine (".\\Temp\\Model\\Apsim.exe \"" + apsimFile + "\" \"Simulation=@" + simsFile + "\"");
                     } else {
-						LinuxExeWriter.Write ("mono ./Temp/Model/Apsim.exe");
-                        WinExeWriter.Write (".\\Temp\\Model\\Apsim.exe");
+						LinuxExeWriter.Write ("mono ./Temp/Model/Apsim.exe \"" + apsimFile + "\"");
+                        if (SelfExtractingExecutableLocation == "")
+                            Linux2ExeWriter.Write ("singularity exec  -B /30days/$USER:/30days -B /90days/$USER:/90days -B $TMPDIR:/TMPDIR --pwd /TMPDIR /home/uqpdevo1/Apsim.latest.sapp Apsim.exe \"" + apsimFile + "\"");
+                        else
+                            Linux2ExeWriter.Write("singularity exec  -B /30days/$USER:/30days -B /90days/$USER:/90days -B $TMPDIR:/TMPDIR --pwd /TMPDIR " + SelfExtractingExecutableLocation + " Apsim.exe \"" + apsimFile + "\"");
+
+                        WinExeWriter.Write (".\\Temp\\Model\\Apsim.exe \"" + apsimFile + "\"");
                     }
-				}
-				if (!inputfiles.Contains(apsimFile)) { inputfiles.Add(apsimFile); }
+                }
+                if (!inputfiles.Contains(apsimFile)) { inputfiles.Add(apsimFile); }
 				if (!multipleApsimFiles) 
 					SimsWriter.WriteLine (XmlHelper.Attribute (simNode, "name"));
                 else  
                 {
 					LinuxExeWriter.Write (" \"" + apsimFile + "\"");
+					Linux2ExeWriter.Write (" \"" + apsimFile + "\"");
 					WinExeWriter.Write (" \"" + apsimFile + "\"");
                 }
 				foreach (XmlNode inputNode in simNode.SelectNodes(".//input"))
@@ -337,15 +377,22 @@ namespace ApsimFile
 					SubWriter.WriteLine ("transfer_input_files = " + string.Join (",", inputfiles));
 					SubWriter.WriteLine ("queue");
 					SubWriter.WriteLine ();
+					List<string> pbsInputs = new List<string>();
+					pbsInputs.Add("Apsim.singularity." + Convert.ToString (jobCounter) + ".sh");
+					foreach (string input in inputfiles) {
+					    if (! new Regex("^Apsim.*.bat$").IsMatch(input)) 
+					       pbsInputs.Add(input);
+					}
 					PBSJobList.AppendLine ("Apsim." + Convert.ToString (jobCounter) + "|" +  // Jobname
-						                     string.Join (",", inputfiles).Replace("$$(OpSys)", "LINUX") + "|" +             // input files
-						                     "Apsim.LINUX." + Convert.ToString (jobCounter) + ".bat"); //command
+						                     string.Join (",", pbsInputs) + "|" +             // input files
+						                     "Apsim.singularity." + Convert.ToString (jobCounter) + ".sh"); //command
 
 					if (!multipleApsimFiles) SimsWriter.Close ();
 				    if (multipleApsimFiles) WinExeWriter.Write ("\n");
 					WinExeWriter.Close ();
-				    if (multipleApsimFiles) LinuxExeWriter.Write ("\n");
+					if (multipleApsimFiles) {LinuxExeWriter.Write ("\n"); Linux2ExeWriter.Write ("\n");}
 					LinuxExeWriter.Close ();
+					Linux2ExeWriter.Close ();
 					numSims = 0;
 					inputfiles.Clear ();
 					jobCounter++;
@@ -355,47 +402,49 @@ namespace ApsimFile
 			if (numSims > 0) {
 				if (multipleApsimFiles) WinExeWriter.Write ("\n");
 				WinExeWriter.Close ();
-				if (multipleApsimFiles) LinuxExeWriter.Write ("\n");
+				if (multipleApsimFiles) {LinuxExeWriter.Write ("\n");Linux2ExeWriter.Write ("\n");}
 				LinuxExeWriter.Close ();
+				Linux2ExeWriter.Close ();
 				if (!multipleApsimFiles)  SimsWriter.Close ();
 				SubWriter.WriteLine ("transfer_input_files = " + string.Join (",", inputfiles));
 				SubWriter.WriteLine ("queue");
+				List<string> pbsInputs = new List<string>();
+				pbsInputs.Add("Apsim.singularity." + Convert.ToString (jobCounter) + ".sh");
+				foreach (string input in inputfiles) {
+				    if (! new Regex("^Apsim.*.bat$").IsMatch(input)) 
+				       pbsInputs.Add(input);
+				}
 				PBSJobList.AppendLine ("Apsim." + Convert.ToString (jobCounter) + "|" +  // Jobname
-				                     string.Join (",", inputfiles).Replace("$$(OpSys)", "LINUX") + "|" +             // input files
-				                     "Apsim.LINUX." + Convert.ToString (jobCounter) + ".bat"); //command
+					                   string.Join (",", pbsInputs) + "|" +             // input files
+				                       "Apsim.singularity." + Convert.ToString (jobCounter) + ".sh"); //command
 			}
 			SubWriter.Close ();
 
 			StreamWriter PBSWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.pbs"));
-			PBSWriter.WriteLine ("#!/bin/bash");
+            PBSWriter.NewLine = "\n";
+            PBSWriter.WriteLine ("#!/bin/bash");
 			PBSWriter.WriteLine ("# Construct a PBS job for each apsim job.");
 			PBSWriter.WriteLine ("# Each job runs apsim on a bunch of simulations. They will execute in parallel under Apsim.exe.");
 			PBSWriter.WriteLine ("# It should keep 1 node (of X CPUs) busy for a couple of hours.");
 			PBSWriter.WriteLine ("srcdir=`dirname $(readlink -f $0)`");
-			PBSWriter.WriteLine ("cat <<EOF | qsub -t 0-" + Convert.ToString (jobCounter));
-			PBSWriter.WriteLine ("######  Select resources #####");
+            if (jobCounter > 0)
+			   PBSWriter.WriteLine ("cat <<EOF | qsub -t 0-" + Convert.ToString (jobCounter));
+            else
+               PBSWriter.WriteLine("cat <<EOF | qsub ");
+            PBSWriter.WriteLine ("######  Select resources #####");
 			PBSWriter.WriteLine ("#PBS -A UQ-QAAFI");
 			PBSWriter.WriteLine ("#PBS -N Apsim");
-			PBSWriter.WriteLine ("#PBS -l nodes=1:amd:ppn=8");
-			PBSWriter.WriteLine ("#PBS -l mem=20Gb");
-			PBSWriter.WriteLine ("#PBS -l vmem=20Gb");
-			PBSWriter.WriteLine ("#PBS -l walltime=" + Convert.ToString (5 * (1 + jobCounter)) + ":00:00");
+			PBSWriter.WriteLine ("#PBS -l nodes=1:intel:ppn=24");
+			PBSWriter.WriteLine ("#PBS -l walltime=" + hoursPerJob + ":00:00");
 
 			PBSWriter.WriteLine ("######                   #####");
 			PBSWriter.WriteLine (" srcdir=$srcdir");
 			PBSWriter.WriteLine (" cd \\$TMPDIR");
-			PBSWriter.WriteLine (" for x in Apsim"+ Configuration.Instance.ApsimVersion() + "-" + Configuration.Instance.ApsimBuildNumber() + ".X86_64.tar.gz mono-4.3.2.X86_64.tar.gz; do");
-			PBSWriter.WriteLine ("  tar xfz \\$HOME/\\$x");
-			PBSWriter.WriteLine (" done");
 
 			PBSWriter.WriteLine ("# extra environment settings");
-			PBSWriter.WriteLine (" module load GCC/4.8.4");
-			PBSWriter.WriteLine (" export MONO_PATH=\\$TMPDIR/mono/lib/mono/4.5/:\\$TMPDIR/mono/lib/mono/4.0");
-			PBSWriter.WriteLine (" export MONO_CFG_DIR=\\$TMPDIR/mono/etc");
-			PBSWriter.WriteLine (" export MONO_CONFIG=\\$TMPDIR/mono/etc/mono/config");
-			PBSWriter.WriteLine (" export PATH=\\$PATH:\\$TMPDIR/Temp/Model:\\$TMPDIR/mono/bin");
-			PBSWriter.WriteLine (" export LD_LIBRARY_PATH=\\$TMPDIR/mono/lib:\\$LD_LIBRARY_PATH");
-			PBSWriter.WriteLine (" export NUMBER_OF_PROCESSORS=$PBS_NUM_PPN");
+			PBSWriter.WriteLine (" module load singularity");
+			PBSWriter.WriteLine (" export SINGULARITYENV_NUMBER_OF_PROCESSORS=$PBS_NUM_PPN");
+			PBSWriter.WriteLine (" export SINGULARITYENV_R_LIBS_USER=$HOME/R");
 			PBSWriter.WriteLine (" mapfile -t joblist <<'XXXXXX'");
 			PBSWriter.WriteLine (PBSJobList.ToString() + "XXXXXX");
 
@@ -409,13 +458,35 @@ namespace ApsimFile
 			PBSWriter.WriteLine (" unset IFS");
 			PBSWriter.WriteLine (" chmod +x \\$command; touch \\$command");
 			PBSWriter.WriteLine (" ./\\$command");
-			PBSWriter.WriteLine (" rm -rf \\$TMPDIR/mono \\$TMPDIR/Temp");
-			PBSWriter.WriteLine (" tar cfz \\$srcdir/\\$jobname.output.tar.gz --newer=\\$command --no-recursion .");
-			PBSWriter.WriteLine ("EOF");
-
+			PBSWriter.WriteLine (" find . -maxdepth 1 -type f -newer \\$command -print | tar cfz \\$srcdir/\\$jobname.output.tar.gz --files-from -\n");
+            PBSWriter.WriteLine ("EOF");
 			PBSWriter.Close();
-		}
-		private string zipUp ()
+#if false
+            // One day, we'll need a dependancy job to assemble output files. Not yet.
+            PBSWriter = new StreamWriter(Path.Combine(WorkingFolder, "Apsim.AssembleOutputs.pbs"));
+            PBSWriter.NewLine = "\n";
+            PBSWriter.WriteLine("#!/bin/bash");
+            PBSWriter.WriteLine("# Construct a PBS job to assemble the outputs of the first job.");
+            PBSWriter.WriteLine("# 1st argument is the id of the previous job");
+            PBSWriter.WriteLine("srcdir=`dirname $(readlink -f $0)`");
+            PBSWriter.WriteLine("cat <<EOF | qsub ");
+            PBSWriter.WriteLine("######  Select resources #####");
+            PBSWriter.WriteLine("#PBS -A UQ-QAAFI");
+            PBSWriter.WriteLine("#PBS -N Apsim");
+            PBSWriter.WriteLine("#PBS -l nodes=1:intel:ppn=1");
+            PBSWriter.WriteLine("#PBS -l mem=10Gb");
+            PBSWriter.WriteLine("#PBS -l vmem=10Gb");
+            PBSWriter.WriteLine("#PBS -l walltime=1:00:00");
+            if (jobCounter > 1)
+                PBSWriter.WriteLine("#PBS -W depend=afterokarray:$1");
+            else
+                PBSWriter.WriteLine("#PBS -W depend=afterok:$1");
+            PBSWriter.WriteLine("######                   #####");
+            PBSWriter.WriteLine("echo > $srcdir/Apsim.finished");
+            PBSWriter.Close();
+#endif
+        }
+        public string zipUp ()
 		{
 			//string currentDirectory = Directory.GetCurrentDirectory ();
 			//Directory.SetCurrentDirectory (WorkingFolder);
