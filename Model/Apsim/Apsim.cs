@@ -113,6 +113,7 @@ public class Apsim
     {
 		arg1 = arg1.Replace("\"", "");
 		arg2 = arg2.Replace("\"", "");
+        //Console.WriteLine("parsearg: arg1=" + arg1 + ", arg2=" + arg2);
 		if (Directory.Exists(arg1))  // we've been given a directory name, not a file name; find everything in it.
         {
             List<string> fileList = new List<string>();
@@ -144,7 +145,8 @@ public class Apsim
 		            while((line = file.ReadLine()) != null)
 		            {
 						StringCollection args = CSGeneral.StringManip.SplitStringHonouringQuotes(line, " ");
-						parseArg(ref allRuns, ref Macros,  args[0], (args.Count > 1) ? args[1] : "");
+                        if (args.Count > 0) 
+						   parseArg(ref allRuns, ref Macros,  args[0], (args.Count > 1) ? args[1] : "");
 					}
                     file.Close();
 				}

@@ -303,15 +303,11 @@ namespace ApsimFile
 			int numSims = 0;
 			int jobCounter = 0;
 			StreamWriter SimsWriter = null;
-			StreamWriter WinExeWriter = null;
-			StreamWriter LinuxExeWriter = null;
-			StreamWriter Linux2ExeWriter = null;
-
-			bool multipleApsimFiles = jobDoc.SelectNodes("//apsimfile").Count > 1;
 
             foreach (XmlNode simNode in jobDoc.SelectNodes("//simulation")) {
 				string apsimFile = Path.GetFileName (XmlHelper.Attribute (simNode, "source"));
-				if (numSims == 0) {
+                string simsFile = null;
+                if (numSims == 0) {
 					SubWriter.WriteLine ("output = " + "Apsim." + Convert.ToString (jobCounter) + ".stdout");
 					SubWriter.WriteLine ("error = " + "Apsim." + Convert.ToString (jobCounter) + ".stderr");
 					SubWriter.WriteLine ("arguments = " + SelfExtractingExecutableLocation + " " + "Apsim.$$(OpSys)." + Convert.ToString (jobCounter) + ".bat");
@@ -319,56 +315,36 @@ namespace ApsimFile
 						inputfiles.Add (Path.GetFileName (SelfExtractingExecutableLocation));
 					inputfiles.Add ("Apsim.$$(OpSys)." + Convert.ToString (jobCounter) + ".bat");
 
-					string simsFile = null;
-					if (!multipleApsimFiles)
-					{
-					   simsFile = "Apsim." + Convert.ToString (jobCounter) + "." + apsimFile + ".simulations";
-					   SimsWriter = new StreamWriter (Path.Combine (WorkingFolder, simsFile));
-					   inputfiles.Add (simsFile);
-					}
-					WinExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.WINDOWS." + Convert.ToString (jobCounter) + ".bat"));
+                    simsFile = "Apsim." + Convert.ToString (jobCounter) + "." + apsimFile + ".simulations";
+					SimsWriter = new StreamWriter (Path.Combine (WorkingFolder, simsFile));
+					inputfiles.Add (simsFile);
+                    StreamWriter WinExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.WINDOWS." + Convert.ToString (jobCounter) + ".bat"));
 					WinExeWriter.NewLine = "\r\n";
 					WinExeWriter.WriteLine ("echo Running on %COMPUTERNAME%");
+                    WinExeWriter.WriteLine(".\\Temp\\Model\\Apsim.exe @" + simsFile);
+                    WinExeWriter.Close();
 
-					LinuxExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.LINUX." + Convert.ToString (jobCounter) + ".bat"));
+                    StreamWriter LinuxExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.LINUX." + Convert.ToString (jobCounter) + ".bat"));
 					LinuxExeWriter.NewLine = "\n";
 					LinuxExeWriter.WriteLine ("#!/bin/bash");
 					LinuxExeWriter.WriteLine ("echo Running on `hostname -f` at `date`");
+                    LinuxExeWriter.Write("mono ./Temp/Model/Apsim.exe @" + simsFile);
+                    LinuxExeWriter.Close();
 
-					Linux2ExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.singularity." + Convert.ToString (jobCounter) + ".sh"));
+                    StreamWriter Linux2ExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.singularity." + Convert.ToString (jobCounter) + ".sh"));
 					Linux2ExeWriter.NewLine = "\n";
 					Linux2ExeWriter.WriteLine ("#!/bin/bash");
 					Linux2ExeWriter.WriteLine ("echo Running on `hostname -f` at `date`");
 
-					if (!multipleApsimFiles) 
-					{
-						LinuxExeWriter.WriteLine ("mono ./Temp/Model/Apsim.exe \"" + apsimFile + "\" \"Simulation=@" + simsFile + "\"");
-                        if (SelfExtractingExecutableLocation == "")
-						   Linux2ExeWriter.WriteLine ("singularity exec  -B /30days/$USER:/30days -B /90days/$USER:/90days -B $TMPDIR:/TMPDIR --pwd /TMPDIR /home/uqpdevo1/Apsim.latest.sapp Apsim.exe \"" + apsimFile + "\" \"Simulation=@" + simsFile + "\"");
-                        else
-                           Linux2ExeWriter.WriteLine("singularity exec  -B /30days/$USER:/30days -B /90days/$USER:/90days -B $TMPDIR:/TMPDIR --pwd /TMPDIR " + SelfExtractingExecutableLocation + " Apsim.exe \"" + apsimFile + "\" \"Simulation=@" + simsFile + "\"");
-
-                        WinExeWriter.WriteLine (".\\Temp\\Model\\Apsim.exe \"" + apsimFile + "\" \"Simulation=@" + simsFile + "\"");
-                    } else {
-						LinuxExeWriter.Write ("mono ./Temp/Model/Apsim.exe \"" + apsimFile + "\"");
-                        if (SelfExtractingExecutableLocation == "")
-                            Linux2ExeWriter.Write ("singularity exec  -B /30days/$USER:/30days -B /90days/$USER:/90days -B $TMPDIR:/TMPDIR --pwd /TMPDIR /home/uqpdevo1/Apsim.latest.sapp Apsim.exe \"" + apsimFile + "\"");
-                        else
-                            Linux2ExeWriter.Write("singularity exec  -B /30days/$USER:/30days -B /90days/$USER:/90days -B $TMPDIR:/TMPDIR --pwd /TMPDIR " + SelfExtractingExecutableLocation + " Apsim.exe \"" + apsimFile + "\"");
-
-                        WinExeWriter.Write (".\\Temp\\Model\\Apsim.exe \"" + apsimFile + "\"");
-                    }
+                    if (SelfExtractingExecutableLocation == "")
+                        Linux2ExeWriter.WriteLine("singularity exec  -B /30days/$USER:/30days -B /90days/$USER:/90days -B $TMPDIR:/TMPDIR --pwd /TMPDIR /home/uqpdevo1/Apsim.latest.sapp Apsim.exe @" + simsFile);
+                    else
+                        Linux2ExeWriter.WriteLine("singularity exec  -B /30days/$USER:/30days -B /90days/$USER:/90days -B $TMPDIR:/TMPDIR --pwd /TMPDIR " + SelfExtractingExecutableLocation + " Apsim.exe @" + simsFile);
+                    Linux2ExeWriter.Close();
                 }
+                SimsWriter.WriteLine("\"" + apsimFile + "\" Simulation=" + XmlHelper.Attribute(simNode, "name"));
                 if (!inputfiles.Contains(apsimFile)) { inputfiles.Add(apsimFile); }
-				if (!multipleApsimFiles) 
-					SimsWriter.WriteLine (XmlHelper.Attribute (simNode, "name"));
-                else  
-                {
-					LinuxExeWriter.Write (" \"" + apsimFile + "\"");
-					Linux2ExeWriter.Write (" \"" + apsimFile + "\"");
-					WinExeWriter.Write (" \"" + apsimFile + "\"");
-                }
-				foreach (XmlNode inputNode in simNode.SelectNodes(".//input"))
+                foreach (XmlNode inputNode in simNode.SelectNodes(".//input"))
 					if (!inputfiles.Contains (XmlHelper.Attribute (inputNode, "name")))
 						inputfiles.Add (XmlHelper.Attribute (inputNode, "name"));
 
@@ -387,12 +363,7 @@ namespace ApsimFile
 						                     string.Join (",", pbsInputs) + "|" +             // input files
 						                     "Apsim.singularity." + Convert.ToString (jobCounter) + ".sh\n"); //command
 
-					if (!multipleApsimFiles) SimsWriter.Close ();
-				    if (multipleApsimFiles) WinExeWriter.Write ("\n");
-					WinExeWriter.Close ();
-					if (multipleApsimFiles) {LinuxExeWriter.Write ("\n"); Linux2ExeWriter.Write ("\n");}
-					LinuxExeWriter.Close ();
-					Linux2ExeWriter.Close ();
+					SimsWriter.Close ();
 					numSims = 0;
 					inputfiles.Clear ();
 					jobCounter++;
@@ -400,14 +371,10 @@ namespace ApsimFile
 			}
 
 			if (numSims > 0) {
-				if (multipleApsimFiles) WinExeWriter.Write ("\n");
-				WinExeWriter.Close ();
-				if (multipleApsimFiles) {LinuxExeWriter.Write ("\n");Linux2ExeWriter.Write ("\n");}
-				LinuxExeWriter.Close ();
-				Linux2ExeWriter.Close ();
-				if (!multipleApsimFiles)  SimsWriter.Close ();
+                SimsWriter.Close ();
 				SubWriter.WriteLine ("transfer_input_files = " + string.Join (",", inputfiles));
 				SubWriter.WriteLine ("queue");
+
 				List<string> pbsInputs = new List<string>();
 				pbsInputs.Add("Apsim.singularity." + Convert.ToString (jobCounter) + ".sh");
 				foreach (string input in inputfiles) {
