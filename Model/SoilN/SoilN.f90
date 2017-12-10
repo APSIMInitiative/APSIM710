@@ -223,7 +223,7 @@ module Soiln2Module
       real oldN
 
       ! CHARACTER
-      character   soiltype*32               ! soil type spec used to determine mineralisation parameters.
+      character   soiltype*120              ! soil type spec used to determine mineralisation parameters.
       character   pond_active*10            ! parameter to indicate whether the soil is under flooded & ponded conditions
       character   residue_module*(Max_module_name_size)
                                           ! list of modules  replying
