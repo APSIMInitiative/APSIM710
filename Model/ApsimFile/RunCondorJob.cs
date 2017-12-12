@@ -390,18 +390,19 @@ namespace ApsimFile
 			StreamWriter PBSWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.pbs"));
             PBSWriter.NewLine = "\n";
             PBSWriter.WriteLine ("#!/bin/bash");
-			PBSWriter.WriteLine ("# Construct a PBS job for each apsim job.");
+			PBSWriter.WriteLine ("# Construct a PBSPro job for each apsim job.");
 			PBSWriter.WriteLine ("# Each job runs apsim on a bunch of simulations. They will execute in parallel under Apsim.exe.");
 			PBSWriter.WriteLine ("# It should keep 1 node (of X CPUs) busy for a couple of hours.");
 			PBSWriter.WriteLine ("srcdir=`dirname $(readlink -f $0)`");
             if (jobCounter > 0)
-			   PBSWriter.WriteLine ("cat <<EOF | qsub -t 0-" + Convert.ToString (jobCounter));
+			   PBSWriter.WriteLine ("cat <<EOF | /opt/pbs/bin/qsub -J 0-" + Convert.ToString (jobCounter));
             else
                PBSWriter.WriteLine("cat <<EOF | qsub ");
             PBSWriter.WriteLine ("######  Select resources #####");
 			PBSWriter.WriteLine ("#PBS -A UQ-QAAFI");
+			PBSWriter.WriteLine ("#PBS -S /bin/bash");
 			PBSWriter.WriteLine ("#PBS -N Apsim");
-			PBSWriter.WriteLine ("#PBS -l nodes=1:intel:ppn=24");
+			PBSWriter.WriteLine ("#PBS -l select=1:ncpus=24:mem=120Gb\n");
 			PBSWriter.WriteLine ("#PBS -l walltime=" + hoursPerJob + ":00:00");
 
 			PBSWriter.WriteLine ("######                   #####");
@@ -410,14 +411,14 @@ namespace ApsimFile
 
 			PBSWriter.WriteLine ("# extra environment settings");
 			PBSWriter.WriteLine (" module load singularity");
-			PBSWriter.WriteLine (" export SINGULARITYENV_NUMBER_OF_PROCESSORS=$PBS_NUM_PPN");
+			PBSWriter.WriteLine (" export SINGULARITYENV_NUMBER_OF_PROCESSORS=24");
 			PBSWriter.WriteLine (" export SINGULARITYENV_R_LIBS_USER=$HOME/R");
 			PBSWriter.WriteLine (" mapfile -t joblist <<'XXXXXX'");
 			PBSWriter.WriteLine (PBSJobList.ToString() + "XXXXXX");
 
-			PBSWriter.WriteLine (" jobname=\\$(echo \\${joblist[\\$PBS_ARRAYID]} | cut -d\\| -f1)");
-			PBSWriter.WriteLine (" inputfiles=\\$(echo \\${joblist[\\$PBS_ARRAYID]} | cut -d\\| -f2)");
-			PBSWriter.WriteLine (" command=\\$(echo \\${joblist[\\$PBS_ARRAYID]} | cut -d\\| -f3)");
+			PBSWriter.WriteLine (" jobname=\\$(echo \\${joblist[\\$PBS_ARRAY_INDEX]} | cut -d\\| -f1)");
+			PBSWriter.WriteLine (" inputfiles=\\$(echo \\${joblist[\\$PBS_ARRAY_INDEX]} | cut -d\\| -f2)");
+			PBSWriter.WriteLine (" command=\\$(echo \\${joblist[\\$PBS_ARRAY_INDEX]} | cut -d\\| -f3)");
 
  			PBSWriter.WriteLine ("# copy the job specific datafiles");
 			PBSWriter.WriteLine (" IFS=','");
