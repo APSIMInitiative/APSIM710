@@ -43,7 +43,9 @@ public class  BundleApsim
                 {
                     for (int j = 0; j < x.Length; ++j)
                     {
-                       if (File.Exists(x[j]))
+                       if (File.Exists(x[j]) &&
+                           (Path.GetExtension(x[j]).ToLower () == ".apsim" ||
+                            Path.GetExtension(x[j]).ToLower () == ".sim"))
                        {
                            int l = FileNames == null ? 0 : FileNames.Length;
                            Array.Resize(ref FileNames, l + 1);

@@ -170,7 +170,9 @@ public class Apsim
 				    allRuns.Add(new RunApsim.apsimRunFileSims{fileName=fileList[0],simulationPaths=simPaths});
 			        return(2); // The 2nd argument was used here.
 				}
-				else if (fileList.Count == 1)
+				else if (fileList.Count == 1 &&
+                                         (Path.GetExtension(fileList[0]).ToLower () == ".apsim" ||
+                                          Path.GetExtension(fileList[0]).ToLower () == ".sim"))
 				{
 					allRuns.Add(new RunApsim.apsimRunFileSims{fileName=fileList[0],simulationPaths=new List<string>()});
 				}
