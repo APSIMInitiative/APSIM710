@@ -588,6 +588,12 @@ namespace UIBits
                 {
                     // Get the contents of the current selection
                     string ContentsToMoveDown = GetClipboardContent().GetText();
+                    // no readonly cells now in source selection
+                    for (int row = StartRow; row <= EndRow; row++)
+                    {
+                        for (int Col = StartCol; Col <= EndCol; Col++)
+                            Rows[row].Cells[Col].ReadOnly = false;
+                    }
 
                     // Get the contents of the row below the current selection.
                     ClearSelection();
@@ -633,6 +639,12 @@ namespace UIBits
                 {
                     // Get the contents of the current selection
                     string ContentsToMoveUp = GetClipboardContent().GetText();
+                    // no readonly cells now in source selection
+                    for (int row = StartRow; row <= EndRow; row++)
+                    {
+                        for (int Col = StartCol; Col <= EndCol; Col++)
+                            Rows[row].Cells[Col].ReadOnly = false;
+                    }
 
                     // Get the contents of the row above the current selection.
                     ClearSelection();
