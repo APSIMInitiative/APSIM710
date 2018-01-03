@@ -6435,8 +6435,13 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += ((mySpecies[s].Pgross * mySpecies[s].myGrowthRespirationCoefficient) - mySpecies[s].Resp_m) *
+            {
+                double temp;
+                temp = ((mySpecies[s].Pgross * mySpecies[s].myGrowthRespirationCoefficient) - mySpecies[s].Resp_m) *
                           mySpecies[s].ShootAllocationFactor;
+                if (temp > 0.0)
+                    result += temp;
+            }
             return result;
         }
     }
@@ -6451,8 +6456,13 @@ public class AgPasture
         {
             double result = 0.0;
             for (int s = 0; s < NumSpecies; s++)
-                result += ((mySpecies[s].Pgross * mySpecies[s].myGrowthRespirationCoefficient) - mySpecies[s].Resp_m) *
+            {
+                double temp;
+                temp = ((mySpecies[s].Pgross * mySpecies[s].myGrowthRespirationCoefficient) - mySpecies[s].Resp_m) *
                           (1.0 - mySpecies[s].ShootAllocationFactor);
+                if (temp > 0.0)
+                    result += temp;
+            }
             return result;
         }
     }
