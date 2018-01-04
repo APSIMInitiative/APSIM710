@@ -684,7 +684,7 @@ internal class FactoryProperty : Instance, ApsimType
             }
             else if (tType == typeof(int[]))
             {
-                result = "<type kind=\"integer\" array=\"T\"/>";
+                result = "<type kind=\"integer4\" array=\"T\"/>";
             }
             else if (tType == typeof(Single[]))
             {
