@@ -2203,17 +2203,35 @@ subroutine soiln2_set_my_variable (variable_name)
          g%p_n_reduction = off
       endif
 
-   elseif ((variable_name .eq. 'dlt_org_n').or.(variable_name .eq. 'org_n')) then
+   elseif ((index(variable_name, 'dlt_org_n_pool') .eq. 1).or.(index(variable_name, 'org_n_pool') .eq. 1)) then
+   ! VS try  elseif ((variable_name .eq. 'dlt_org_n').or.(variable_name .eq. 'org_n')) then
    ! NIH - This works because there is no logical difference
    ! between the pool and it delta
 
-      tarray(:) = 0.0
-      call collect_real_array(variable_name, max_layer, '(kg/ha)', tarray, numvals, 0.0, 1000.0)
+      ! VS try  tarray(:) = 0.0
+      ! VS try  call collect_real_array(variable_name, max_layer, '(kg/ha)', tarray, numvals, 0.0, 1000.0)
 
-      do layer = 1, numvals
-         g%fom_n(layer) = g%fom_n(layer) + tarray(layer)
-      end do
+      ! VS try  do layer = 1, numvals
+      ! VS try     g%fom_n(layer) = g%fom_n(layer) + tarray(layer)
+      ! VS try  end do
+	  
+	  call string_to_integer_var(variable_name (index(variable_name,'pool')+4:),pool_num, numvals)
 
+      if (numvals .eq. 1) then
+
+         tarray(:) = 0.0
+         call collect_real_array(variable_name, max_layer, '(kg/ha)', tarray, numvals, 0.0, 1000.0)
+
+         do layer = 1, numvals
+            g%fom_n_pool(pool_num,layer) =g%fom_n_pool(pool_num,layer) + tarray(layer)
+         end do
+
+      else
+         !couldn't read pool number
+         write (error_string,'(2a)')'cannot read pool number from ', variable_name
+
+         call fatal_error (Err_User,error_string)
+      endif
 
    elseif ((index(variable_name, 'dlt_org_c_pool') .eq. 1).or.(index(variable_name, 'org_c_pool') .eq. 1)) then
 
