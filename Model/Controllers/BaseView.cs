@@ -1,22 +1,15 @@
-using Microsoft.VisualBasic;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.Drawing;
-using System.Diagnostics;
-using System.Windows.Forms;
-using System.IO;
 using System.Collections.Specialized;
+using System.Drawing;
+
 namespace Controllers
 {
 
-	// ----------------------------------
-	// Base class for all user interfaces
-	// It has data and knowledge of a
-	// user interface.
-	// ----------------------------------   
-	public partial class BaseView : System.Windows.Forms.UserControl
+    // ----------------------------------
+    // Base class for all user interfaces
+    // It has data and knowledge of a
+    // user interface.
+    // ----------------------------------   
+    public partial class BaseView : System.Windows.Forms.UserControl
 	{
 
 		protected BaseController _Controller;

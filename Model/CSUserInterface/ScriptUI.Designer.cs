@@ -97,7 +97,7 @@ namespace CSUserInterface
             this.Script.Location = new System.Drawing.Point(4, 22);
             this.Script.Name = "Script";
             this.Script.Padding = new System.Windows.Forms.Padding(3);
-            this.Script.Size = new System.Drawing.Size(647, 470);
+            this.Script.Size = new System.Drawing.Size(647, 486);
             this.Script.TabIndex = 1;
             this.Script.Text = "Script";
             this.Script.UseVisualStyleBackColor = true;
@@ -105,6 +105,8 @@ namespace CSUserInterface
             // TextBox
             // 
             this.TextBox.BackColor = System.Drawing.SystemColors.Window;
+            this.TextBox.Braces.BackColor = System.Drawing.Color.Cyan;
+            this.TextBox.Braces.BracesOptions = QWhale.Editor.TextSource.BracesOptions.Highlight;
             this.TextBox.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.TextBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.TextBox.Font = new System.Drawing.Font("Courier New", 10F);
@@ -114,7 +116,7 @@ namespace CSUserInterface
             this.TextBox.Location = new System.Drawing.Point(3, 28);
             this.TextBox.Name = "TextBox";
             this.TextBox.Outlining.AllowOutlining = true;
-            this.TextBox.Size = new System.Drawing.Size(641, 439);
+            this.TextBox.Size = new System.Drawing.Size(641, 455);
             this.TextBox.TabIndex = 0;
             this.TextBox.Text = "";
             // 

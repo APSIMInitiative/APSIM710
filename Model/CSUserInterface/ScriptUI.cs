@@ -1,20 +1,30 @@
-using Microsoft.VisualBasic;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
-using System.Diagnostics;
-using System.Windows.Forms;
-using System.Xml;
-using CSGeneral;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using System.Xml;
+using CSGeneral;
+
 namespace CSUserInterface
 {
     public partial class ScriptUI : Controllers.BaseView
 	{
+        /// <summary>
+        /// Used for storing the editor position
+        /// </summary>
+        struct CursorPos
+        {
+            public int TopLine;
+            public int CharIndex;
+        }
+
+        /// <summary>
+        /// The list of script editor position information
+        /// </summary>
+        private Dictionary<string, CursorPos> positions = new Dictionary<string, CursorPos>();
 
         public ScriptUI()
         {
@@ -74,11 +84,23 @@ namespace CSUserInterface
 			int[] TabStops = { 3 };
 			TextBox.Lines.TabStops = TabStops;
 			TextBox.Lines.UseSpaces = true;
-		}
 
+            // restore the scrolling and cursor position for the textbox
+            CursorPos pos;
+            if (positions.TryGetValue(this.NodePath, out pos))
+            {
+                TextBox.MoveToLine(pos.TopLine, 0);
+                // ensure that the cursor is only set if it was in view
+                if (pos.TopLine < TextBox.Source.GetPositionFromCharIndex(pos.CharIndex).Y)
+                    TextBox.Selection.SelectionStart = pos.CharIndex;
+                TextBox.Selection.SelectionLength = 0;
+            }
+            TextBox.Focus();    // this doesn't really work because the system tinkers with a few other controls
+                                // after this procedure and then the textbox loses focus anyway. It would
+                                // be good to find a solution for this. 
+        }
 
-
-		public override void OnSave()
+        public override void OnSave()
 		{
 			// --------------------------------------
 			// Save the script box if it has changd.
@@ -106,10 +128,32 @@ namespace CSUserInterface
 
 			XmlHelper.SetValue(Data, "text", TextBox.Text);
 
-		}
+            // Store the cursor and text scroll position for the TextBox
+            // Firstly find the top visible line number
+            int lineVisible = 0;
+            while ((lineVisible < TextBox.DisplayLines.Count) && !TextBox.DisplayLines.IsPointVisible(new Point(0, lineVisible)))
+            {
+                lineVisible++;
+            }
 
+            if (TextBox.Selection != null)
+            {
+                int charIndex = TextBox.Selection.SelectionStart;
+                CursorPos position = new CursorPos();
+                position.TopLine = lineVisible;
+                position.CharIndex = charIndex;
+                if (!positions.ContainsKey(this.NodePath))
+                {
+                    positions.Add(this.NodePath, position);
+                }
+                else
+                {
+                    positions[this.NodePath] = position;
+                }
+            }
+        }
 
-		private void OnButtonClicked(System.Object sender, System.Windows.Forms.ToolStripItemClickedEventArgs e)
+        private void OnButtonClicked(System.Object sender, System.Windows.Forms.ToolStripItemClickedEventArgs e)
 		{
 			TextBox.DisplaySearchDialog();
 		}
@@ -154,7 +198,7 @@ namespace CSUserInterface
             VariablesEventsForm F = new VariablesEventsForm(Controller);
             F.Show();
         }
-	}
+    }
 }
 
 
