@@ -544,6 +544,14 @@ namespace Graph
                 NewSeries = Box;
                 NewSeries.Marks.Visible = false;
             }
+            else if (SeriesType == "stacked area")
+            {
+                Steema.TeeChart.Styles.Area areaSeries = new Steema.TeeChart.Styles.Area();
+                areaSeries.MultiArea = MultiAreas.Stacked;
+                areaSeries.AreaLines.Visible = false;
+                NewSeries = areaSeries;
+                NewSeries.Marks.Visible = false;
+            }
             else
             {
                 Steema.TeeChart.Styles.Line LineSeries = new Steema.TeeChart.Styles.Line();
