@@ -95,7 +95,7 @@ public class Output : Attribute
     public bool Immutable { get { return _Immutable; } set { _Immutable = value; } }
 }
 
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
+[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = true)]
 public class Writable : Attribute
 {
 }

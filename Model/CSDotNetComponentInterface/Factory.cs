@@ -164,6 +164,8 @@ class Factory
                     AddProperty = true;
                 if (attrType == typeof(Input))
                     AddProperty = true;
+                if (attrType == typeof(Writable))
+                    AddProperty = true;
                 if (attrType == typeof(Output))
                     AddProperty = true;
                 if (attrType == typeof(Link))
@@ -193,6 +195,8 @@ class Factory
                 if (Attr.GetType() == typeof(Param))
                     AddProperty = true;
                 if (Attr.GetType() == typeof(Input))
+                    AddProperty = true;
+                if (Attr.GetType() == typeof(Writable))
                     AddProperty = true;
                 if (Attr.GetType() == typeof(Output))
                     AddProperty = true;

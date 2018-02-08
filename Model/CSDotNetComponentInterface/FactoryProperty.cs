@@ -241,6 +241,7 @@ internal class FactoryProperty : Instance, ApsimType
     public bool IsParam;
     public bool IsInput;
     public bool IsOutput;
+    public bool IsWritable;
     public bool ReadOnly;
     public bool WriteOnly;
     public bool HaveSet;
@@ -421,6 +422,7 @@ internal class FactoryProperty : Instance, ApsimType
         IsParam = false;
         IsInput = false;
         IsOutput = false;
+        IsWritable = false;
         HaveSet = false;
         ReadOnly = Property.ReadOnly;
         WriteOnly = Property.WriteOnly;
@@ -446,6 +448,7 @@ internal class FactoryProperty : Instance, ApsimType
             Param P = null;
             Input I = null;
             Output O = null;
+            Writable W = null;
             Units U = null;
             Description D = null;
 
@@ -460,6 +463,10 @@ internal class FactoryProperty : Instance, ApsimType
             else if (Attr.GetType() == typeof(Output))
             {
                 O = (Output)(Attr);
+            }
+            else if (Attr.GetType() == typeof(Writable))
+            {
+                W = (Writable)(Attr);
             }
             else if (Attr.GetType() == typeof(Units))
             {
@@ -492,6 +499,11 @@ internal class FactoryProperty : Instance, ApsimType
                 IsOutput = true;
                 if (O.Name != "")
                     OutputName = O.Name;
+            }
+            else if (W != null)
+            {
+                IsWritable = true;
+                ReadOnly = false;
             }
             else if (U != null)
                 Units = U.ToString();

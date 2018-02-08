@@ -642,6 +642,42 @@ namespace ModelFramework
         {
             return SetInternal<string[]>(NamePath, Data);
         }
+
+        /// <summary>
+        /// Attempts to set the value of a variable that matches the specified name path. 
+        /// The method will return true if the set was successful or false otherwise.
+        /// Used for setting structured types that are of ApsimType.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="NamePath"></param>
+        /// <param name="Data"></param>
+        /// <returns>True if set</returns>
+        public bool SetObject<T>(string NamePath, ref T Data) 
+        {
+            object E = FindInternalEntity(NamePath);
+            if (E != null && E is Entity)
+                return (E as Entity).Set(Data);
+            else
+            {
+                String SetterName = NamePath;
+                // external variable
+                if (NamePath[0] == '.')             //this is a FQN
+                {
+                    SetterName = NamePath.Remove(0, 1);
+                }
+                else
+                {
+                    if (!NamePath.Contains("."))    //if it is qualified then it is relative to this component
+                    {
+                        SetterName = NamePrefix + NamePath;
+                    }
+                }
+                // not an internal entity so look for an external one.
+                return HostComponent.Set(SetterName, (ApsimType)Data); //not officially correct but the infrastructure doesn't return the correct value when setting readonly property
+            }
+        }
+        
+
         #endregion
 
         #region Private methods

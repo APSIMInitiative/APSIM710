@@ -418,7 +418,7 @@ namespace ModelFramework
                 doReg = true;
                 if (IsPlant && (String.Compare(Property.Name, "plant_status", true) == 0))  //don't (re)register plant_status for Plant2
                     doReg = false;
-                if (Property.IsOutput && doReg)
+                if ((Property.IsOutput || Property.IsWritable) && doReg)
                 {
                     int RegistrationIndex = Host.propertyCount(); //Registrations.Count;
                     RegistrationsProp.Add(RegistrationIndex, Property);
