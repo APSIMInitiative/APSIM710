@@ -52,14 +52,6 @@ namespace CSUserInterface
             if (language != "TCL" && language != "C#")
                 throw new Exception("Language " + language + " is unknown");
 
-            GraphDisplay.Height = GraphDisplay.MaxHeight;
-            GraphDisplay.Width = GraphDisplay.MaxWidth;
-            if (GraphDisplay.Height == 0 && GraphDisplay.Width == 0)
-            {
-                GraphDisplay.Height = panel1.Height - 10;
-                GraphDisplay.Width = panel1.Width - 10;
-            }
-
             pnlFlowLayout.Controls.Clear();
             List<string> states = new List<string>();
             foreach (GDNode node in GraphDisplay.Nodes)
@@ -1374,8 +1366,6 @@ namespace CSUserInterface
         public List<GDNode> Nodes = new List<GDNode>();
         public List<GDArc> Arcs = new List<GDArc>();
         
-        public int MaxHeight = 0;
-        public int MaxWidth = 0;
         private int m_DefaultSize = 100;
 
         private GDObject m_SelectedObject = null;
@@ -1441,9 +1431,6 @@ namespace CSUserInterface
             tmpNode.Mid.Y = tmpNode.Start.Y + (tmpNode.End.Y - tmpNode.Start.Y) / 2;
             tmpNode.Width = tmpNode.End.X - tmpNode.Start.X;
             tmpNode.Height = tmpNode.End.Y - tmpNode.Start.Y;
-
-            MaxHeight = Math.Max(MaxHeight, tmpNode.End.Y);
-            MaxWidth = Math.Max(MaxWidth, tmpNode.End.X);
         }
         public void RemoveNode()
         {
@@ -1554,8 +1541,9 @@ namespace CSUserInterface
                 {
                     MoveAll(iLeftAdj, iTopAdj);
                 }
-                Width = iRight + Margin.Right + Margin.Left;
-                Height = iBottom + Margin.Top + Margin.Bottom;
+
+				Width = Math.Max(iRight + Margin.Right + Margin.Left, Parent.Width-20);
+				Height = Math.Max(iBottom + Margin.Top + Margin.Bottom, Parent.Height - 20);
             }
             else
             {
@@ -1678,6 +1666,7 @@ namespace CSUserInterface
             }
             AddNode(gd);
             SelectedObject = gd;
+			UpdateLimits();
             Invalidate();
         }
         private void addArcMenuClicked(object sender, EventArgs e)
@@ -1725,6 +1714,7 @@ namespace CSUserInterface
                 SelectedObject = null;
                 Nodes.Remove(node);
             }
+			UpdateLimits();
             Invalidate();
         }
         private void DuplicateGDObjectMenuClicked(object sender, EventArgs e)
@@ -1771,6 +1761,7 @@ namespace CSUserInterface
                         AddArc(arc);
                     }
                     SelectedObject = newNode;
+					UpdateLimits();
                     Invalidate();
                 }
             }
@@ -1807,6 +1798,7 @@ namespace CSUserInterface
                 LastPos.X = e.X;
                 LastPos.Y = e.Y;
                 SelectedObject.Move(x, y);
+				UpdateLimits();
                 this.Invalidate();
             }
         }
