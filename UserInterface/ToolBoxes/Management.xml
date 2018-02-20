@@ -1881,6 +1881,10 @@ public class Script
    [Output, Description("The total transpiration since the last transition"), Units("mm")] public double TEp {
       get {setup(); string s = currentPaddock() + "_Ep"; return(me[s]);}
    }
+   // Cumulative rain
+   [Output, Description("The total rain since the last transition"), Units("mm")] public double TRainfall {
+      get {setup(); string s = currentPaddock() + "_rain"; return(me[s]);}
+   }
    // Cumulative Drainage
    [Output, Description("The total drainage since the last transition"), Units("mm")] public double TDrainage {
       get {setup(); string s = currentPaddock() + "_drainage"; return(me[s]);}
@@ -2011,7 +2015,11 @@ public class Script
          return(cs);
       }
    }
-   [Output, Description("The number of days in a rotation"), Units("")] public int daysInPhase = 0;
+   [Output, Description("The number of days in a rotation"), Units("")] public int daysInPhase {
+      get {setup(); string s = currentPaddock() + "_daysInPhase"; return((int) me[s]);}
+      set {}
+   }
+   
  
    private string currentPaddock() {
       string result = "";
@@ -2045,6 +2053,7 @@ public class Script
             soilN.Get("no3", out no3dep);
             me.Add(paddock.Name + "_no3Start", MathUtility.Sum(no3dep));
             me.Add(paddock.Name + "_no3Yesterday", MathUtility.Sum(no3dep));
+            me.Add(paddock.Name + "_rain", 0);
             me.Add(paddock.Name + "_Ep", 0);
             me.Add(paddock.Name + "_drainage", 0);
             me.Add(paddock.Name + "_runoff", 0);
@@ -2053,6 +2062,7 @@ public class Script
             double[] carbon = new double[15];
             soilN.Get("carbon_tot", out carbon);
             me.Add(paddock.Name + "_carbon", MathUtility.Sum(carbon));
+            me.Add(paddock.Name + "_daysInPhase", 0);
          }
       }
    } 
@@ -2062,12 +2072,13 @@ public class Script
       me[s + "_swStart"] = me[s+"_swYesterday"]; 
       me[s + "_no3Start"] = me[s + "_no3Yesterday"];
       me[s + "_Ep"] = 0;
+      me[s + "_rain"] = 0;
       me[s + "_drainage"] = 0;
       me[s + "_runoff"] = 0;
       me[s + "_evaporation"] = 0;
       me[s + "_applied_fert"] = 0;
       me[s + "_carbon"] = 0;
-      daysInPhase = 0;
+      me[s + "_daysInPhase"] = 0;
    } 
    [EventHandler] public void OnPost() { 
       foreach (Paddock paddock in MySimulation.ChildPaddocks) 
@@ -2109,12 +2120,81 @@ public class Script
             if(crop.Get("Ep", out Ep))
                me[paddock.Name + "_Ep"] += Ep;
          }
+         double rain = 0;
+         MySimulation.Get("rain", out rain);
+         me[paddock.Name + "_rain"] += rain;
+
+         me[paddock.Name + "_daysInPhase"]++;
       }
-      daysInPhase++;
    }
 } 
 </text>
         </manager2>
+        <manager2 name="RotationCounter">
+          <ui />
+          <text>using System; 
+using System.Collections.Generic;
+using ModelFramework; 
+
+// Counts the number of times a rotation has completed (ie gone back to the starting point)
+
+// Multi-paddock aware.
+public class Script 
+{ 
+   [Link] public Simulation MySimulation;   
+   [Output, Description("Number of times the rotation has cycled"), Units("n")] public int rotationNumber {
+      get {setup(); return(rotationNumberD[currentPaddock()]);}
+      set {}
+   }
+
+   private Dictionary&lt;string, int&gt; rotationNumberD = new Dictionary&lt;string, int&gt;();
+   private Dictionary&lt;string, bool&gt; needsCheck = new Dictionary&lt;string, bool&gt;();
+   private Dictionary&lt;string, string&gt; initialState = new Dictionary&lt;string, string&gt;();
+   private void setup() {
+      if (initialState.Keys.Count == 0) { OnStart_Simulation(); }
+   }
+   
+   [EventHandler] public void OnStart_Simulation() { 
+      if (initialState.Keys.Count == 0) {
+         foreach (Paddock paddock in MySimulation.ChildPaddocks) 
+         {
+            string s = "";
+            if (MySimulation.Get(paddock.Name + "_state", out s)) {
+               initialState.Add(paddock.Name, s);
+            } else {
+               MySimulation.Get("currentstate", out s);
+               initialState.Add(paddock.Name, s);
+            }
+            needsCheck.Add(paddock.Name, false);
+            rotationNumberD.Add(paddock.Name, 0);
+         }
+      }
+   }    
+ 
+   [EventHandler] public void OnPrepare() { foreach (Paddock paddock in MySimulation.ChildPaddocks) { needsCheck[paddock.Name] = false; }}
+   [EventHandler] public void OnTransition() { needsCheck[currentPaddock()] =  true; } 
+   [EventHandler] public void OnPost() { 
+      foreach (Paddock paddock in MySimulation.ChildPaddocks) {
+         if (needsCheck[paddock.Name])  { 
+            string currentState = ""; 
+            if (! MySimulation.Get(paddock.Name + "_state", out currentState))
+               MySimulation.Get("currentstate", out currentState);
+            if (currentState == initialState[paddock.Name])  
+               rotationNumberD[paddock.Name]++; 
+         } 
+      }
+   } 
+   private string currentPaddock() {
+      string result = "";
+      MySimulation.Get("currentPaddock", out result);
+      if (result != "")
+         return(result);
+      else
+         return(MySimulation.ChildPaddocks[0].Name);
+   }
+} 
+</text>
+    </manager2>
   </folder>
   <folder name="Manager (common tasks)">
     <memo name="IrrigationRules">Irrigation rules are now found in the Manager.NET folder.</memo>
