@@ -29,7 +29,7 @@ namespace CPIUserInterface
         public event ColumnClickEvent OnColumnClickEvent;
         ////====================================================================
         /// <summary>
-        /// This UI is designed for the CPI TextOutput component. Specifically the
+        /// This UI is designed for the TextOutput component. Specifically the
         /// .net version. It creates files in apsim format so the charting
         /// system can use them.
         /// N.Herrmann May 2012
@@ -543,7 +543,7 @@ namespace CPIUserInterface
 
             foreach (TCompProperty Variable in varList)
             {
-                // add the descriptions - CPI and APSIM components store this differently
+                // add the descriptions - AusFarm and APSIM components store this differently
                 if (Variable.sDescr.Length > 1)
                 {
                     Variable.InitValue.setDescr(Variable.sDescr, 255);
@@ -857,6 +857,7 @@ namespace CPIUserInterface
                             foreach (DataGridViewColumn Col in DataGrid.Columns)
                                 Col.SortMode = DataGridViewColumnSortMode.NotSortable;
                             labelLines.Text = DataGrid.RowCount.ToString() + " lines";
+                            DataGrid.Columns[0].Frozen = true;
                         }
                     }
                     catch (Exception)

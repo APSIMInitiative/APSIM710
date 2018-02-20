@@ -16,7 +16,7 @@ namespace CPIUserInterface
 {
     //=========================================================================
     /// <summary>
-    /// Used as a generic interface for CPI components. Either native code or managed code.
+    /// Used as a generic interface for AusFarm components. Either native code or managed code.
     /// This TreeGridUI class is used to show a hierarchical tree grid view of the component's
     /// initialisation section. When possible, the component's description is used to populate the 
     /// grid and the component initial values then fill the values.
@@ -28,7 +28,7 @@ namespace CPIUserInterface
         //=====================================================================
         /// <summary>
         /// A tree grid UI that allows the initialisation of a list of 
-        /// SDML values as found in the initsection of a CPI component.
+        /// SDML values as found in the initsection of an AusFarm component.
         /// </summary>
         //=====================================================================
         public TreeGridUI() : base ()
@@ -258,7 +258,7 @@ namespace CPIUserInterface
         }
         //=======================================================================
         /// <summary>
-        /// CPI components also include some properties that may not need to be shown to the user.
+        /// AusFarm components also include some properties that may not need to be shown to the user.
         /// </summary>
         /// <param name="propName">Name of the property</param>
         /// <returns>True if the property should be shown.</returns>

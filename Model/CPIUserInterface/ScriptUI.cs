@@ -21,7 +21,7 @@ namespace CPIUserInterface
 
     //=====================================================================
     /// <summary>
-    /// This UI is used to support the CPI Manager component. It contains
+    /// This UI is used to support the AusFarm Manager component. It contains
     /// a basic syntax highlighter. APSIM must have do_management event
     /// published from clock in the first part of the day.
     /// </summary>

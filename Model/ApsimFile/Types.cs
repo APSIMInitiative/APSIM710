@@ -120,7 +120,7 @@ public class Types
         public bool IsRecord;
     }
 
-    //names of the special SDML arrays (inits) found in the <initsection> of a CPI component
+    //names of the special SDML arrays (inits) found in the <initsection> of an AusFarm component
     private const String STRPUBEVENT_ARRAY = "published_events";
     private const String STRSUBEVENT_ARRAY = "subscribed_events";
     private const String STRDRIVER_ARRAY = "driver_connections";
