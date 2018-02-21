@@ -23,11 +23,13 @@ namespace CSUserInterface
         public List<GDPaddock> AvailablePaddocks = new List<GDPaddock>();
         private List<ComponentVE> MyComponents = new List<ComponentVE>();
         private string language = "TCL";
+        private bool writeDetailedLog = false;
         public RotPlotUI()
         {
             InitializeComponent();
             GraphDisplay.ChangeSelection += new EventHandler<GDChangeEventArgs>(OnChanging);
             GraphDisplay.SelectObject += new EventHandler<GDSelectEventArgs>(OnSelected);
+            GraphDisplay.NodesChanged += new EventHandler<GDChangeEventArgs>(OnNodesChanged);
             pnlHints.Dock = DockStyle.Fill;
             lstHints.Dock = DockStyle.Fill;
             lstHints.Visible = true;
@@ -52,21 +54,14 @@ namespace CSUserInterface
             if (language != "TCL" && language != "C#")
                 throw new Exception("Language " + language + " is unknown");
 
-            pnlFlowLayout.Controls.Clear();
-            List<string> states = new List<string>();
-            foreach (GDNode node in GraphDisplay.Nodes)
-            {
-                states.Add(node.Name);
-            }
-            foreach (GDPaddock paddock in ManagedPaddocks)
-            {
-                PaddockState ps = new PaddockState();
-                ps.chkPaddock.Text = paddock.Name;
-                ps.chkPaddock.Checked = paddock.Managed;
-                ps.cboState.Items.AddRange(states.ToArray());
-                ps.cboState.Text = paddock.InitialState;
-                pnlFlowLayout.Controls.Add(ps);
-            }
+            nodes = Data.SelectNodes("//detailedLogging");
+            if (nodes.Count == 0)
+                writeDetailedLog = false;
+            else
+                writeDetailedLog = nodes[0].InnerText == "yes";
+
+            updateInitStates();
+
             GraphDisplay.SelectedObject = null;
             if (language == "C#")
             {
@@ -83,6 +78,40 @@ namespace CSUserInterface
             ActionBoxSelected = false;
             txtActions.BackColor = Color.White; // TextBox.DefaultBackColor;
         }
+        public void updateInitStates()
+        {
+            pnlFlowLayout.Controls.Clear();
+            List<string> states = new List<string>();
+            foreach (GDNode node in GraphDisplay.Nodes)
+            {
+                states.Add(node.Name);
+            }
+            foreach (GDPaddock paddock in ManagedPaddocks)
+            {
+                PaddockState ps = new PaddockState();
+                ps.chkPaddock.Text = paddock.Name;
+                ps.chkPaddock.Checked = paddock.Managed;
+                ps.cboState.Items.AddRange(states.ToArray());
+                ps.cboState.Text = paddock.InitialState;
+                pnlFlowLayout.Controls.Add(ps);
+            }
+            var dtl = new System.Windows.Forms.CheckBox();
+            dtl.AutoSize = true;
+            dtl.Location = new System.Drawing.Point(10, 0);
+            dtl.Size = new System.Drawing.Size(134, 17);
+            dtl.Text = "Keep detailed event log (csv)";
+            dtl.UseVisualStyleBackColor = true;
+            dtl.Checked = writeDetailedLog;
+            dtl.CheckedChanged += detailedLog_CheckedChanged;
+            pnlFlowLayout.Controls.Add(dtl);
+        }
+
+        private void detailedLog_CheckedChanged(object sender, EventArgs e)
+        {
+            var cb = sender as System.Windows.Forms.CheckBox;
+            writeDetailedLog = cb.Checked;
+        }
+
         public override void OnSave()
         {
             string graphName = XmlHelper.Name(Data);
@@ -199,15 +228,18 @@ namespace CSUserInterface
 
             sRule += "string title;\n";
             sRule += "MySimulation.Get(\"title\", out title);\n";
-            sRule += "logfile = new System.IO.StreamWriter(title + \".\" + MySelf.FullName + \".log.csv\");\n";
-            sRule += "logfile.WriteLine(\"Date,Paddock,State,Target,Rule,Value\");\n";
+            if (writeDetailedLog)
+            {
+                sRule += "logfile = new System.IO.StreamWriter(title + \".\" + MySelf.FullName + \".log.csv\");\n";
+                sRule += "logfile.WriteLine(\"Date,Paddock,State,Target,Rule,Value\");\n";
+            }
             sRule += "}\n";
             sRule += "[Link] public Component MySelf;\n";
             sRule += "[Input] public DateTime Today;\n";
-            sRule += "private System.IO.StreamWriter logfile;\n";
+            if (writeDetailedLog) { sRule += "private System.IO.StreamWriter logfile;\n"; }
             sRule += "[EventHandler] public void OnEnd_Simulation()\n";
             sRule += "{\n";
-            sRule += "logfile.Close();\n";
+            if (writeDetailedLog) { sRule += "logfile.Close();\n"; }
             sRule += "}\n";
             sRule += "[EventHandler] public void OnStart_Simulation()\n";
             sRule += "{\n";
@@ -269,7 +301,10 @@ namespace CSUserInterface
             sRule += "               else\n";
             sRule += "                  throw new Exception(\"Nothing returned from expression '\" + testCondition + \"'\");\n";
             sRule += "               //Console.WriteLine(\" p=\" + p +\" a=\" + _arc + \"cond=\" + testCondition + \" score=\" + score);\n";
-            sRule += "               logfile.WriteLine(Today.ToShortDateString() + \",\" + p + \",\" + s.Name + \",\" + g.FindArcTarget(_arc) + \",\" + testCondition + \",\" + c);\n";
+            if (writeDetailedLog)
+            {
+                sRule += "               logfile.WriteLine(Today.ToShortDateString() + \",\" + p + \",\" + s.Name + \",\" + g.FindArcTarget(_arc) + \",\" + testCondition + \",\" + c);\n";
+            }
             sRule += "            }\n";
             sRule += "            if (score > bestScore) {\n";
             sRule += "               bestScore = score;\n";
@@ -286,9 +321,12 @@ namespace CSUserInterface
             sRule += "         if (getState(bestPaddock) != \"\") MySimulation.Publish(\"transition_from_\" + getState(bestPaddock));\n";
             sRule += "         MySimulation.Publish(\"transition\");\n";
             sRule += "         setState (bestPaddock, g.FindArcTarget(bestArc));\n";
-            sRule += "         logfile.WriteLine(Today.ToShortDateString() + \",\" + bestPaddock + \",\" + getState(bestPaddock));\n";
+            if (writeDetailedLog)
+            {
+                sRule += "         logfile.WriteLine(Today.ToShortDateString() + \",\" + bestPaddock + \",\" + getState(bestPaddock));\n";
+            }
             sRule += "         foreach (string action in s.arcs[bestArc].action ) {\n";
-            sRule += "            MySimulation.Publish(action);\n";
+            sRule += "            try {MySimulation.Publish(action);} catch (Exception e) {Console.WriteLine(\"Error publishing '\" + action + \"' to the system\"); throw (e);}\n";
             sRule += "            //Console.WriteLine(\" best=\" + bestPaddock + \" action=\" + action);\n";
             sRule += "         }\n";
             sRule += "         MySimulation.Publish(\"transition_to_\" + getState(bestPaddock));\n";
@@ -411,6 +449,8 @@ namespace CSUserInterface
             node.InnerText = GraphName;
             node = Data.AppendChild(Data.OwnerDocument.CreateElement("language"));
             node.InnerText = language;
+            node = Data.AppendChild(Data.OwnerDocument.CreateElement("detailedLogging"));
+            node.InnerText = writeDetailedLog ? "yes" : "no";
         }
         private void WriteNodes()
         {
@@ -503,8 +543,8 @@ namespace CSUserInterface
                 {
                     GDNode tmpGDNode = ReadGDNode(tmpNode);
                     GraphDisplay.AddNode(tmpGDNode);
-
                 }
+
                 nodes = Data.SelectNodes("//arc");
                 foreach (XmlNode tmpNode in nodes)
                 {
@@ -694,6 +734,11 @@ namespace CSUserInterface
             return "";
         }
 
+        public void OnNodesChanged(object sender, GDChangeEventArgs e)
+        {
+            updateInitStates();
+        }
+
         public void OnChanging(object sender, GDChangeEventArgs e)
         {
         }
@@ -788,6 +833,7 @@ namespace CSUserInterface
                 if (!lblInvalidName.Visible)
                 {
                     GraphDisplay.SelectedObject.Name = txt.Text;
+                    updateInitStates();
                     Refresh();
                 }
             }
@@ -1375,6 +1421,7 @@ namespace CSUserInterface
 
         public event EventHandler<GDChangeEventArgs> ChangeSelection;
         public event EventHandler<GDSelectEventArgs> SelectObject;
+        public event EventHandler<GDChangeEventArgs> NodesChanged;
 
         public GraphDisplayObject()
         {
@@ -1423,7 +1470,6 @@ namespace CSUserInterface
         public void AddNode(GDNode tmpNode)
         {
             Nodes.Add(tmpNode);
-
             tmpNode.End.X = tmpNode.Start.X + m_DefaultSize;
             tmpNode.End.Y = tmpNode.Start.Y + m_DefaultSize;
 
@@ -1667,6 +1713,7 @@ namespace CSUserInterface
             AddNode(gd);
             SelectedObject = gd;
 			UpdateLimits();
+            if (NodesChanged != null) NodesChanged(this, null);
             Invalidate();
         }
         private void addArcMenuClicked(object sender, EventArgs e)
@@ -1715,6 +1762,7 @@ namespace CSUserInterface
                 Nodes.Remove(node);
             }
 			UpdateLimits();
+            if (NodesChanged != null) NodesChanged(this, null);
             Invalidate();
         }
         private void DuplicateGDObjectMenuClicked(object sender, EventArgs e)
@@ -1762,6 +1810,7 @@ namespace CSUserInterface
                     }
                     SelectedObject = newNode;
 					UpdateLimits();
+                    if (NodesChanged != null) NodesChanged(this, null);
                     Invalidate();
                 }
             }
