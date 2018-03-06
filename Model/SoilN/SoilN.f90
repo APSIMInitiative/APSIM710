@@ -5290,6 +5290,10 @@ subroutine OnBiocharDecomposed (variant)
 		g%ph(layer) = g%ph(layer) + biochar%dlt_ph(layer)
 		g%nh4(layer) = g%nh4(layer) + biochar%bc_nh4_change(layer)
 		
+		g%dul_dep(layer) = g%dul_dep(layer) + biochar%dlt_dul(layer) * g%dlayer(layer)
+		g%sat_dep(layer) = g%sat_dep(layer) + biochar%dlt_sat(layer) * g%dlayer(layer)
+		g%ll15_dep(layer) = g%ll15_dep(layer) + biochar%dlt_ll(layer) * g%dlayer(layer)
+		
 		!Note, dlt_bd here refers simply to bd and not the daily change in BD. This avoids an error in the model 
 		!
 		if ( biochar%dlt_bd(layer) .lt. 1.85) then
