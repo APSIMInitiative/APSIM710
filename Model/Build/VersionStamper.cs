@@ -13,7 +13,7 @@ using System.Reflection;
 class VersionStamper
 {
     const int Major = 7;
-    const int Minor = 9;
+    const int Minor = 10;
     
     static int Main(string[] args)
     {

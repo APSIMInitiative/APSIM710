@@ -24,6 +24,5 @@ LIBS = ShLwApi
 endif
 
 PRECOMPILE = ../General/pch.h
-DEFINES = /D "BOOST_FILESYSTEM_VERSION=3" 
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
