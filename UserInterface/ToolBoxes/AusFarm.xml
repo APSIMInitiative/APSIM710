@@ -255,4 +255,623 @@ Title =  AusFarm Components_TextOutput.out</val>
       </init>
     </initsection>
   </TextOutput>
+  <manager2 name="SOMForStock">
+    <ui />
+    <text>
+using System;
+using System.Collections.Generic;
+using ModelFramework;
+
+/// &lt;summary&gt;
+/// This script is designed to be the AvailableToAnimal interface for the SurfaceOM component.
+/// &lt;/summary&gt;
+public class Script 
+{      
+   [Link()] Simulation MySimulation;
+   [Link] Paddock MyPaddock; // Can be used to dynamically get access to simulation structure and variables
+   [Input] DateTime Today;   // Equates to the value of the current simulation date - value comes from CLOCK
+   
+   // the animal forage interface
+   [Output()] public AvailableToAnimalType AvailableToAnimal {get {getSOMState(); return availableToStock;} set{;}}  
+   [Writable, Output] public RemovedByAnimalType RemovedByAnimal {get {return removedByStock;} set {setSOM(value);}}
+   
+   private const int STANDING = 0;
+   private const int LYING = 1;
+   
+   private SurfaceOM som;           // the surfaceom component that animals will forage on
+   private RemovedByAnimalType removedByStock;
+   private AvailableToAnimalType availableToStock;
+   
+   /// &lt;summary&gt;
+   /// This is the list of valid residues that can be used here
+   /// &lt;/summary&gt;
+   private string[] residueTypes = new string[] { "wheat", "barley", "oats", "sorghum", "canola", "lupins", "fababean", "chickpea", "fieldpea" };
+   private ResidueData[] ResidueDataArray;
+   
+   /// &lt;summary&gt;
+   /// A lookup list of forage parameters
+   /// &lt;/summary&gt;
+   private Dictionary&lt;string, CropParams&gt; forageParams = new Dictionary&lt;string, CropParams&gt;();
+   
+   // The following event handler will be called once at the beginning of the simulation
+   [EventHandler] public void OnInitialised()
+   {
+      som = (SurfaceOM) MyPaddock.LinkByType("SurfaceOM");
+      
+      removedByStock = new RemovedByAnimalType();
+      availableToStock = new AvailableToAnimalType();
+      
+      // setup common forage type parameters objects
+      forageParams.Add("wheat", new CerealParams());
+      forageParams.Add("barley", new CerealParams());
+      forageParams.Add("oats", new CerealParams());
+      forageParams.Add("sorghum", new CerealParams());
+
+      forageParams.Add("canola", new DicotParams());
+
+      forageParams.Add("lupins", new LegumeParams());
+      forageParams.Add("fababean", new LegumeParams());
+      forageParams.Add("chickpea", new LegumeParams());
+      forageParams.Add("fieldpea", new LegumeParams());
+      
+      readResidueParams(); // now read these parameters into the residue item
+   }
+
+   // The following event handler will be called each day at the beginning of the day
+   [EventHandler] public void OnPrepare()
+   {
+      //double scover;
+      //som.Get("surfaceom_cover", out scover);
+      
+   }
+
+   [EventHandler] public void OnProcess()
+   {
+   }
+   
+   // Handle the response to the request for the SOM status
+   [EventHandler] public void OnSurfaceOrganicMatterState(SurfaceOrganicMatterType data)
+   {  
+      storeResidueData(data);    // store the SOM data
+      getGrazingData();          // populate the AvailableToAnimal
+   }
+   
+   [EventHandler] public void OnPost()
+   {
+
+   }
+
+   /// &lt;summary&gt;
+   /// Store the SOM data retrieved from SurfaceOM 
+   /// &lt;/summary&gt;
+   /// &lt;param name="data"&gt;The SOM state&lt;/param&gt;
+   private void storeResidueData(SurfaceOrganicMatterType data)
+   {
+      for (int Idx = 0; Idx &lt; ResidueDataArray.Length; Idx++)
+         ResidueDataArray[Idx].Pools = null;
+      
+      for (int iType = 0; iType &lt; data.Pool.Length; iType++)
+      {
+         SurfaceOrganicMatterPoolType residueValue = data.Pool[iType];     // wheat, canola ......
+
+         string sType = residueValue.OrganicMatterType;
+         int Idx = ResidueDataArray.Length - 1;
+         while ((Idx &gt;= 0) &amp;&amp; (string.Compare(sType, ResidueDataArray[Idx].ResidueType, true) != 0)) 
+            Idx--;
+         
+         if (Idx &lt; 0) 
+            ;//   log("Surface OM type " + sType + " not recognised in OnSurfaceOrganicMatterState()");
+         else
+         {
+            ResidueDataArray[Idx].Pools = new PoolData[2, 3];
+            for (int iPool = 0; iPool &lt;= Math.Min(2, residueValue.StandingFraction.Length - 1); iPool++)
+            {
+               FOMType fom = residueValue.StandingFraction[iPool];
+               ResidueDataArray[Idx].Pools[0, iPool] = new PoolData();
+               ResidueDataArray[Idx].Pools[0, iPool].DM = fom.amount; 
+               ResidueDataArray[Idx].Pools[0, iPool].C = fom.C;
+               ResidueDataArray[Idx].Pools[0, iPool].N = fom.N; 
+               ResidueDataArray[Idx].Pools[0, iPool].P = fom.P;
+               ResidueDataArray[Idx].Pools[0, iPool].AshAlk = fom.AshAlk;
+            }
+            
+            for (int iPool = 0; iPool &lt;= Math.Min(2, residueValue.LyingFraction.Length - 1); iPool++)
+            {
+               FOMType fom = residueValue.LyingFraction[iPool];
+               ResidueDataArray[Idx].Pools[1, iPool] = new PoolData();
+               ResidueDataArray[Idx].Pools[1, iPool].DM = fom.amount;
+               ResidueDataArray[Idx].Pools[1, iPool].C = fom.C;
+               ResidueDataArray[Idx].Pools[1, iPool].N = fom.N; 
+               ResidueDataArray[Idx].Pools[1, iPool].P = fom.P;
+               ResidueDataArray[Idx].Pools[1, iPool].AshAlk = fom.AshAlk;
+            }
+            ResidueDataArray[Idx].PotDecomp = residueValue.PotDecompRate;
+         }
+      }
+   }
+
+   //=========================================================================
+   /// &lt;summary&gt;
+   /// Using the SOM state data, populate an AvailableToAnimal
+   /// &lt;/summary&gt;
+   private void getGrazingData()
+   {
+      
+      string[] organ = new string[]{"standing", "lying"};
+      double[] height = new double[]{300.0, 90.0};
+            
+      // populate the forage structure for animals
+      List&lt;AvailableToAnimalelementType&gt; cohorts = new List&lt;AvailableToAnimalelementType&gt;();
+      
+      for (int Idx = 0; Idx &lt; ResidueDataArray.Length; Idx++)     
+      {
+         // each residue type that has data from SOM
+         ResidueData residue = ResidueDataArray[Idx];
+         
+         // if there was residue found in SOM for this residue type
+         if (residue.Pools != null)
+         {
+            // get the weighted averages for N and DMD of the standing and lying pools
+            double biomass;
+            double sumDMD;
+            double sumN;
+            double sumAsh;
+            for (int part = STANDING; part &lt;= LYING; part++)
+            {
+               biomass = 0;
+               sumDMD = 0;
+               sumN = 0;
+               sumAsh = 0;
+               // carbohydrate, cellulose, lignin 
+               for (int i = 0; i &lt; 3; i++)
+               {
+                  biomass += residue.Pools[part, i].DM;
+                  sumDMD += calcPoolDMD(Idx, residue.Pools[part, i].N / residue.Pools[part, i].DM) * residue.Pools[part, i].DM;
+                  sumN += residue.Pools[part, i].DM * residue.Pools[part, i].N;
+                  sumAsh += residue.Pools[part, i].DM * residue.Pools[part, i].AshAlk;
+               }
+               // store the ratio of this pool DM to the total standing or lying
+               for (int i = 0; i &lt; 3; i++)
+                  ResidueDataArray[Idx].Pools[part, i].DmFract = residue.Pools[part, i].DM / biomass;
+                  
+               double avDMD = sumDMD / biomass;
+               double avN = sumN / biomass;
+               double avAsh = sumAsh / biomass;
+            
+               AvailableToAnimalelementType cohort = new AvailableToAnimalelementType();
+               cohort.CohortID = residue.ResidueType;
+               cohort.Organ = organ[part];
+               cohort.AgeID = "senesced";
+               cohort.Bottom = 0;
+               cohort.Top = height[part];
+               cohort.Chem = "ddm";
+               cohort.Weight = biomass * avDMD;
+               cohort.N = avN * avDMD;
+               cohort.P = 0;
+               cohort.S = cohort.N * residue.S2N;
+               cohort.AshAlk = avAsh * avDMD;
+               cohorts.Add(cohort);
+            
+               cohort = new AvailableToAnimalelementType();
+               cohort.CohortID = residue.ResidueType;
+               cohort.Organ = organ[part];
+               cohort.AgeID = "senesced";
+               cohort.Bottom = 0;
+               cohort.Top = height[part];
+               cohort.Chem = "idm";
+               cohort.Weight = biomass * (1 - avDMD);
+               cohort.N = avN * (1 - avDMD);
+               cohort.P = 0;
+               cohort.S = cohort.N * residue.S2N;
+               cohort.AshAlk = avAsh * (1 - avDMD);
+               cohorts.Add(cohort);
+            }
+         }
+      }
+      
+      availableToStock.element = new AvailableToAnimalelementType[cohorts.Count];
+      for(int c = 0; c &lt; cohorts.Count; c++)
+      {
+         availableToStock.element[c] = new AvailableToAnimalelementType();
+         availableToStock.element[c].CohortID = cohorts[c].CohortID;
+         availableToStock.element[c].Organ = cohorts[c].Organ;
+         availableToStock.element[c].AgeID = cohorts[c].AgeID;
+         availableToStock.element[c].Bottom = cohorts[c].Bottom;
+         availableToStock.element[c].Top = cohorts[c].Top;
+         availableToStock.element[c].Chem = cohorts[c].Chem;
+         availableToStock.element[c].Weight = cohorts[c].Weight;
+         availableToStock.element[c].N = cohorts[c].N;
+         availableToStock.element[c].P = cohorts[c].P;
+         availableToStock.element[c].S = cohorts[c].S;
+         availableToStock.element[c].AshAlk = cohorts[c].AshAlk;
+         //log(string.Format("Available: {0} {1} {2} {3}", cohorts[c].CohortID, cohorts[c].Organ, cohorts[c].Chem, cohorts[c].Weight));
+      }
+   }
+     
+   private double[] ClassDig = new double[] {0.8,0.7,0.6,0.5,0.4,0.3};
+   
+   /// &lt;summary&gt;
+   /// Do some estimation of the DMD for the N concentration value
+   /// &lt;/summary&gt;
+   /// &lt;param name="residueIdx"&gt;The residue item/type&lt;/param&gt;
+   /// &lt;param name="NConc"&gt;The N value&lt;/param&gt;
+   /// &lt;returns&gt;Estimate of the DMD&lt;/returns&gt;
+   private double calcPoolDMD(int residueIdx, double NConc)
+   {
+      double dmd;
+      ResidueData residueData = ResidueDataArray[residueIdx];
+      
+      if (NConc &gt;= residueData.RefNConc[0])
+         dmd = ClassDig[0];
+      else if (NConc &lt;= residueData.RefNConc[5])
+         dmd = ClassDig[5];
+      else
+      {
+         // fairly rough interpolation estimate
+         int z = 1;
+         while (NConc &lt; residueData.RefNConc[z])
+         {
+            z++;
+         }
+
+         double fracN = (NConc - residueData.RefNConc[z]) / (residueData.RefNConc[z - 1] - residueData.RefNConc[z]);
+         double digWidth = ClassDig[z - 1] - ClassDig[z];
+         dmd = fracN * digWidth + ClassDig[z];
+      }
+      return dmd;
+   }
+          
+   /// &lt;summary&gt;
+   /// Make a request for the SOM state hence triggering an event
+   /// &lt;/summary&gt;
+   private void getSOMState()
+   { 
+      // request the SOM status and it will be handled by OnSurfaceOrganicMatterState()
+      if (som != null)
+      {
+         int som_status;
+         som.Get("surface_organic_matter", out som_status);
+      }
+      else
+         log("Cannot request surface_organic_matter in getSOMState()");
+   }
+   
+   /// &lt;summary&gt;
+   /// Is called whenever the Stock component sets a RemovedByAnimal value.
+   /// The forage removed is then removed from SOM. 
+   /// &lt;/summary&gt;
+   /// &lt;param name="removed"&gt;The residue removed by Stock&lt;/param&gt;
+   private void setSOM(RemovedByAnimalType removed)
+   {
+      //log("setSOM");
+      // the RemovedByAnimal structure has been populated by Stock.
+      if (removed != null)
+      {
+         if (removed.element != null)
+         {
+            List&lt;string&gt; residueList = new List&lt;string&gt;();
+            SurfaceOrganicMatterType somRemoved = new SurfaceOrganicMatterType();
+            
+            // more than one residue can be removed
+            // get a unique list of residues removed
+            for (int c = 0; c &lt; removed.element.Length; c++)
+            {
+               if (residueList.IndexOf(removed.element[c].CohortID) &lt; 0)
+               {
+                  residueList.Add(removed.element[c].CohortID);
+               }
+            }
+            
+            // create all the removal pools
+            int somTypes = residueList.Count; // the som types removed
+            somRemoved.Pool = new SurfaceOrganicMatterPoolType[somTypes];
+            for (int idx = 0; idx &lt; residueList.Count; idx++)        // for each residue
+            {
+               somRemoved.Pool[idx] = new SurfaceOrganicMatterPoolType();
+               somRemoved.Pool[idx].OrganicMatterType = residueList[idx];     // name of the residue type
+               somRemoved.Pool[idx].Name = residueList[idx];     // name of the residue type
+               
+               // find the residue data details used when retrieving the residue and populating AvailableToAnimal (assuming everything is synchronous)
+               int resIdx = ResidueDataArray.Length - 1;
+               while ((resIdx &gt;= 0) &amp;&amp; (string.Compare(residueList[idx], ResidueDataArray[resIdx].ResidueType, true) != 0)) 
+                  resIdx--;
+               
+               if (resIdx &gt;= 0)
+               {
+                  // create the pools
+                  somRemoved.Pool[idx].StandingFraction = new FOMType[3];
+                  somRemoved.Pool[idx].LyingFraction = new FOMType[3];
+                  for(int i = 0;i &lt; 3;i++)
+                  {
+                     somRemoved.Pool[idx].StandingFraction[i] = new FOMType();
+                     somRemoved.Pool[idx].LyingFraction[i] = new FOMType();
+                  }
+                  
+                  somRemoved.Pool[idx].PotDecompRate = Convert.ToSingle(ResidueDataArray[resIdx].PotDecomp);
+                  
+                  double totalFromLying = 0;
+                  double totalFromStanding = 0;
+                  for (int c = 0; c &lt; removed.element.Length; c++)
+                  {
+                     //log(string.Format("Removed: {0} {1} {2} {3}", removed.element[c].CohortID, removed.element[c].Organ, removed.element[c].Chem, removed.element[c].WeightRemoved));
+            
+                     if (string.Compare(residueList[idx], removed.element[c].CohortID, true) == 0) // if this cohort returned is the residue
+                     {
+                        if (removed.element[c].Organ == "standing")
+                           totalFromStanding += removed.element[c].WeightRemoved;
+                        else
+                           totalFromLying += removed.element[c].WeightRemoved; // calculate the removal
+                     } 
+                  }  // next cohort
+                  
+                  // proportion out the total standing or lying into the 3 pools
+                  for (int pool = 0; pool &lt; 3; pool++)
+                  {
+                     somRemoved.Pool[idx].StandingFraction[pool].amount = (float) (ResidueDataArray[resIdx].Pools[STANDING, pool].DmFract * totalFromStanding);
+                     double dmRemovedFract = 0.0;
+                     if (ResidueDataArray[resIdx].Pools[STANDING, pool].DM &gt; 0)
+                        dmRemovedFract = somRemoved.Pool[idx].StandingFraction[pool].amount / ResidueDataArray[resIdx].Pools[STANDING, pool].DM; // prop removed
+                     
+                     // proportion the removal of the following properties
+                     somRemoved.Pool[idx].StandingFraction[pool].N = (float) (ResidueDataArray[resIdx].Pools[STANDING, pool].N * dmRemovedFract);
+                     somRemoved.Pool[idx].StandingFraction[pool].P = (float) (ResidueDataArray[resIdx].Pools[STANDING, pool].P * dmRemovedFract);
+                     somRemoved.Pool[idx].StandingFraction[pool].C = (float) (ResidueDataArray[resIdx].Pools[STANDING, pool].C * dmRemovedFract);
+                     somRemoved.Pool[idx].StandingFraction[pool].AshAlk = (float) (ResidueDataArray[resIdx].Pools[STANDING, pool].AshAlk * dmRemovedFract);
+                  }
+                  for (int pool = 0; pool &lt; 3; pool++)
+                  {
+                     somRemoved.Pool[idx].LyingFraction[pool].amount = (float) (ResidueDataArray[resIdx].Pools[LYING, pool].DmFract * totalFromLying);
+                     double dmRemovedFract = 0.0;
+                     if (ResidueDataArray[resIdx].Pools[LYING, pool].DM &gt; 0)
+                        dmRemovedFract = somRemoved.Pool[idx].LyingFraction[pool].amount / ResidueDataArray[resIdx].Pools[LYING, pool].DM; // prop removed
+                     
+                     somRemoved.Pool[idx].LyingFraction[pool].N = (float) (ResidueDataArray[resIdx].Pools[LYING, pool].N * dmRemovedFract);
+                     somRemoved.Pool[idx].LyingFraction[pool].P = (float) (ResidueDataArray[resIdx].Pools[LYING, pool].P * dmRemovedFract);
+                     somRemoved.Pool[idx].LyingFraction[pool].C = (float) (ResidueDataArray[resIdx].Pools[LYING, pool].C * dmRemovedFract);
+                     somRemoved.Pool[idx].LyingFraction[pool].AshAlk = (float) (ResidueDataArray[resIdx].Pools[LYING, pool].AshAlk * dmRemovedFract);
+                  }
+               }
+            }  // next residue
+            // Send the removal to Surface OM
+            som.RemoveSurfaceom(somRemoved);  //call SOM.remove_surfaceom
+         }
+      } 
+   }
+   
+   private void log(string msg)
+   {
+      Console.WriteLine(msg);
+   }
+   
+   /// &lt;summary&gt;
+   /// Copy the forage parameters into the residue structures
+   /// &lt;/summary&gt;
+   private void readResidueParams()
+   {
+      ResidueDataArray = new ResidueData[residueTypes.Length];
+      for (int i = 0; i &lt; residueTypes.Length;i++)
+      {
+         CropParams forage;
+         string residueName = residueTypes[i];
+         if (forageParams.TryGetValue(residueName, out forage))
+         {
+            ResidueDataArray[i] = new ResidueData();
+            ResidueData item = ResidueDataArray[i];
+            item.ResidueType = residueName;
+            if (forage.IsLegume)
+               item.Legume = 1.0;
+            else
+               item.Legume = 0.0;
+            item.RefNConc = forage.ResidueRefNConc;
+            item.CP2N = forage.CP2N[ParamConsts.STEM];
+            item.P2N = forage.P2N[ParamConsts.STEM];
+            item.S2N = forage.S2N[ParamConsts.STEM];
+            item.AshAlkalinity = forage.AshAlk[ParamConsts.STEM];
+            ResidueDataArray[i] = item;
+         }
+         else
+            log("Missing surface OM type " + residueTypes[i]);
+      }
+   }
+}
+  
+
+///&lt;summary&gt;
+/// Constants used when accessing forage parameters
+///&lt;/summary&gt;
+public class ParamConsts
+{
+   // age
+   static public int GREEN = 0;
+   static public int SEN = 1;
+   static public int DEAD = 2;
+
+   // part
+   //static public int ROOT = 0;
+   static public int LEAF = 0;
+   static public int STEM = 1;
+   static public int POD = 2;
+   static public int MEAL = 3;
+   static public int OIL = 4;
+
+   static public string[] PLANT_PART = new string[] { "leaf", "stem", "pod", "meal", "oil" };
+   static public string[] PLANT_COMP = new string[] { "green", "senesced", "dead" };
+}
+
+///&lt;summary&gt;
+/// Base class for any forage parameters
+///&lt;/summary&gt;
+public class CropParams
+{
+   public bool IsLegume;
+
+   public double[,] MaxDMD;           // [age, part]
+   public double[,] MinDMD;           // [age, part]
+
+   // interpolation - average DMD vs stage
+   public double[] StagePoints;       // [stage] 
+   public double[,,] StageDMD;        // [age, part, stage]
+
+   public double SeedRipeStage;
+   public double[] SeedDMD;           // [part]  part = POD..OIL
+   public int[] SeedClass;            // [UNRIPE..RIPE]
+
+   public double[] CP2N;              // [part] part = leaf..oil
+   public double[] P2N;               // [part] part = leaf..oil
+   public double[] S2N;               // [part] part = leaf..oil
+   public double[] AshAlk;            // [part] part = leaf..oil
+
+   public int DefolStageCount;
+   public double[] DefolStagePoints;  // [stage]
+   public double[] DefolStageLower;   // [stage]
+   public double[] DefolStageUpper;   // [stage]
+   public double DefolPower;
+
+   /// &lt;summary&gt;
+   /// reference N concentrations of each DMD class (80%-30%) for use with SurfaceOM 
+   /// &lt;/summary&gt;
+   public double[] ResidueRefNConc;
+}
+
+/// &lt;summary&gt;
+/// Cereal crops
+/// &lt;/summary&gt;
+public class CerealParams : CropParams
+{
+   /// &lt;summary&gt;
+   /// wheat, barley, oats, sorghum
+   /// &lt;/summary&gt;
+   public CerealParams()
+   {
+      this.IsLegume = false;
+      //                        leaf stem 
+      this.MaxDMD = new double[,] {{0.85,0.85},   //green
+                                   {0.75,0.55},   //sen 
+                                   {0.75,0.55} }; //dead          
+
+      this.MinDMD = new double[,]{{0.50,0.45},    //green
+                                  {0.40,0.25},    //sen 
+                                  {0.40,0.25} };  //dead          
+
+      // interpolation - average DMD vs stage
+      this.StagePoints = new double[] { 0.0, 5.0, 6.0, 6.5, 8.0, 9.0, 10.0, 11.0 };
+      this.StageDMD = new double[,,] { //green
+         {
+            {0.82, 0.82, 0.82, 0.82, 0.70, 0.68, 0.68, 0.68}, //leaf
+            {0.82, 0.82, 0.65, 0.64, 0.59, 0.51, 0.42, 0.30 } //stem   
+         },
+         { //sen
+            {0.75, 0.75, 0.70, 0.68, 0.60, 0.58, 0.50, 0.43}, //leaf
+            {0.55, 0.55, 0.55, 0.55, 0.45, 0.38, 0.30, 0.30}  //stem
+         },
+         { //dead
+            {0.60, 0.60, 0.60, 0.60, 0.60, 0.57, 0.43, 0.43}, //leaf
+            {0.55, 0.55, 0.55, 0.55, 0.45, 0.38, 0.30, 0.30}  //stem
+         }
+         };
+      this.SeedRipeStage = 9.0;
+      this.SeedClass = new int[] { 1, 3 };
+      this.SeedDMD = new double[] { 0, 0, 0.67, 0.9, 1.0 };
+
+      this.CP2N = new double[] { 6.25, 6.25, 6.25, 5.70, 5.70 };
+      this.P2N = new double[] { 0.05, 0.05, 0.05, 0.15, 0.00 };
+      this.S2N = new double[] { 0.07, 0.07, 0.07, 0.09, 0.00 };
+      this.AshAlk = new double[] { 0.60, 0.60, 1.10, 1.10, 1.10 };
+
+      this.ResidueRefNConc = new double[] { 0.040, 0.029, 0.019, 0.011, 0.005, 0.003 };
+   }
+}
+
+/// &lt;summary&gt;
+/// Dicot crops
+/// &lt;/summary&gt;    
+public class DicotParams : CropParams
+{
+   /// &lt;summary&gt;
+   /// canola
+   /// &lt;/summary&gt;
+   public DicotParams()
+   {
+      this.IsLegume = false;
+      //                        leaf stem 
+      this.MaxDMD = new double[,] {{0.85,0.85},   //green
+                                   {0.75,0.55},   //sen 
+                                   {0.75,0.55} }; //dead          
+
+      this.MinDMD = new double[,]{{0.50,0.45},    //green
+                                  {0.40,0.25},    //sen 
+                                  {0.40,0.25} };  //dead          
+
+      // interpolation - average DMD vs stage
+      this.StagePoints = new double[] { 0.00, 6.00, 7.00, 8.00, 10.00 };
+      this.StageDMD = new double[,,] { //green
+         {
+            {0.84, 0.84, 0.78, 0.55, 0.55}, //leaf
+            {0.84, 0.84, 0.76, 0.50, 0.50} //stem   
+         },
+         { //sen
+            {0.60, 0.60, 0.56, 0.40, 0.40}, //leaf
+            {0.55, 0.55, 0.49, 0.30, 0.30}  //stem
+         },
+         { //dead
+            {0.60, 0.60, 0.56, 0.40, 0.40}, //leaf
+            {0.55, 0.55, 0.49, 0.30, 0.30}  //stem
+         }
+         };
+      this.SeedRipeStage = 9.0;
+      this.SeedClass = new int[] { 1, 3 };
+      this.SeedDMD = new double[] { 0, 0, 0.65, 0.67, 1.00 };
+
+      this.CP2N = new double[] { 6.25, 6.25, 6.25, 5.70, 5.70 };
+      this.P2N = new double[] { 0.12, 0.12, 0.12, 0.27, 0.00 };
+      this.S2N = new double[] { 0.30, 0.30, 0.30, 0.21, 0.00 };
+      this.AshAlk = new double[] { 1.15, 1.15, 1.15, 0.75, 0.00 };
+
+      this.ResidueRefNConc = new double[] { 0.040, 0.029, 0.019, 0.011, 0.005, 0.003 };
+   }
+}
+
+/// &lt;summary&gt;
+/// Legume crops
+/// &lt;/summary&gt;
+public class LegumeParams : DicotParams
+{
+   /// &lt;summary&gt;
+   /// lupin, fababean, chickpea, fieldpea
+   /// &lt;/summary&gt;
+   public LegumeParams()
+   {
+      this.IsLegume = true;
+      this.ResidueRefNConc = new double[] { 0.052, 0.037, 0.025, 0.015, 0.006, 0.004 };
+   }
+}
+
+public class ResidueData
+{
+   public string ResidueType;
+   public double Legume;
+   public double[] RefNConc = new double[6]; // DigClassArray;
+   public double CP2N;
+   public double P2N;
+   public double S2N;
+   public double AshAlkalinity;
+   public PoolData[,] Pools = new PoolData[2, 3];  //standing/lying, OM pool
+
+   public double PotDecomp;
+}
+
+public class PoolData
+{
+   public double DM;
+   public double C;
+   public double N;
+   public double P;
+   public double AshAlk;
+   public double DmFract;
+   //public double NConc;  // [N] in DMD pool
+   //public double PConc;  // [P] in DMD pool
+}
+
+</text>
+  </manager2>
 </folder>
