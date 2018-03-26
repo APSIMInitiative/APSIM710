@@ -28,6 +28,8 @@ namespace CSUserInterface
         private DateTime StartDate;
         private DateTime EndDate;
         private string FileName;
+        private int YearStart = 0;
+        private int NumYears = 0;
 
         public MetGraphControl()
             : base()
@@ -64,8 +66,13 @@ namespace CSUserInterface
                 NumYearsBox.ValueChanged -= NumYearsBoxChanged;
                 YearStartBox.Value = StartDate.Year;
                 NumYearsBox.Value = 1;
+                if (NumYears != 0)
+                    NumYearsBox.Value = NumYears;
+                if (YearStart != 0)
+                    YearStartBox.Value = YearStart;
                 YearStartBox.ValueChanged += YearStartBoxChanged;
                 NumYearsBox.ValueChanged += NumYearsBoxChanged;
+                
                 RefreshAllCharts();
             }
             YearPanel.Visible = (TabControl.SelectedIndex != 0);
@@ -74,7 +81,6 @@ namespace CSUserInterface
             YearPanel.BringToFront();
         }
 
-
         public void SetFileName(string FileName)
         {
             FileName = Controller.ToRelativePath(FileName);
@@ -82,6 +88,8 @@ namespace CSUserInterface
             {
                 XmlHelper.SetValue(Data, "filename", FileName);
                 this.FileName = FileName;
+                YearStart = 0;  // init for new file
+                NumYears = 0;
                 OnRefresh();
             }
         }
@@ -91,10 +99,12 @@ namespace CSUserInterface
         }
         private void YearStartBoxChanged(object sender, System.EventArgs e)
         {
+            YearStart = (int)YearStartBox.Value;
             RefreshAllCharts();
         }
         private void NumYearsBoxChanged(System.Object sender, System.EventArgs e)
         {
+            NumYears = (int)NumYearsBox.Value;
             RefreshAllCharts();
         }
         private void TabControl_TabIndexChanged(System.Object sender, System.EventArgs e)
