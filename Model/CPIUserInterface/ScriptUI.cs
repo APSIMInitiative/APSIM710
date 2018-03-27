@@ -237,25 +237,22 @@ namespace CPIUserInterface
             {
                 FILLING = true;
 
-                String buf = Clipboard.GetText(); //keep the clipboard contents
                 LockWindow(richTextBox1.Handle);
                 int cursorPos = richTextBox1.SelectionStart;
                 int startOfLine = richTextBox1.GetFirstCharIndexFromLine(lineNumber);
                 String strLine = richTextBox1.Lines[lineNumber];
 
-                //now remove the text I am about to parse
+                //now select the text I am about to parse
                 richTextBox1.SelectionStart = startOfLine;
                 richTextBox1.SelectionLength = strLine.Length;
-                richTextBox1.Select();
-                richTextBox1.Cut();
 
                 ParseLine(strLine); //redraws the text with highlighting
+
                 richTextBox1.SelectionLength = 0;
                 richTextBox1.SelectionStart = cursorPos;
+
                 LockWindow(IntPtr.Zero);
                 richTextBox1.Update();
-
-                Clipboard.SetText(buf); //restore what was in the clipboard
 
                 FILLING = false;
             }
