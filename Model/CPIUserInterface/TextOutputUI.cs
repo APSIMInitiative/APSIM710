@@ -292,10 +292,8 @@ namespace CPIUserInterface
             base.OnRefresh();
 
             // get the filename from the simulation
-            ApsimFile.Component outputfileComponent = Controller.ApsimData.Find(NodePath).Parent;
-            FileName = ComponentUtility.CalcFileName(outputfileComponent);
-            ApsimFile.Component me = Controller.ApsimData.Find(NodePath);
-            FileName = Path.GetFileNameWithoutExtension(FileName) + "_" + me.Name + ".out";
+            ApsimFile.Component outputfileComponent = Controller.ApsimData.Find(NodePath);
+            FileName = ComponentUtility.CalcFileName(outputfileComponent, "_");
             String aVersion = Configuration.Instance.ApsimVersion();
             String Title = "ApsimVersion = " + aVersion + Environment.NewLine + "Title = " + FileName;
 
