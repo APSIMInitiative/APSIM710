@@ -25,10 +25,6 @@ namespace ApsimFile
 	{
 		public bool NiceUser = true;
 
-		// user pass to use if we are uploading 
-		public string username = "";
-		public string password = "";
-		public bool doUpload = false;
 		// True if we want unix clients to run the scripts and sim files
 		public Configuration.architecture arch = Configuration.getArchitecture ();
 
@@ -80,29 +76,6 @@ namespace ApsimFile
 
             if (Notifier != null) Notifier(100, "Zipping up");
 			string localzip = zipUp ();
-			if (doUpload) {
-                if (Notifier != null) Notifier(0, "Uploading");
-				var values = new NameValueCollection  {
-                    { "useAutoSubmit", "false" },
-                    { "uploadDirectory", "/home/" + username }
-                };
-				var files = new[]  {
-                  new Utility.UploadFile  {
-                   RemoteName = Path.GetFileName (localzip),
-                   LocalName = localzip,
-                   ContentType = "application/x-zip",
-                }};
-				string result = Encoding.ASCII.GetString (Utility.UploadFiles ("https://apsrunet.apsim.info/upload.php", files, values, username, password));
-				if (result != "{\"status\":\"success\"}")
-				   throw new Exception("HTTP error when uploading.\n" + result);
-				ApsimCondor a = new ApsimCondor ();
-				a.Credentials = new System.Net.NetworkCredential (username, password);
-				string id = a.AddJob (new string [] {"/home/" + username + "/" + Path.GetFileName (localzip)});
-				string status = a.GetField(id, "status");
-				if (status == "error") 
-				   throw new Exception("Error submitting job.\n" + a.GetField(id, "message"));
-                return id;
-			}
 			return null;
 		}
 		// Add individual .apsim files to the job

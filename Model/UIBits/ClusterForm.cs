@@ -80,9 +80,6 @@ namespace UIBits
         public bool archIsWin32 { get { return arch_win32.Checked; } }
         public bool NiceUser { get { return NiceUserCheckBox.Checked; } }
 
-        public string uploadUsername { get { return username.Text; } }
-        public string uploadPassword { get { return password.Text; } }
-        public bool doUpload { get { return uploadSelected.Checked; } }
         public bool useSingleCPU { get { return useSingleCPUCheckbox.Checked; } }
 
         private void AllSimsCheckBox_Click(object sender, EventArgs e)
@@ -148,24 +145,8 @@ namespace UIBits
            Configuration.Instance.SetSetting("ClusterSimsPerJob", Convert.ToString(simsPerJob.Value));
            Configuration.Instance.SetSetting("ClusterOutputFolder", ClusterSimulationFolder.Text);
            Configuration.Instance.SetSetting("ClusterUseSingleCPU", Convert.ToString(useSingleCPUCheckbox.Checked));
-            
         }
 
-
-        private void writeToZipfile_Click(object sender, EventArgs e)
-        {
-            uploadSelected.Checked = false;
-            ClusterSimulationFolder.Enabled = true;
-            BrowseButton2.Enabled = true;
-            username.Enabled = false; password.Enabled = false;
-        }
-        private void uploadSelected_Click(object sender, EventArgs e)
-        {
-            ClusterSimulationFolder.Enabled = false;
-            BrowseButton2.Enabled = false;
-            writeToZipfile.Checked = false;
-            username.Enabled = true; password.Enabled = true;
-        }
 
         private void AllSimsCheckBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -186,6 +167,5 @@ namespace UIBits
         {
             useSingleCPUCheckbox.Checked = !useSingleCPUCheckbox.Checked;
         }
-
     }
 }

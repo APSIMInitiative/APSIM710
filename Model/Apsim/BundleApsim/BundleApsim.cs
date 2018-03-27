@@ -101,8 +101,7 @@ public class  BundleApsim
             // Run
 			CondorJob c = new CondorJob();
 			c.NiceUser = niceUser;
-                        c.doUpload = false;
-                        c.arch = 0;
+            c.arch = 0;
 			if (archUnix) c.arch |= Configuration.architecture.unix;
 			if (archWindows) c.arch |= Configuration.architecture.win32;
 
