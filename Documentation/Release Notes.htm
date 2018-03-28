@@ -1,8 +1,7 @@
-<html>
-   <head>
-      <title>APSIM 7.10 Release Notes</title>
-      <link href="ApsimWebStyle.css" rel="stylesheet" type="text/css">
-   </head>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      
+      <title>APSIM 7.10 Release Notes</title><link href="ApsimWebStyle.css" rel="stylesheet" type="text/css"></head>
    <body>
     <h1>APSIM 7.10 release notes</h1>
     <p>29th March 2018</p>
@@ -12,15 +11,37 @@
 	????
 	
 	<h2>Ausfarm STOCK model now included in APSIM</h2>
-	????
+	The
+AusFarm stock model can now run in APSIM in it's standard form as
+distributed with AusFarm. This means that the previous work that was
+called the StockScienceConverter is no longer needed. AusFarm Pasture
+and Supplement are also functioning this way now. This means that when
+they are in a simulation they have a detailed data entry user interface
+for setting the initialisation values. <br>Stock communicates with Plant and SurfaceOM using the new specification as found at: &nbsp;<a href="http://www.apsim.info/Documentation/TechnicalandDevelopment/APSIMcomponentcommunications.aspx">APSIM Documentation</a>.<br>There is an example simulation called <span style="font-style: italic;">Wether pasture crop rotation</span>. It contains a typical fattening enterprise running wethers on pasture with winter crop and stubble feeding.<br><br><span style="font-weight: bold;">Compatibility with the previous StockScienceConverter:<span style="font-weight: bold;"><br><span style="font-weight: bold;"></span></span></span>To
+continue using simulations that were developed with the
+StockScienceConverter you will need to add an extra component to your
+simulation. This is the Plugins component found in the Standard Toolbox
+| Structural folder. Drop this component in the top level of the
+simulation and ensure that the plugin; <span style="font-style: italic;">%apsim%\UserInterface\Ausfarm.xml</span>
+is enabled. Within this component, disable or remove the other AusFarm
+plugins; AFGeneric, AFManager, AFPasture, AFStock, and AFSupplement.
+You may need to then save and reopen your simulation.<span style="font-weight: bold;"><span style="font-weight: bold;"><br></span></span><br><br>
 	
     <h2>APSIM's compute cluster decommissioned</h2>
-    The shared computing resources of the APSIM JV have been decommissioned, replaced by each hosting organisations own capabilities. The &quot;Run on Cluster&quot; button in the GUI has changed to "Generate Simulation" - which will generate simulation packages that can run on a variety of clusters. The CSIRO uses a modification of the condor .submit file. UQ uses the PBSPro batch execution environment, which uses a modiufication of the .pbs file.
-    
-    <h2>Container architectures</h2>
-    Rather than compiling apsim for the native OS of each cluster, APSIM's build tree has scripts to build in both <a href="http://singularity.lbl.gov/">Singularity</a> and <a href="https://www.docker.com/">Docker</a>. Running apsim in a container architecture avoids the need to compile apsim and its support libraries for each underlying OS. Mounting the container over NFS is more efficient than copying and unpacking the installation. Apsim execution times are the same whether compiled native or containered. Versioning is simple - one version per container.
-	
-	<h2>List of all changes and fixed defects</h2>
+The shared computing resources of the APSIM JV have been
+decommissioned, replaced by each hosting organisations own
+capabilities. The "Run on Cluster" button in the GUI has changed to
+"Generate Simulation" - which will generate simulation packages that
+can run on a variety of clusters. The CSIRO uses a modification of the
+condor .submit file. UQ uses the PBSPro batch execution environment,
+which uses a modiufication of the .pbs file. <h2>Container architectures</h2>
+    Rather than compiling apsim for the native OS of each cluster, APSIM's build tree has scripts to build in both <a href="http://singularity.lbl.gov/">Singularity</a> and <a href="https://www.docker.com/">Docker</a>.
+Running apsim in a container architecture avoids the need to compile
+apsim and its support libraries for each underlying OS. Mounting the
+container over NFS is more efficient than copying and unpacking the
+installation. Apsim execution times are the same whether compiled
+native or containered. Versioning is simple - one version per
+container. <h2>List of all changes and fixed defects</h2>
     <p><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=32">The complete list of changes to APSIM can be found here</a></p>
          
 		 
@@ -28,30 +49,76 @@
     <h1>APSIM 7.9 release notes</h1>
       <p>3rd May 2017</p>
       <h2>APSIM changed to use Microsoft Visual C++ 2015</h2>
-      <p>APSIM has been changed to use Microsoft Visual C++ 2015. The implications for users is that the installation process can
-         be more complicated. The APSIM Installer will check for Microsoft Visual C++ 2015 and attempt to install it if required. On versions of Windows
-         before Windows 10 (i.e. Windows 7, 8, and 8.1) it may be necessary for the user to manually install Microsot KB2999226 (Update for Universal C Runtime in Windows). </p>
+      <p>APSIM
+has been changed to use Microsoft Visual C++ 2015. The implications for
+users is that the installation process can be more complicated. The
+APSIM Installer will check for Microsoft Visual C++ 2015 and attempt to
+install it if required. On versions of Windows before Windows 10 (i.e.
+Windows 7, 8, and 8.1) it may be necessary for the user to manually
+install Microsot KB2999226 (Update for Universal C Runtime in Windows).
+</p>
       <p><a href="https://support.microsoft.com/en-us/help/2999226/update-for-universal-c-runtime-in-windows">This update can be found here</a></p>
       <p>For this to succeed though, it may be necessary to update Windows via Windows Update. For example on Windows 7, we have 
          found it necessary to install Windows 7 service pack before installing the above update.</p>
       
       <h2>Enhancements to the root development routines and water extraction routine in APSIM-Cotton</h2>
-      <p>APSIM-Cotton is extensively based on the OZCOT (Hearn, 1994) cotton model. OZCOT was designed with a very empirical approach to root development. The equations used were developed for the heavy clay soils at Myall Vale, NSW Australia and the only variables that are used to estimate rooting depth are the depth of the soil profile and the Days After Sowing (DAS). Plant growth, environmental conditions and soil hospitality for root growth play no part in the root development.  This was a legacy of the OZCOT model and was not consistent with the approach used for other models in APSIM.
-         In order to implement the standardised APSIM approaches for soil water uptake and root development which utilise the "kl" extraction factors and "xf" soil constraint factors for each soil layer, the cotton model required modifications.</p>
+      <p>APSIM-Cotton
+is extensively based on the OZCOT (Hearn, 1994) cotton model. OZCOT was
+designed with a very empirical approach to root development. The
+equations used were developed for the heavy clay soils at Myall Vale,
+NSW Australia and the only variables that are used to estimate rooting
+depth are the depth of the soil profile and the Days After Sowing
+(DAS). Plant growth, environmental conditions and soil hospitality for
+root growth play no part in the root development. This was a legacy of
+the OZCOT model and was not consistent with the approach used for other
+models in APSIM. In order to implement the standardised APSIM
+approaches for soil water uptake and root development which utilise the
+"kl" extraction factors and "xf" soil constraint factors for each soil
+layer, the cotton model required modifications.</p>
       <a href="http://www.apsim.info/Documentation/Model,CropandSoil/Cotton.aspx">Click here for more detail.</a>      
 
       <h2>New biochar model for APSIM</h2>
-      <p>A biochar model has been developed and incorporated into APSIM by Iowa State University. This can be found by clicking on "New" in the APSIM user interface,
-         selectng the Biochar folder and opening the .apsim file. For more information read: </p>
-      <p>Archontoulis, S.V., Huber, I., Miguez, F.E., Thorburn, P.J., Rogovska, N., Laird, D.A., 2016. A model for mechanistic and system assessments of biochar effects on soils and crops and trade-offs. GCB Bioenergy 8, 1028â€“1045. doi:10.1111/gcbb.12314</p>
+      <p>A
+biochar model has been developed and incorporated into APSIM by Iowa
+State University. This can be found by clicking on "New" in the APSIM
+user interface, selectng the Biochar folder and opening the .apsim
+file. For more information read: </p>
+      <p>Archontoulis,
+S.V., Huber, I., Miguez, F.E., Thorburn, P.J., Rogovska, N., Laird,
+D.A., 2016. A model for mechanistic and system assessments of biochar
+effects on soils and crops and trade-offs. GCB Bioenergy 8,
+1028â&#8364;&#8220;1045. doi:10.1111/gcbb.12314</p>
       
       <h2>Changes to command line programs</h2>
-      <p>The syntax of several command line programs has been extended to allow specification of factorial instances. These instances are additions to the simulation path argument, of the form</p><p><code>Simulation=/path/to/simulation<i>@factorial=factor1=level1;factor2=level2</i> </code></p>
-      <p>The program Apsim.exe accepts multiple .apsim, .con and .sim filenames, one optional simulation argument, and optional doAllFactors=(bool), and MaxOutputLines=(int) arguments. If the simulation arguments first character is the &quot;@&quot; character, it is interpreted as a filename containing a list of simulations to perform - one per line.</p>
-      <p>The program ApsimToSim.exe accepts the first argument as an apsim file for conversion, and one optional simulation argument. It writes the name of the output file written to standard error.</p>
-      <p>The program ApsimModel.exe accepts the first argument as an .apsim or .sim file, and one optional simulation argument. If no simulation argument is given, only the first simulation will be run. The standard output stream is the summary information of that simulation, which Apsim.exe usually saves.</p>
-      <p>Apsim.exe attempts to convert (via ApsimToSim) and run (via ApsimModel) simulations in parallel. The number of parallel instances is determined by the environment variable NUMBER_OF_PROCESSORS.</p>
-      <p>The program BundleApsim.exe creates a zipfile for submission to remote batch processors such as condor or PBS. Its default parameters are taken from the GUI's "Run On Cluster" form. Inside are a .sub file for condor, and a .pbs file for PBS, both may require hand edits for the local installation.</p>
+      <p>The
+syntax of several command line programs has been extended to allow
+specification of factorial instances. These instances are additions to
+the simulation path argument, of the form</p><p><code>Simulation=/path/to/simulation<i>@factorial=factor1=level1;factor2=level2</i> </code></p>
+      <p>The
+program Apsim.exe accepts multiple .apsim, .con and .sim filenames, one
+optional simulation argument, and optional doAllFactors=(bool), and
+MaxOutputLines=(int) arguments. If the simulation arguments first
+character is the "@" character, it is interpreted as a filename
+containing a list of simulations to perform - one per line.</p>
+      <p>The
+program ApsimToSim.exe accepts the first argument as an apsim file for
+conversion, and one optional simulation argument. It writes the name of
+the output file written to standard error.</p>
+      <p>The program
+ApsimModel.exe accepts the first argument as an .apsim or .sim file,
+and one optional simulation argument. If no simulation argument is
+given, only the first simulation will be run. The standard output
+stream is the summary information of that simulation, which Apsim.exe
+usually saves.</p>
+      <p>Apsim.exe attempts to convert (via
+ApsimToSim) and run (via ApsimModel) simulations in parallel. The
+number of parallel instances is determined by the environment variable
+NUMBER_OF_PROCESSORS.</p>
+      <p>The program BundleApsim.exe creates
+a zipfile for submission to remote batch processors such as condor or
+PBS. Its default parameters are taken from the GUI's "Run On Cluster"
+form. Inside are a .sub file for condor, and a .pbs file for PBS, both
+may require hand edits for the local installation.</p>
 
       <h2>List of all changes and fixed defects</h2>
       <p><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=31">The complete list of changes to APSIM can be found here</a></p>
@@ -63,7 +130,7 @@
       <p>Cotton.dll replaces both OZCOT.dll and mvOZCOT.dll and is installed by default.</p>
       <p>Crop stages are now reported by 'stageName'  or  numerically by 'stage'.</p>
       <table>
-        <tr><td>Stage</td><td>Description</td></tr>
+        <tbody><tr><td>Stage</td><td>Description</td></tr>
         <tr><td>1 = germination  </td><td>period from sowing to emergence</td></tr>
         <tr><td>2 = presquaring  </td><td>emergence to first square</td></tr>
         <tr><td>3 = squaring     </td><td>first square to first flower</td></tr>
@@ -71,28 +138,28 @@
         <tr><td>5 = openbolls    </td><td>first open boll to %OpenBolls marking maturity (default= 60% boll open)</td></tr>
         <tr><td>6 = mature       </td><td>%OpenBolls to end of leaf drop (defoliation period)</td></tr>
         <tr><td>7 = harvest_ripe </td><td>crop defoliated and ready to harvest</td></tr>
-      </table>
+      </tbody></table>
       <p>           
-        Use of crop stages removes the necessity to monitor 'ozcot_status > 0' to determine when a crop is ready to harvest
+        Use of crop stages removes the necessity to monitor 'ozcot_status &gt; 0' to determine when a crop is ready to harvest
         and improves management and reporting flexibility.			
       </p>
       <p>
         Cotton manager scripts now need to explicitly call 'defoliate' as well as 'harvest' and 'end_crop'. E.G.
       </p>
       <code>
-         if ('[crop]' = 'cotton') then<br/>
-         &nbsp;&nbsp;&nbsp;!!  cotton defoliation<br/>
-         &nbsp;&nbsp;&nbsp;if ([crop].stageName = 'mature'  and  [crop].defol_das = 0) then<br/>
-         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[crop] defoliate<br/>
-         &nbsp;&nbsp;&nbsp;endif<br/>
-          <br/>
-          &nbsp;&nbsp;&nbsp;!! cotton harvest<br/>
-          &nbsp;&nbsp;&nbsp;if ([crop].stageName = 'harvest_ripe' or [crop].PlantStatus = 'dead') then<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!!report_harvest do_output<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[crop] harvest<br/>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[crop] end_crop<br/>
-          &nbsp;&nbsp;&nbsp;endif<br/>
-         endif<br/>
+         if ('[crop]' = 'cotton') then<br>
+         &nbsp;&nbsp;&nbsp;!!  cotton defoliation<br>
+         &nbsp;&nbsp;&nbsp;if ([crop].stageName = 'mature'  and  [crop].defol_das = 0) then<br>
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[crop] defoliate<br>
+         &nbsp;&nbsp;&nbsp;endif<br>
+          <br>
+          &nbsp;&nbsp;&nbsp;!! cotton harvest<br>
+          &nbsp;&nbsp;&nbsp;if ([crop].stageName = 'harvest_ripe' or [crop].PlantStatus = 'dead') then<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!!report_harvest do_output<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[crop] harvest<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[crop] end_crop<br>
+          &nbsp;&nbsp;&nbsp;endif<br>
+         endif<br>
        </code>
        <p>PlantStatus = 'dead'  has been added  as well as a 'kill_crop' event.</p>
        <p>Bug fixes:</p>
@@ -111,33 +178,44 @@
           it's value only lasts for the day that it is set. At the beginning of the next day the value is reset to the value 
           in the file or the default value if none was supplied.</p>
 
-       <p>The result of this change is that CO2 is ALWAYS present in every simulation. The crop modules check to see if the CO2
-          value is different from 350ppm. If it is and the crop doesn't have a CO2 parameterisation, an error is given to that effect. 
-          This is the same behavour as previously. All values of co2_default have been removed from all crop XML files.</p>
+       <p>The
+result of this change is that CO2 is ALWAYS present in every
+simulation. The crop modules check to see if the CO2 value is different
+from 350ppm. If it is and the crop doesn't have a CO2 parameterisation,
+an error is given to that effect. This is the same behavour as
+previously. All values of co2_default have been removed from all crop
+XML files.</p>
        
        <h2>Changes to "Run on Cluster" form</h2>
-       <p>Cluster jobs have been rearranged. Instead of running "one simulation per CPU", the system attempts to run several simulations in 
-          parallel, using all available CPUs on a single machine, significantly reducing the amount of network traffic for each job. This changes the 
-          interpretation of "number of simulations per job" - as the throughput is now related to the number of CPU cores as well as their speed. On 
-          the toowoomba cluster, Linux hosts have 8 or 16 CPUs per machine, the Windows hosts have 12, so simply multiplying the existing number by 
-          12 or 16 should suffice to keep runtime the same. The general principle is that the longer a job runs, the higher its throughput - as less time 
-          is spent setting up and tearing down the job. However, longer running jobs have a higher chance of being interrupted if a higher priority user 
-          enters the queue.</p>
+       <p>Cluster
+jobs have been rearranged. Instead of running "one simulation per CPU",
+the system attempts to run several simulations in parallel, using all
+available CPUs on a single machine, significantly reducing the amount
+of network traffic for each job. This changes the interpretation of
+"number of simulations per job" - as the throughput is now related to
+the number of CPU cores as well as their speed. On the toowoomba
+cluster, Linux hosts have 8 or 16 CPUs per machine, the Windows hosts
+have 12, so simply multiplying the existing number by 12 or 16 should
+suffice to keep runtime the same. The general principle is that the
+longer a job runs, the higher its throughput - as less time is spent
+setting up and tearing down the job. However, longer running jobs have
+a higher chance of being interrupted if a higher priority user enters
+the queue.</p>
         <p>More detail is in the <a href="http://www.apsim.info/Documentation/TechnicalandDevelopment/RunningJobsOntheAPSRUCluster.aspx#march2016"> online documentation</a>.
         </p>
 
        <p><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=30">The complete list of changes to APSIM can be found here</a></p>
-      <hr/>
+      <hr>
       <h1>APSIM 7.7 release notes</h1>
    
      <h2>Stability release</h2>
      <p>This release of APSIM fixes many issues found in APSIM 7.6. No major new functionality has been added.
      </p>
-     <p><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=29">The complete list of defects fixed can be found here</a></a>.
+     <p><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=29">The complete list of defects fixed can be found here</a>.
      </p>
    
    
-      <hr/>
+      <hr>
       <h1>APSIM 7.6 release notes</h1>
       <p>21st March 2014</p>
 
@@ -165,13 +243,14 @@
 
      <h2>Changed "Run on Cluster" form</h2>
      <p>The Apsim JV computing cluster has been upgraded and several things have changed.
-<ul><li>The pool is accessible via the internet
-<li>The condor version is now 8.0.6.
-<li>There are now 64 bit Linux and Windows execute nodes in the pool (it was all 32bit windows).
-</ul>	
-To use it, open the ApsimUI to submit a job via the "run on cluster" button. 
-Enter your username/password. Later on, open ftp://&lt;username&gt;:&lt;password&gt;@apsrunet.apsim.info: and look for an .out.zip file.
-</p><p>
+</p><ul><li>The pool is accessible via the internet
+</li><li>The condor version is now 8.0.6.
+</li><li>There are now 64 bit Linux and Windows execute nodes in the pool (it was all 32bit windows).
+</li></ul> To use it, open the ApsimUI to submit a job via the "run on
+cluster" button. Enter your username/password. Later on, open
+ftp://&lt;username&gt;:&lt;password&gt;@apsrunet.apsim.info: and look
+for an .out.zip file.
+<p></p><p>
 More detail is <a href="http://www.apsim.info/Documentation/TechnicalandDevelopment/RunningJobsOntheAPSRUCluster.aspx#march2014"> in the documentation</a>.
 </p>
 
@@ -196,5 +275,4 @@ More detail is <a href="http://www.apsim.info/Documentation/TechnicalandDevelopm
       </p>
 
      <h3><a href="http://www.apsim.info/BugTracker/bugs.aspx?qu_id=28">The complete list of defects fixed can be found here</a></h3>
-   </body>
-</html>
+   </body></html>
