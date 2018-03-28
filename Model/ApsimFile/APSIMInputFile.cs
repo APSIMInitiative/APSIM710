@@ -222,17 +222,20 @@ namespace ApsimFile
         /// </summary>
         public void AddConstantsToData(DataTable Table)
         {
+            const string VersionName = "ApsimVersion"; // We want to treat ApsimVersion as a string, not a numeric, to versions like "7.10" display correctly
             foreach (APSIMConstant Constant in Constants)
             {
+                Type ColumnType = StringManip.DetermineType(Constant.Value, "");
+                if (Constant.Name.Equals(VersionName))
+                    ColumnType = typeof(String);
                 if (Table.Columns.IndexOf(Constant.Name) == -1)
                 {
-                    Type ColumnType = StringManip.DetermineType(Constant.Value, "");
                     Table.Columns.Add(new DataColumn(Constant.Name, ColumnType));
                 }
                 for (int Row = 0; Row < Table.Rows.Count; Row++)
                 {
                     double Value;
-                    if (Double.TryParse(Constant.Value, NumberStyles.Float, new CultureInfo("en-US"), out Value))
+                    if (ColumnType != typeof(String) && Double.TryParse(Constant.Value, NumberStyles.Float, new CultureInfo("en-US"), out Value))
                         Table.Rows[Row][Constant.Name] = Value;
                     else
                         Table.Rows[Row][Constant.Name] = Constant.Value;
