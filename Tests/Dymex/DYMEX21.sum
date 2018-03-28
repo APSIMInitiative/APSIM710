@@ -63,8 +63,8 @@ Paddock:
         lai
         dymex_Spore:_Total_Number
         dymex_Infective_Stage:_Total_Number
-        dymex_Lesion_Total_Number
-        dymex_Lesion_Total_lesa
+        dymex_Lesion:_Total_Number
+        dymex_Lesion:_Total_lesa
         dymex_Spore:_Total_Stage_Mortality
         dymex_Infective_Stage:_Total_Stage_Mortality
         dymex_Lesion:_Total_Stage_Mortality
@@ -77,7 +77,7 @@ Paddock:
         dymex_CropDen
         dymex_PlantLA
         dymex_lesionLifeTime
-        dymex_Lesion_Average_Physiological_Age
+        dymex_Lesion:_Average_Physiological_Age
 
      Output file = DYMEX21.out
      Format = normal
@@ -295,33 +295,152 @@ Paddock:
 1 January 1985(Day of year=1), paddock.calc: 
      Manager creating a new local real variable : green_stover = 0.00000
      Manager creating a new local real variable : leaf = 0.00000
-1 January 1985(Day of year=1): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     [paddock.Dymex_StripeRust]
-     ================================================================================
-     Dymex Error Report
-     Model : C:\Apsim\Tests\Dymex\StripeRustJW3.gmd
-     [([x1]*100^2)/[x2]]Operation: Error updating Variables
-     Error: Error encountered in evaluation of equation.
-     ([x1]*100^2)/[x2]
-     [([x1]*100^2)/[x2]]Operation: Error updating Variables
-     Error: Error encountered in evaluation of equation.
-     ([x1]*100^2)/[x2]
-     [plantLA]Operation: Attempting to run model
-     Error: Simulation Run terminated prematurely.  Error while updating module.
-     plantLA
-     ================================================================================
+9 May 1985(Day of year=129), paddock.Sowing rule: 
+     Manager creating a new local string variable : choosenextcrop = yes
+     Manager sending message :- wheat sow  plants = 100, sowing_depth = 30, cultivar = janz, row_spacing = 250, crop_class = plant
+9 May 1985(Day of year=129), paddock.wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = janz
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     109 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     612 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
      
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
      
      
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     [paddock.Dymex_StripeRust] doEvent(): fatal
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.060          0.120       1.000
+         100.0     0.060          0.100       1.000
+         200.0     0.040          0.120       1.000
+         200.0     0.040          0.170       1.000
+         300.0     0.030          0.180       1.000
+         300.0     0.020          0.220       1.000
+         300.0     0.020          0.290       1.000
+         -----------------------------------------------
+         Extractable SW:   181mm in  1500mm total depth ( 12%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            129   30.0  100.0  250.0   0.0   0.0 janz
+         ------------------------------------------------
+     
+9 May 1985(Day of year=129), paddock.Sowing fertiliser: 
+     Manager sending message :- fertiliser apply  amount = 150 (kg/ha), depth = 50 (mm), type = urea_n
+9 May 1985(Day of year=129), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+10 May 1985(Day of year=130), paddock.wheat: 
+      stage 2.0 germination
+16 May 1985(Day of year=136), paddock.wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   26.44 (mm)
+17 May 1985(Day of year=137), paddock.wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.57 (g/m^2)   lai          =   0.022 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   24.17 (mm)
+18 August 1985(Day of year=230), paddock.wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         213.51 (g/m^2)   lai          =   3.051 (m^2/m^2)
+                     stover N conc =     3.27 (%)    extractable sw =  145.27 (mm)
+3 October 1985(Day of year=276), paddock.wheat: 
+      stage 6.0 flowering
+                     biomass =         875.04 (g/m^2)   lai          =   2.131 (m^2/m^2)
+                     stover N conc =     1.28 (%)    extractable sw =  152.91 (mm)
+9 October 1985(Day of year=282), paddock.wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         958.84 (g/m^2)   lai          =   1.932 (m^2/m^2)
+                     stover N conc =     1.22 (%)    extractable sw =  153.08 (mm)
+15 November 1985(Day of year=319), paddock.wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1348.62 (g/m^2)   lai          =   0.780 (m^2/m^2)
+                     stover N conc =     0.34 (%)    extractable sw =  105.11 (mm)
+17 November 1985(Day of year=321), paddock.wheat: 
+      stage 9.0 maturity
+                     biomass =        1348.71 (g/m^2)   lai          =   0.716 (m^2/m^2)
+                     stover N conc =     0.34 (%)    extractable sw =  100.44 (mm)
+18 November 1985(Day of year=322), paddock.wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1348.71 (g/m^2)   lai          =   0.391 (m^2/m^2)
+                     stover N conc =     0.34 (%)    extractable sw =   98.82 (mm)
+18 November 1985(Day of year=322), paddock.Harvesting rule: 
+     Manager sending message :- wheat harvest
+     
+      flowering day          =  276                           stover (kg/ha)         =     7953.8
+      maturity day           =  321                           grain yield (kg/ha)    =     5533.4
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     6323.9
+      grain wt (g)           =    0.041                       grains/m^2             =    13496.1
+      grains/plant           =  135.0                         maximum lai            =      3.743
+      total above ground biomass (kg/ha)    =    13487.1
+      live above ground biomass (kg/ha)     =    13487.1
+      green above ground biomass (kg/ha)    =    12342.6
+      senesced above ground biomass (kg/ha) =     1144.5
+      number of leaves       =     19.6
+      DM Root:Shoot ratio    =     0.12                       Harvest Index          =       0.41
+      Stover C:N ratio       =   111.29                       Root C:N ratio         =      16.92
+      grain N percent        =     2.45                       total N content (kg/ha)=     163.89
+      grain N uptake (kg/ha) =   135.30                       senesced N content (kg/ha)=    5.72
+      green N content (kg/ha)=    22.86
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.000        0.000        0.000        0.000
+         flowering            to start_grain_fill        0.000        0.009        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.000        0.000        0.271        0.271
      
      
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                7950.8                     0.0
+                          N  (kg/ha) =                  28.40                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                5533.4                     0.0
+                          N  (kg/ha) =                 135.30                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.30 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =   98.82 (mm)
+     Manager sending message :- wheat end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   3.0                  1615.2
+                          N  (kg/ha) =                   0.19                   38.19
+     
+31 December 1985(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.
 
