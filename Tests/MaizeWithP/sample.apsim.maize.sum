@@ -46,60 +46,42 @@ Title                  =
         clock.dd/mm/yyyy as date
         maize.DaysAfterSowing
         maize.stage
-        maize.dc_stage as zadok
         maize.lai
         maize.biomass_wt as biomass
-        maize.grain_wt as grain
+        maize.GrainGreenWt as grain
         maize.biomass_n
-        maize.grain_n
-        maize.tiller_no_fertile as tillers
+        maize.GrainGreenN
+        maize.TillerNo as tillers
         maize.root_depth as rootdepth
         maize.swdef_pheno as ws_pheno
         maize.swdef_photo as ws_photo
         maize.swdef_expan as ws_expan
-        maize.swdef_tiller as ws_tiller
         maize.nfact_pheno as Ns_pheno
         maize.nfact_photo as Ns_photo
         maize.nfact_expan as Ns_expan
-        maize.nfact_tiller as Ns_tiller
         maize.RootGreenNConc
         maize.LeafGreenNConc
         maize.StemGreenNConc
-        maize.n_conc_grain
+        maize.GrainGreenNConc
         maize.GreenWt
         maize.GreenWt
         maize.SenescedWt
         maize.SenescedWt
-        maize.DetachingWt
         maize.GreenP
         maize.GreenP
-        maize.p_sen
+        maize.SenescedP
         maize.p_demand
         maize.pfact_photo
         maize.pfact_pheno
         maize.pfact_expansion
         maize.pfact_grain
-        maize.biomass_p
-        maize.green_biomass_p
-        maize.grain_p
+        maize.BiomassP
+        maize.GrainGreenP
         maize.LeafGreenP
         maize.StemGreenP
         maize.RootGreenP
-        maize.flower_p
-        maize.head_p
+        maize.RachisGreenP
         maize.SenescedP
-        maize.p_dead()
-        maize.GrowthP()
-        maize.RetranslocationP()
-        maize.DetachingP()
-        maize.dlt_p_dead()
-        maize.dlt_p_sen()
-        maize.p_conc_stover
-        maize.LeafGreenPConc
-        maize.StemGreenPConc
-        maize.GrainGreenPConc
-        maize.p_uptake_stover
-        maize.grain_p_demand
         surfaceom.surfaceom_p
         SoilWat.esw as esw
         SoilWat.sw()
@@ -313,6 +295,7 @@ Title                  =
      
      
      
+           TAV and AMP supplied externally
      
      
      
@@ -382,159 +365,388 @@ Title                  =
      
            Dissolution rate of rock P :    0.00061   (/yr)
            Root C:P :                    200.0
-
-------- Maize Initialisation --------------------------------------------------
-      Initialising, V1.0 2000.01.21
-     
-         - Reading constants
-     
-         - Reading constants
-     
-         - Module is set phosphorus aware
 ------- Start of simulation  --------------------------------------------------
 31 October 1992(Day of year=305), Manager: 
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
 31 October 1992(Day of year=305), Maize: 
      Sowing initiate
      
+                 Row spacing converted from m to mm
      
-     
-                      Crop Sowing Data
+                 Crop Sowing Data
          -------------------------------------------------------
-         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
-         Day no    mm      m^2    m      code     name       no
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
          -------------------------------------------------------
-            305   30.0   10.0    1.0    0.0   dekalb_xl8    0.00
+            305    30.0    10.0  1000    1.0     dekalb_xl82
          -------------------------------------------------------
      
-        - Reading root profile parameters
-     Uptake of NO3 and water calculated by maize
-     
-     
-     
-     
-                         Root Profile
-         ------------------------------------------------
-           Layer      Kl      Lower Exploration
-           Depth              limit   Factor
-           (mm)       ()     (mm/mm)    ()
-         ------------------------------------------------
-          150.000    0.120    0.200    1.000
-          150.000    0.120    0.201    1.000
-          300.000    0.120    0.215    1.000
-          300.000    0.120    0.176    1.000
-          300.000    0.100    0.141    1.000
-          300.000    0.080    0.249    1.000
-          300.000    0.040    0.279    1.000
-          ------------------------------------------------
-     
-            Crop factor for bounding water use is set to  100.0  times eo.
-     
-     
-     
-     
-        - Reading Cultivar Parameters
-         ------------------------------------------------
-         Cultivar                 = dekalb_xl82
-         est_days_endjuv_to_init  =      20
-         tt_emerg_to_endjuv       =  211.00
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
          tt_flower_to_maturity    =  983.00
-         head_grain_no_max        =  610.00
-         grain_gth_rate           =    9.17
          tt_flag_to_flower        =  101.00
          tt_flower_to_start_grain =  170.00
          tt_maturity_to_ripe      =    1.00
-         x_stem_wt      =     0.0   80.0
-         y_height      =     0.0 2000.0
-         ------------------------------------------------
+         ------------------------------------------------------
      
      
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.200       1.000
+             150.0     0.120          0.201       1.000
+             300.0     0.120          0.215       1.000
+             300.0     0.120          0.176       1.000
+             300.0     0.100          0.141       1.000
+             300.0     0.080          0.249       1.000
+             300.0     0.040          0.279       1.000
+         ---------------------------------------------------
      
 1 November 1992(Day of year=306), Maize: 
-      stage    2.0 germination
+     Stage 2 Germination  DAS = 1
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =   0.00
 3 November 1992(Day of year=308), Maize: 
-      stage    3.0 emergence
-                          biomass =          0.2000000       lai =    0.3800000E-02
-                          stover N conc =    4.400000       extractable sw =    23.83536
-18 November 1992(Day of year=323), Maize: 
-      stage    4.0 end_of_juvenile
-                          biomass =           3.049744       lai =    0.3892657E-01
-                          stover N conc =    3.597824       extractable sw =    57.48120
-23 November 1992(Day of year=328), Maize: 
-      stage    5.0 floral_initiation
-                          biomass =           7.727930       lai =    0.9712359E-01
-                          stover N conc =    3.216136       extractable sw =    114.4104
-4 January 1993(Day of year=4), Maize: 
-      stage    6.0 flag_leaf
-                          biomass =           726.1813       lai =     4.464487
-                          stover N conc =    1.731983       extractable sw =    160.9415
+     Stage 3 Emergence  DAS = 3
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =  15.25
+5 November 1992(Day of year=310), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.008100
+6 November 1992(Day of year=311), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.012946
+7 November 1992(Day of year=312), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.035781
+8 November 1992(Day of year=313), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.062442
+9 November 1992(Day of year=314), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.093004
+10 November 1992(Day of year=315), Maize: 
+     Stage 4 EndOfJuvenile  DAS = 10
+     		Biomass       =   1.65 		 LAI            =   0.03
+     		Stover N Conc =   0.05 		 Extractable SW =  56.95
+10 November 1992(Day of year=315), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.118690
+11 November 1992(Day of year=316), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.160383
+12 November 1992(Day of year=317), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.202505
+13 November 1992(Day of year=318), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.263240
+14 November 1992(Day of year=319), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.334990
+15 November 1992(Day of year=320), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.375441
+16 November 1992(Day of year=321), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.363859
+17 November 1992(Day of year=322), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.348661
+18 November 1992(Day of year=323), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.377511
+19 November 1992(Day of year=324), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.350531
+20 November 1992(Day of year=325), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.346960
+21 November 1992(Day of year=326), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.312014
+22 November 1992(Day of year=327), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.317712
+23 November 1992(Day of year=328), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.279326
+24 November 1992(Day of year=329), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.242971
+25 November 1992(Day of year=330), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.214279
+26 November 1992(Day of year=331), Maize: 
+     Stage 5 FloralInitiation  DAS = 26
+     		Biomass       =  38.15 		 LAI            =   0.37
+     		Stover N Conc =   0.85 		 Extractable SW = 182.85
+26 November 1992(Day of year=331), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.228139
+27 November 1992(Day of year=332), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.183842
+28 November 1992(Day of year=333), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.146431
+29 November 1992(Day of year=334), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.114454
+30 November 1992(Day of year=335), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.095670
+1 December 1992(Day of year=336), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.068619
+2 December 1992(Day of year=337), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.033236
+4 December 1992(Day of year=339), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.027353
+5 December 1992(Day of year=340), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.021623
+6 December 1992(Day of year=341), SysBal: 
+     **** P balance - unaccounted loss (kg/ha) =     -0.015865
+7 December 1992(Day of year=342), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.044765
+8 December 1992(Day of year=343), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.089654
+9 December 1992(Day of year=344), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.061536
+10 December 1992(Day of year=345), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.072828
+11 December 1992(Day of year=346), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.138054
+12 December 1992(Day of year=347), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.197143
+13 December 1992(Day of year=348), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.243189
+14 December 1992(Day of year=349), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.230729
+15 December 1992(Day of year=350), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.221036
+16 December 1992(Day of year=351), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.258503
+17 December 1992(Day of year=352), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.264982
+18 December 1992(Day of year=353), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.240444
+19 December 1992(Day of year=354), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.247237
+20 December 1992(Day of year=355), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.237027
+21 December 1992(Day of year=356), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.263435
+22 December 1992(Day of year=357), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.309326
+23 December 1992(Day of year=358), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.357626
+24 December 1992(Day of year=359), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.403673
+25 December 1992(Day of year=360), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.438569
+26 December 1992(Day of year=361), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.462297
+27 December 1992(Day of year=362), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.431334
+28 December 1992(Day of year=363), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.444465
+29 December 1992(Day of year=364), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.455970
+30 December 1992(Day of year=365), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.474606
+31 December 1992(Day of year=366), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.466280
+1 January 1993(Day of year=1), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.468054
+2 January 1993(Day of year=2), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.474913
+3 January 1993(Day of year=3), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.475508
+4 January 1993(Day of year=4), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.470405
+5 January 1993(Day of year=5), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.434674
+6 January 1993(Day of year=6), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.271720
+7 January 1993(Day of year=7), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.174759
+8 January 1993(Day of year=8), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.152890
+9 January 1993(Day of year=9), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.134448
 10 January 1993(Day of year=10), Maize: 
-      stage    7.0 flowering
-                          biomass =           867.3586       lai =     4.321976
-                          stover N conc =    1.524521       extractable sw =    183.9795
-20 January 1993(Day of year=20), Maize: 
-      stage    8.0 start_grain_fill
-                          biomass =           1090.926       lai =     3.976502
-                          stover N conc =    1.267974       extractable sw =    139.2540
-7 March 1993(Day of year=66), Maize: 
-      stage    9.0 end_grain_fill
-                          biomass =           1426.998       lai =     1.665884
-                          stover N conc =    1.050153       extractable sw =    47.56718
-8 March 1993(Day of year=67), Maize: 
-      stage   10.0 maturity
-                          biomass =           1428.089       lai =     1.610173
-                          stover N conc =    1.050194       extractable sw =    47.28943
-9 March 1993(Day of year=68), Maize: 
-      stage   11.0 harvest_ripe
-                          biomass =           1428.089       lai =    0.3800154E-02
-                          stover N conc =    1.074572       extractable sw =    46.98492
-10 March 1993(Day of year=69), Manager: 
+     Stage 6 FlagLeaf  DAS = 71
+     		Biomass       = 1140.34 		 LAI            =   6.08
+     		Stover N Conc =  12.76 		 Extractable SW = 138.45
+10 January 1993(Day of year=10), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.144440
+11 January 1993(Day of year=11), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.112368
+12 January 1993(Day of year=12), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.038396
+13 January 1993(Day of year=13), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.073640
+14 January 1993(Day of year=14), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.107766
+15 January 1993(Day of year=15), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.133274
+16 January 1993(Day of year=16), Maize: 
+     Stage 7 Flowering  DAS = 77
+     		Biomass       = 1310.99 		 LAI            =   5.49
+     		Stover N Conc =  13.39 		 Extractable SW = 114.19
+16 January 1993(Day of year=16), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.155665
+17 January 1993(Day of year=17), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.177588
+18 January 1993(Day of year=18), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.161539
+19 January 1993(Day of year=19), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.156976
+20 January 1993(Day of year=20), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.144189
+21 January 1993(Day of year=21), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.135934
+22 January 1993(Day of year=22), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.122531
+23 January 1993(Day of year=23), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.102136
+24 January 1993(Day of year=24), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.077506
+25 January 1993(Day of year=25), Maize: 
+     Stage 8 StartGrainFill  DAS = 86
+     		Biomass       = 1579.16 		 LAI            =   5.16
+     		Stover N Conc =  13.83 		 Extractable SW =  42.20
+25 January 1993(Day of year=25), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.048412
+26 January 1993(Day of year=26), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.040287
+27 January 1993(Day of year=27), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.044543
+28 January 1993(Day of year=28), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.046027
+29 January 1993(Day of year=29), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.049998
+30 January 1993(Day of year=30), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.056522
+31 January 1993(Day of year=31), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.068013
+1 February 1993(Day of year=32), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.082107
+2 February 1993(Day of year=33), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.096425
+3 February 1993(Day of year=34), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.115617
+4 February 1993(Day of year=35), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.135779
+5 February 1993(Day of year=36), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.154052
+6 February 1993(Day of year=37), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.174546
+7 February 1993(Day of year=38), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.142741
+8 February 1993(Day of year=39), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.190646
+9 February 1993(Day of year=40), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.222156
+10 February 1993(Day of year=41), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.266885
+11 February 1993(Day of year=42), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.296793
+12 February 1993(Day of year=43), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.325855
+13 February 1993(Day of year=44), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.353912
+14 February 1993(Day of year=45), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.379729
+15 February 1993(Day of year=46), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.405682
+16 February 1993(Day of year=47), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.425472
+17 February 1993(Day of year=48), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.435559
+18 February 1993(Day of year=49), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.451854
+19 February 1993(Day of year=50), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.459329
+20 February 1993(Day of year=51), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.460289
+21 February 1993(Day of year=52), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.454546
+22 February 1993(Day of year=53), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.441917
+23 February 1993(Day of year=54), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.424313
+24 February 1993(Day of year=55), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.408677
+25 February 1993(Day of year=56), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.387348
+26 February 1993(Day of year=57), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.360256
+27 February 1993(Day of year=58), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.339207
+28 February 1993(Day of year=59), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.317782
+1 March 1993(Day of year=60), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.281730
+2 March 1993(Day of year=61), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.262665
+3 March 1993(Day of year=62), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.229665
+4 March 1993(Day of year=63), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.200549
+5 March 1993(Day of year=64), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.173746
+6 March 1993(Day of year=65), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.150944
+7 March 1993(Day of year=66), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.130427
+8 March 1993(Day of year=67), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.119975
+9 March 1993(Day of year=68), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.111327
+10 March 1993(Day of year=69), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.102274
+11 March 1993(Day of year=70), Maize: 
+     Stage 9 EndGrainFill  DAS = 131
+     		Biomass       = 1833.60 		 LAI            =   0.88
+     		Stover N Conc =   7.15 		 Extractable SW =   1.02
+11 March 1993(Day of year=70), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.093871
+12 March 1993(Day of year=71), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.086644
+13 March 1993(Day of year=72), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.080968
+14 March 1993(Day of year=73), Maize: 
+     Stage 10 Maturity  DAS = 134
+     		Biomass       = 1835.83 		 LAI            =   0.67
+     		Stover N Conc =   7.12 		 Extractable SW =   0.91
+14 March 1993(Day of year=73), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.074947
+15 March 1993(Day of year=74), Maize: 
+     Stage 11 HarvestRipe  DAS = 135
+     		Biomass       = 1836.36 		 LAI            =   0.62
+     		Stover N Conc =   7.12 		 Extractable SW =   0.90
+15 March 1993(Day of year=74), SysBal: 
+     **** P balance - unaccounted gain (kg/ha) =      0.068559
+16 March 1993(Day of year=75), Manager: 
      Manager sending message :- maize harvest
-10 March 1993(Day of year=69), Maize: 
+16 March 1993(Day of year=75), Maize: 
      
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 134
+     Flowering day         = 16 		 Maturity day            = 73
+     Maximum LAI           = 6.1 		 Number of leaves        = 20.4
+     Total above ground biomass    (kg/ha) = 18363.6
+     Green above ground biomass    (kg/ha) = 14896.0
+     Senesced above ground biomass (kg/ha) = 3467.5
+     Stover (kg/ha)        = 11637.2 	 Grain yield (kg/ha)     = 6726.4
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 7960.3
+     Weight 1000 grains(g) = 167.4 		 Grains/m^2              = 4017.6
+     Grains/head           = 401.8
+     Grain N percent    (%)     =      1.03 	 Grain N            (kg/ha) =    69.51
+     Total N content    (kg/ha) =    140.66 	 Senesced N content (kg/ha) =    51.24
+     Green N content    (kg/ha) =     24.43
+     Grain P percent    (%)     =      0.30 	 Grain P uptake     (kg/ha) =    20.18
+     Total P content    (kg/ha) =     28.10 	 Senesced P content (kg/ha) =     2.36
+     Green P content    (kg/ha) =     10.22 
      
-     
-     flowering (DAS) =   72                                maturity (DAS)  =     129
-      flowering day  =   10                                 stover (kg/ha) =    9217.2
-      maturity day        =   67                            grain yield (kg/ha) =    5063.7
-      grain % water content   =   15.5                      grain yield wet (kg/ha) =    5992.5
-      grain wt (g) =     0.207                              grains/m^2   =  2446.793
-      grains/head = 244.7                                   maximum lai = 4.500
-      total above ground biomass (kg/ha) =   14280.9
-      live above ground biomass (kg/ha) =   14280.9
-      green above ground biomass (kg/ha) =   12612.2
-      senesced above ground biomass (kg/ha) =    1668.7
-      dead above ground biomass (kg/ha) =       0.0
-      number of leaves =  19.5
-      grain N percent =      1.13                           total N content (kg/ha) =    143.87
-      grain N uptake (kg/ha) =     57.26                    senesced N content (kg/ha) =      8.34
-      green N content (kg/ha) =     78.27                   dead N content (kg/ha) =      0.00
-      grain P percent            =      0.16                total P content (kg/ha)    =     10.41
-      grain P uptake (kg/ha)     =      8.00                senesced P content (kg/ha) =      0.83
-      green P content (kg/ha)    =      1.58                dead P content (kg/ha)     =      0.00
-     
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence           to end_of_juvenile         0.000        0.000        0.000        0.092
-         end_of_juvenile     to floral_initiation       0.000        0.000        0.000        0.089
-         floral_initiation   to flag_leaf               0.000        0.000        0.006        0.107
-         flag_leaf           to flowering               0.000        0.000        0.174        0.339
-         flowering           to start_grain_fill        0.000        0.000        0.242        0.393
-         start_grain_fill    to end_grain_fill          0.000        0.000        0.173        0.294
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        1.0
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.8          0.6        0.9
+        Start grain fill    to End grain fill            0.4          0.2        0.4
      
      Crop harvested.
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =               5063.68                    0.00
-                          N  (kg/ha) =                 57.26                    0.00
-                          P  (kg/ha) =                  8.00                    0.00
-     
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =               6726.42		    0.00
+                         N  (kg/ha) =                 69.51		    0.00
      Manager sending message :- maize end_crop
-         Crop ended. Yield (dw) =     0.0
-         Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
-                          DM (kg/ha) =               9217.22                 2630.79
-                          N  (kg/ha) =                 86.61                   18.71
-                          P  (kg/ha) =                 24.13                   21.42
-     
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =              11637.17		 4749.24
+                         N  (kg/ha) =                 71.15		    4.52
+                         P  (kg/ha) =                  7.92		    4.65
 1 May 1993(Day of year=121), Manager: 
      Manager sending message :- surfaceom tillage  type = chisel
 1 May 1993(Day of year=121), SurfaceOM: 

@@ -2,31 +2,32 @@ include $(APSIM)/Model/Build/Platform.make
 
 PROJECT = Maize
 
-SRC = maize.for 
+SRC = PlantInterface.cpp \
+      PlantComponents.cpp \
+      Phosphorus.cpp \
+      PlantActions.cpp \
+      Leaf.cpp \
+      Stem.cpp \
+      Nitrogen.cpp \
+      Rachis.cpp \
+      Grain.cpp \
+      Water.cpp \
+      Phenology.cpp  \
+      Plant.cpp  \
+      Roots.cpp \
+      Biomass.cpp \
+      Utilities.cpp \
+      Dll.cpp \
+
+LIBS = General ApsimShared ComponentInterface2
 ifeq ($(PLATFORM),Linux)
-SRC := $(SRC) ../FortranInfrastructure/EntryPointsLinux.for CropModData.for
-DEF = ../Build/gfcomp.ldscript
+OBJS = $(APSIM)/Model/ComponentInterface2/CMPComponentEntryPoints.o
 else
-SRC := $(SRC) ../FortranInfrastructure/EntryPoints.for CropModData.for
-DEF = ../Build/gfcomp.def
+OBJS = $(APSIM)/Model/ComponentInterface2/CMPComponentEntryPoints.obj
 endif
 
-STATICLIBS = FortranInfrastructure CropTemplate
-LIBS = FortranComponentInterface
-
-
-APSIMMODEL = Yes
 PROJECTTYPE = dll
 
-include $(APSIM)/Model/Build/$(PLATFORM)FOR.make
-
-CropModData.obj:	../CropMod/CropModData.for
-	$(LF95) -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
-
-CropModData.o:	../CropMod/CropModData.for
-	$(FC) -c $< $(F90FLAGS) $(F90INCLUDES) $(F90MODS)
-
-
-
+include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
 
 

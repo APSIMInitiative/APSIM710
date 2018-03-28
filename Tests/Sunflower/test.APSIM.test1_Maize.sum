@@ -58,6 +58,7 @@ Title                  = Test sowing before out
      SECTION:- start_of_day
      if maize.stagename = 'harvest_ripe' or maize.plant_status = 'dead' then
         maize harvest
+        maize end_crop
         maize sow cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
      endif
      
@@ -214,154 +215,3446 @@ Title                  = Test sowing before out
           ---------------------------------------------------------
            Totals  149295.9 10296.3   926.1   115.8   400.0    20.0
           ---------------------------------------------------------
-
-------- Maize Initialisation --------------------------------------------------
-      Initialising, V1.0 2000.01.21
-     
-         - Reading constants
-     
-         - Reading constants
 ------- Start of simulation  --------------------------------------------------
 1 November 1989(Day of year=305), Manager: 
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
 1 November 1989(Day of year=305), Maize: 
      Sowing initiate
      
+                 Row spacing converted from m to mm
      
-     
-                      Crop Sowing Data
+                 Crop Sowing Data
          -------------------------------------------------------
-         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
-         Day no    mm      m^2    m      code     name       no
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
          -------------------------------------------------------
-            305   30.0   10.0    1.0    0.0   dekalb_xl8    0.00
+            305    30.0    10.0  1000    1.0     dekalb_xl82
          -------------------------------------------------------
      
-        - Reading root profile parameters
-     Uptake of NO3 and water calculated by maize
-     
-     
-     
-     
-                         Root Profile
-         ------------------------------------------------
-           Layer      Kl      Lower Exploration
-           Depth              limit   Factor
-           (mm)       ()     (mm/mm)    ()
-         ------------------------------------------------
-          150.000    0.120    0.230    1.000
-          150.000    0.120    0.240    1.000
-          300.000    0.120    0.240    1.000
-          300.000    0.120    0.250    1.000
-          300.000    0.100    0.260    1.000
-          300.000    0.080    0.270    1.000
-          300.000    0.040    0.280    1.000
-          ------------------------------------------------
-     
-            Crop factor for bounding water use is set to  100.0  times eo.
-     
-     
-     
-     
-        - Reading Cultivar Parameters
-         ------------------------------------------------
-         Cultivar                 = dekalb_xl82
-         est_days_endjuv_to_init  =      20
-         tt_emerg_to_endjuv       =  211.00
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
          tt_flower_to_maturity    =  983.00
-         head_grain_no_max        =  610.00
-         grain_gth_rate           =    9.17
          tt_flag_to_flower        =  101.00
          tt_flower_to_start_grain =  170.00
          tt_maturity_to_ripe      =    1.00
-         x_stem_wt      =     0.0   80.0
-         y_height      =     0.0 2000.0
-         ------------------------------------------------
+         ------------------------------------------------------
      
      
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
      
 2 November 1989(Day of year=306), Maize: 
-      stage    2.0 germination
+     Stage 2 Germination  DAS = 1
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =   0.00
 4 November 1989(Day of year=308), Maize: 
-      stage    3.0 emergence
-                          biomass =          0.2000000       lai =    0.3800000E-02
-                          stover N conc =    4.400000       extractable sw =    32.42388
-19 November 1989(Day of year=323), Maize: 
-      stage    4.0 end_of_juvenile
-                          biomass =           2.897260       lai =    0.4339030E-01
-                          stover N conc =    3.474447       extractable sw =    72.21750
-25 November 1989(Day of year=329), Maize: 
-      stage    5.0 floral_initiation
-                          biomass =           8.121427       lai =    0.9799722E-01
-                          stover N conc =    3.177968       extractable sw =    128.5099
-5 January 1990(Day of year=5), Maize: 
-      stage    6.0 flag_leaf
-                          biomass =           658.6564       lai =     4.470813
-                          stover N conc =    1.468802       extractable sw =    222.4798
-10 January 1990(Day of year=10), Maize: 
-      stage    7.0 flowering
-                          biomass =           768.4710       lai =     4.349072
-                          stover N conc =    1.329700       extractable sw =    194.1977
-20 January 1990(Day of year=20), Maize: 
-      stage    8.0 start_grain_fill
-                          biomass =           950.3929       lai =     4.019034
-                          stover N conc =    1.162770       extractable sw =    195.2990
-8 March 1990(Day of year=67), Maize: 
-      stage    9.0 end_grain_fill
-                          biomass =           1481.184       lai =     1.371205
-                          stover N conc =   0.9280600       extractable sw =    150.6952
-9 March 1990(Day of year=68), Maize: 
-      stage   10.0 maturity
-                          biomass =           1489.383       lai =     1.337408
-                          stover N conc =   0.9256768       extractable sw =    148.9908
-10 March 1990(Day of year=69), Maize: 
-      stage   11.0 harvest_ripe
-                          biomass =           1489.383       lai =    0.6567955E-02
-                          stover N conc =   0.9399812       extractable sw =    146.6039
-11 March 1990(Day of year=70), Manager: 
+     Stage 3 Emergence  DAS = 3
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =  20.75
+12 November 1989(Day of year=316), Maize: 
+     Stage 4 EndOfJuvenile  DAS = 11
+     		Biomass       =   1.83 		 LAI            =   0.03
+     		Stover N Conc =   0.05 		 Extractable SW =  82.20
+28 November 1989(Day of year=332), Maize: 
+     Stage 5 FloralInitiation  DAS = 27
+     		Biomass       =  39.67 		 LAI            =   0.38
+     		Stover N Conc =   0.87 		 Extractable SW = 179.53
+11 January 1990(Day of year=11), Maize: 
+     Stage 6 FlagLeaf  DAS = 71
+     		Biomass       = 1126.41 		 LAI            =   5.98
+     		Stover N Conc =  10.48 		 Extractable SW = 121.87
+17 January 1990(Day of year=17), Maize: 
+     Stage 7 Flowering  DAS = 77
+     		Biomass       = 1302.36 		 LAI            =   5.54
+     		Stover N Conc =  10.83 		 Extractable SW = 129.10
+27 January 1990(Day of year=27), Maize: 
+     Stage 8 StartGrainFill  DAS = 87
+     		Biomass       = 1604.37 		 LAI            =   5.13
+     		Stover N Conc =  11.32 		 Extractable SW =  54.55
+13 March 1990(Day of year=72), Maize: 
+     Stage 9 EndGrainFill  DAS = 132
+     		Biomass       = 1957.35 		 LAI            =   1.69
+     		Stover N Conc =   6.52 		 Extractable SW =  69.74
+16 March 1990(Day of year=75), Maize: 
+     Stage 10 Maturity  DAS = 135
+     		Biomass       = 1963.54 		 LAI            =   1.44
+     		Stover N Conc =   6.48 		 Extractable SW =  67.67
+17 March 1990(Day of year=76), Maize: 
+     Stage 11 HarvestRipe  DAS = 136
+     		Biomass       = 1965.76 		 LAI            =   1.38
+     		Stover N Conc =   6.48 		 Extractable SW =  66.94
+18 March 1990(Day of year=77), Manager: 
      Manager sending message :- maize harvest
-11 March 1990(Day of year=70), Maize: 
+18 March 1990(Day of year=77), Maize: 
      
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 6.0 		 Number of leaves        = 20.4
+     Total above ground biomass    (kg/ha) = 19657.6
+     Green above ground biomass    (kg/ha) = 16657.7
+     Senesced above ground biomass (kg/ha) = 2999.9
+     Stover (kg/ha)        = 11575.6 	 Grain yield (kg/ha)     = 8082.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 9564.5
+     Weight 1000 grains(g) = 201.5 		 Grains/m^2              = 4011.2
+     Grains/head           = 401.1
+     Grain N percent    (%)     =      0.71 	 Grain N            (kg/ha) =    57.04
+     Total N content    (kg/ha) =    121.79 	 Senesced N content (kg/ha) =    42.89
+     Green N content    (kg/ha) =     26.21
      
-     
-     flowering (DAS) =   70                                maturity (DAS)  =     129
-      flowering day  =   10                                 stover (kg/ha) =    8204.0
-      maturity day        =   68                            grain yield (kg/ha) =    6689.8
-      grain % water content   =   15.5                      grain yield wet (kg/ha) =    7916.9
-      grain wt (g) =     0.342                              grains/m^2   =  1957.290
-      grains/head = 195.7                                   maximum lai = 4.506
-      total above ground biomass (kg/ha) =   14893.8
-      live above ground biomass (kg/ha) =   14893.8
-      green above ground biomass (kg/ha) =   13290.2
-      senesced above ground biomass (kg/ha) =    1603.6
-      dead above ground biomass (kg/ha) =       0.0
-      number of leaves =  19.4
-      grain N percent =      1.24                           total N content (kg/ha) =    132.94
-      grain N uptake (kg/ha) =     83.29                    senesced N content (kg/ha) =      8.02
-      green N content (kg/ha) =     41.64                   dead N content (kg/ha) =      0.00
-     
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence           to end_of_juvenile         0.000        0.000        0.000        0.121
-         end_of_juvenile     to floral_initiation       0.000        0.000        0.000        0.132
-         floral_initiation   to flag_leaf               0.000        0.000        0.057        0.185
-         flag_leaf           to flowering               0.000        0.000        0.341        0.473
-         flowering           to start_grain_fill        0.000        0.000        0.372        0.498
-         start_grain_fill    to end_grain_fill          0.000        0.000        0.409        0.527
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
      
      Crop harvested.
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =               6689.81                    0.00
-                          N  (kg/ha) =                 83.29                    0.00
-     
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =               8082.02		    0.00
+                         N  (kg/ha) =                 57.04		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =              11575.59		 4718.52
+                         N  (kg/ha) =                 64.76		    4.34
+                         P  (kg/ha) =                  0.00		    0.00
      Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
-11 March 1990(Day of year=70): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     "Maize" is still in the ground - unable to sow until it is taken out by "end_crop" action.
-     Component name: Maize
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             77    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
      
      
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+19 March 1990(Day of year=78), Maize: 
+     Stage 2 Germination  DAS = 138
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =  56.21
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+20 March 1990(Day of year=79), Manager: 
+     Manager sending message :- maize harvest
+20 March 1990(Day of year=79), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             79    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+21 March 1990(Day of year=80), Manager: 
+     Manager sending message :- maize harvest
+21 March 1990(Day of year=80), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             80    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+22 March 1990(Day of year=81), Manager: 
+     Manager sending message :- maize harvest
+22 March 1990(Day of year=81), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             81    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+23 March 1990(Day of year=82), Manager: 
+     Manager sending message :- maize harvest
+23 March 1990(Day of year=82), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             82    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+24 March 1990(Day of year=83), Manager: 
+     Manager sending message :- maize harvest
+24 March 1990(Day of year=83), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             83    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+25 March 1990(Day of year=84), Manager: 
+     Manager sending message :- maize harvest
+25 March 1990(Day of year=84), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             84    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+26 March 1990(Day of year=85), Manager: 
+     Manager sending message :- maize harvest
+26 March 1990(Day of year=85), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             85    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+27 March 1990(Day of year=86), Manager: 
+     Manager sending message :- maize harvest
+27 March 1990(Day of year=86), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             86    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+28 March 1990(Day of year=87), Manager: 
+     Manager sending message :- maize harvest
+28 March 1990(Day of year=87), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             87    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+29 March 1990(Day of year=88), Manager: 
+     Manager sending message :- maize harvest
+29 March 1990(Day of year=88), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             88    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+30 March 1990(Day of year=89), Manager: 
+     Manager sending message :- maize harvest
+30 March 1990(Day of year=89), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             89    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+31 March 1990(Day of year=90), Manager: 
+     Manager sending message :- maize harvest
+31 March 1990(Day of year=90), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             90    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+1 April 1990(Day of year=91), Manager: 
+     Manager sending message :- maize harvest
+1 April 1990(Day of year=91), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             91    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+2 April 1990(Day of year=92), Manager: 
+     Manager sending message :- maize harvest
+2 April 1990(Day of year=92), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             92    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+3 April 1990(Day of year=93), Manager: 
+     Manager sending message :- maize harvest
+3 April 1990(Day of year=93), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             93    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+4 April 1990(Day of year=94), Manager: 
+     Manager sending message :- maize harvest
+4 April 1990(Day of year=94), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             94    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+5 April 1990(Day of year=95), Manager: 
+     Manager sending message :- maize harvest
+5 April 1990(Day of year=95), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             95    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+6 April 1990(Day of year=96), Manager: 
+     Manager sending message :- maize harvest
+6 April 1990(Day of year=96), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             96    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+7 April 1990(Day of year=97), Manager: 
+     Manager sending message :- maize harvest
+7 April 1990(Day of year=97), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             97    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+8 April 1990(Day of year=98), Manager: 
+     Manager sending message :- maize harvest
+8 April 1990(Day of year=98), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             98    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+9 April 1990(Day of year=99), Manager: 
+     Manager sending message :- maize harvest
+9 April 1990(Day of year=99), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             99    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+10 April 1990(Day of year=100), Manager: 
+     Manager sending message :- maize harvest
+10 April 1990(Day of year=100), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            100    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+11 April 1990(Day of year=101), Manager: 
+     Manager sending message :- maize harvest
+11 April 1990(Day of year=101), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            101    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+12 April 1990(Day of year=102), Manager: 
+     Manager sending message :- maize harvest
+12 April 1990(Day of year=102), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            102    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+13 April 1990(Day of year=103), Manager: 
+     Manager sending message :- maize harvest
+13 April 1990(Day of year=103), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            103    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+14 April 1990(Day of year=104), Manager: 
+     Manager sending message :- maize harvest
+14 April 1990(Day of year=104), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            104    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+15 April 1990(Day of year=105), Manager: 
+     Manager sending message :- maize harvest
+15 April 1990(Day of year=105), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            105    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+16 April 1990(Day of year=106), Manager: 
+     Manager sending message :- maize harvest
+16 April 1990(Day of year=106), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            106    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+17 April 1990(Day of year=107), Manager: 
+     Manager sending message :- maize harvest
+17 April 1990(Day of year=107), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            107    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+18 April 1990(Day of year=108), Manager: 
+     Manager sending message :- maize harvest
+18 April 1990(Day of year=108), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            108    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+19 April 1990(Day of year=109), Manager: 
+     Manager sending message :- maize harvest
+19 April 1990(Day of year=109), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            109    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+20 April 1990(Day of year=110), Manager: 
+     Manager sending message :- maize harvest
+20 April 1990(Day of year=110), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            110    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+21 April 1990(Day of year=111), Manager: 
+     Manager sending message :- maize harvest
+21 April 1990(Day of year=111), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            111    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+22 April 1990(Day of year=112), Manager: 
+     Manager sending message :- maize harvest
+22 April 1990(Day of year=112), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            112    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+23 April 1990(Day of year=113), Manager: 
+     Manager sending message :- maize harvest
+23 April 1990(Day of year=113), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            113    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+24 April 1990(Day of year=114), Manager: 
+     Manager sending message :- maize harvest
+24 April 1990(Day of year=114), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            114    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+25 April 1990(Day of year=115), Manager: 
+     Manager sending message :- maize harvest
+25 April 1990(Day of year=115), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            115    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+26 April 1990(Day of year=116), Manager: 
+     Manager sending message :- maize harvest
+26 April 1990(Day of year=116), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            116    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+27 April 1990(Day of year=117), Manager: 
+     Manager sending message :- maize harvest
+27 April 1990(Day of year=117), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            117    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+28 April 1990(Day of year=118), Manager: 
+     Manager sending message :- maize harvest
+28 April 1990(Day of year=118), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            118    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+29 April 1990(Day of year=119), Manager: 
+     Manager sending message :- maize harvest
+29 April 1990(Day of year=119), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            119    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+30 April 1990(Day of year=120), Manager: 
+     Manager sending message :- maize harvest
+30 April 1990(Day of year=120), Maize: 
+     
+     Harvest
+     Flowering (DAS)       = 77 		 Maturity (DAS)          = 135
+     Flowering day         = 17 		 Maturity day            = 75
+     Maximum LAI           = 0.0 		 Number of leaves        = 0.0
+     Total above ground biomass    (kg/ha) = 0.0
+     Green above ground biomass    (kg/ha) = 0.0
+     Senesced above ground biomass (kg/ha) = 0.0
+     Stover (kg/ha)        = 0.0 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =      0.00 	 Senesced N content (kg/ha) =     0.00
+     Green N content    (kg/ha) =      0.00
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          0.9          0.8        0.9
+        Start grain fill    to End grain fill            1.0          0.9        0.3
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+                         P  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize sow  cultivar = dekalb_xl82, plants = 10, sowing_depth = 30 (mm)
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            120    30.0    10.0  1000    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.230       1.000
+             150.0     0.120          0.240       1.000
+             300.0     0.120          0.240       1.000
+             300.0     0.120          0.250       1.000
+             300.0     0.100          0.260       1.000
+             300.0     0.080          0.270       1.000
+             300.0     0.040          0.280       1.000
+         ---------------------------------------------------
+     
+      ********** Crop failed emergence due to deep planting
+     Plant Death. Standing above-ground dm = 0.00 (kg/ha)
+30 April 1990(Day of year=120), Clock: 
+     Simulation is terminating due to end criteria being met.
 

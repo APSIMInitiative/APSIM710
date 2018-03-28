@@ -298,18 +298,46 @@ Paddock:
           ---------------------------------------------------------
            Totals   89315.3  7442.9   735.7    92.0   400.0    10.0
           ---------------------------------------------------------
-
-------- MaizeField.maize Initialisation ---------------------------------------
-      Initialising, V1.0 2000.01.21
-     
-         - Reading constants
-     
-         - Reading constants
 ------- Start of simulation  --------------------------------------------------
 10 July 1985(Day of year=191), MaizeField.Sow on a fixed date: 
      Manager sending message :- maize sow  plants = 2, sowing_depth = 50, cultivar = makueni, row_spacing = 500, crop_class = plant
-10 July 1985(Day of year=191), MaizeField.maize: 
+10 July 1985(Day of year=191), maize: 
      Sowing initiate
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            191    50.0     2.0   500    1.0     makueni
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - makueni
+         tt_emerg_to_endjuv       =  150.00
+         tt_endjuv_to_init        =    0.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  660.00
+         tt_flag_to_flower        =   10.00
+         tt_flower_to_start_grain =  120.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.070          0.230       1.000
+             150.0     0.070          0.240       1.000
+             300.0     0.070          0.290       1.000
+             300.0     0.050          0.340       1.000
+             300.0     0.050          0.370       1.000
+             300.0     0.040          0.380       1.000
+             300.0     0.030          0.390       1.000
+         ---------------------------------------------------
+     
 10 July 1985(Day of year=191), MaizeField.Fertilise at sowing: 
      Manager sending message :- fertiliser apply  amount = 200 (kg/ha), depth = 50 (mm), type = urea_n
 10 July 1985(Day of year=191), fertiliser: 
@@ -317,140 +345,82 @@ Paddock:
    - Reading Fertiliser Type Parameters
        200.00 of N as urea (urea_n)
                                          added at depth   50.00 (layer   1)
-     
-     
-     
-                      Crop Sowing Data
-         -------------------------------------------------------
-         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
-         Day no    mm      m^2    m      code     name       no
-         -------------------------------------------------------
-            191   50.0    2.0    0.5    0.0   makueni       0.00
-         -------------------------------------------------------
-     
-        - Reading root profile parameters
-     Uptake of NO3 and water calculated by maize
-     
-     
-     
-     
-                         Root Profile
-         ------------------------------------------------
-           Layer      Kl      Lower Exploration
-           Depth              limit   Factor
-           (mm)       ()     (mm/mm)    ()
-         ------------------------------------------------
-          150.000    0.070    0.230    1.000
-          150.000    0.070    0.240    1.000
-          300.000    0.070    0.290    1.000
-          300.000    0.050    0.340    1.000
-          300.000    0.050    0.370    1.000
-          300.000    0.040    0.380    1.000
-          300.000    0.030    0.390    1.000
-          ------------------------------------------------
-     
-            Crop factor for bounding water use is set to  100.0  times eo.
-     
-     
-     
-     
-        - Reading Cultivar Parameters
-         ------------------------------------------------
-         Cultivar                 = makueni
-         est_days_endjuv_to_init  =      20
-         tt_emerg_to_endjuv       =  150.00
-         tt_flower_to_maturity    =  660.00
-         head_grain_no_max        =  480.00
-         grain_gth_rate           =    9.50
-         tt_flag_to_flower        =   10.00
-         tt_flower_to_start_grain =  120.00
-         tt_maturity_to_ripe      =    1.00
-         x_stem_wt      =     0.0   80.0
-         y_height      =     0.0 2000.0
-         ------------------------------------------------
-     
-     
-     
-11 July 1985(Day of year=192), MaizeField.maize: 
-      stage    2.0 germination
-18 July 1985(Day of year=199), MaizeField.maize: 
-      stage    3.0 emergence
-                          biomass =          0.4000000E-01   lai =    0.7600000E-03
-                          stover N conc =    4.400000       extractable sw =    33.00000
-10 August 1985(Day of year=222), MaizeField.maize: 
-      stage    4.0 end_of_juvenile
-                          biomass =          0.4622955       lai =    0.1005130E-01
-                          stover N conc =    4.024235       extractable sw =    112.4590
-11 August 1985(Day of year=223), MaizeField.maize: 
-      stage    5.0 floral_initiation
-                          biomass =          0.5132499       lai =    0.1104238E-01
-                          stover N conc =    4.088660       extractable sw =    112.4533
-1 October 1985(Day of year=274), MaizeField.maize: 
-      stage    6.0 flag_leaf
-                          biomass =           222.0076       lai =    0.8349932
-                          stover N conc =    2.210361       extractable sw =    168.7365
-2 October 1985(Day of year=275), MaizeField.maize: 
-      stage    7.0 flowering
-                          biomass =           234.7315       lai =    0.8340908
-                          stover N conc =    2.189625       extractable sw =    166.8105
-11 October 1985(Day of year=284), MaizeField.maize: 
-      stage    8.0 start_grain_fill
-                          biomass =           333.9258       lai =    0.8257858
-                          stover N conc =    2.023278       extractable sw =    149.0374
-18 November 1985(Day of year=322), MaizeField.maize: 
-      stage    9.0 end_grain_fill
-                          biomass =           710.6698       lai =    0.7267424
-                          stover N conc =    1.300398       extractable sw =    82.82933
-19 November 1985(Day of year=323), MaizeField.maize: 
-      stage   10.0 maturity
-                          biomass =           720.1874       lai =    0.7223979
-                          stover N conc =    1.283326       extractable sw =    80.21872
-20 November 1985(Day of year=324), MaizeField.maize: 
-      stage   11.0 harvest_ripe
-                          biomass =           720.1874       lai =    0.1429319E-02
-                          stover N conc =    1.335110       extractable sw =    78.86514
-20 November 1985(Day of year=324), MaizeField.Harvesting rule: 
+11 July 1985(Day of year=192), maize: 
+     Stage 2 Germination  DAS = 1
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =   0.00
+18 July 1985(Day of year=199), maize: 
+     Stage 3 Emergence  DAS = 8
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =  57.89
+10 August 1985(Day of year=222), maize: 
+     Stage 4 EndOfJuvenile  DAS = 31
+     		Biomass       =   1.44 		 LAI            =   0.03
+     		Stover N Conc =   0.05 		 Extractable SW = 156.55
+11 August 1985(Day of year=223), maize: 
+     Stage 5 FloralInitiation  DAS = 32
+     		Biomass       =   1.63 		 LAI            =   0.03
+     		Stover N Conc =   0.06 		 Extractable SW = 159.17
+25 September 1985(Day of year=268), maize: 
+     Stage 6 FlagLeaf  DAS = 77
+     		Biomass       = 159.29 		 LAI            =   0.78
+     		Stover N Conc =   3.43 		 Extractable SW = 175.99
+26 September 1985(Day of year=269), maize: 
+     Stage 7 Flowering  DAS = 78
+     		Biomass       = 169.86 		 LAI            =   0.79
+     		Stover N Conc =   3.61 		 Extractable SW = 174.39
+7 October 1985(Day of year=280), maize: 
+     Stage 8 StartGrainFill  DAS = 89
+     		Biomass       = 288.07 		 LAI            =   0.79
+     		Stover N Conc =   4.78 		 Extractable SW = 154.77
+14 November 1985(Day of year=318), maize: 
+     Stage 9 EndGrainFill  DAS = 127
+     		Biomass       = 552.27 		 LAI            =   0.72
+     		Stover N Conc =   4.15 		 Extractable SW =  89.30
+16 November 1985(Day of year=320), maize: 
+     Stage 10 Maturity  DAS = 129
+     		Biomass       = 566.27 		 LAI            =   0.72
+     		Stover N Conc =   3.95 		 Extractable SW =  85.38
+17 November 1985(Day of year=321), maize: 
+     Stage 11 HarvestRipe  DAS = 130
+     		Biomass       = 573.67 		 LAI            =   0.71
+     		Stover N Conc =   3.84 		 Extractable SW =  81.93
+17 November 1985(Day of year=321), MaizeField.Harvesting rule: 
      Manager sending message :- maize harvest
      
+     Harvest
+     Flowering (DAS)       = 78 		 Maturity (DAS)          = 129
+     Flowering day         = 269 		 Maturity day            = 320
+     Maximum LAI           = 0.8 		 Number of leaves        = 12.5
+     Total above ground biomass    (kg/ha) = 5736.7
+     Green above ground biomass    (kg/ha) = 5662.7
+     Senesced above ground biomass (kg/ha) = 74.0
+     Stover (kg/ha)        = 3565.3 	 Grain yield (kg/ha)     = 2171.4
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 2569.7
+     Weight 1000 grains(g) = 293.3 		 Grains/m^2              = 740.3
+     Grains/head           = 370.1
+     Grain N percent    (%)     =      1.52 	 Grain N            (kg/ha) =    33.00
+     Total N content    (kg/ha) =     71.44 	 Senesced N content (kg/ha) =     1.53
+     Green N content    (kg/ha) =     40.22
      
-     
-     flowering (DAS) =   85                                maturity (DAS)  =     133
-      flowering day  =  275                                 stover (kg/ha) =    4456.6
-      maturity day        =  323                            grain yield (kg/ha) =    2745.2
-      grain % water content   =   15.5                      grain yield wet (kg/ha) =    3248.8
-      grain wt (g) =     0.320                              grains/m^2   =   856.658
-      grains/head = 428.3                                   maximum lai = 0.839
-      total above ground biomass (kg/ha) =    7201.9
-      live above ground biomass (kg/ha) =    7201.9
-      green above ground biomass (kg/ha) =    6683.3
-      senesced above ground biomass (kg/ha) =     518.6
-      dead above ground biomass (kg/ha) =       0.0
-      number of leaves =  14.1
-      grain N percent =      1.82                           total N content (kg/ha) =     91.82
-      grain N uptake (kg/ha) =     50.00                    senesced N content (kg/ha) =      2.59
-      green N content (kg/ha) =     39.23                   dead N content (kg/ha) =      0.00
-     
-     
-      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
-         emergence           to end_of_juvenile         0.000        0.000        0.000        0.008
-         end_of_juvenile     to floral_initiation       0.000        0.000        0.000        0.000
-         floral_initiation   to flag_leaf               0.000        0.000        0.000        0.048
-         flag_leaf           to flowering               0.000        0.000        0.000        0.000
-         flowering           to start_grain_fill        0.000        0.000        0.000        0.000
-         start_grain_fill    to end_grain_fill          0.000        0.000        0.000        0.000
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        0.9
+        Floral initiation   to Flag leaf                 1.0          1.0        1.0
+        Flag leaf           to Flowering                 1.0          1.0        1.0
+        Flowering           to Start grain fill          0.9          0.9        0.9
+        Start grain fill    to End grain fill            1.0          1.0        1.0
      
      Crop harvested.
-         Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =               2745.23                    0.00
-                          N  (kg/ha) =                 50.00                    0.00
-     
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =               2171.40		    0.00
+                         N  (kg/ha) =                 33.00		    0.00
      Manager sending message :- maize end_crop
-         Crop ended. Yield (dw) =     0.0
-         Organic matter from crop:-      Tops to surface residue     Roots to soil FOM
-                          DM (kg/ha) =               4456.65                  732.37
-                          N  (kg/ha) =                 41.82                    7.80
-                          P  (kg/ha) =                  0.00                    0.00
-     
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =               3565.29		 2164.29
+                         N  (kg/ha) =                 38.44		    3.31
+                         P  (kg/ha) =                  0.00		    0.00
 1 February 1986(Day of year=32), clock: 
      Simulation is terminating due to end criteria being met.
 

@@ -65,7 +65,7 @@ Paddock:
         sw
         sw_dep()
         esw
-        grain_wt
+        GrainGreenWt
         stemgreenwt
         leafgreenwt
         green_biomass
@@ -73,7 +73,6 @@ Paddock:
         ear_wt
         senescedwt
         yield
-        grain_wt
 
      Output file = RS_SweetCorn_9697_T2_SevereDeficit.out
      Format = normal
@@ -288,15 +287,19 @@ Paddock:
           ---------------------------------------------------------
            Totals  137230.3 12475.5  1252.7   156.6   400.0    10.0
           ---------------------------------------------------------
-
-------- paddock.maize Initialisation ------------------------------------------
-      Initialising, V1.0 2000.01.21
-     
-         - Reading constants
-     
-         - Reading constants
 ------- Start of simulation  --------------------------------------------------
 1 September 1996(Day of year=245): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Uninitialised variable "green_biomass".
+     Variables should have a value before they are used in an expression.
+     Component name: paddock.New variables
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+1 September 1996(Day of year=245), paddock.New variables: 
+     Manager creating a new local real variable : green_biomass = 0.00000
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                       APSIM Warning Error
                       -------------------
@@ -306,81 +309,63 @@ Paddock:
      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
      
      
-1 September 1996(Day of year=245), paddock.New variables: 
      Manager creating a new local real variable : flowergreenwt = 0.00000
 30 October 1996(Day of year=304), paddock.Sow on a fixed date: 
      Manager sending message :- maize sow  plants = 5.7, sowing_depth = 20, cultivar = katumani, row_spacing = 700, crop_class = plant
-30 October 1996(Day of year=304), paddock.maize: 
+30 October 1996(Day of year=304), maize: 
      Sowing initiate
      
-     
-     
-                      Crop Sowing Data
+                 Crop Sowing Data
          -------------------------------------------------------
-         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
-         Day no    mm      m^2    m      code     name       no
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
          -------------------------------------------------------
-            304   20.0    5.7    0.7    0.0   katumani      0.00
+            304    20.0     5.7   700    1.0     katumani
          -------------------------------------------------------
      
-        - Reading root profile parameters
-     Uptake of NO3 and water calculated by maize
-     
-     
-     
-     
-                         Root Profile
-         ------------------------------------------------
-           Layer      Kl      Lower Exploration
-           Depth              limit   Factor
-           (mm)       ()     (mm/mm)    ()
-         ------------------------------------------------
-          200.000    0.281    0.158    0.983
-          200.000    0.346    0.201    0.579
-          200.000    0.159    0.201    0.121
-          200.000    0.141    0.187    0.257
-          200.000    0.106    0.162    0.511
-          200.000    0.035    0.140    0.511
-          200.000    0.035    0.162    0.511
-          200.000    0.035    0.162    0.511
-          ------------------------------------------------
-     
-            Crop factor for bounding water use is set to  100.0  times eo.
-     
-     
-     
-     
-        - Reading Cultivar Parameters
-         ------------------------------------------------
-         Cultivar                 = katumani
-         est_days_endjuv_to_init  =      20
-         tt_emerg_to_endjuv       =  150.00
+      - reading constants for plant(maize) - katumani
+         tt_emerg_to_endjuv       =   50.00
+         tt_endjuv_to_init        =  100.00
+         tt_init_to_flower        =   50.00
          tt_flower_to_maturity    =  660.00
-         head_grain_no_max        =  450.00
-         grain_gth_rate           =   10.50
          tt_flag_to_flower        =   10.00
          tt_flower_to_start_grain =  120.00
          tt_maturity_to_ripe      =    1.00
-         x_stem_wt      =     0.0   80.0
-         y_height      =     0.0 2000.0
-         ------------------------------------------------
+         ------------------------------------------------------
      
      
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             200.0     0.262          0.154       1.000
+             200.0     0.446          0.201       0.825
+             200.0     0.159          0.201       0.121
+             200.0     0.106          0.162       0.511
+             200.0     0.035          0.162       0.511
+             200.0     0.000          0.070       0.000
+             200.0     0.000          0.115       0.000
+             200.0     0.000          0.149       0.000
+         ---------------------------------------------------
      
-31 October 1996(Day of year=305), paddock.maize: 
-      stage    2.0 germination
-4 November 1996(Day of year=309), paddock.maize: 
-      stage    3.0 emergence
-                          biomass =          0.1140000       lai =    0.2166000E-02
-                          stover N conc =    4.400000       extractable sw =    12.75117
-25 November 1996(Day of year=330), paddock.maize: 
-      stage    4.0 end_of_juvenile
-                          biomass =           2.881463       lai =    0.2720483E-01
-                          stover N conc =    3.564060       extractable sw =    14.04234
-29 November 1996(Day of year=334), paddock.maize: 
-      stage    5.0 floral_initiation
-                          biomass =           4.530650       lai =    0.4066127E-01
-                          stover N conc =    3.448530       extractable sw =    13.23949
+31 October 1996(Day of year=305), maize: 
+     Stage 2 Germination  DAS = 1
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =   0.00
+4 November 1996(Day of year=309), maize: 
+     Stage 3 Emergence  DAS = 5
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =   7.89
+12 November 1996(Day of year=317), maize: 
+     Stage 4 EndOfJuvenile  DAS = 13
+     		Biomass       =   0.47 		 LAI            =   0.01
+     		Stover N Conc =   0.02 		 Extractable SW =  13.91
+1 December 1996(Day of year=336), maize: 
+     Stage 5 FloralInitiation  DAS = 32
+     		Biomass       =  13.74 		 LAI            =   0.11
+     		Stover N Conc =   0.28 		 Extractable SW =  12.44
 30 December 1996(Day of year=365), paddock.operations: 
       Sending apply message to irrigation
 27 March 1997(Day of year=86), paddock.operations: 
