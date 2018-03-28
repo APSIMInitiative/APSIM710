@@ -1,0 +1,2604 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.10
+Title                  = Wether in pasture crop rotation
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+   Component                 "Manage_stock" = %apsim%\Model\Manager2.dll
+   Component                 "Grazing_crop" = %apsim%\Model\Manager2.dll
+   Component            "Manage_supplement" = %apsim%\Model\Manager2.dll
+   Component                     "Shearing" = %apsim%\Model\Manager2.dll
+   Component                      "Selling" = %apsim%\Model\Manager2.dll
+   Component                        "Daily" = %apsim%\Model\Textoutput.dll
+   Component                      "Monthly" = %apsim%\Model\Textoutput.dll
+   Component                        "stock" = %apsim%\Model\stock.dll
+   Component                   "supplement" = %apsim%\Model\supplement.dll
+   Component                     "Cashbook" = %apsim%\Model\cashbook.dll
+Paddock:
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                           "Cl" = %apsim%\Model\Solute.dll
+   Component                    "Constants" = %apsim%\Model\Manager2.dll
+   Component                  "DailyOutput" = %apsim%\Model\Textoutput.dll
+   Component                     "Ryegrass" = %apsim%\Model\pasture.dll
+Paddock:
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component               "AusFarmManager" = %apsim%\Model\Afmanager.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                           "Cl" = %apsim%\Model\Solute.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component              "Crop Management" = %apsim%\Model\Manager2.dll
+   Component          "Fertilise at Sowing" = %apsim%\Model\Manager2.dll
+   Component                  "SOMForStock" = %apsim%\Model\Manager2.dll
+   Component                  "DailyOutput" = %apsim%\Model\Textoutput.dll
+   Component                      "Summary" = %apsim%\Model\Textoutput.dll
+Paddock:
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        do_cashbook
+        post
+        end_step
+     Simulation start date =  1/01/1990
+     Simulation end date   = 30/12/2000
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\wagga_aps.met
+
+------- Manage_stock Initialisation -------------------------------------------
+
+------- Grazing_crop Initialisation -------------------------------------------
+
+------- Manage_supplement Initialisation --------------------------------------
+
+------- Shearing Initialisation -----------------------------------------------
+
+------- Selling Initialisation ------------------------------------------------
+
+------- PasturePaddock.accum Initialisation -----------------------------------
+     Initialising
+
+------- PasturePaddock.Soil Water Initialisation ------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.060  0.120  0.240  0.380  0.240  1.550  0.613  0.600
+          100.-  200.  0.080  0.100  0.220  0.390  0.220  1.550  0.243  0.500
+          200.-  400.  0.120  0.120  0.240  0.400  0.240  1.500  0.135  0.500
+          400.-  600.  0.120  0.120  0.340  0.400  0.340  1.500  0.009  0.400
+          600.-  900.  0.120  0.120  0.340  0.400  0.340  1.550  0.000  0.300
+          900.- 1200.  0.120  0.120  0.340  0.400  0.340  1.550  0.000  0.300
+         1200.- 1500.  0.120  0.120  0.340  0.400  0.340  1.550  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      12.00      12.00      12.00      14.00
+          100.-  200.      10.00      12.00      12.00      17.00
+          200.-  400.      24.00      24.00      24.00      32.00
+          400.-  600.      24.00      44.00      44.00      12.00
+          600.-  900.      36.00      66.00      66.00      18.00
+          900.- 1200.      36.00      66.00      66.00      18.00
+         1200.- 1500.      36.00      66.00      66.00      18.00
+          ---------------------------------------------------------
+               Totals     178.00     290.00     290.00     129.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              78.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.00 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- PasturePaddock.SurfaceOrganicMatter Initialisation --------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          pasture_repasture       1000.0   400.0     5.0     0.0   0.378     0.1
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- PasturePaddock.Soil Nitrogen Initialisation ---------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type ?
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.60  1.60   10.08    0.93    0.00
+             2     5.30  0.80    3.25    0.16    0.00
+             3     6.00  0.40    6.30    0.30    0.00
+             4     6.60  0.20    5.10    0.30    0.00
+             5     9.00  0.10    7.91    0.47    0.00
+             6     9.00  0.10    7.91    0.47    0.00
+             7     9.00  0.10    7.91    0.47    0.00
+          ------------------------------------------------
+           Totals               48.44    3.08    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      24366.6  1949.3   433.4    54.2   193.0     4.3
+             2      12278.4   982.3   121.6    15.2   158.0     3.5
+             3      11929.4   954.4    70.6     8.8   105.9     2.4
+             4       5988.1   479.0    11.9     1.5    71.0     1.6
+             5       4645.4   371.6     4.6     0.6    39.0     0.9
+             6       4650.0   372.0     0.0     0.0    21.4     0.5
+             7       4650.0   372.0     0.0     0.0    11.7     0.3
+          ---------------------------------------------------------
+           Totals   68508.0  5480.6   642.0    80.3   600.0    13.3
+          ---------------------------------------------------------
+
+------- PasturePaddock.Cl Initialisation --------------------------------------
+     Initialising
+     
+        - Reading Constants
+
+------- Constants Initialisation ----------------------------------------------
+
+------- WheatPaddock.accum Initialisation -------------------------------------
+     Initialising
+
+------- WheatPaddock.Soil Water Initialisation --------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.060  0.120  0.240  0.380  0.240  1.550  0.613  0.600
+          100.-  200.  0.080  0.100  0.220  0.390  0.220  1.550  0.243  0.500
+          200.-  400.  0.120  0.120  0.240  0.400  0.240  1.500  0.135  0.500
+          400.-  600.  0.120  0.120  0.340  0.400  0.340  1.500  0.009  0.400
+          600.-  900.  0.120  0.120  0.340  0.400  0.340  1.550  0.000  0.300
+          900.- 1200.  0.120  0.120  0.340  0.400  0.340  1.550  0.000  0.300
+         1200.- 1500.  0.120  0.120  0.340  0.400  0.340  1.550  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      12.00      12.00      12.00      14.00
+          100.-  200.      10.00      12.00      12.00      17.00
+          200.-  400.      24.00      24.00      24.00      32.00
+          400.-  600.      24.00      44.00      44.00      12.00
+          600.-  900.      36.00      66.00      66.00      18.00
+          900.- 1200.      36.00      66.00      66.00      18.00
+         1200.- 1500.      36.00      66.00      66.00      18.00
+          ---------------------------------------------------------
+               Totals     178.00     290.00     290.00     129.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              78.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        2.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.00 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- WheatPaddock.SurfaceOrganicMatter Initialisation ----------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.362     0.2
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- WheatPaddock.Soil Nitrogen Initialisation -----------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type ?
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.60  1.60   10.08    0.93    0.00
+             2     5.30  0.80    3.25    0.16    0.00
+             3     6.00  0.40    6.30    0.30    0.00
+             4     6.60  0.20    5.10    0.30    0.00
+             5     9.00  0.10    7.91    0.47    0.00
+             6     9.00  0.10    7.91    0.47    0.00
+             7     9.00  0.10    7.91    0.47    0.00
+          ------------------------------------------------
+           Totals               48.44    3.08    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      24366.6  1949.3   433.4    54.2   193.0     4.3
+             2      12278.4   982.3   121.6    15.2   158.0     3.5
+             3      11929.4   954.4    70.6     8.8   105.9     2.4
+             4       5988.1   479.0    11.9     1.5    71.0     1.6
+             5       4645.4   371.6     4.6     0.6    39.0     0.9
+             6       4650.0   372.0     0.0     0.0    21.4     0.5
+             7       4650.0   372.0     0.0     0.0    11.7     0.3
+          ---------------------------------------------------------
+           Totals   68508.0  5480.6   642.0    80.3   600.0    13.3
+          ---------------------------------------------------------
+
+------- WheatPaddock.Cl Initialisation ----------------------------------------
+     Initialising
+     
+        - Reading Constants
+
+------- Crop Management Initialisation ----------------------------------------
+
+------- Fertilise at Sowing Initialisation ------------------------------------
+
+------- SOMForStock Initialisation --------------------------------------------
+Cannot request surface_organic_matter in getSOMState()
+
+------- Feedlot.accum Initialisation ------------------------------------------
+     Initialising
+
+------- Feedlot.Soil Water Initialisation -------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.140  0.290  0.540  0.590  0.540  1.020  0.762  0.300
+          150.-  300.  0.260  0.290  0.530  0.580  0.530  1.030  0.190  0.300
+          300.-  600.  0.290  0.290  0.540  0.590  0.540  1.020  0.048  0.300
+          600.-  900.  0.290  0.290  0.540  0.580  0.540  1.020  0.000  0.300
+          900.- 1200.  0.300  0.300  0.520  0.570  0.520  1.060  0.000  0.300
+         1200.- 1500.  0.310  0.310  0.500  0.550  0.500  1.110  0.000  0.300
+         1500.- 1800.  0.320  0.320  0.500  0.550  0.500  1.120  0.000  0.300
+         1800.- 2100.  0.330  0.330  0.480  0.530  0.480  1.150  0.000  0.300
+         2100.- 2400.  0.340  0.340  0.470  0.520  0.470  1.180  0.000  0.300
+         2400.- 2700.  0.350  0.350  0.460  0.510  0.460  1.200  0.000  0.300
+         2700.- 3000.  0.360  0.360  0.440  0.490  0.440  1.250  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      43.50      37.50      37.50       7.50
+          150.-  300.      43.50      36.00      36.00       7.50
+          300.-  600.      87.00      75.00      75.00      15.00
+          600.-  900.      87.00      75.00      75.00      12.00
+          900.- 1200.      90.00      66.00      66.00      15.00
+         1200.- 1500.      93.00      57.00      57.00      15.00
+         1500.- 1800.      96.00      54.00      54.00      15.00
+         1800.- 2100.      99.00      45.00      45.00      15.00
+         2100.- 2400.     102.00      39.00      39.00      15.00
+         2400.- 2700.     105.00      33.00      33.00      15.00
+         2700.- 3000.     108.00      24.00      24.00      15.00
+          ---------------------------------------------------------
+               Totals     954.00     541.50     541.50     147.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- Feedlot.SurfaceOrganicMatter Initialisation ---------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat_stubwheat            0.0     0.0     0.0     0.0   0.000     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- Feedlot.Soil Nitrogen Initialisation ----------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.40  1.04    9.94    0.92    0.00
+             2     8.80  0.89    3.24    0.15    0.00
+             3     9.00  0.89    6.43    0.31    0.00
+             4     9.20  0.89    5.20    0.31    0.00
+             5     9.20  0.77    5.41    0.32    0.00
+             6     9.10  0.45    5.66    0.33    0.00
+             7     9.00  0.27    5.71    0.34    0.00
+             8     9.00  0.22    5.87    0.35    0.00
+             9     8.90  0.16    6.02    0.35    0.00
+            10     8.90  0.13    6.12    0.36    0.00
+            11     8.90  0.12    6.38    0.38    0.00
+          ------------------------------------------------
+           Totals               65.97    4.11    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      15679.1  1254.3   232.9    29.1    19.3     0.5
+             2      13642.7  1091.4   107.8    13.5    16.6     0.4
+             3      27153.5  2172.3    80.5    10.1    12.3     0.3
+             4      27207.0  2176.6    27.0     3.4     9.1     0.2
+             5      24473.9  1957.9    12.1     1.5     6.7     0.2
+             6      14977.6  1198.2     7.4     0.9     5.0     0.1
+             7       9067.5   725.4     4.5     0.6     3.7     0.1
+             8       7586.2   606.9     3.8     0.5     2.7     0.1
+             9       5661.2   452.9     2.8     0.4     2.0     0.1
+            10       4677.7   374.2     2.3     0.3     1.5     0.0
+            11       4497.8   359.8     2.2     0.3     1.1     0.0
+          ---------------------------------------------------------
+           Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+1/01/1990: Buy supplement: 500000.00 kg of lupins
+14/01/1990: Selling 1061 animals from group 3
+14/01/1990: Selling 361 animals from group 2
+14/01/1990: Selling 306 animals from group 1
+15/01/1990: Buy production supplement: 494.00 kg of wheat
+15/01/1990: Moving 247 animals in tag group 1 to Feedlot for production feeding
+15/01/1990: Feeding: 0.00 kg of lupins in Feedlot
+16/01/1990: Feeding: 53.43 kg of lupins in Feedlot
+17/01/1990: Feeding: 38.84 kg of lupins in Feedlot
+18/01/1990: Feeding: 43.71 kg of lupins in Feedlot
+19/01/1990: Feeding: 42.15 kg of lupins in Feedlot
+20/01/1990: Feeding: 43.68 kg of lupins in Feedlot
+21/01/1990: Feeding: 44.49 kg of lupins in Feedlot
+22/01/1990: Feeding: 46.92 kg of lupins in Feedlot
+23/01/1990: Feeding: 46.75 kg of lupins in Feedlot
+24/01/1990: Feeding: 48.55 kg of lupins in Feedlot
+25/01/1990: Feeding: 50.16 kg of lupins in Feedlot
+26/01/1990: Feeding: 52.01 kg of lupins in Feedlot
+27/01/1990: Feeding: 54.02 kg of lupins in Feedlot
+28/01/1990: Feeding: 56.25 kg of lupins in Feedlot
+28/01/1990: Selling 17 animals from group 3
+28/01/1990: Selling 7 animals from group 2
+28/01/1990: Selling 14 animals from group 1
+29/01/1990: Feeding: 55.87 kg of lupins in Feedlot
+30/01/1990: Feeding: 60.42 kg of lupins in Feedlot
+31/01/1990: Feeding: 61.72 kg of lupins in Feedlot
+1/02/1990: Feeding: 65.40 kg of lupins in Feedlot
+2/02/1990: Feeding: 69.13 kg of lupins in Feedlot
+3/02/1990: Feeding: 75.03 kg of lupins in Feedlot
+4/02/1990: Feeding: 78.20 kg of lupins in Feedlot
+5/02/1990: Feeding: 84.35 kg of lupins in Feedlot
+6/02/1990: Feeding: 90.48 kg of lupins in Feedlot
+7/02/1990: Feeding: 99.05 kg of lupins in Feedlot
+8/02/1990: Feeding: 108.97 kg of lupins in Feedlot
+9/02/1990: Feeding: 121.95 kg of lupins in Feedlot
+10/02/1990: Feeding: 139.58 kg of lupins in Feedlot
+11/02/1990: Feeding: 164.65 kg of lupins in Feedlot
+12/02/1990: Feeding: 201.38 kg of lupins in Feedlot
+13/02/1990: Feeding: 208.00 kg of lupins in Feedlot
+14/02/1990: Feeding: 208.00 kg of lupins in Feedlot
+14/02/1990: Selling 6 animals from group 3
+14/02/1990: Selling 2 animals from group 2
+14/02/1990: Selling 6 animals from group 1
+15/02/1990: Feeding: 194.00 kg of lupins in Feedlot
+28/02/1990: Selling 1 animals from group 3
+28/02/1990: Selling 1 animals from group 1
+6/03/1990: Feeding: 26.96 kg of lupins in feedlot
+7/03/1990: Feeding: 47.85 kg of lupins in feedlot
+8/03/1990: Feeding: 65.00 kg of lupins in feedlot
+9/03/1990: Feeding: 78.22 kg of lupins in feedlot
+10/03/1990: Feeding: 88.19 kg of lupins in feedlot
+11/03/1990: Feeding: 95.59 kg of lupins in feedlot
+12/03/1990: Feeding: 100.90 kg of lupins in feedlot
+13/03/1990: Feeding: 105.54 kg of lupins in feedlot
+14/03/1990: Feeding: 109.45 kg of lupins in feedlot
+15/03/1990: Feeding: 112.71 kg of lupins in feedlot
+15/03/1990: Selling 75 animals from group 6
+15/03/1990: Selling 33 animals from group 5
+15/03/1990: Selling 84 animals from group 4
+15/05/1990: Purchase 2000 animals
+23/05/1990 12:00:00 AM Sowing Crop
+23 May 1990(Day of year=143), WheatPaddock.wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.060          0.120       1.000
+         100.0     0.060          0.100       1.000
+         200.0     0.040          0.120       1.000
+         200.0     0.040          0.170       1.000
+         300.0     0.030          0.180       1.000
+         300.0     0.020          0.220       1.000
+         300.0     0.020          0.290       1.000
+         -----------------------------------------------
+         Extractable SW:   181mm in  1500mm total depth ( 12%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            143   30.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+23 May 1990(Day of year=143), WheatPaddock.Soil Water: 
+     
+         - Reading tillage CN info
+     Soil tilled using chisel
+                                             CN reduction =     0.00
+                                             Acc rain     =     0.00
+23 May 1990(Day of year=143), WheatPaddock.SurfaceOrganicMatter: 
+     
+         - Reading residue tillage info
+     Residue removed using chisel
+                                             Fraction Incorporated =     0.50
+                                             Incorporated Depth    =   100.00
+Fertiliser OnTrigger called, paddock='WheatPaddock'
+23 May 1990(Day of year=143), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of N as urea (urea_N)
+                                         added at depth   50.00 (layer   1)
+24 May 1990(Day of year=144), WheatPaddock.wheat: 
+      stage 2.0 germination
+31 May 1990(Day of year=151), WheatPaddock.wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   34.41 (mm)
+1 June 1990(Day of year=152), WheatPaddock.wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.56 (g/m^2)   lai          =   0.022 (m^2/m^2)
+                     stover N conc =     5.84 (%)    extractable sw =   28.89 (mm)
+21/08/1990: Moving 1990 animals in group 1 to WheatPaddock
+26 August 1990(Day of year=238), WheatPaddock.wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         165.91 (g/m^2)   lai          =   2.311 (m^2/m^2)
+                     stover N conc =     3.22 (%)    extractable sw =  177.99 (mm)
+5/09/1990: Moving 1985 animals in group 1 to PasturePaddock
+15/09/1990: Shearing
+12 October 1990(Day of year=285), WheatPaddock.wheat: 
+      stage 6.0 flowering
+                     biomass =         946.60 (g/m^2)   lai          =   2.975 (m^2/m^2)
+                     stover N conc =     1.16 (%)    extractable sw =  111.39 (mm)
+21 October 1990(Day of year=294), WheatPaddock.wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =        1086.29 (g/m^2)   lai          =   2.605 (m^2/m^2)
+                     stover N conc =     0.90 (%)    extractable sw =  102.71 (mm)
+20 November 1990(Day of year=324), WheatPaddock.wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1269.90 (g/m^2)   lai          =   1.520 (m^2/m^2)
+                     stover N conc =     0.32 (%)    extractable sw =   56.88 (mm)
+22 November 1990(Day of year=326), WheatPaddock.wheat: 
+      stage 9.0 maturity
+                     biomass =        1270.09 (g/m^2)   lai          =   1.294 (m^2/m^2)
+                     stover N conc =     0.32 (%)    extractable sw =   56.10 (mm)
+23 November 1990(Day of year=327), WheatPaddock.wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1270.09 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =   55.69 (mm)
+24/11/1990 12:00:00 AM Harvesting Crop
+24 November 1990(Day of year=328), WheatPaddock.wheat: 
+     
+      flowering day          =  285                           stover (kg/ha)         =     8197.9
+      maturity day           =  326                           grain yield (kg/ha)    =     4503.0
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     5146.3
+      grain wt (g)           =    0.031                       grains/m^2             =    14418.4
+      grains/plant           =  144.2                         maximum lai            =      3.335
+      total above ground biomass (kg/ha)    =    12700.9
+      live above ground biomass (kg/ha)     =    12700.9
+      green above ground biomass (kg/ha)    =    11297.1
+      senesced above ground biomass (kg/ha) =     1403.8
+      number of leaves       =     30.0
+      DM Root:Shoot ratio    =     0.14                       Harvest Index          =       0.35
+      Stover C:N ratio       =   118.00                       Root C:N ratio         =      24.16
+      grain N percent        =     2.01                       total N content (kg/ha)=     118.11
+      grain N uptake (kg/ha) =    90.32                       senesced N content (kg/ha)=    7.02
+      green N content (kg/ha)=    20.77
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.007        0.016        0.000        0.000
+         flowering            to start_grain_fill        0.145        0.212        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.118        0.148        0.605        0.605
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                6894.6                     0.0
+                          N  (kg/ha) =                  23.81                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                4503.0                     0.0
+                          N  (kg/ha) =                  90.32                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =         130.33 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =   55.69 (mm)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                1303.3                  1726.6
+                          N  (kg/ha) =                   3.98                   28.58
+     
+24/11/1990: Moving 1975 animals in group 1 to WheatPaddock for stubble grazing
+15/12/1990: Selling 1579 animals from group 1
+21/12/1990: Moving 395 animals in group 1 to PasturePaddock
+28/12/1990: Selling 87 animals from group 1
+1/01/1991: Buy supplement: 3537.59 kg of lupins
+14/01/1991: Selling 64 animals from group 1
+15/01/1991: Buy production supplement: 488.00 kg of wheat
+15/01/1991: Moving 244 animals in tag group 1 to Feedlot for production feeding
+15/01/1991: Feeding: 14.47 kg of lupins in Feedlot
+16/01/1991: Feeding: 56.32 kg of lupins in Feedlot
+17/01/1991: Feeding: 46.94 kg of lupins in Feedlot
+18/01/1991: Feeding: 50.46 kg of lupins in Feedlot
+19/01/1991: Feeding: 51.34 kg of lupins in Feedlot
+20/01/1991: Feeding: 52.96 kg of lupins in Feedlot
+21/01/1991: Feeding: 54.44 kg of lupins in Feedlot
+22/01/1991: Feeding: 56.15 kg of lupins in Feedlot
+23/01/1991: Feeding: 57.98 kg of lupins in Feedlot
+24/01/1991: Feeding: 59.96 kg of lupins in Feedlot
+25/01/1991: Feeding: 62.11 kg of lupins in Feedlot
+26/01/1991: Feeding: 64.45 kg of lupins in Feedlot
+27/01/1991: Feeding: 67.01 kg of lupins in Feedlot
+28/01/1991: Feeding: 70.00 kg of lupins in Feedlot
+28/01/1991: Selling 13 animals from group 1
+29/01/1991: Feeding: 72.30 kg of lupins in Feedlot
+30/01/1991: Feeding: 75.28 kg of lupins in Feedlot
+31/01/1991: Feeding: 80.39 kg of lupins in Feedlot
+1/02/1991: Feeding: 83.65 kg of lupins in Feedlot
+2/02/1991: Feeding: 88.78 kg of lupins in Feedlot
+3/02/1991: Feeding: 93.88 kg of lupins in Feedlot
+4/02/1991: Feeding: 100.39 kg of lupins in Feedlot
+5/02/1991: Feeding: 107.87 kg of lupins in Feedlot
+6/02/1991: Feeding: 115.92 kg of lupins in Feedlot
+7/02/1991: Feeding: 126.76 kg of lupins in Feedlot
+8/02/1991: Feeding: 139.86 kg of lupins in Feedlot
+9/02/1991: Feeding: 157.57 kg of lupins in Feedlot
+10/02/1991: Feeding: 181.05 kg of lupins in Feedlot
+11/02/1991: Feeding: 213.49 kg of lupins in Feedlot
+12/02/1991: Feeding: 230.00 kg of lupins in Feedlot
+13/02/1991: Feeding: 230.00 kg of lupins in Feedlot
+14/02/1991: Feeding: 230.00 kg of lupins in Feedlot
+14/02/1991: Selling 8 animals from group 1
+15/02/1991: Feeding: 222.00 kg of lupins in Feedlot
+28/02/1991: Selling 1 animals from group 1
+15/03/1991: Feeding: 30.40 kg of lupins in feedlot
+15/03/1991: Selling 218 animals from group 2
+15/05/1991: Purchase 2000 animals
+7/06/1991 12:00:00 AM Sowing Crop
+7 June 1991(Day of year=158), WheatPaddock.wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.060          0.120       1.000
+         100.0     0.060          0.100       1.000
+         200.0     0.040          0.120       1.000
+         200.0     0.040          0.170       1.000
+         300.0     0.030          0.180       1.000
+         300.0     0.020          0.220       1.000
+         300.0     0.020          0.290       1.000
+         -----------------------------------------------
+         Extractable SW:   181mm in  1500mm total depth ( 12%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            158   30.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+7 June 1991(Day of year=158), WheatPaddock.Soil Water: 
+     
+         - Reading tillage CN info
+     Soil tilled using chisel
+                                             CN reduction =     0.00
+                                             Acc rain     =     0.00
+7 June 1991(Day of year=158), WheatPaddock.SurfaceOrganicMatter: 
+     
+         - Reading residue tillage info
+     Residue removed using chisel
+                                             Fraction Incorporated =     0.50
+                                             Incorporated Depth    =   100.00
+Fertiliser OnTrigger called, paddock='WheatPaddock'
+7 June 1991(Day of year=158), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of N as urea (urea_N)
+                                         added at depth   50.00 (layer   1)
+8 June 1991(Day of year=159), WheatPaddock.wheat: 
+      stage 2.0 germination
+14 June 1991(Day of year=165), WheatPaddock.wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   30.78 (mm)
+15 June 1991(Day of year=166), WheatPaddock.wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.50 (g/m^2)   lai          =   0.021 (m^2/m^2)
+                     stover N conc =     5.84 (%)    extractable sw =   27.31 (mm)
+1/09/1991: Moving 1986 animals in group 1 to WheatPaddock
+5/09/1991: Moving 1985 animals in group 1 to PasturePaddock
+5 September 1991(Day of year=248), WheatPaddock.wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         185.10 (g/m^2)   lai          =   2.581 (m^2/m^2)
+                     stover N conc =     2.81 (%)    extractable sw =  162.04 (mm)
+15/09/1991: Shearing
+19 October 1991(Day of year=292), WheatPaddock.wheat: 
+      stage 6.0 flowering
+                     biomass =         890.86 (g/m^2)   lai          =   2.475 (m^2/m^2)
+                     stover N conc =     0.78 (%)    extractable sw =   94.03 (mm)
+26 October 1991(Day of year=299), WheatPaddock.wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         986.23 (g/m^2)   lai          =   2.049 (m^2/m^2)
+                     stover N conc =     0.52 (%)    extractable sw =   80.32 (mm)
+26 November 1991(Day of year=330), WheatPaddock.wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1071.84 (g/m^2)   lai          =   0.540 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =   57.03 (mm)
+28 November 1991(Day of year=332), WheatPaddock.wheat: 
+      stage 9.0 maturity
+                     biomass =        1071.88 (g/m^2)   lai          =   0.362 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =   57.00 (mm)
+29 November 1991(Day of year=333), WheatPaddock.wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1071.88 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.30 (%)    extractable sw =   56.90 (mm)
+30/11/1991 12:00:00 AM Harvesting Crop
+30 November 1991(Day of year=334), WheatPaddock.wheat: 
+     
+      flowering day          =  292                           stover (kg/ha)         =     7712.9
+      maturity day           =  332                           grain yield (kg/ha)    =     3005.8
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     3435.2
+      grain wt (g)           =    0.022                       grains/m^2             =    13556.6
+      grains/plant           =  135.6                         maximum lai            =      3.493
+      total above ground biomass (kg/ha)    =    10718.8
+      live above ground biomass (kg/ha)     =    10718.8
+      green above ground biomass (kg/ha)    =     9253.3
+      senesced above ground biomass (kg/ha) =     1465.5
+      number of leaves       =     35.0
+      DM Root:Shoot ratio    =     0.15                       Harvest Index          =       0.28
+      Stover C:N ratio       =   117.55                       Root C:N ratio         =      40.53
+      grain N percent        =     1.55                       total N content (kg/ha)=      72.90
+      grain N uptake (kg/ha) =    46.65                       senesced N content (kg/ha)=    7.33
+      green N content (kg/ha)=    18.92
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.068        0.093        0.061        0.061
+         flowering            to start_grain_fill        0.265        0.350        0.003        0.003
+         start_grain_fill     to end_grain_fill          0.017        0.030        0.845        0.845
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                6447.4                     0.0
+                          N  (kg/ha) =                  22.41                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                3005.8                     0.0
+                          N  (kg/ha) =                  46.65                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =         126.55 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     0.30 (%)    extractable sw =   56.90 (mm)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                1265.5                  1609.7
+                          N  (kg/ha) =                   3.84                   15.89
+     
+30/11/1991: Moving 1976 animals in group 1 to WheatPaddock for stubble grazing
+15/12/1991: Selling 1638 animals from group 1
+28/12/1991: Moving 336 animals in group 1 to PasturePaddock
+28/12/1991: Selling 31 animals from group 1
+1/01/1992: Buy supplement: 3344.13 kg of lupins
+14/01/1992: Selling 44 animals from group 1
+15/01/1992: Buy production supplement: 522.00 kg of wheat
+15/01/1992: Moving 261 animals in tag group 1 to Feedlot for production feeding
+15/01/1992: Feeding: 14.52 kg of lupins in Feedlot
+16/01/1992: Feeding: 62.65 kg of lupins in Feedlot
+17/01/1992: Feeding: 52.56 kg of lupins in Feedlot
+18/01/1992: Feeding: 57.58 kg of lupins in Feedlot
+19/01/1992: Feeding: 58.48 kg of lupins in Feedlot
+20/01/1992: Feeding: 60.10 kg of lupins in Feedlot
+21/01/1992: Feeding: 60.53 kg of lupins in Feedlot
+22/01/1992: Feeding: 62.72 kg of lupins in Feedlot
+23/01/1992: Feeding: 64.70 kg of lupins in Feedlot
+24/01/1992: Feeding: 66.94 kg of lupins in Feedlot
+25/01/1992: Feeding: 69.34 kg of lupins in Feedlot
+26/01/1992: Feeding: 72.68 kg of lupins in Feedlot
+27/01/1992: Feeding: 76.05 kg of lupins in Feedlot
+28/01/1992: Feeding: 78.99 kg of lupins in Feedlot
+28/01/1992: Selling 10 animals from group 1
+29/01/1992: Feeding: 80.55 kg of lupins in Feedlot
+30/01/1992: Feeding: 84.81 kg of lupins in Feedlot
+31/01/1992: Feeding: 88.93 kg of lupins in Feedlot
+1/02/1992: Feeding: 93.79 kg of lupins in Feedlot
+2/02/1992: Feeding: 99.24 kg of lupins in Feedlot
+3/02/1992: Feeding: 105.48 kg of lupins in Feedlot
+4/02/1992: Feeding: 112.68 kg of lupins in Feedlot
+5/02/1992: Feeding: 121.10 kg of lupins in Feedlot
+6/02/1992: Feeding: 131.08 kg of lupins in Feedlot
+7/02/1992: Feeding: 143.11 kg of lupins in Feedlot
+8/02/1992: Feeding: 158.28 kg of lupins in Feedlot
+9/02/1992: Feeding: 178.52 kg of lupins in Feedlot
+10/02/1992: Feeding: 205.08 kg of lupins in Feedlot
+11/02/1992: Feeding: 241.82 kg of lupins in Feedlot
+12/02/1992: Feeding: 251.00 kg of lupins in Feedlot
+13/02/1992: Feeding: 251.00 kg of lupins in Feedlot
+14/02/1992: Feeding: 251.00 kg of lupins in Feedlot
+14/02/1992: Selling 7 animals from group 1
+15/02/1992: Feeding: 244.00 kg of lupins in Feedlot
+28/02/1992: Selling 1 animals from group 1
+8/03/1992: Feeding: 34.18 kg of lupins in feedlot
+9/03/1992: Feeding: 60.60 kg of lupins in feedlot
+10/03/1992: Feeding: 81.01 kg of lupins in feedlot
+11/03/1992: Feeding: 96.78 kg of lupins in feedlot
+12/03/1992: Feeding: 108.95 kg of lupins in feedlot
+13/03/1992: Feeding: 118.36 kg of lupins in feedlot
+14/03/1992: Feeding: 125.62 kg of lupins in feedlot
+15/03/1992: Feeding: 131.43 kg of lupins in feedlot
+15/03/1992: Selling 243 animals from group 2
+15/05/1992: Purchase 2000 animals
+15/09/1992: Shearing
+15/12/1992: Selling 1886 animals from group 1
+28/12/1992: Selling 33 animals from group 1
+1/01/1993: Buy supplement: 4456.31 kg of lupins
+14/01/1993: Selling 12 animals from group 1
+15/01/1993: Moving 46 animals in tag group 1 to Feedlot for production feeding
+15/01/1993: Feeding: 3.71 kg of lupins in Feedlot
+16/01/1993: Feeding: 10.78 kg of lupins in Feedlot
+17/01/1993: Feeding: 8.69 kg of lupins in Feedlot
+18/01/1993: Feeding: 9.60 kg of lupins in Feedlot
+19/01/1993: Feeding: 9.55 kg of lupins in Feedlot
+20/01/1993: Feeding: 9.86 kg of lupins in Feedlot
+21/01/1993: Feeding: 10.14 kg of lupins in Feedlot
+22/01/1993: Feeding: 10.46 kg of lupins in Feedlot
+23/01/1993: Feeding: 10.80 kg of lupins in Feedlot
+24/01/1993: Feeding: 11.17 kg of lupins in Feedlot
+25/01/1993: Feeding: 11.57 kg of lupins in Feedlot
+26/01/1993: Feeding: 12.01 kg of lupins in Feedlot
+27/01/1993: Feeding: 12.48 kg of lupins in Feedlot
+28/01/1993: Feeding: 13.01 kg of lupins in Feedlot
+28/01/1993: Selling 2 animals from group 1
+29/01/1993: Feeding: 13.56 kg of lupins in Feedlot
+30/01/1993: Feeding: 14.21 kg of lupins in Feedlot
+31/01/1993: Feeding: 14.94 kg of lupins in Feedlot
+1/02/1993: Feeding: 15.75 kg of lupins in Feedlot
+2/02/1993: Feeding: 16.67 kg of lupins in Feedlot
+3/02/1993: Feeding: 17.72 kg of lupins in Feedlot
+4/02/1993: Feeding: 18.94 kg of lupins in Feedlot
+5/02/1993: Feeding: 20.36 kg of lupins in Feedlot
+6/02/1993: Feeding: 22.05 kg of lupins in Feedlot
+7/02/1993: Feeding: 24.08 kg of lupins in Feedlot
+8/02/1993: Feeding: 26.59 kg of lupins in Feedlot
+9/02/1993: Feeding: 29.96 kg of lupins in Feedlot
+10/02/1993: Feeding: 34.44 kg of lupins in Feedlot
+11/02/1993: Feeding: 40.64 kg of lupins in Feedlot
+12/02/1993: Feeding: 44.00 kg of lupins in Feedlot
+13/02/1993: Feeding: 44.00 kg of lupins in Feedlot
+14/02/1993: Feeding: 44.00 kg of lupins in Feedlot
+15/02/1993: Feeding: 44.00 kg of lupins in Feedlot
+15/03/1993: Selling 44 animals from group 2
+15/05/1993: Purchase 2000 animals
+31/05/1993 12:00:00 AM Sowing Crop
+31 May 1993(Day of year=151), WheatPaddock.wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.060          0.120       1.000
+         100.0     0.060          0.100       1.000
+         200.0     0.040          0.120       1.000
+         200.0     0.040          0.170       1.000
+         300.0     0.030          0.180       1.000
+         300.0     0.020          0.220       1.000
+         300.0     0.020          0.290       1.000
+         -----------------------------------------------
+         Extractable SW:   181mm in  1500mm total depth ( 12%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            151   30.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+31 May 1993(Day of year=151), WheatPaddock.Soil Water: 
+     
+         - Reading tillage CN info
+     Soil tilled using chisel
+                                             CN reduction =     0.00
+                                             Acc rain     =     0.00
+31 May 1993(Day of year=151), WheatPaddock.SurfaceOrganicMatter: 
+     
+         - Reading residue tillage info
+     Residue removed using chisel
+                                             Fraction Incorporated =     0.50
+                                             Incorporated Depth    =   100.00
+Fertiliser OnTrigger called, paddock='WheatPaddock'
+31 May 1993(Day of year=151), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of N as urea (urea_N)
+                                         added at depth   50.00 (layer   1)
+1 June 1993(Day of year=152), WheatPaddock.wheat: 
+      stage 2.0 germination
+10 June 1993(Day of year=161), WheatPaddock.wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   20.66 (mm)
+11 June 1993(Day of year=162), WheatPaddock.wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.49 (g/m^2)   lai          =   0.021 (m^2/m^2)
+                     stover N conc =     5.84 (%)    extractable sw =   22.39 (mm)
+22/08/1993: Moving 1988 animals in group 1 to WheatPaddock
+30 August 1993(Day of year=242), WheatPaddock.wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         258.13 (g/m^2)   lai          =   3.523 (m^2/m^2)
+                     stover N conc =     2.81 (%)    extractable sw =  139.80 (mm)
+5/09/1993: Moving 1988 animals in group 1 to PasturePaddock
+15/09/1993: Shearing
+14 October 1993(Day of year=287), WheatPaddock.wheat: 
+      stage 6.0 flowering
+                     biomass =        1033.78 (g/m^2)   lai          =   3.882 (m^2/m^2)
+                     stover N conc =     0.96 (%)    extractable sw =  155.87 (mm)
+23 October 1993(Day of year=296), WheatPaddock.wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =        1221.66 (g/m^2)   lai          =   3.636 (m^2/m^2)
+                     stover N conc =     0.68 (%)    extractable sw =  128.76 (mm)
+26 November 1993(Day of year=330), WheatPaddock.wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1459.52 (g/m^2)   lai          =   1.881 (m^2/m^2)
+                     stover N conc =     0.33 (%)    extractable sw =  149.63 (mm)
+27 November 1993(Day of year=331), WheatPaddock.wheat: 
+      stage 9.0 maturity
+                     biomass =        1459.52 (g/m^2)   lai          =   1.674 (m^2/m^2)
+                     stover N conc =     0.33 (%)    extractable sw =  147.01 (mm)
+28 November 1993(Day of year=332), WheatPaddock.wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1459.52 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =  144.16 (mm)
+29/11/1993 12:00:00 AM Harvesting Crop
+29 November 1993(Day of year=333), WheatPaddock.wheat: 
+     
+      flowering day          =  287                           stover (kg/ha)         =     9754.1
+      maturity day           =  331                           grain yield (kg/ha)    =     4841.1
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     5532.7
+      grain wt (g)           =    0.032                       grains/m^2             =    15359.9
+      grains/plant           =  153.6                         maximum lai            =      4.313
+      total above ground biomass (kg/ha)    =    14595.2
+      live above ground biomass (kg/ha)     =    14595.2
+      green above ground biomass (kg/ha)    =    12764.7
+      senesced above ground biomass (kg/ha) =     1830.4
+      number of leaves       =     30.1
+      DM Root:Shoot ratio    =     0.13                       Harvest Index          =       0.33
+      Stover C:N ratio       =   115.35                       Root C:N ratio         =      34.09
+      grain N percent        =     1.59                       total N content (kg/ha)=     110.63
+      grain N uptake (kg/ha) =    76.81                       senesced N content (kg/ha)=    9.15
+      green N content (kg/ha)=    24.67
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.002        0.011        0.000        0.000
+         flowering            to start_grain_fill        0.028        0.061        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.004        0.007        0.688        0.688
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                8136.5                     0.0
+                          N  (kg/ha) =                  28.79                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                4841.1                     0.0
+                          N  (kg/ha) =                  76.81                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =         161.76 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =  144.16 (mm)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                1617.6                  1846.3
+                          N  (kg/ha) =                   5.04                   21.66
+     
+29/11/1993: Moving 1977 animals in group 1 to WheatPaddock for stubble grazing
+15/12/1993: Selling 1676 animals from group 1
+28/12/1993: Moving 298 animals in group 1 to PasturePaddock
+28/12/1993: Selling 28 animals from group 1
+1/01/1994: Buy supplement: 629.66 kg of lupins
+14/01/1994: Selling 41 animals from group 1
+15/01/1994: Buy production supplement: 458.00 kg of wheat
+15/01/1994: Moving 229 animals in tag group 1 to Feedlot for production feeding
+15/01/1994: Feeding: 12.53 kg of lupins in Feedlot
+16/01/1994: Feeding: 54.21 kg of lupins in Feedlot
+17/01/1994: Feeding: 45.57 kg of lupins in Feedlot
+18/01/1994: Feeding: 48.91 kg of lupins in Feedlot
+19/01/1994: Feeding: 51.33 kg of lupins in Feedlot
+20/01/1994: Feeding: 51.89 kg of lupins in Feedlot
+21/01/1994: Feeding: 53.75 kg of lupins in Feedlot
+22/01/1994: Feeding: 54.37 kg of lupins in Feedlot
+23/01/1994: Feeding: 57.53 kg of lupins in Feedlot
+24/01/1994: Feeding: 58.86 kg of lupins in Feedlot
+25/01/1994: Feeding: 60.30 kg of lupins in Feedlot
+26/01/1994: Feeding: 62.73 kg of lupins in Feedlot
+27/01/1994: Feeding: 65.20 kg of lupins in Feedlot
+28/01/1994: Feeding: 67.95 kg of lupins in Feedlot
+28/01/1994: Selling 9 animals from group 1
+29/01/1994: Feeding: 70.26 kg of lupins in Feedlot
+30/01/1994: Feeding: 73.76 kg of lupins in Feedlot
+31/01/1994: Feeding: 77.46 kg of lupins in Feedlot
+1/02/1994: Feeding: 81.66 kg of lupins in Feedlot
+2/02/1994: Feeding: 86.41 kg of lupins in Feedlot
+3/02/1994: Feeding: 91.85 kg of lupins in Feedlot
+4/02/1994: Feeding: 98.12 kg of lupins in Feedlot
+5/02/1994: Feeding: 105.45 kg of lupins in Feedlot
+6/02/1994: Feeding: 114.15 kg of lupins in Feedlot
+7/02/1994: Feeding: 124.63 kg of lupins in Feedlot
+8/02/1994: Feeding: 137.75 kg of lupins in Feedlot
+9/02/1994: Feeding: 155.38 kg of lupins in Feedlot
+10/02/1994: Feeding: 178.50 kg of lupins in Feedlot
+11/02/1994: Feeding: 210.49 kg of lupins in Feedlot
+12/02/1994: Feeding: 220.00 kg of lupins in Feedlot
+13/02/1994: Feeding: 220.00 kg of lupins in Feedlot
+14/02/1994: Feeding: 220.00 kg of lupins in Feedlot
+14/02/1994: Selling 6 animals from group 1
+15/02/1994: Feeding: 214.00 kg of lupins in Feedlot
+28/02/1994: Selling 1 animals from group 1
+11/03/1994: Feeding: 30.00 kg of lupins in feedlot
+12/03/1994: Feeding: 53.89 kg of lupins in feedlot
+13/03/1994: Feeding: 72.53 kg of lupins in feedlot
+14/03/1994: Feeding: 87.03 kg of lupins in feedlot
+15/03/1994: Feeding: 98.06 kg of lupins in feedlot
+15/03/1994: Selling 213 animals from group 2
+15/05/1994: Purchase 2000 animals
+15/09/1994: Shearing
+15/12/1994: Selling 1918 animals from group 1
+28/12/1994: Selling 21 animals from group 1
+1/01/1995: Buy supplement: 3566.50 kg of lupins
+14/01/1995: Selling 8 animals from group 1
+15/01/1995: Moving 33 animals in tag group 1 to Feedlot for production feeding
+15/01/1995: Feeding: 3.27 kg of lupins in Feedlot
+16/01/1995: Feeding: 7.44 kg of lupins in Feedlot
+17/01/1995: Feeding: 6.38 kg of lupins in Feedlot
+18/01/1995: Feeding: 6.81 kg of lupins in Feedlot
+19/01/1995: Feeding: 6.94 kg of lupins in Feedlot
+20/01/1995: Feeding: 7.15 kg of lupins in Feedlot
+21/01/1995: Feeding: 7.37 kg of lupins in Feedlot
+22/01/1995: Feeding: 7.80 kg of lupins in Feedlot
+23/01/1995: Feeding: 7.84 kg of lupins in Feedlot
+24/01/1995: Feeding: 8.14 kg of lupins in Feedlot
+25/01/1995: Feeding: 8.42 kg of lupins in Feedlot
+26/01/1995: Feeding: 8.74 kg of lupins in Feedlot
+27/01/1995: Feeding: 9.09 kg of lupins in Feedlot
+28/01/1995: Feeding: 9.48 kg of lupins in Feedlot
+29/01/1995: Feeding: 9.90 kg of lupins in Feedlot
+30/01/1995: Feeding: 10.39 kg of lupins in Feedlot
+31/01/1995: Feeding: 10.90 kg of lupins in Feedlot
+1/02/1995: Feeding: 11.50 kg of lupins in Feedlot
+2/02/1995: Feeding: 12.17 kg of lupins in Feedlot
+3/02/1995: Feeding: 12.94 kg of lupins in Feedlot
+4/02/1995: Feeding: 13.83 kg of lupins in Feedlot
+5/02/1995: Feeding: 14.93 kg of lupins in Feedlot
+6/02/1995: Feeding: 16.10 kg of lupins in Feedlot
+7/02/1995: Feeding: 17.61 kg of lupins in Feedlot
+8/02/1995: Feeding: 19.45 kg of lupins in Feedlot
+9/02/1995: Feeding: 21.85 kg of lupins in Feedlot
+10/02/1995: Feeding: 25.13 kg of lupins in Feedlot
+11/02/1995: Feeding: 29.65 kg of lupins in Feedlot
+12/02/1995: Feeding: 33.00 kg of lupins in Feedlot
+13/02/1995: Feeding: 33.00 kg of lupins in Feedlot
+14/02/1995: Feeding: 33.00 kg of lupins in Feedlot
+14/02/1995: Selling 1 animals from group 1
+15/02/1995: Feeding: 32.00 kg of lupins in Feedlot
+15/03/1995: Selling 32 animals from group 2
+15/05/1995 12:00:00 AM Sowing Crop
+15 May 1995(Day of year=135), WheatPaddock.wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.060          0.120       1.000
+         100.0     0.060          0.100       1.000
+         200.0     0.040          0.120       1.000
+         200.0     0.040          0.170       1.000
+         300.0     0.030          0.180       1.000
+         300.0     0.020          0.220       1.000
+         300.0     0.020          0.290       1.000
+         -----------------------------------------------
+         Extractable SW:   181mm in  1500mm total depth ( 12%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            135   30.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+15 May 1995(Day of year=135), WheatPaddock.Soil Water: 
+     
+         - Reading tillage CN info
+     Soil tilled using chisel
+                                             CN reduction =     0.00
+                                             Acc rain     =     0.00
+15 May 1995(Day of year=135), WheatPaddock.SurfaceOrganicMatter: 
+     
+         - Reading residue tillage info
+     Residue removed using chisel
+                                             Fraction Incorporated =     0.50
+                                             Incorporated Depth    =   100.00
+15/05/1995: Purchase 2000 animals
+Fertiliser OnTrigger called, paddock='WheatPaddock'
+15 May 1995(Day of year=135), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of N as urea (urea_N)
+                                         added at depth   50.00 (layer   1)
+16 May 1995(Day of year=136), WheatPaddock.wheat: 
+      stage 2.0 germination
+23 May 1995(Day of year=143), WheatPaddock.wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   22.03 (mm)
+24 May 1995(Day of year=144), WheatPaddock.wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.55 (g/m^2)   lai          =   0.021 (m^2/m^2)
+                     stover N conc =     5.84 (%)    extractable sw =   21.50 (mm)
+15/08/1995: Moving 1988 animals in group 1 to WheatPaddock
+20 August 1995(Day of year=232), WheatPaddock.wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         203.81 (g/m^2)   lai          =   2.787 (m^2/m^2)
+                     stover N conc =     3.21 (%)    extractable sw =  139.21 (mm)
+5/09/1995: Moving 1984 animals in group 1 to PasturePaddock
+15/09/1995: Shearing
+5 October 1995(Day of year=278), WheatPaddock.wheat: 
+      stage 6.0 flowering
+                     biomass =         894.03 (g/m^2)   lai          =   3.377 (m^2/m^2)
+                     stover N conc =     1.33 (%)    extractable sw =  113.27 (mm)
+13 October 1995(Day of year=286), WheatPaddock.wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =        1036.91 (g/m^2)   lai          =   2.934 (m^2/m^2)
+                     stover N conc =     1.06 (%)    extractable sw =   87.42 (mm)
+16 November 1995(Day of year=320), WheatPaddock.wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1305.60 (g/m^2)   lai          =   2.242 (m^2/m^2)
+                     stover N conc =     0.34 (%)    extractable sw =  116.57 (mm)
+18 November 1995(Day of year=322), WheatPaddock.wheat: 
+      stage 9.0 maturity
+                     biomass =        1305.96 (g/m^2)   lai          =   2.242 (m^2/m^2)
+                     stover N conc =     0.34 (%)    extractable sw =  112.10 (mm)
+19 November 1995(Day of year=323), WheatPaddock.wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1305.96 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.32 (%)    extractable sw =  124.77 (mm)
+20/11/1995 12:00:00 AM Harvesting Crop
+20 November 1995(Day of year=324), WheatPaddock.wheat: 
+     
+      flowering day          =  278                           stover (kg/ha)         =     7804.3
+      maturity day           =  322                           grain yield (kg/ha)    =     5255.3
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     6006.1
+      grain wt (g)           =    0.039                       grains/m^2             =    13419.1
+      grains/plant           =  134.2                         maximum lai            =      3.621
+      total above ground biomass (kg/ha)    =    13059.6
+      live above ground biomass (kg/ha)     =    13059.6
+      green above ground biomass (kg/ha)    =    11539.9
+      senesced above ground biomass (kg/ha) =     1519.7
+      number of leaves       =     22.1
+      DM Root:Shoot ratio    =     0.12                       Harvest Index          =       0.40
+      Stover C:N ratio       =   113.67                       Root C:N ratio         =      20.48
+      grain N percent        =     2.00                       total N content (kg/ha)=     132.60
+      grain N uptake (kg/ha) =   105.13                       senesced N content (kg/ha)=    7.60
+      green N content (kg/ha)=    19.87
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.009        0.022        0.000        0.000
+         flowering            to start_grain_fill        0.173        0.236        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.078        0.106        0.475        0.475
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                6575.9                     0.0
+                          N  (kg/ha) =                  23.57                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                5255.3                     0.0
+                          N  (kg/ha) =                 105.13                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =         122.84 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     0.32 (%)    extractable sw =  124.77 (mm)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                1228.4                  1627.3
+                          N  (kg/ha) =                   3.89                   31.79
+     
+20/11/1995: Moving 1974 animals in group 1 to WheatPaddock for stubble grazing
+15/12/1995: Selling 1308 animals from group 1
+21/12/1995: Moving 662 animals in group 1 to PasturePaddock
+28/12/1995: Selling 134 animals from group 1
+1/01/1996: Buy supplement: 462.28 kg of lupins
+14/01/1996: Selling 120 animals from group 1
+15/01/1996: Buy production supplement: 816.00 kg of wheat
+15/01/1996: Moving 408 animals in tag group 1 to Feedlot for production feeding
+15/01/1996: Feeding: 17.47 kg of lupins in Feedlot
+16/01/1996: Feeding: 96.90 kg of lupins in Feedlot
+17/01/1996: Feeding: 77.33 kg of lupins in Feedlot
+18/01/1996: Feeding: 84.03 kg of lupins in Feedlot
+19/01/1996: Feeding: 85.27 kg of lupins in Feedlot
+20/01/1996: Feeding: 88.06 kg of lupins in Feedlot
+21/01/1996: Feeding: 90.38 kg of lupins in Feedlot
+22/01/1996: Feeding: 95.92 kg of lupins in Feedlot
+23/01/1996: Feeding: 97.74 kg of lupins in Feedlot
+24/01/1996: Feeding: 99.29 kg of lupins in Feedlot
+25/01/1996: Feeding: 103.20 kg of lupins in Feedlot
+26/01/1996: Feeding: 109.82 kg of lupins in Feedlot
+27/01/1996: Feeding: 113.20 kg of lupins in Feedlot
+28/01/1996: Feeding: 117.45 kg of lupins in Feedlot
+28/01/1996: Selling 23 animals from group 1
+29/01/1996: Feeding: 120.38 kg of lupins in Feedlot
+30/01/1996: Feeding: 124.91 kg of lupins in Feedlot
+31/01/1996: Feeding: 131.93 kg of lupins in Feedlot
+1/02/1996: Feeding: 138.40 kg of lupins in Feedlot
+2/02/1996: Feeding: 146.56 kg of lupins in Feedlot
+3/02/1996: Feeding: 157.29 kg of lupins in Feedlot
+4/02/1996: Feeding: 167.18 kg of lupins in Feedlot
+5/02/1996: Feeding: 180.01 kg of lupins in Feedlot
+6/02/1996: Feeding: 193.37 kg of lupins in Feedlot
+7/02/1996: Feeding: 211.40 kg of lupins in Feedlot
+8/02/1996: Feeding: 233.18 kg of lupins in Feedlot
+9/02/1996: Feeding: 262.59 kg of lupins in Feedlot
+10/02/1996: Feeding: 301.65 kg of lupins in Feedlot
+11/02/1996: Feeding: 355.62 kg of lupins in Feedlot
+12/02/1996: Feeding: 385.00 kg of lupins in Feedlot
+13/02/1996: Feeding: 385.00 kg of lupins in Feedlot
+14/02/1996: Feeding: 385.00 kg of lupins in Feedlot
+14/02/1996: Selling 14 animals from group 1
+15/02/1996: Feeding: 371.00 kg of lupins in Feedlot
+28/02/1996: Selling 2 animals from group 1
+7/03/1996: Feeding: 52.17 kg of lupins in feedlot
+8/03/1996: Feeding: 92.15 kg of lupins in feedlot
+9/03/1996: Feeding: 123.05 kg of lupins in feedlot
+10/03/1996: Feeding: 146.96 kg of lupins in feedlot
+11/03/1996: Feeding: 165.71 kg of lupins in feedlot
+12/03/1996: Feeding: 180.10 kg of lupins in feedlot
+13/03/1996: Feeding: 191.01 kg of lupins in feedlot
+14/03/1996: Feeding: 199.74 kg of lupins in feedlot
+15/03/1996: Feeding: 207.29 kg of lupins in feedlot
+15/03/1996: Selling 366 animals from group 2
+15/05/1996: Purchase 2000 animals
+24/06/1996 12:00:00 AM Sowing Crop
+24 June 1996(Day of year=176), WheatPaddock.wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.060          0.120       1.000
+         100.0     0.060          0.100       1.000
+         200.0     0.040          0.120       1.000
+         200.0     0.040          0.170       1.000
+         300.0     0.030          0.180       1.000
+         300.0     0.020          0.220       1.000
+         300.0     0.020          0.290       1.000
+         -----------------------------------------------
+         Extractable SW:   181mm in  1500mm total depth ( 12%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            176   30.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+24 June 1996(Day of year=176), WheatPaddock.Soil Water: 
+     
+         - Reading tillage CN info
+     Soil tilled using chisel
+                                             CN reduction =     0.00
+                                             Acc rain     =     0.00
+24 June 1996(Day of year=176), WheatPaddock.SurfaceOrganicMatter: 
+     
+         - Reading residue tillage info
+     Residue removed using chisel
+                                             Fraction Incorporated =     0.50
+                                             Incorporated Depth    =   100.00
+Fertiliser OnTrigger called, paddock='WheatPaddock'
+24 June 1996(Day of year=176), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of N as urea (urea_N)
+                                         added at depth   50.00 (layer   1)
+25 June 1996(Day of year=177), WheatPaddock.wheat: 
+      stage 2.0 germination
+4 July 1996(Day of year=186), WheatPaddock.wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   21.84 (mm)
+5 July 1996(Day of year=187), WheatPaddock.wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.50 (g/m^2)   lai          =   0.021 (m^2/m^2)
+                     stover N conc =     5.84 (%)    extractable sw =   22.38 (mm)
+15/09/1996: Shearing
+15 September 1996(Day of year=259), WheatPaddock.wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         217.51 (g/m^2)   lai          =   3.034 (m^2/m^2)
+                     stover N conc =     2.52 (%)    extractable sw =  150.34 (mm)
+24 October 1996(Day of year=298), WheatPaddock.wheat: 
+      stage 6.0 flowering
+                     biomass =         885.05 (g/m^2)   lai          =   2.922 (m^2/m^2)
+                     stover N conc =     0.83 (%)    extractable sw =   95.05 (mm)
+31 October 1996(Day of year=305), WheatPaddock.wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         981.62 (g/m^2)   lai          =   2.156 (m^2/m^2)
+                     stover N conc =     0.59 (%)    extractable sw =   72.06 (mm)
+4 December 1996(Day of year=339), WheatPaddock.wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1082.27 (g/m^2)   lai          =   0.640 (m^2/m^2)
+                     stover N conc =     0.32 (%)    extractable sw =   76.49 (mm)
+6 December 1996(Day of year=341), WheatPaddock.wheat: 
+      stage 9.0 maturity
+                     biomass =        1082.30 (g/m^2)   lai          =   0.525 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =   74.87 (mm)
+7 December 1996(Day of year=342), WheatPaddock.wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1082.30 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =   98.05 (mm)
+8/12/1996 12:00:00 AM Harvesting Crop
+8 December 1996(Day of year=343), WheatPaddock.wheat: 
+     
+      flowering day          =  298                           stover (kg/ha)         =     6946.7
+      maturity day           =  341                           grain yield (kg/ha)    =     3876.2
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     4430.0
+      grain wt (g)           =    0.029                       grains/m^2             =    13264.1
+      grains/plant           =  132.6                         maximum lai            =      3.864
+      total above ground biomass (kg/ha)    =    10823.0
+      live above ground biomass (kg/ha)     =    10823.0
+      green above ground biomass (kg/ha)    =     9194.2
+      senesced above ground biomass (kg/ha) =     1628.7
+      number of leaves       =     37.6
+      DM Root:Shoot ratio    =     0.15                       Harvest Index          =       0.36
+      Stover C:N ratio       =   113.52                       Root C:N ratio         =      38.49
+      grain N percent        =     1.49                       total N content (kg/ha)=      82.18
+      grain N uptake (kg/ha) =    57.70                       senesced N content (kg/ha)=    8.14
+      green N content (kg/ha)=    16.33
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.059        0.086        0.115        0.115
+         flowering            to start_grain_fill        0.424        0.524        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.029        0.035        0.783        0.783
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                5928.3                     0.0
+                          N  (kg/ha) =                  21.32                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                3876.2                     0.0
+                          N  (kg/ha) =                  57.70                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =         101.85 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =   98.05 (mm)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                1018.5                  1623.4
+                          N  (kg/ha) =                   3.16                   16.87
+     
+8/12/1996: Moving 1979 animals in group 1 to WheatPaddock for stubble grazing
+15/12/1996: Selling 1862 animals from group 1
+28/12/1996: Selling 13 animals from group 1
+1/01/1997: Buy supplement: 6884.81 kg of lupins
+7/01/1997: Moving 103 animals in group 1 to PasturePaddock
+14/01/1997: Selling 4 animals from group 1
+15/01/1997: Buy production supplement: 196.00 kg of wheat
+15/01/1997: Moving 98 animals in tag group 1 to Feedlot for production feeding
+15/01/1997: Feeding: 9.16 kg of lupins in Feedlot
+16/01/1997: Feeding: 25.23 kg of lupins in Feedlot
+17/01/1997: Feeding: 22.57 kg of lupins in Feedlot
+18/01/1997: Feeding: 23.83 kg of lupins in Feedlot
+19/01/1997: Feeding: 24.37 kg of lupins in Feedlot
+20/01/1997: Feeding: 25.11 kg of lupins in Feedlot
+21/01/1997: Feeding: 25.88 kg of lupins in Feedlot
+22/01/1997: Feeding: 26.71 kg of lupins in Feedlot
+23/01/1997: Feeding: 27.60 kg of lupins in Feedlot
+24/01/1997: Feeding: 28.57 kg of lupins in Feedlot
+25/01/1997: Feeding: 29.62 kg of lupins in Feedlot
+26/01/1997: Feeding: 30.76 kg of lupins in Feedlot
+27/01/1997: Feeding: 32.00 kg of lupins in Feedlot
+28/01/1997: Feeding: 33.37 kg of lupins in Feedlot
+28/01/1997: Selling 1 animals from group 1
+29/01/1997: Feeding: 34.83 kg of lupins in Feedlot
+30/01/1997: Feeding: 36.51 kg of lupins in Feedlot
+31/01/1997: Feeding: 38.38 kg of lupins in Feedlot
+1/02/1997: Feeding: 40.48 kg of lupins in Feedlot
+2/02/1997: Feeding: 42.85 kg of lupins in Feedlot
+3/02/1997: Feeding: 45.56 kg of lupins in Feedlot
+4/02/1997: Feeding: 48.69 kg of lupins in Feedlot
+5/02/1997: Feeding: 52.35 kg of lupins in Feedlot
+6/02/1997: Feeding: 56.69 kg of lupins in Feedlot
+7/02/1997: Feeding: 62.30 kg of lupins in Feedlot
+8/02/1997: Feeding: 69.24 kg of lupins in Feedlot
+9/02/1997: Feeding: 78.08 kg of lupins in Feedlot
+10/02/1997: Feeding: 89.73 kg of lupins in Feedlot
+11/02/1997: Feeding: 97.00 kg of lupins in Feedlot
+12/02/1997: Feeding: 97.00 kg of lupins in Feedlot
+13/02/1997: Feeding: 97.00 kg of lupins in Feedlot
+14/02/1997: Feeding: 97.00 kg of lupins in Feedlot
+14/02/1997: Selling 1 animals from group 1
+15/02/1997: Feeding: 96.00 kg of lupins in Feedlot
+11/03/1997: Feeding: 13.26 kg of lupins in feedlot
+12/03/1997: Feeding: 23.50 kg of lupins in feedlot
+13/03/1997: Feeding: 31.40 kg of lupins in feedlot
+14/03/1997: Feeding: 37.80 kg of lupins in feedlot
+15/03/1997: Feeding: 43.11 kg of lupins in feedlot
+15/03/1997: Selling 96 animals from group 2
+15/05/1997: Purchase 2000 animals
+19/05/1997 12:00:00 AM Sowing Crop
+19 May 1997(Day of year=139), WheatPaddock.wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.060          0.120       1.000
+         100.0     0.060          0.100       1.000
+         200.0     0.040          0.120       1.000
+         200.0     0.040          0.170       1.000
+         300.0     0.030          0.180       1.000
+         300.0     0.020          0.220       1.000
+         300.0     0.020          0.290       1.000
+         -----------------------------------------------
+         Extractable SW:   181mm in  1500mm total depth ( 12%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            139   30.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+19 May 1997(Day of year=139), WheatPaddock.Soil Water: 
+     
+         - Reading tillage CN info
+     Soil tilled using chisel
+                                             CN reduction =     0.00
+                                             Acc rain     =     0.00
+19 May 1997(Day of year=139), WheatPaddock.SurfaceOrganicMatter: 
+     
+         - Reading residue tillage info
+     Residue removed using chisel
+                                             Fraction Incorporated =     0.50
+                                             Incorporated Depth    =   100.00
+Fertiliser OnTrigger called, paddock='WheatPaddock'
+19 May 1997(Day of year=139), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of N as urea (urea_N)
+                                         added at depth   50.00 (layer   1)
+20 May 1997(Day of year=140), WheatPaddock.wheat: 
+      stage 2.0 germination
+26 May 1997(Day of year=146), WheatPaddock.wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   22.47 (mm)
+27 May 1997(Day of year=147), WheatPaddock.wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.58 (g/m^2)   lai          =   0.022 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   23.61 (mm)
+10/08/1997: Moving 1991 animals in group 1 to WheatPaddock
+25 August 1997(Day of year=237), WheatPaddock.wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         262.36 (g/m^2)   lai          =   3.614 (m^2/m^2)
+                     stover N conc =     3.23 (%)    extractable sw =  138.87 (mm)
+      stage 4.0 end_of_juvenile
+                     biomass =         262.01 (g/m^2)   lai          =   3.609 (m^2/m^2)
+                     stover N conc =     3.23 (%)    extractable sw =  138.87 (mm)
+26 August 1997(Day of year=238), WheatPaddock.wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         268.39 (g/m^2)   lai          =   3.668 (m^2/m^2)
+                     stover N conc =     3.21 (%)    extractable sw =  138.45 (mm)
+5/09/1997: Moving 1988 animals in group 1 to PasturePaddock
+15/09/1997: Shearing
+12 October 1997(Day of year=285), WheatPaddock.wheat: 
+      stage 6.0 flowering
+                     biomass =        1074.96 (g/m^2)   lai          =   3.819 (m^2/m^2)
+                     stover N conc =     1.02 (%)    extractable sw =   95.44 (mm)
+23 October 1997(Day of year=296), WheatPaddock.wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =        1232.58 (g/m^2)   lai          =   2.318 (m^2/m^2)
+                     stover N conc =     0.73 (%)    extractable sw =   62.59 (mm)
+20 November 1997(Day of year=324), WheatPaddock.wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1306.91 (g/m^2)   lai          =   1.608 (m^2/m^2)
+                     stover N conc =     0.32 (%)    extractable sw =   56.50 (mm)
+22 November 1997(Day of year=326), WheatPaddock.wheat: 
+      stage 9.0 maturity
+                     biomass =        1307.13 (g/m^2)   lai          =   1.608 (m^2/m^2)
+                     stover N conc =     0.32 (%)    extractable sw =   55.40 (mm)
+23 November 1997(Day of year=327), WheatPaddock.wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1307.13 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =   54.78 (mm)
+24/11/1997 12:00:00 AM Harvesting Crop
+24 November 1997(Day of year=328), WheatPaddock.wheat: 
+     
+      flowering day          =  285                           stover (kg/ha)         =     8741.6
+      maturity day           =  326                           grain yield (kg/ha)    =     4329.7
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     4948.2
+      grain wt (g)           =    0.027                       grains/m^2             =    15951.8
+      grains/plant           =  159.5                         maximum lai            =      4.522
+      total above ground biomass (kg/ha)    =    13071.3
+      live above ground biomass (kg/ha)     =    13071.3
+      green above ground biomass (kg/ha)    =    11137.4
+      senesced above ground biomass (kg/ha) =     1933.9
+      number of leaves       =     29.3
+      DM Root:Shoot ratio    =     0.15                       Harvest Index          =       0.33
+      Stover C:N ratio       =   114.79                       Root C:N ratio         =      30.58
+      grain N percent        =     1.92                       total N content (kg/ha)=     113.42
+      grain N uptake (kg/ha) =    82.96                       senesced N content (kg/ha)=    9.67
+      green N content (kg/ha)=    20.79
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.028        0.043        0.000        0.000
+         flowering            to start_grain_fill        0.443        0.543        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.127        0.152        0.726        0.726
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                7474.4                     0.0
+                          N  (kg/ha) =                  26.60                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                4329.7                     0.0
+                          N  (kg/ha) =                  82.96                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =         126.73 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     0.30 (%)    extractable sw =   54.78 (mm)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                1267.3                  1992.7
+                          N  (kg/ha) =                   3.86                   26.06
+     
+24/11/1997: Moving 1980 animals in group 1 to WheatPaddock for stubble grazing
+15/12/1997: Selling 1461 animals from group 1
+21/12/1997: Moving 516 animals in group 1 to PasturePaddock
+28/12/1997: Selling 108 animals from group 1
+1/01/1998: Buy supplement: 1693.56 kg of lupins
+14/01/1998: Selling 83 animals from group 1
+15/01/1998: Buy production supplement: 650.00 kg of wheat
+15/01/1998: Moving 325 animals in tag group 1 to Feedlot for production feeding
+15/01/1998: Feeding: 20.08 kg of lupins in Feedlot
+16/01/1998: Feeding: 74.98 kg of lupins in Feedlot
+17/01/1998: Feeding: 62.80 kg of lupins in Feedlot
+18/01/1998: Feeding: 67.44 kg of lupins in Feedlot
+19/01/1998: Feeding: 68.62 kg of lupins in Feedlot
+20/01/1998: Feeding: 70.71 kg of lupins in Feedlot
+21/01/1998: Feeding: 72.77 kg of lupins in Feedlot
+22/01/1998: Feeding: 75.03 kg of lupins in Feedlot
+23/01/1998: Feeding: 77.46 kg of lupins in Feedlot
+24/01/1998: Feeding: 80.10 kg of lupins in Feedlot
+25/01/1998: Feeding: 82.97 kg of lupins in Feedlot
+26/01/1998: Feeding: 86.09 kg of lupins in Feedlot
+27/01/1998: Feeding: 89.71 kg of lupins in Feedlot
+28/01/1998: Feeding: 93.37 kg of lupins in Feedlot
+28/01/1998: Selling 17 animals from group 1
+29/01/1998: Feeding: 95.80 kg of lupins in Feedlot
+30/01/1998: Feeding: 102.00 kg of lupins in Feedlot
+31/01/1998: Feeding: 106.72 kg of lupins in Feedlot
+1/02/1998: Feeding: 111.50 kg of lupins in Feedlot
+2/02/1998: Feeding: 118.05 kg of lupins in Feedlot
+3/02/1998: Feeding: 125.44 kg of lupins in Feedlot
+4/02/1998: Feeding: 134.00 kg of lupins in Feedlot
+5/02/1998: Feeding: 144.12 kg of lupins in Feedlot
+6/02/1998: Feeding: 155.83 kg of lupins in Feedlot
+7/02/1998: Feeding: 170.16 kg of lupins in Feedlot
+8/02/1998: Feeding: 187.78 kg of lupins in Feedlot
+9/02/1998: Feeding: 211.62 kg of lupins in Feedlot
+10/02/1998: Feeding: 243.10 kg of lupins in Feedlot
+11/02/1998: Feeding: 286.64 kg of lupins in Feedlot
+12/02/1998: Feeding: 308.00 kg of lupins in Feedlot
+13/02/1998: Feeding: 308.00 kg of lupins in Feedlot
+14/02/1998: Feeding: 308.00 kg of lupins in Feedlot
+14/02/1998: Selling 11 animals from group 1
+15/02/1998: Feeding: 297.00 kg of lupins in Feedlot
+10/03/1998: Feeding: 42.23 kg of lupins in feedlot
+11/03/1998: Feeding: 74.47 kg of lupins in feedlot
+12/03/1998: Feeding: 99.32 kg of lupins in feedlot
+13/03/1998: Feeding: 118.51 kg of lupins in feedlot
+14/03/1998: Feeding: 133.33 kg of lupins in feedlot
+15/03/1998: Feeding: 144.78 kg of lupins in feedlot
+15/03/1998: Selling 297 animals from group 2
+15/05/1998: Purchase 2000 animals
+22/06/1998 12:00:00 AM Sowing Crop
+22 June 1998(Day of year=173), WheatPaddock.wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.060          0.120       1.000
+         100.0     0.060          0.100       1.000
+         200.0     0.040          0.120       1.000
+         200.0     0.040          0.170       1.000
+         300.0     0.030          0.180       1.000
+         300.0     0.020          0.220       1.000
+         300.0     0.020          0.290       1.000
+         -----------------------------------------------
+         Extractable SW:   181mm in  1500mm total depth ( 12%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            173   30.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+22 June 1998(Day of year=173), WheatPaddock.Soil Water: 
+     
+         - Reading tillage CN info
+     Soil tilled using chisel
+                                             CN reduction =     0.00
+                                             Acc rain     =     0.00
+22 June 1998(Day of year=173), WheatPaddock.SurfaceOrganicMatter: 
+     
+         - Reading residue tillage info
+     Residue removed using chisel
+                                             Fraction Incorporated =     0.50
+                                             Incorporated Depth    =   100.00
+Fertiliser OnTrigger called, paddock='WheatPaddock'
+22 June 1998(Day of year=173), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of N as urea (urea_N)
+                                         added at depth   50.00 (layer   1)
+23 June 1998(Day of year=174), WheatPaddock.wheat: 
+      stage 2.0 germination
+5 July 1998(Day of year=186), WheatPaddock.wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   23.00 (mm)
+6 July 1998(Day of year=187), WheatPaddock.wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.58 (g/m^2)   lai          =   0.022 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   24.03 (mm)
+5/09/1998: Moving 1990 animals in group 1 to WheatPaddock
+12 September 1998(Day of year=255), WheatPaddock.wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         206.03 (g/m^2)   lai          =   2.994 (m^2/m^2)
+                     stover N conc =     2.86 (%)    extractable sw =  147.65 (mm)
+15/09/1998: Shearing
+25 October 1998(Day of year=298), WheatPaddock.wheat: 
+      stage 6.0 flowering
+                     biomass =         940.57 (g/m^2)   lai          =   3.129 (m^2/m^2)
+                     stover N conc =     0.85 (%)    extractable sw =  113.07 (mm)
+4 November 1998(Day of year=308), WheatPaddock.wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =        1089.82 (g/m^2)   lai          =   2.319 (m^2/m^2)
+                     stover N conc =     0.56 (%)    extractable sw =   77.08 (mm)
+4 December 1998(Day of year=338), WheatPaddock.wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1179.17 (g/m^2)   lai          =   2.123 (m^2/m^2)
+                     stover N conc =     0.33 (%)    extractable sw =   85.06 (mm)
+6 December 1998(Day of year=340), WheatPaddock.wheat: 
+      stage 9.0 maturity
+                     biomass =        1179.72 (g/m^2)   lai          =   2.122 (m^2/m^2)
+                     stover N conc =     0.33 (%)    extractable sw =   83.07 (mm)
+7 December 1998(Day of year=341), WheatPaddock.wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1179.51 (g/m^2)   lai          =   2.122 (m^2/m^2)
+                     stover N conc =     0.33 (%)    extractable sw =   81.99 (mm)
+8/12/1998 12:00:00 AM Harvesting Crop
+8 December 1998(Day of year=342), WheatPaddock.wheat: 
+     
+      flowering day          =  298                           stover (kg/ha)         =     7902.9
+      maturity day           =  340                           grain yield (kg/ha)    =     3890.2
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     4446.0
+      grain wt (g)           =    0.028                       grains/m^2             =    14096.3
+      grains/plant           =  141.0                         maximum lai            =      3.850
+      total above ground biomass (kg/ha)    =    11793.1
+      live above ground biomass (kg/ha)     =    11793.1
+      green above ground biomass (kg/ha)    =    11087.4
+      senesced above ground biomass (kg/ha) =      705.7
+      number of leaves       =     17.3
+      DM Root:Shoot ratio    =     0.15                       Harvest Index          =       0.33
+      Stover C:N ratio       =   115.18                       Root C:N ratio         =      39.23
+      grain N percent        =     1.55                       total N content (kg/ha)=      87.55
+      grain N uptake (kg/ha) =    60.11                       senesced N content (kg/ha)=    3.53
+      green N content (kg/ha)=    23.92
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.045        0.065        0.000        0.000
+         flowering            to start_grain_fill        0.290        0.360        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.027        0.038        0.811        0.811
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                6378.4                     0.0
+                          N  (kg/ha) =                  22.54                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                3890.2                     0.0
+                          N  (kg/ha) =                  60.11                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =         152.45 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     0.32 (%)    extractable sw =   81.99 (mm)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                1524.5                  1771.8
+                          N  (kg/ha) =                   4.91                   18.07
+     
+8/12/1998: Moving 1986 animals in group 1 to PasturePaddock
+8/12/1998: Moving 1986 animals in group 1 to WheatPaddock for stubble grazing
+15/12/1998: Feeding: 315.43 kg of lupins in wheatpaddock
+15/12/1998: Selling 115 animals from group 1
+16/12/1998: Feeding: 510.00 kg of lupins in wheatpaddock
+17/12/1998: Feeding: 684.06 kg of lupins in wheatpaddock
+18/12/1998: Feeding: 822.56 kg of lupins in wheatpaddock
+19/12/1998: Feeding: 932.36 kg of lupins in wheatpaddock
+20/12/1998: Feeding: 1019.29 kg of lupins in wheatpaddock
+21/12/1998: Feeding: 1088.07 kg of lupins in wheatpaddock
+22/12/1998: Feeding: 1145.48 kg of lupins in wheatpaddock
+23/12/1998: Feeding: 1191.49 kg of lupins in wheatpaddock
+24/12/1998: Feeding: 1230.65 kg of lupins in wheatpaddock
+25/12/1998: Feeding: 1265.08 kg of lupins in wheatpaddock
+26/12/1998: Feeding: 1295.39 kg of lupins in wheatpaddock
+27/12/1998: Feeding: 1322.09 kg of lupins in wheatpaddock
+28/12/1998: Feeding: 1344.91 kg of lupins in wheatpaddock
+28/12/1998: Selling 66 animals from group 1
+29/12/1998: Feeding: 1309.73 kg of lupins in wheatpaddock
+30/12/1998: Feeding: 1327.53 kg of lupins in wheatpaddock
+31/12/1998: Feeding: 1343.32 kg of lupins in wheatpaddock
+1/01/1999: Buy supplement: 23195.97 kg of lupins
+1/01/1999: Feeding: 1357.34 kg of lupins in wheatpaddock
+2/01/1999: Feeding: 1369.81 kg of lupins in wheatpaddock
+3/01/1999: Feeding: 1380.95 kg of lupins in wheatpaddock
+4/01/1999: Feeding: 1390.92 kg of lupins in wheatpaddock
+5/01/1999: Feeding: 1399.86 kg of lupins in wheatpaddock
+6/01/1999: Feeding: 1407.89 kg of lupins in wheatpaddock
+7/01/1999: Moving 1803 animals in group 1 to PasturePaddock
+7/01/1999: Feeding: 1415.25 kg of lupins in pasturepaddock
+8/01/1999: Feeding: 1240.21 kg of lupins in pasturepaddock
+9/01/1999: Feeding: 1061.99 kg of lupins in pasturepaddock
+10/01/1999: Feeding: 900.02 kg of lupins in pasturepaddock
+11/01/1999: Feeding: 747.32 kg of lupins in pasturepaddock
+12/01/1999: Feeding: 605.18 kg of lupins in pasturepaddock
+13/01/1999: Feeding: 477.43 kg of lupins in pasturepaddock
+14/01/1999: Feeding: 360.34 kg of lupins in pasturepaddock
+14/01/1999: Selling 137 animals from group 1
+15/01/1999: Buy production supplement: 3332.00 kg of wheat
+15/01/1999: Moving 1666 animals in tag group 1 to Feedlot for production feeding
+15/01/1999: Feeding: 71.19 kg of lupins in Feedlot
+16/01/1999: Feeding: 326.83 kg of lupins in feedlot
+16/01/1999: Feeding: 766.26 kg of lupins in Feedlot
+17/01/1999: Feeding: 798.72 kg of lupins in feedlot
+17/01/1999: Feeding: 1021.77 kg of lupins in Feedlot
+18/01/1999: Feeding: 959.29 kg of lupins in feedlot
+18/01/1999: Feeding: 1091.37 kg of lupins in Feedlot
+19/01/1999: Feeding: 999.38 kg of lupins in feedlot
+19/01/1999: Feeding: 1105.17 kg of lupins in Feedlot
+20/01/1999: Feeding: 1006.79 kg of lupins in feedlot
+20/01/1999: Feeding: 1109.37 kg of lupins in Feedlot
+21/01/1999: Feeding: 1010.12 kg of lupins in feedlot
+21/01/1999: Feeding: 1115.23 kg of lupins in Feedlot
+22/01/1999: Feeding: 1015.42 kg of lupins in feedlot
+22/01/1999: Feeding: 1123.60 kg of lupins in Feedlot
+23/01/1999: Feeding: 1022.65 kg of lupins in feedlot
+23/01/1999: Feeding: 1133.55 kg of lupins in Feedlot
+24/01/1999: Feeding: 1031.00 kg of lupins in feedlot
+24/01/1999: Feeding: 1144.42 kg of lupins in Feedlot
+25/01/1999: Feeding: 115.97 kg of lupins in Feedlot
+26/01/1999: Feeding: 497.16 kg of lupins in Feedlot
+27/01/1999: Feeding: 653.53 kg of lupins in feedlot
+27/01/1999: Feeding: 1071.48 kg of lupins in Feedlot
+28/01/1999: Feeding: 1024.33 kg of lupins in feedlot
+28/01/1999: Feeding: 1249.32 kg of lupins in Feedlot
+28/01/1999: Selling 146 animals from group 1
+29/01/1999: Feeding: 1003.51 kg of lupins in feedlot
+29/01/1999: Feeding: 1160.44 kg of lupins in Feedlot
+30/01/1999: Feeding: 181.40 kg of lupins in Feedlot
+31/01/1999: Feeding: 542.20 kg of lupins in Feedlot
+1/02/1999: Feeding: 663.31 kg of lupins in feedlot
+1/02/1999: Feeding: 1146.82 kg of lupins in Feedlot
+2/02/1999: Feeding: 1071.52 kg of lupins in feedlot
+2/02/1999: Feeding: 1378.22 kg of lupins in Feedlot
+3/02/1999: Feeding: 1221.57 kg of lupins in feedlot
+3/02/1999: Feeding: 1463.23 kg of lupins in Feedlot
+4/02/1999: Feeding: 261.82 kg of lupins in Feedlot
+5/02/1999: Feeding: 659.64 kg of lupins in Feedlot
+6/02/1999: Feeding: 622.60 kg of lupins in Feedlot
+7/02/1999: Feeding: 698.88 kg of lupins in Feedlot
+8/02/1999: Feeding: 766.27 kg of lupins in Feedlot
+9/02/1999: Feeding: 841.96 kg of lupins in feedlot
+9/02/1999: Feeding: 1518.00 kg of lupins in Feedlot
+10/02/1999: Feeding: 1370.39 kg of lupins in feedlot
+10/02/1999: Feeding: 1518.00 kg of lupins in Feedlot
+11/02/1999: Feeding: 875.97 kg of lupins in Feedlot
+12/02/1999: Feeding: 1348.77 kg of lupins in Feedlot
+13/02/1999: Feeding: 1518.00 kg of lupins in Feedlot
+14/02/1999: Feeding: 1518.00 kg of lupins in Feedlot
+14/02/1999: Selling 150 animals from group 1
+15/02/1999: Feeding: 1367.00 kg of lupins in Feedlot
+19/02/1999: Feeding: 224.97 kg of lupins in feedlot
+20/02/1999: Feeding: 398.27 kg of lupins in feedlot
+21/02/1999: Feeding: 522.68 kg of lupins in feedlot
+22/02/1999: Feeding: 619.09 kg of lupins in feedlot
+23/02/1999: Feeding: 693.62 kg of lupins in feedlot
+24/02/1999: Feeding: 750.58 kg of lupins in feedlot
+25/02/1999: Feeding: 795.10 kg of lupins in feedlot
+26/02/1999: Feeding: 831.60 kg of lupins in feedlot
+27/02/1999: Feeding: 863.12 kg of lupins in feedlot
+28/02/1999: Feeding: 890.33 kg of lupins in feedlot
+28/02/1999: Selling 58 animals from group 1
+1/03/1999: Feeding: 869.26 kg of lupins in feedlot
+2/03/1999: Feeding: 888.78 kg of lupins in feedlot
+3/03/1999: Feeding: 904.87 kg of lupins in feedlot
+4/03/1999: Feeding: 919.47 kg of lupins in feedlot
+5/03/1999: Feeding: 932.09 kg of lupins in feedlot
+6/03/1999: Feeding: 943.03 kg of lupins in feedlot
+7/03/1999: Feeding: 952.50 kg of lupins in feedlot
+8/03/1999: Feeding: 960.72 kg of lupins in feedlot
+9/03/1999: Feeding: 967.85 kg of lupins in feedlot
+10/03/1999: Feeding: 974.05 kg of lupins in feedlot
+11/03/1999: Feeding: 979.45 kg of lupins in feedlot
+12/03/1999: Feeding: 984.15 kg of lupins in feedlot
+13/03/1999: Feeding: 988.26 kg of lupins in feedlot
+14/03/1999: Feeding: 991.85 kg of lupins in feedlot
+14/03/1999: Selling 60 animals from group 1
+15/03/1999: Feeding: 942.48 kg of lupins in feedlot
+15/03/1999: Selling 1200 animals from group 2
+15/03/1999: Selling 46 animals from group 1
+15/05/1999: Purchase 2000 animals
+31/05/1999 12:00:00 AM Sowing Crop
+31 May 1999(Day of year=151), WheatPaddock.wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.060          0.120       1.000
+         100.0     0.060          0.100       1.000
+         200.0     0.040          0.120       1.000
+         200.0     0.040          0.170       1.000
+         300.0     0.030          0.180       1.000
+         300.0     0.020          0.220       1.000
+         300.0     0.020          0.290       1.000
+         -----------------------------------------------
+         Extractable SW:   181mm in  1500mm total depth ( 12%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            151   30.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+31 May 1999(Day of year=151), WheatPaddock.Soil Water: 
+     
+         - Reading tillage CN info
+     Soil tilled using chisel
+                                             CN reduction =     0.00
+                                             Acc rain     =     0.00
+31 May 1999(Day of year=151), WheatPaddock.SurfaceOrganicMatter: 
+     
+         - Reading residue tillage info
+     Residue removed using chisel
+                                             Fraction Incorporated =     0.50
+                                             Incorporated Depth    =   100.00
+Fertiliser OnTrigger called, paddock='WheatPaddock'
+31 May 1999(Day of year=151), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of N as urea (urea_N)
+                                         added at depth   50.00 (layer   1)
+1 June 1999(Day of year=152), WheatPaddock.wheat: 
+      stage 2.0 germination
+9 June 1999(Day of year=160), WheatPaddock.wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   25.05 (mm)
+10 June 1999(Day of year=161), WheatPaddock.wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.53 (g/m^2)   lai          =   0.021 (m^2/m^2)
+                     stover N conc =     5.84 (%)    extractable sw =   25.61 (mm)
+20/08/1999: Moving 1989 animals in group 1 to WheatPaddock
+31 August 1999(Day of year=243), WheatPaddock.wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         265.44 (g/m^2)   lai          =   3.663 (m^2/m^2)
+                     stover N conc =     3.05 (%)    extractable sw =  159.02 (mm)
+5/09/1999: Moving 1987 animals in group 1 to PasturePaddock
+15/09/1999: Shearing
+9 October 1999(Day of year=282), WheatPaddock.wheat: 
+      stage 6.0 flowering
+                     biomass =         956.83 (g/m^2)   lai          =   4.168 (m^2/m^2)
+                     stover N conc =     1.11 (%)    extractable sw =  147.03 (mm)
+16 October 1999(Day of year=289), WheatPaddock.wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =        1085.63 (g/m^2)   lai          =   4.035 (m^2/m^2)
+                     stover N conc =     0.85 (%)    extractable sw =  129.06 (mm)
+21 November 1999(Day of year=325), WheatPaddock.wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1392.18 (g/m^2)   lai          =   1.885 (m^2/m^2)
+                     stover N conc =     0.33 (%)    extractable sw =   99.14 (mm)
+23 November 1999(Day of year=327), WheatPaddock.wheat: 
+      stage 9.0 maturity
+                     biomass =        1393.13 (g/m^2)   lai          =   1.584 (m^2/m^2)
+                     stover N conc =     0.33 (%)    extractable sw =  108.80 (mm)
+24 November 1999(Day of year=328), WheatPaddock.wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1393.13 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =  107.01 (mm)
+25/11/1999 12:00:00 AM Harvesting Crop
+25 November 1999(Day of year=329), WheatPaddock.wheat: 
+     
+      flowering day          =  282                           stover (kg/ha)         =     8818.3
+      maturity day           =  327                           grain yield (kg/ha)    =     5113.0
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     5843.5
+      grain wt (g)           =    0.036                       grains/m^2             =    14071.0
+      grains/plant           =  140.7                         maximum lai            =      4.629
+      total above ground biomass (kg/ha)    =    13931.3
+      live above ground biomass (kg/ha)     =    13931.3
+      green above ground biomass (kg/ha)    =    11978.2
+      senesced above ground biomass (kg/ha) =     1953.1
+      number of leaves       =     25.7
+      DM Root:Shoot ratio    =     0.13                       Harvest Index          =       0.37
+      Stover C:N ratio       =   112.68                       Root C:N ratio         =      30.99
+      grain N percent        =     1.73                       total N content (kg/ha)=     119.91
+      grain N uptake (kg/ha) =    88.61                       senesced N content (kg/ha)=    9.77
+      green N content (kg/ha)=    21.54
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.023        0.040        0.000        0.000
+         flowering            to start_grain_fill        0.046        0.075        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.025        0.036        0.597        0.597
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                7414.8                     0.0
+                          N  (kg/ha) =                  26.89                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                5113.0                     0.0
+                          N  (kg/ha) =                  88.61                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =         140.35 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =  107.01 (mm)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                1403.5                  1848.2
+                          N  (kg/ha) =                   4.41                   23.86
+     
+25/11/1999: Moving 1978 animals in group 1 to WheatPaddock for stubble grazing
+15/12/1999: Selling 1571 animals from group 1
+28/12/1999: Moving 405 animals in group 1 to PasturePaddock
+28/12/1999: Selling 36 animals from group 1
+1/01/2000: Buy supplement: 83084.13 kg of lupins
+14/01/2000: Selling 55 animals from group 1
+15/01/2000: Buy production supplement: 628.00 kg of wheat
+15/01/2000: Moving 314 animals in tag group 1 to Feedlot for production feeding
+15/01/2000: Feeding: 15.83 kg of lupins in Feedlot
+16/01/2000: Feeding: 74.84 kg of lupins in Feedlot
+17/01/2000: Feeding: 62.64 kg of lupins in Feedlot
+18/01/2000: Feeding: 67.31 kg of lupins in Feedlot
+19/01/2000: Feeding: 68.50 kg of lupins in Feedlot
+20/01/2000: Feeding: 70.59 kg of lupins in Feedlot
+21/01/2000: Feeding: 72.66 kg of lupins in Feedlot
+22/01/2000: Feeding: 75.04 kg of lupins in Feedlot
+23/01/2000: Feeding: 78.92 kg of lupins in Feedlot
+24/01/2000: Feeding: 81.84 kg of lupins in Feedlot
+25/01/2000: Feeding: 83.70 kg of lupins in Feedlot
+26/01/2000: Feeding: 85.62 kg of lupins in Feedlot
+27/01/2000: Feeding: 89.30 kg of lupins in Feedlot
+28/01/2000: Feeding: 93.51 kg of lupins in Feedlot
+28/01/2000: Selling 13 animals from group 1
+29/01/2000: Feeding: 96.39 kg of lupins in Feedlot
+30/01/2000: Feeding: 101.43 kg of lupins in Feedlot
+31/01/2000: Feeding: 106.68 kg of lupins in Feedlot
+1/02/2000: Feeding: 111.40 kg of lupins in Feedlot
+2/02/2000: Feeding: 117.46 kg of lupins in Feedlot
+3/02/2000: Feeding: 124.93 kg of lupins in Feedlot
+4/02/2000: Feeding: 133.43 kg of lupins in Feedlot
+5/02/2000: Feeding: 143.39 kg of lupins in Feedlot
+6/02/2000: Feeding: 155.20 kg of lupins in Feedlot
+7/02/2000: Feeding: 169.44 kg of lupins in Feedlot
+8/02/2000: Feeding: 187.26 kg of lupins in Feedlot
+9/02/2000: Feeding: 211.20 kg of lupins in Feedlot
+10/02/2000: Feeding: 242.61 kg of lupins in Feedlot
+11/02/2000: Feeding: 286.05 kg of lupins in Feedlot
+12/02/2000: Feeding: 299.00 kg of lupins in Feedlot
+13/02/2000: Feeding: 299.00 kg of lupins in Feedlot
+14/02/2000: Feeding: 298.00 kg of lupins in Feedlot
+14/02/2000: Selling 9 animals from group 1
+15/02/2000: Feeding: 289.00 kg of lupins in Feedlot
+28/02/2000: Selling 1 animals from group 1
+7/03/2000: Feeding: 41.97 kg of lupins in feedlot
+8/03/2000: Feeding: 73.01 kg of lupins in feedlot
+9/03/2000: Feeding: 96.99 kg of lupins in feedlot
+10/03/2000: Feeding: 115.51 kg of lupins in feedlot
+11/03/2000: Feeding: 129.82 kg of lupins in feedlot
+12/03/2000: Feeding: 140.87 kg of lupins in feedlot
+13/03/2000: Feeding: 149.41 kg of lupins in feedlot
+14/03/2000: Feeding: 156.24 kg of lupins in feedlot
+15/03/2000: Feeding: 162.15 kg of lupins in feedlot
+15/03/2000: Selling 287 animals from group 2
+15/05/2000: Purchase 2000 animals
+29/05/2000 12:00:00 AM Sowing Crop
+29 May 2000(Day of year=150), WheatPaddock.wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         100.0     0.060          0.120       1.000
+         100.0     0.060          0.100       1.000
+         200.0     0.040          0.120       1.000
+         200.0     0.040          0.170       1.000
+         300.0     0.030          0.180       1.000
+         300.0     0.020          0.220       1.000
+         300.0     0.020          0.290       1.000
+         -----------------------------------------------
+         Extractable SW:   181mm in  1500mm total depth ( 12%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            150   30.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+29 May 2000(Day of year=150), WheatPaddock.Soil Water: 
+     
+         - Reading tillage CN info
+     Soil tilled using chisel
+                                             CN reduction =     0.00
+                                             Acc rain     =     0.00
+29 May 2000(Day of year=150), WheatPaddock.SurfaceOrganicMatter: 
+     
+         - Reading residue tillage info
+     Residue removed using chisel
+                                             Fraction Incorporated =     0.50
+                                             Incorporated Depth    =   100.00
+Fertiliser OnTrigger called, paddock='WheatPaddock'
+29 May 2000(Day of year=150), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       100.00 of N as urea (urea_N)
+                                         added at depth   50.00 (layer   1)
+30 May 2000(Day of year=151), WheatPaddock.wheat: 
+      stage 2.0 germination
+11 June 2000(Day of year=163), WheatPaddock.wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   22.06 (mm)
+12 June 2000(Day of year=164), WheatPaddock.wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.54 (g/m^2)   lai          =   0.021 (m^2/m^2)
+                     stover N conc =     5.84 (%)    extractable sw =   21.05 (mm)
+20/08/2000: Moving 1989 animals in group 1 to WheatPaddock
+3 September 2000(Day of year=247), WheatPaddock.wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         270.35 (g/m^2)   lai          =   3.754 (m^2/m^2)
+                     stover N conc =     2.90 (%)    extractable sw =  186.38 (mm)
+5/09/2000: Moving 1986 animals in group 1 to PasturePaddock
+15/09/2000: Shearing
+17 October 2000(Day of year=291), WheatPaddock.wheat: 
+      stage 6.0 flowering
+                     biomass =        1035.66 (g/m^2)   lai          =   3.259 (m^2/m^2)
+                     stover N conc =     0.94 (%)    extractable sw =   86.17 (mm)
+25 October 2000(Day of year=299), WheatPaddock.wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =        1152.81 (g/m^2)   lai          =   3.231 (m^2/m^2)
+                     stover N conc =     0.68 (%)    extractable sw =  146.44 (mm)
+24 November 2000(Day of year=329), WheatPaddock.wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1360.95 (g/m^2)   lai          =   0.459 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =  107.38 (mm)
+26 November 2000(Day of year=331), WheatPaddock.wheat: 
+      stage 9.0 maturity
+                     biomass =        1361.10 (g/m^2)   lai          =   0.285 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =  104.05 (mm)
+27 November 2000(Day of year=332), WheatPaddock.wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1361.10 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =  103.10 (mm)
+28/11/2000 12:00:00 AM Harvesting Crop
+28 November 2000(Day of year=333), WheatPaddock.wheat: 
+     
+      flowering day          =  291                           stover (kg/ha)         =     8683.8
+      maturity day           =  331                           grain yield (kg/ha)    =     4927.2
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     5631.1
+      grain wt (g)           =    0.032                       grains/m^2             =    15349.7
+      grains/plant           =  153.5                         maximum lai            =      4.882
+      total above ground biomass (kg/ha)    =    13611.0
+      live above ground biomass (kg/ha)     =    13611.0
+      green above ground biomass (kg/ha)    =    11533.7
+      senesced above ground biomass (kg/ha) =     2077.3
+      number of leaves       =     29.6
+      DM Root:Shoot ratio    =     0.15                       Harvest Index          =       0.36
+      Stover C:N ratio       =   112.92                       Root C:N ratio         =      34.37
+      grain N percent        =     1.54                       total N content (kg/ha)=     106.66
+      grain N uptake (kg/ha) =    75.89                       senesced N content (kg/ha)=   10.39
+      green N content (kg/ha)=    20.38
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.083        0.114        0.020        0.020
+         flowering            to start_grain_fill        0.011        0.023        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.000        0.000        0.692        0.692
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                7409.6                     0.0
+                          N  (kg/ha) =                  26.79                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                4927.2                     0.0
+                          N  (kg/ha) =                  75.89                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =         127.41 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =  103.10 (mm)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                1274.1                  1977.6
+                          N  (kg/ha) =                   3.97                   23.02
+     
+28/11/2000: Moving 1978 animals in group 1 to WheatPaddock for stubble grazing
+15/12/2000: Selling 1489 animals from group 1
+28/12/2000: Moving 487 animals in group 1 to PasturePaddock
+28/12/2000: Selling 42 animals from group 1
+30 December 2000(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.
+
