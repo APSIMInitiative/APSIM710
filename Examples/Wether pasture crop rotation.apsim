@@ -1,6 +1,6 @@
 <folder version="37" creator="Apsim 7.10-r4145" name="simulations">
   <simulation name="Wether in pasture crop rotation">
-    <memo>
+    <memo name="Simulation_notes">
 This simulates a wether/lamb trading system where young animals are bought in
 to fatten over winter and spring. They are then sold to a specified weight.
 
@@ -2635,9 +2635,6 @@ Title = Wether in pasture crop rotation_WheatPaddock_Summary.out</val>
           </GDApsimFileReader>
         </Plot>
       </Graph>
-      <AusFarmManager>
-        <initsection />
-      </AusFarmManager>
     </area>
     <area name="Feedlot">
       <paddock_area>10</paddock_area>
@@ -4155,7 +4152,7 @@ public class Script
          purchaseTradeSheep();
       }
       
-      //getAvailableToAnimal(); //dummy call for testing only &lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+      //getAvailableToAnimal(); //dummy call for testing only &lt;&lt;&lt;&lt;&lt;&lt;
    }
    
    // Temporary function to test the GetValue and RequestSet
@@ -5393,6 +5390,33 @@ public class Script
    }
   </text>
       </manager2>
+      <memo name="Scripts">
+=== Simulation management scripts ===
+
+1. Manage_stock
+   This script is a general one that configures the purchase/replacement of new stock
+   and the removal of aged animals.
+
+2. Grazing_crop
+   This script is designed to move the animals onto the crop paddock for winter grazing
+   or stubble grazing after harvest. It also returns animals to the normal feed paddock.
+
+3. Manage_supplement
+   Use this script to specify the maintenance feeding and any production feeding.
+   Production feeding can be turned off.
+
+4. Shearing
+   Specify the shearing date for all the stock.
+
+5. Selling
+   There are two selling policies here. Target and Drought.
+   These policies will be applied within a sales period.
+   You can select which selling policy to use. If you turn both off, it is possible
+    to grow the animals out to cast for age selling. 
+   
+
+
+   </memo>
     </folder>
     <Stock name="stock">
       <initsection>
@@ -5515,6 +5539,43 @@ public class Script
         </init>
       </initsection>
     </Stock>
+    <memo name="stock_configuration">
+===  Configuring Stock for forages and nutrient cycling.  ===
+
+In APSIM it is necessary to specify the connections from Stock to the forage and soil components.
+Using the initialisation screen for Stock, the paddock_list values can be set.
+
+In this simulation there are three paddocks. Each of these can be described in the
+paddock_list.
+
+This Stock component has three paddocks in the array. The values for each paddock are:
+
+- name = the full name of the paddock component
+- area  = the area (ha) of the paddock
+- slope = the slope of the paddock (deg)
+- forages = array of forages found in the paddock.
+- excretion = the full name of the Surface Organic Matter component
+- urine = the full name of the Soil Nitrogen component
+
+
+
+When surface organic matter is to be available for grazing animals, a SOMForStock script
+from the AusFarm toolbox must be dropped into the paddock. This component is then another
+forage source. In this simulation the SOMForStock is used to allow the stock to consume some
+stubble material.
+
+Notes:
+   1. Another property that must be set is the only_plant2stock. This must be set to False.
+   2. The rand_seed value should be set to 0 for normal use. When it is set to 9999 the animal 
+   mortalities will be replicated between runs.
+
+ ------------------------------------------------------------------------------------------
+The normal procedure for adding paddock items would be:
+
+1. Right click the paddock_list item and choose Add.
+2. Enter the name of the paddock and the area value.
+3. Add a forage item and enter the full name of the forage.
+</memo>
     <Supplement name="supplement">
       <initsection>
         <init name="published_events" array="T" />
