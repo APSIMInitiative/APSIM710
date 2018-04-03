@@ -41,7 +41,7 @@ DefaultDirName={pf}\APSIM{#ApsimVersion}
 DefaultGroupName=APSIM{#GroupString}
 UninstallDisplayIcon={app}\ApsimUI.exe
 Compression=lzma2/Max
-ChangesAssociations=true
+ChangesAssociations=yes
 SetupIconFile=..\UserInterface\Images\Apsim.ico
 WizardSmallImageFile=..\UserInterface\Images\Apsim.bmp
 WizardImageFile=.\APSIMInitiativeBanner.bmp
@@ -166,17 +166,25 @@ Source: ..\Model\TclLink\CIDataTypes.tcl; DestDir: {app}\Model\TclLink
 [INI]
 
 [Tasks]
-Name: desktopicon; Description: Create a &desktop icon; Flags: exclusive; GroupDescription: Additional icons:
-Name: commondesktopicon; Description: Create a &desktop icon for all users; Flags: exclusive; GroupDescription: Additional icons:
-;Name: associate; Description: &Associate .apsim files with Apsim; GroupDescription: Other tasks:
+Name: desktopicon; Description: Create a &desktop icon; GroupDescription: Additional icons:
+Name: desktopicon\common; Description: For all users; GroupDescription: Additional icons:; Flags: exclusive
+Name: desktopicon\user; Description: For the current user only; GroupDescription: Additional icons:; Flags: exclusive unchecked
+Name: associate; Description: &Associate .apsim files with Apsim; GroupDescription: Other tasks:
 
 [Icons]
 ;Name: "{commonprograms}\APSIM{#GroupString}"; Filename: "{app}\Model\ApsimUI.exe"
-Name: "{userdesktop}\APSIM{#GroupString}"; Filename: "{app}\Model\ApsimUI.exe"; Tasks: desktopicon
-Name: "{commondesktop}\APSIM{#GroupString}"; Filename: "{app}\Model\ApsimUI.exe"; Tasks: commondesktopicon
+Name: "{userdesktop}\APSIM{#GroupString}"; Filename: "{app}\Model\ApsimUI.exe"; Tasks: desktopicon\user
+Name: "{commondesktop}\APSIM{#GroupString}"; Filename: "{app}\Model\ApsimUI.exe"; Tasks: desktopicon\common
 Name: "{group}\APSIM User Interface"; Filename: "{app}\Model\ApsimUI.exe"
 Name: "{group}\APSoil"; Filename: "{app}\Model\ApsimUI.exe"; Parameters: "/Apsoil"; IconFilename: "{app}\UserInterface\Images\Apsoil.ico"
 Name: "{group}\Documentation"; Filename: "{app}\Documentation\default.html"; IconFilename: "{app}\UserInterface\Images\book_blue.ico"
+
+[Registry]
+;do the associations
+Root: HKCR; Subkey: .apsim; ValueType: string; ValueName: ; ValueData: APSIM File; Flags: uninsdeletevalue; Tasks: associate
+Root: HKCR; Subkey: APSIM File; ValueType: string; ValueName: ; ValueData: My Program File; Flags: uninsdeletekey; Tasks: associate
+Root: HKCR; Subkey: APSIM File\DefaultIcon; ValueType: string; ValueName: ; ValueData: {app}\Model\ApsimUI.exe,0; Tasks: associate
+Root: HKCR; Subkey: APSIM File\shell\open\command; ValueType: string; ValueName: ; ValueData: """{app}\Model\ApsimUI.exe"" ""%1"""; Tasks: associate
 
 [Run]
 Filename: {app}\Model\ApsimUI.exe; Description: Launch APSIM; Flags: postinstall nowait skipifsilent
