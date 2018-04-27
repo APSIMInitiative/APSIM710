@@ -1314,7 +1314,7 @@ public class AgPasture
         // set links to static members (clock, MetData, dlayer, CO2, etc.)
         Species.Clock = myClock;
         Species.MetFile = MetData;
-        Species.CO2 = co2;
+        // VSOVOS Species.CO2 = co2;
 
         RootDepthMaximum = new double[speciesName.Length];
 

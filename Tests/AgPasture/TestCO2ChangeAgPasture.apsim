@@ -1,0 +1,885 @@
+<folder version="37" creator="Apsim 7.10-r4162" name="Simulations">
+  <simulation name="TestCO2Change">
+    <clock>
+      <start_date type="date" description="Enter the start date of the simulation">01/01/1972</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">31/01/1972</end_date>
+    </clock>
+    <metfile name="met">
+      <filename name="filename" input="yes">%apsim%\Tests\AgPasture\CO2_change_test.met</filename>
+    </metfile>
+    <summaryfile />
+    <area name="Paddock">
+      <manager2 name="Grazing at regular intervals">
+        <ui>
+          <Dummy1 type="category" description="Setting up a harvesting rotation for AgPasture" />
+          <CutPasture_StartDate type="ddmmmdate" description=" Enter the date to start the rotation (dd/mm/yyyy):">01/01/1900</CutPasture_StartDate>
+          <CutPasture_EndDate type="ddmmmdate" description=" Enter the date to end the rotation (dd/mm/yyyy):">31/12/2100</CutPasture_EndDate>
+          <Interval2Cut type="text" description=" Enter the interval between harvests (days):">21</Interval2Cut>
+          <RemoveAmountType type="list" listvalues="Setting DM amount to remove,Setting residual DM amount" description=" Choose what amount is being defined:">Setting residual DM amount</RemoveAmountType>
+          <HerbageAmount type="text" description=" Enter the herbage amount (kgDM/ha):">1000</HerbageAmount>
+          <Dummy3 type="category" description="Settings for dung/urine" />
+          <FracN2Remove type="text" description=" Enter fraction of N that is removed from the field (0-1):">0.15</FracN2Remove>
+          <UrineDepth type="text" description=" Enter the depth down to which urine will apllied (mm):">300</UrineDepth>
+          <FracN2Dung type="text" description=" Enter the proportion of N returned in dung (0-1):">0.4</FracN2Dung>
+        </ui>
+        <text>using System;
+using ModelFramework;
+
+//This manager sets up a cut/grazing rotation for AgPasture. It also handles the return of harvested material, as dung and urine.
+// The rotation is valid between two given dates only, these don't need to be bounded to the simulation dates (start date is set to simulation start date, if prior to it).
+// Harvest is done on above ground standing DM, i.e. leaves plus stem/sheath (dead and green).
+// This manager allows harvest on fixed intervals:
+//   Cut is allowed at given days only (set by start rotation date and then at regular intervals);
+//   Cut happens if amount to remove is set and/or if existing DM is greater than ResidualDM;
+//   Cut is only allowed on the date selected, 'Can_Cut' is set to "no" at the end of the day;
+//
+// Removal of DM (carbon) is based on digestibility, while for N a fraction is removed
+// The DM and N to be returned as dung are added to surfaceOM 'RuminantDung_PastureFed'.
+// The partition of N between urine and dung is set by the user.
+// N urine is added as urea fertiliser, distributed from surface down to  a given depth. The proportion per layer decreases linearly with depth.
+
+//--&gt;  Last uptaded in: 05/Oct/2015 ..................
+
+public class Script
+{
+   //Parameter variables:
+   [Param] private DateTime CutPasture_StartDate;  //Date to start the cutting rotation
+   [Param] private DateTime CutPasture_EndDate;    //Date to end cutting rotation
+   [Param] private int Interval2Cut;               //The interval between cuts, used if cut trigger type is by interval (days), (values will be interpolated using DoY)
+   [Param] private string RemoveAmountType;        //The type of amount being defined (Setting DM amount to remove,Setting residual DM amount)
+   [Param] private double HerbageAmount ;          //The DM amount (kg/ha, DM above ground)
+
+   [Param] private double FracN2Remove;            //Fraction of the N in the material cut that is removed from simulation (0-1)
+   [Param] private double UrineDepth;              //The depth down to which urine will be applied (mm), proportion applied per layer decrease with depth
+   [Param] private double FracN2Dung;              //The fraction of returned N that goes into dung, if return is as dung &amp; urine (0-1)
+
+   //Links and events:
+   [Link] private Component MySelf;
+   [Link] private AgPasture MyAgPasture;
+   [Link] private Fertiliser MyFertiliser;
+   [Link] private SurfaceOM MySurfaceOM;
+
+   //Variables read from other modules
+   [Input] private DateTime Today;     //Today's date
+   [Input] private double[] dlayer;    //Today's day of year
+   private double LowerThreshold;      //Minimum residual DM
+   private double MinimumFraction;     //Minimum fraction of given amount that still triggers a harvest
+   private int CutInterval;
+   private double ResidualDM;
+   private double AmountWanted;
+
+   //Outputs
+   [Output][Units("")] public string Can_Cut;                  //Whether today is a harvesting day
+   [Output][Units("")] public string Has_Cut;                  //Whether today's harvest was done
+   [Output][Units("kg/ha")] public double harvested_dm;        //Pasture DM harvested today (kg/ha)
+   [Output][Units("kgN/ha")] public double harvested_n;        //N harvested today
+   [Output][Units("kg/ha")] public double removed_dm;          //DM removed from the paddock
+   [Output][Units("kgN/ha")] public double removed_n;          //N removed from the paddock
+   [Output][Units("kgN/ha")] public double returned_dm;        //DM returned to the paddock
+   [Output][Units("kgN/ha")] public double returned_n;         //N returned to the paddock
+   [Output][Units("kgN/ha")] public double NReturnedInDung;    //N returned as dung (SurfaceOM)
+   [Output][Units("kgN/ha")] public double NReturnedInUrine;   //N returned as urine (urea)
+   [Output][Units("kg/ha/day")] public double GrowthRateCalc;  //Average growth rate for this cut
+   [Output][Units("days")] public int DaysAfterCut;            //Number of days after last harvest
+   [Output][Units("kg/ha")] public double PreHarvestDM;        //Total standing DM (Leaf + Stem/Sheath) before cut
+   [Output][Units("kg/ha")] public double PostHarvestDM;       //Total standing DM (Leaf + Stem/Sheath) after cut
+
+   //Internal variables
+   private double FracDM2Remove;       //The fraction of DM to be removed from the simulation (0-1)
+   private bool CutIsAllowed;          //Whether cutting are allowed
+   private double[] FracLayer;         //The fraction of urine to be applied in each layer
+
+   [EventHandler()]
+   public void OnInitialised()
+   {
+      //Reset variables
+      CutInterval = Interval2Cut;
+      DaysAfterCut = CutInterval - 1;
+      CutIsAllowed = false;
+      Can_Cut = "no";
+      Has_Cut = "no";
+      LowerThreshold = 500;   // assume a minimum of 500kgDM/ha
+      MinimumFraction = 0.5;  // assume that at least 50% of required amount should be available to trigger a harvest
+
+      //Check the fractions of DM ad N to remove
+      FracDM2Remove = MyAgPasture.HarvestedDigestibility;
+      if ((FracN2Remove &lt; 0.0) || (FracN2Remove &gt; 1.0))
+      {
+         throw new Exception("Fraction of N to remove is out of bounds");
+      }
+      if ((FracN2Dung &lt; 0.0) || (FracN2Dung &gt; 1.0))
+      {
+         throw new Exception("Proportion of N to return as dung is out of bounds");
+      }
+
+      //compute the fraction of urine to be aplied per layer
+      FracLayer = new double[dlayer.Length];
+      double DepthFromSurface = 0.0;
+      double dltZ = 0.0;
+      for (int z = 0; z &lt; dlayer.Length;z++)
+      {
+         if(DepthFromSurface &lt; UrineDepth)
+         {
+            dltZ = Math.Min(dlayer[z], UrineDepth - DepthFromSurface);
+            FracLayer[z] = 2 * dltZ * (1 - ((DepthFromSurface + 0.5 * dltZ) / UrineDepth)) / UrineDepth;
+         }
+         DepthFromSurface += dlayer[z];
+      }
+
+      //write messages on summary file
+      string myMessage1 = ", every " + CutInterval.ToString() + " days";
+      string myMessage2 = "     remove ";
+      if (RemoveAmountType.Contains("residual"))
+      {
+         ResidualDM = HerbageAmount;
+         AmountWanted = 0.0;
+         myMessage2 += "all biomass down to residual DM (" + ResidualDM.ToString("#0") + " kgDM/ha)";
+      }
+      else if (RemoveAmountType.Contains("remove"))
+      {
+         ResidualDM = LowerThreshold;
+         AmountWanted = HerbageAmount;
+         myMessage2 += "a given amount (" + AmountWanted.ToString("#0") + " kgDM/ha)";
+      }
+      Console.WriteLine("");
+      Console.WriteLine("   Harvest rotation for AgPasture initialised");
+      Console.WriteLine("     rotation rule valid between " + CutPasture_StartDate.ToString("dd/MM/yyyy") + " and " + CutPasture_EndDate.ToString("dd/MM/yyyy"));
+      Console.WriteLine("     rotation type: harvest at regular intervals" + myMessage1);
+      Console.WriteLine(myMessage2);
+      Console.WriteLine("     fraction of harvested DM to return as dung: based on herbage digestibility");
+      myMessage2 = ((1.0 - FracN2Remove) * 100).ToString("#0.0") + "% (" + ((1.0 - FracN2Dung) * 100).ToString("#0.0") + "% of it as urine)";
+      Console.WriteLine("     fraction of harvested N to return as dung &amp; urine: " + myMessage2);
+      Console.WriteLine("     proportion of urine N to be added in each layer:");
+      myMessage1 = FracLayer[0].ToString("0.000");
+      for (int z = 1;z &lt; dlayer.Length;z++)
+      {
+         myMessage1 += ", " + FracLayer[z].ToString("0.000");
+      }
+      Console.WriteLine("      " + myMessage1);
+      Console.WriteLine("");
+   }
+
+   [EventHandler()]
+   public void OnPrepare()
+   {
+      double Amount2Harvest = 0.0;
+      double AmountHarvestable = 0.0;
+
+      //Reset variables:
+      Has_Cut = "no";
+      harvested_dm = 0.0;
+      harvested_n = 0.0;
+      removed_dm = 0.0;
+      removed_n = 0.0;
+      returned_dm = 0.0;
+      returned_n = 0.0;
+      GrowthRateCalc = 0.0;
+      NReturnedInDung = 0.0;
+      NReturnedInUrine = 0.0;
+      DaysAfterCut = DaysAfterCut + 1;
+      CutInterval = Interval2Cut;
+      PreHarvestDM = MyAgPasture.StandingHerbageWt;
+      if (RemoveAmountType.Contains("residual"))
+      {
+         ResidualDM = HerbageAmount;
+         AmountWanted = Math.Max(0.0, PreHarvestDM - ResidualDM);
+      }
+      else if (RemoveAmountType.Contains("remove"))
+      {
+         ResidualDM = LowerThreshold;
+         AmountWanted = HerbageAmount;
+      }
+
+      //Decide whether cut is allowed:
+      if ((Today.Date &gt;= CutPasture_StartDate.Date) &amp;&amp; (Today.Date &lt;= CutPasture_EndDate.Date))
+      {
+         if (DaysAfterCut &gt;= CutInterval)
+         {
+            CutIsAllowed = true;
+            Can_Cut = "yes";
+         }
+         else
+         {
+            CutIsAllowed = false;
+            Can_Cut = "no";
+            //always reset CutIsAllowed
+         }
+
+         //Decide how much to cut:
+         if (CutIsAllowed)
+         {
+            AmountHarvestable = Math.Max(0.0, PreHarvestDM - ResidualDM);
+            if (AmountHarvestable &gt;= AmountWanted * MinimumFraction)
+               Amount2Harvest = Math.Min(AmountWanted, AmountHarvestable);
+            else
+               Amount2Harvest = AmountWanted;
+
+            //Decide whether cut actually happens:
+            if ((AmountHarvestable &gt;= Amount2Harvest))
+            {
+               CutPasture(Amount2Harvest);
+               HandleResidues();
+               //reset cut variables
+               DaysAfterCut = 0;
+               Has_Cut = "yes";
+               GrowthRateCalc = harvested_dm / DaysAfterCut;
+               PostHarvestDM = MyAgPasture.StandingHerbageWt;
+            }
+         }
+         else
+         {
+            Amount2Harvest = 0.0;
+            AmountHarvestable = 0.0;
+         }
+      }
+   }
+
+
+   private void CutPasture(double Amount2Harvest)
+   {
+      // -- Cutting pasture ----------------------------------------------------------------------------
+
+      GrazeType CutData = new GrazeType();
+      CutData.sender = MySelf.Name;
+      CutData.amount = (float) Amount2Harvest;
+      CutData.type = "SetRemoveAmount";
+      MyAgPasture.Graze(CutData);
+      harvested_dm = MyAgPasture.HarvestedWt;
+      harvested_n = MyAgPasture.HarvestedN;
+
+      //Let user know (via summary) that a cut was made
+      Console.WriteLine(Today.ToString("dd MMMM yyyy") + " (Day of year=" + Today.DayOfYear.ToString() + "), " + MySelf.Name + ":");
+      Console.WriteLine("     Removing " + harvested_dm.ToString("#0") + "kg DM/ha, with " + harvested_n.ToString("#0.0") + "kg N/ha");
+   }
+
+
+   private void HandleResidues()
+   {
+      // -- Residue management -------------------------------------------------------------------------
+
+      FracDM2Remove = MyAgPasture.HarvestedDigestibility;
+      removed_dm = harvested_dm * FracDM2Remove;
+      removed_n = harvested_n * FracN2Remove;
+      returned_dm = harvested_dm - removed_dm;
+      returned_n = harvested_n - removed_n;
+
+      if (returned_dm &lt; 0.0)
+      {
+         throw new Exception("Return_DM value is negative");
+      }
+      if (returned_n &lt; 0.0)
+      {
+         throw new Exception("Return_N value is negative");
+      }
+
+      NReturnedInDung = returned_n * FracN2Dung;
+      NReturnedInUrine = Math.Max(0.0, returned_n - (returned_n * FracN2Dung));
+
+      if (NReturnedInDung &gt; returned_n)
+      {
+         throw new Exception("Amount of N to return as dung is larger than total return, check proportion or CN ratio");
+      }
+
+      if ((returned_dm &gt; 0.0) || (NReturnedInDung &gt; 0.0))
+      {
+         BiomassRemovedType SOMData = new BiomassRemovedType();
+         SOMData.crop_type = "RuminantDung_PastureFed";
+         SOMData.dm_type = new string[] { SOMData.crop_type };
+         SOMData.dlt_crop_dm = new float[] { (float) returned_dm };
+         SOMData.dlt_dm_n = new float[] { (float) NReturnedInDung };
+         SOMData.fraction_to_residue = new float[] { 1.0F };
+         MySurfaceOM.BiomassRemoved(SOMData);
+      }
+
+      if (NReturnedInUrine &gt; 0.0)
+      {
+         FertiliserApplicationType UrineData = new FertiliserApplicationType();
+         UrineData.Amount = (float) NReturnedInUrine;
+         UrineData.Depth = 10;   // mm
+         UrineData.Type = "urea_n";
+         MyFertiliser.Apply(UrineData);
+      }
+   }
+}
+				</text>
+      </manager2>
+      <micromet name="Micromet">
+        <soilalbedo type="text" description="soilalbedo">0.23</soilalbedo>
+        <a_interception type="text" description="a_interception">0</a_interception>
+        <b_interception type="text" description="b_interception">0</b_interception>
+        <c_interception type="text" description="c_interception">0</c_interception>
+        <d_interception type="text" description="d_interception">0</d_interception>
+      </micromet>
+      <fertiliser name="Fertiliser" />
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">600</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.5</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+        <allocation type="text" description="Allocation in mm">0</allocation>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+      </irrigation>
+      <surfaceom name="SurfaceOrganicMatter">
+        <PoolName type="text" description="Organic Matter pool name">AgPasture</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">grass</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
+        <cnr type="text" description="C:N ratio of initial residue">15</cnr>
+        <cpr type="text" description="C:P ratio of initial residue (optional)">
+        </cpr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <Soil name="SoilLismore">
+        <RecordNumber>0</RecordNumber>
+        <SoilType>0</SoilType>
+        <Site>Winchmore</Site>
+        <NearestTown>Winchmore</NearestTown>
+        <Region>Canterbury</Region>
+        <State>New Zealand</State>
+        <NaturalVegetation>0</NaturalVegetation>
+        <ApsoilNumber>0</ApsoilNumber>
+        <Latitude>0</Latitude>
+        <Longitude>0</Longitude>
+        <LocationAccuracy>0</LocationAccuracy>
+        <YearOfSampling>0</YearOfSampling>
+        <DataSource>published soil profile description (as an example)</DataSource>
+        <Analysis>
+          <Thickness>
+            <double>100</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <Texture>
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+          </Texture>
+          <MunsellColour>
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+            <string />
+          </MunsellColour>
+          <PH>
+            <double>5.9</double>
+            <double>5.9</double>
+            <double>5.9</double>
+            <double>5.9</double>
+            <double>5.9</double>
+            <double>5.9</double>
+            <double>5.9</double>
+          </PH>
+          <PHUnits>Water</PHUnits>
+          <BoronUnits>HotWater</BoronUnits>
+        </Analysis>
+        <Water>
+          <Thickness>
+            <double>100</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <BD>
+            <double>1.25</double>
+            <double>1.31</double>
+            <double>1.23</double>
+            <double>1.24</double>
+            <double>1.25</double>
+            <double>1.26</double>
+            <double>1.29</double>
+          </BD>
+          <AirDry>
+            <double>0.06</double>
+            <double>0.06</double>
+            <double>0.03</double>
+            <double>0.03</double>
+            <double>0.03</double>
+            <double>0.03</double>
+            <double>0.03</double>
+          </AirDry>
+          <LL15>
+            <double>0.14</double>
+            <double>0.14</double>
+            <double>0.03</double>
+            <double>0.03</double>
+            <double>0.03</double>
+            <double>0.03</double>
+            <double>0.03</double>
+          </LL15>
+          <DUL>
+            <double>0.32</double>
+            <double>0.32</double>
+            <double>0.07</double>
+            <double>0.05</double>
+            <double>0.05</double>
+            <double>0.05</double>
+            <double>0.05</double>
+          </DUL>
+          <SAT>
+            <double>0.45</double>
+            <double>0.45</double>
+            <double>0.15</double>
+            <double>0.08</double>
+            <double>0.08</double>
+            <double>0.08</double>
+            <double>0.08</double>
+          </SAT>
+          <SoilCrop name="ryegrass_clover">
+            <Thickness>
+              <double>100</double>
+              <double>200</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.14</double>
+              <double>0.14</double>
+              <double>0.03</double>
+              <double>0.03</double>
+              <double>0.03</double>
+              <double>0.03</double>
+              <double>0.03</double>
+            </LL>
+            <KL>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.02</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </XF>
+          </SoilCrop>
+          <SoilCrop name="agpasture">
+            <Thickness>
+              <double>100</double>
+              <double>200</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.14</double>
+              <double>0.14</double>
+              <double>0.03</double>
+              <double>0.03</double>
+              <double>0.03</double>
+              <double>0.03</double>
+              <double>0.03</double>
+            </LL>
+            <KL>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.02</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </XF>
+          </SoilCrop>
+          <SoilCrop name="ryegrass">
+            <Thickness>
+              <double>100</double>
+              <double>200</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.14</double>
+              <double>0.14</double>
+              <double>0.03</double>
+              <double>0.03</double>
+              <double>0.03</double>
+              <double>0.03</double>
+              <double>0.03</double>
+            </LL>
+            <KL>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.02</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </XF>
+          </SoilCrop>
+          <SoilCrop name="clover">
+            <Thickness>
+              <double>100</double>
+              <double>200</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.14</double>
+              <double>0.14</double>
+              <double>0.03</double>
+              <double>0.03</double>
+              <double>0.03</double>
+              <double>0.03</double>
+              <double>0.03</double>
+            </LL>
+            <KL>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.02</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </XF>
+          </SoilCrop>
+          <SoilCrop name="maize">
+            <Thickness>
+              <double>100</double>
+              <double>200</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.14</double>
+              <double>0.14</double>
+              <double>0.03</double>
+              <double>0.02</double>
+              <double>0.02</double>
+              <double>0.02</double>
+              <double>0.02</double>
+            </LL>
+            <KL>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+          </SoilCrop>
+          <SoilCrop name="cotton">
+            <Thickness>
+              <double>100</double>
+              <double>200</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.14</double>
+              <double>0.14</double>
+              <double>0.03</double>
+              <double>0.02</double>
+              <double>0.02</double>
+              <double>0.02</double>
+              <double>0.02</double>
+            </LL>
+            <KL>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.1</double>
+              <double>0.09</double>
+              <double>0.07</double>
+              <double>0.05</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+          </SoilCrop>
+          <SoilCrop name="sorghum">
+            <Thickness>
+              <double>100</double>
+              <double>200</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.14</double>
+              <double>0.14</double>
+              <double>0.03</double>
+              <double>0.02</double>
+              <double>0.02</double>
+              <double>0.02</double>
+              <double>0.02</double>
+            </LL>
+            <KL>
+              <double>0.07</double>
+              <double>0.07</double>
+              <double>0.07</double>
+              <double>0.05</double>
+              <double>0.05</double>
+              <double>0.04</double>
+              <double>0.03</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>0.9</double>
+            </XF>
+          </SoilCrop>
+          <SoilCrop name="slurp">
+            <Thickness>
+              <double>100</double>
+              <double>200</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.14</double>
+              <double>0.14</double>
+              <double>0.03</double>
+              <double>0.02</double>
+              <double>0.02</double>
+              <double>0.02</double>
+              <double>0.02</double>
+            </LL>
+            <KL>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+          </SoilCrop>
+        </Water>
+        <SoilWater>
+          <SummerCona>3.5</SummerCona>
+          <SummerU>6</SummerU>
+          <SummerDate>1-Nov</SummerDate>
+          <WinterCona>2</WinterCona>
+          <WinterU>2</WinterU>
+          <WinterDate>1-apr</WinterDate>
+          <DiffusConst>88</DiffusConst>
+          <DiffusSlope>35</DiffusSlope>
+          <Salb>0.13</Salb>
+          <CN2Bare>73</CN2Bare>
+          <CNRed>20</CNRed>
+          <CNCov>0.8</CNCov>
+          <Slope>NaN</Slope>
+          <DischargeWidth>NaN</DischargeWidth>
+          <CatchmentArea>NaN</CatchmentArea>
+          <MaxPond>NaN</MaxPond>
+          <Thickness>
+            <double>100</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <SWCON>
+            <double>0.4</double>
+            <double>0.5</double>
+            <double>0.6</double>
+            <double>0.6</double>
+            <double>0.8</double>
+            <double>0.8</double>
+            <double>0.8</double>
+          </SWCON>
+        </SoilWater>
+        <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWt>800</RootWt>
+          <SoilCN>11.3</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+          <Thickness>
+            <double>100</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <OC>
+            <double>4</double>
+            <double>2.5</double>
+            <double>0.5</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0</double>
+            <double>0</double>
+          </OC>
+          <FBiom>
+            <double>0.04</double>
+            <double>0.02</double>
+            <double>0.02</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0</double>
+            <double>0</double>
+          </FBiom>
+          <FInert>
+            <double>0.3</double>
+            <double>0.5</double>
+            <double>0.6</double>
+            <double>0.8</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+          </FInert>
+        </SoilOrganicMatter>
+        <InitialWater name="Initial water">
+          <FractionFull>0.99</FractionFull>
+          <DepthWetSoil>NaN</DepthWetSoil>
+          <PercentMethod>FilledFromTop</PercentMethod>
+        </InitialWater>
+        <Sample name="Initial nitrogen">
+          <Date type="date" description="Sample date:" />
+          <Thickness>
+            <double>100</double>
+            <double>200</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+          </Thickness>
+          <NO3>
+            <double>7.61904761904762</double>
+            <double>7.27008360596147</double>
+            <double>3.87146728610143</double>
+            <double>3.84024577572965</double>
+            <double>3.80952380952381</double>
+            <double>3.77928949357521</double>
+            <double>3.69139904023625</double>
+          </NO3>
+          <NH4>
+            <double>0.132451499118166</double>
+            <double>0.132451499118166</double>
+            <double>0.132451499118166</double>
+            <double>0.132451499118166</double>
+            <double>0.132451499118166</double>
+            <double>0.132451499118166</double>
+            <double>0.132451499118166</double>
+          </NH4>
+        </Sample>
+      </Soil>
+      <AgPasture>
+        <Dummy1 type="category" description="Initial values for each species to be simulated" />
+        <SpeciesToSimulate type="text" description="  Name of the species to be simulated:">Ryegrass    WhiteClover</SpeciesToSimulate>
+        <InitialShootDM type="text" description="  Initial above ground dry matter weight (kgDM/ha):">1400   500</InitialShootDM>
+        <InitialRootDM type="text" description="  Initial root dry matter weight (kgDM/ha):">450     150</InitialRootDM>
+        <InitialRootDepth type="text" description="  Initial rooting depth (mm):">750     350</InitialRootDepth>
+        <WaterUptakeSource type="list" listvalues="calc,apsim" description="  Water uptake done by AgPasture (calc) or by apsim?:">calc</WaterUptakeSource>
+      </AgPasture>
+      <outputfile>
+        <filename output="yes">TestCO2Change.out</filename>
+        <title>TestCO2Change</title>
+        <variables name="Variables">
+          <variable>dd/mmm/yyyy as Date</variable>
+          <variable>CO2</variable>
+          <variable>GlfCO2</variable>
+        </variables>
+        <events name="Frequency">
+          <event>end_day</event>
+        </events>
+      </outputfile>
+    </area>
+  </simulation>
+</folder>

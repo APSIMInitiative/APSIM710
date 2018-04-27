@@ -32,8 +32,10 @@ public class Species
     /// <summary>Some Description</summary>
     internal static MetFile MetFile;
 
+    /*  VOSVOS
     /// <summary>Some Description</summary>
     internal static double CO2 = 380;
+    */  
 
     /// <summary>total Radn intercepted by pasture</summary>
     internal static double swardInterceptedRadn;
@@ -2254,9 +2256,9 @@ public class Species
 
     /// <summary>Effects of atmospheric [CO2] on plant photosynthesis</summary>
     /// <returns>Growth factor</returns>
-    private double CO2EffectsOnPhotosynthesis()
+    private double CO2EffectsOnPhotosynthesis()  // VSOVOS
     {
-        double termActual = (CO2 + myCO2EffectScaleFactor) / CO2;
+        double termActual = (MetFile.CO2 + myCO2EffectScaleFactor) / MetFile.CO2;  //VOSVOS
         double termReference = (myReferenceCO2 + myCO2EffectScaleFactor) / myReferenceCO2;
         return termReference / termActual;
     }
@@ -2294,10 +2296,10 @@ public class Species
     /// <returns>Effect on plant N concentration</returns>
     private double NVariationDueToCO2()
     {
-        if (CO2 <= myReferenceCO2)
+        if (MetFile.CO2 <= myReferenceCO2)  //VOSVOS
             return 1.0;
 
-        double factorCO2 = Math.Pow((myCO2EffectOffsetFactor - myReferenceCO2) / (CO2 - myReferenceCO2), myCO2EffectExponent);
+        double factorCO2 = Math.Pow((myCO2EffectOffsetFactor - myReferenceCO2) / (MetFile.CO2 - myReferenceCO2), myCO2EffectExponent);  //VOSVOS
         double Fn = (myCO2EffectMinimum + factorCO2) / (1.0 + factorCO2);
         return Fn;
     }
@@ -2306,7 +2308,7 @@ public class Species
     /// <returns>Effects on canopy conductance</returns>
     private double ConductanceCO2Effects()
     {
-        if (Math.Abs(CO2 - myReferenceCO2) < 0.5)
+        if (Math.Abs(MetFile.CO2 - myReferenceCO2) < 0.5)  //VOSVOS
             return 1.0;
         //Hard coded here, not used, should go to Micromet!
         double Gmin = 0.2; //Fc = Gmin when CO2->unlimited
@@ -2314,7 +2316,7 @@ public class Species
         double beta = 2.5; //curvature factor,
 
         double Fc = Gmin + (Gmax - Gmin) * (1 - Gmin) * Math.Pow(myReferenceCO2, beta) /
-                    ((Gmax - 1) * Math.Pow(CO2, beta) + (1 - Gmin) * Math.Pow(myReferenceCO2, beta));
+                    ((Gmax - 1) * Math.Pow(MetFile.CO2, beta) + (1 - Gmin) * Math.Pow(myReferenceCO2, beta));  //VOSVOS
         return Fc;
     }
 
