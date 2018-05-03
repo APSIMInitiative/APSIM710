@@ -288,7 +288,7 @@ namespace ApsimFile
 						inputfiles.Add (Path.GetFileName (SelfExtractingExecutableLocation));
 					inputfiles.Add ("Apsim.$$(OpSys)." + Convert.ToString (jobCounter) + ".bat");
 
-                    simsFile = "Apsim." + Convert.ToString (jobCounter) + "." + apsimFile + ".simulations";
+                    simsFile = "Apsim." + Convert.ToString (jobCounter) + ".simulations";
 					SimsWriter = new StreamWriter (Path.Combine (WorkingFolder, simsFile));
 					inputfiles.Add (simsFile);
                     StreamWriter WinExeWriter = new StreamWriter (Path.Combine (WorkingFolder, "Apsim.WINDOWS." + Convert.ToString (jobCounter) + ".bat"));

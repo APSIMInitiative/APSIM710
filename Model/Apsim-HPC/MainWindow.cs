@@ -149,6 +149,11 @@ public partial class MainWindow: Gtk.Window
         //tag.Background= FIXME;
         OnLogMessage("Started - version = " + Configuration.Instance.ApsimVersion() + "-" + Configuration.Instance.ExeBuildNumber());
 
+		helpWindow.Buffer.TagTable.Add (tag);
+		helpWindow.Buffer.ApplyTag ("monospace", helpWindow.Buffer.StartIter, helpWindow.Buffer.EndIter);
+		TextIter ins = helpWindow.Buffer.EndIter;
+		helpWindow.Buffer.InsertWithTagsByName(ref ins, helpText, "monospace");
+
         //Handle persistance between runs in case of crash, disconnect etc. 
         // If this is non-empty, it will be a remote directory
         string runPath = Configuration.Instance.Setting("remoteRunDir");
@@ -347,4 +352,55 @@ public partial class MainWindow: Gtk.Window
 	{
 		//throw new NotImplementedException ();
 	}
+	private string helpText = @"                           Apsim & UQ - HPC 
+
+This app replaces the 'run on cluster' tool in the Apsim GUI. It is specific to the UQ rcc network.
+       Users need a password (via https://www.qriscloud.org.au/) before the tool can run.
+
+Usage:
+- Work on your .apsim file(s) with the apsim GUI as usual (usually, it's a factorial or has 
+  lots of simulations inside)
+
+- Save it, and run this tool
+
+- Fill in your (UQ) username and password
+
+- Select (by browsing) one or more .apsim files, or select a directory of files.
+
+- Simulations/Job: A 'job' is an arbitrary collection of simulations. Each job is 
+  executed independantly. Simulations are executed in parallell within a job. The 
+  number of simulations running at one time will depend on the number of CPUs of 
+  the executing machine.
+
+  At present, there are 24 CPUs on each execute node, so the Simulations/Job should be 
+  some multiple of 24. Try to keep the machine occupied for more than 1/2 an hour. Too 
+  small a number here will result in more time spent setting up the job than running it.
+  For example, if your simulations take ~1.5 minutes each, then to keep the machine 
+  occupied for 30 mins requires 24 * 30 / 1.5 = 480 simulations / job.
+   
+- Machine hours / job: the job will be terminated once it exceeds this time. Placing an 
+  excessivly high value here will result in your job being bumped down in favour of 
+  shorter jobs.
+
+- Version: The versions of APSIM available on the cluster are changed infrequently. Once
+  your username / password is entered, the list of available versions can be updated. 
+  Select the appropriate version for your needs.
+
+- Press 'Go' and *wait*. Once you've got to here, the program can be disconnected/
+  restarted/rebooted etc. If you start it again, you have to enter your password and 
+  press 'resume'. You will see it poll the system every minute.
+
+- Once the jobs have finished, the app will switch to the download page.
+
+- Press download - the outputs are downloaded to the same directory of the simulation(s). 
+  While the simulation inputs are not downloaded, it is wise to make a backup copy 
+  before this step.
+
+- The PBS stdout and stderr streams are downloaded as 'Apsim.o12345' and 'Apsim.e12345'
+  respectively, where '12345' is your job id. Errors from Apsim.exe that cannot be 
+  captured in a summary file are usually in the standard output stream.
+
+- If there are problems, please save and attach the contents of the progress tab to an email.
+
+";
 }

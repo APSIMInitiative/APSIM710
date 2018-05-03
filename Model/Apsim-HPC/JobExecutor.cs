@@ -157,11 +157,16 @@ namespace ApsimHPC
                 server.runCommand("find " + remoteDir + " -name \"Apsim.*.tar.gz\" -maxdepth 1");
                 foreach (string tgz in server.output.Result.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    logMessage("Downloading " + tgz);
+					logMessage("Downloading " + tgz + " to " + Directory.GetCurrentDirectory());
                     server.download(tgz, new FileInfo(Path.GetFileName(tgz)));
                     Stream inStream = File.OpenRead(Path.GetFileName(tgz));
                     TarArchive tarArchive = TarArchive.CreateInputTarArchive(new GZipInputStream(inStream));
                     tarArchive.SetKeepOldFiles(false);
+					logMessage("Unpacking " + tgz);
+					tarArchive.ProgressMessageEvent += 
+					   (TarArchive archive, TarEntry entry, string message) => {
+					      logMessage("Extracting " + entry.File);
+					   };
                     tarArchive.ExtractContents(".");
                     tarArchive.Close();
                     inStream.Close();
