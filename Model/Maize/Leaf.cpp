@@ -556,6 +556,7 @@ double Leaf::provideN(double requiredN)
 void Leaf::initLeafNo(void)
    {
    nLeaves = noEmergence;
+   leafNo[2] = noEmergence;
    }
 //------------------------------------------------------------------------------------------------
 // estimate the final leaf no from an approximated thermal time
