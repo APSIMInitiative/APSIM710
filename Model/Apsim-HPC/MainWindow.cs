@@ -161,11 +161,14 @@ public partial class MainWindow: Gtk.Window
 		   button8.Sensitive = true;
 		   button8.Clicked += new EventHandler (
 			(object sender, EventArgs e) => {
-			   if (workerThread != null) {workerThread.Abort();}
+			   if (workerThread != null) {
+                    setMessage("go", "Cancelling existing monitor thread");
+                    workerThread.Abort();
+                }
   		       ex.server.cred = getCreds ();
 			   ex.jobId = Configuration.Instance.Setting("remoteJobId");
 			   label14.Text = "Job Running";
-  			   workerThread = new Thread (() => ex.waitForCompletion (null));
+               workerThread = new Thread (() => ex.waitForCompletion (null));
 			   workerThread.Start ();
 		   });
 		}

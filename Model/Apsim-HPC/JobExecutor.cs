@@ -99,7 +99,8 @@ namespace ApsimHPC
 				logMessage ("Error starting job " + server.output.Error);
 				return(false);
 			}
-			jobId = server.output.Result.Split (new[] { '\n' }, StringSplitOptions.None).FirstOrDefault ();
+			jobId = server.output.Result.Split (new[] { '\n', '[', '.' }, StringSplitOptions.None).FirstOrDefault ();
+
 			Configuration.Instance.SetSetting("remoteJobId", jobId);
 
 			logMessage ("Submitted " + runName + ", id=" + jobId);
@@ -136,12 +137,15 @@ namespace ApsimHPC
 		private bool pollForCompletion () 
 		{
 			if (server.runCommand ("qstat")) {
-			   foreach(string line in server.output.Result.Split (new[] { '\n' }, StringSplitOptions.None)) {
+                string[] lines = server.output.Result.Split(new[] { '\n' }, StringSplitOptions.None);
+
+                foreach (string line in lines) {
 			      if (jobId != "" && line.Contains(jobId)) {
 			         return (false); // The job is still executing
 			      }
-			   }
-			   return (true); 
+			    }
+                logMessage("qstat is empty - job '" + jobId + "' has finished");
+                return (true); 
 			}
 			return (false); // An error occurred
 		}
@@ -155,7 +159,11 @@ namespace ApsimHPC
             {
                 Directory.SetCurrentDirectory(Configuration.Instance.Setting("clusterLocalDir"));
                 server.runCommand("find " + remoteDir + " -name \"Apsim.*.tar.gz\" -maxdepth 1");
-                foreach (string tgz in server.output.Result.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries))
+                string[] lines = server.output.Result.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                if (lines.Count() == 0)
+                    logMessage("Warning - no output files appeared.");
+
+                foreach (string tgz in lines)
                 {
 					logMessage("Downloading " + tgz + " to " + Directory.GetCurrentDirectory());
                     server.download(tgz, new FileInfo(Path.GetFileName(tgz)));
@@ -176,7 +184,10 @@ namespace ApsimHPC
                     // Now do Apsim.<1-X>.[o,e]* as well
                     string idShort = System.Text.RegularExpressions.Regex.Match(jobId, "\\d+").Value;
                     server.runCommand("find " + remoteDir + " -name \"*" + idShort + "\" -maxdepth 1");
-                    foreach (string filename in server.output.Result.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries))
+                lines = server.output.Result.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                if (lines.Count() == 0)
+                    logMessage("Warning - no PBS log files appeared!");
+                foreach (string filename in lines)
                     {
                             logMessage("Downloading " + filename);
                             server.download(filename, new FileInfo(Path.GetFileName(filename)));
