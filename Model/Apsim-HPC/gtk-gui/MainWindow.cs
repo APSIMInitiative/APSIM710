@@ -122,7 +122,7 @@ public partial class MainWindow
 		global::Stetic.Gui.Initialize (this);
 		// Widget MainWindow
 		this.Name = "MainWindow";
-		this.Title = global::Mono.Unix.Catalog.GetString ("MainWindow");
+		this.Title = "Apsim - UQ HPC";
 		this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 		// Container child MainWindow.Gtk.Container+ContainerChild
 		this.vbox2 = new global::Gtk.VBox ();
@@ -357,7 +357,7 @@ public partial class MainWindow
 		// Container child hbox6.Gtk.Box+BoxChild
 		this.label9 = new global::Gtk.Label ();
 		this.label9.Name = "label9";
-		this.label9.LabelProp = global::Mono.Unix.Catalog.GetString ("Simulations / job");
+		this.label9.LabelProp = "Simulations / job";
 		this.hbox6.Add (this.label9);
 		global::Gtk.Box.BoxChild w23 = ((global::Gtk.Box.BoxChild)(this.hbox6 [this.label9]));
 		w23.Position = 1;
@@ -378,7 +378,7 @@ public partial class MainWindow
 		// Container child hbox6.Gtk.Box+BoxChild
 		this.label11 = new global::Gtk.Label ();
 		this.label11.Name = "label11";
-		this.label11.LabelProp = global::Mono.Unix.Catalog.GetString ("Machine Hours / job");
+		this.label11.LabelProp = "Machine Hours / job";
 		this.hbox6.Add (this.label11);
 		global::Gtk.Box.BoxChild w25 = ((global::Gtk.Box.BoxChild)(this.hbox6 [this.label11]));
 		w25.Position = 3;
@@ -425,7 +425,7 @@ public partial class MainWindow
 		this.button5.CanFocus = true;
 		this.button5.Name = "button5";
 		this.button5.UseUnderline = true;
-		this.button5.Label = global::Mono.Unix.Catalog.GetString ("Update");
+		this.button5.Label = "Update";
 		this.hbox9.Add (this.button5);
 		global::Gtk.Box.BoxChild w30 = ((global::Gtk.Box.BoxChild)(this.hbox9 [this.button5]));
 		w30.Position = 1;
@@ -457,7 +457,7 @@ public partial class MainWindow
 		this.button8.CanFocus = true;
 		this.button8.Name = "button8";
 		this.button8.UseUnderline = true;
-		this.button8.Label = global::Mono.Unix.Catalog.GetString ("Resume");
+		this.button8.Label = "Resume";
 		this.hbox7.Add (this.button8);
 		global::Gtk.Box.BoxChild w33 = ((global::Gtk.Box.BoxChild)(this.hbox7 [this.button8]));
 		w33.Position = 1;
@@ -483,7 +483,7 @@ public partial class MainWindow
 		// Notebook tab
 		this.label2 = new global::Gtk.Label ();
 		this.label2.Name = "label2";
-		this.label2.LabelProp = global::Mono.Unix.Catalog.GetString ("Setup");
+		this.label2.LabelProp = "Setup";
 		this.notebook1.SetTabLabel (this.vbox1, this.label2);
 		this.label2.ShowAll ();
 		// Container child notebook1.Gtk.Notebook+NotebookChild
@@ -521,7 +521,7 @@ public partial class MainWindow
 		this.button7.CanFocus = true;
 		this.button7.Name = "button7";
 		this.button7.UseUnderline = true;
-		this.button7.Label = global::Mono.Unix.Catalog.GetString ("Save log");
+		this.button7.Label = "Save log";
 		this.hbox11.Add (this.button7);
 		global::Gtk.Box.BoxChild w40 = ((global::Gtk.Box.BoxChild)(this.hbox11 [this.button7]));
 		w40.Position = 0;
@@ -537,7 +537,7 @@ public partial class MainWindow
 		// Notebook tab
 		this.label3 = new global::Gtk.Label ();
 		this.label3.Name = "label3";
-		this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("Progress");
+		this.label3.LabelProp = "Progress";
 		this.notebook1.SetTabLabel (this.vbox5, this.label3);
 		this.label3.ShowAll ();
 		// Container child notebook1.Gtk.Notebook+NotebookChild
@@ -556,7 +556,7 @@ public partial class MainWindow
 		// Container child vbox6.Gtk.Box+BoxChild
 		this.label14 = new global::Gtk.Label ();
 		this.label14.Name = "label14";
-		this.label14.LabelProp = global::Mono.Unix.Catalog.GetString ("Job in preparation");
+		this.label14.LabelProp = "Job in preparation";
 		this.vbox6.Add (this.label14);
 		global::Gtk.Box.BoxChild w44 = ((global::Gtk.Box.BoxChild)(this.vbox6 [this.label14]));
 		w44.Position = 1;
@@ -572,7 +572,7 @@ public partial class MainWindow
 		this.button6.CanFocus = true;
 		this.button6.Name = "button6";
 		this.button6.UseUnderline = true;
-		this.button6.Label = global::Mono.Unix.Catalog.GetString ("Download outputs");
+		this.button6.Label = "Download outputs";
 		this.hbox10.Add (this.button6);
 		global::Gtk.Box.BoxChild w45 = ((global::Gtk.Box.BoxChild)(this.hbox10 [this.button6]));
 		w45.Position = 1;
@@ -589,7 +589,7 @@ public partial class MainWindow
 		// Notebook tab
 		this.label4 = new global::Gtk.Label ();
 		this.label4.Name = "label4";
-		this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("Download");
+		this.label4.LabelProp = "Download";
 		this.notebook1.SetTabLabel (this.vbox6, this.label4);
 		this.label4.ShowAll ();
 		// Container child notebook1.Gtk.Notebook+NotebookChild
@@ -615,7 +615,7 @@ public partial class MainWindow
 		// Notebook tab
 		this.label15 = new global::Gtk.Label ();
 		this.label15.Name = "label15";
-		this.label15.LabelProp = global::Mono.Unix.Catalog.GetString ("Help");
+		this.label15.LabelProp = "Help";
 		this.notebook1.SetTabLabel (this.vbox7, this.label15);
 		this.label15.ShowAll ();
 		this.vbox2.Add (this.notebook1);
