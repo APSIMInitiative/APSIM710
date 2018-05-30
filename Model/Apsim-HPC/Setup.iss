@@ -164,6 +164,8 @@ Source: ..\DeploymentSupport\Windows\Bin64\lib\gtk-2.0\2.10.0\engines\*.dll; Des
 ;Source: "C:\Program Files (x86)\GtkSharp\2.12\*"; DestDir: {app}; Flags: recursesubdirs; 
 
 Source: ..\..\UserInterface\Images\earth_connection24.png; DestDir: {app}\UserInterface\Images; Flags: ignoreversion;
+Source: ..\..\UserInterface\*.xml; DestDir: {app}\UserInterface; Flags: ignoreversion;
+Source: ..\*.xml; DestDir: {app}\Model; Flags: ignoreversion;
 Source: ..\..\Apsim.xml; DestDir: {app}\; Flags: ignoreversion;
 
 [Icons]
