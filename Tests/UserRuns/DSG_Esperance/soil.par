@@ -1,329 +1,180 @@
-!************************************************************************************************************************
-
-[scaddan.SoilWat.parameters] 
-
-! pale grey sandy loam duplex - depth of AB 10-15   
-insoil =  2.0   
-u =  3   
-cn2_bare =  80
-cn_red =  20 ()   
-cn_cov =  0.8 ()   
-salb =  0.18 !    
-cona =  3.0 ! NB BAK has used 2 for sands in WA
-diffus_const =  88.   
-diffus_slope =  35.0   
-
-runoff_filename =  blank   
-
-!layer    1    2    3    4    5    6    7  
-!depth   150  170  375  600  900 1200 1500 
-dlayer = 150  20   205  225  300  300  300 
-bd =     1.40 1.65 1.65 1.65 1.65 1.65 1.65 
-ll15 =  .025  .208 .171 .171 .171 .171 .171 
-dul =   .105  .285 .286 .286 .286 .286 .286 
-sat =   .40  .35   .35  .35  .35  .35  .35 
-swcon = 0.5  0.2   0.3  0.3  0.3  0.3  0.3 
-air_dry = .012 .2 .170 .17 .17  .17  .17 
-
-sw = .105  .285 .286 .286 .286 .286 .286 
-
-[scaddan.SoilN.parameters]    
-!layer    1    2    3    4    5    6    7  
-oc =     0.9  0.3  0.2  0.1  0.1  0.1  0.1 
-ph =     7.0  7.0  7.0  7.0  7.0  7.0  7.0 
-nh4ppm = 0.3  0.3  0.3  0.3  0.3  0.3  0.3 
-no3ppm = 0.3  0.3  0.3  0.3  0.3  0.3  0.3 
-ureappm =  0    0    0    0    0    0    0 
-fbiom =  0.04 0.025 0.015 0.01 0.01 0.01 0.01
-finert = 0.1  0.3   0.75  0.90 0.95 0.99 0.99
-
-
-soil_cn =  14.5   
-enr_a_coeff =  7.4 ()   !stuff for mapping erosion
-enr_b_coeff =  0.2   
-profile_reduction =  on   
-
-root_wt =  1500.   ! root residues as biomass (kg/ha)
-root_cn =  30.   
-
-[scaddan.residue2.parameters]  
-pot_decomp_rate =  0.10 ()    ! Potential decomposition rate
-residue_wt =  1500. (kg/ha)   ! Initial surface residue
-residue_cnr =  70.0 ()        ! C:N ration of initial residue
-residue_type =  wheat         ! Type if initial residue
-
-[scaddan.soiltemp.parameters]
-
-bound_layer_cond = 20.0  ! (J/s/m2/K)
-!layer    1    2    3    4    5    6    7  
-!depth   150  170  375  600  900 1200 1500 
-clay =   0.05 0.45 0.45 0.45 0.45 0.45 0.45 
-
-
-[scaddan.sorghum.parameters]
-uptake_source =    calc   ! calculate own uptakes.
-!layer    1    2    3    4    5    6    7  
-!depth   150  170  375  600  900 1200 1500 
-ll =    .025  .208 .171 .171 .171 .171 .171
-kl =    0.07  0.07 0.05 0.05 0.04 0.04 0.04  () ! Water Extraction parameter (0-1)
-xf =    1.0   0.6   0.2  0.2  0.2 0.0  0.0   ()! Root Exploration factor (0-1)
-
-[scaddan.wheat.parameters]
-uptake_source =    calc   ! calculate own uptakes.
-!layer    1    2    3    4    5    6    7  
-!depth   150  170  375  600  900 1200 1500 
-ll =    .025  .208 .171 .171 .171 .171 .171
-kl =    0.07  0.07 0.05 0.05 0.04 0.04 0.04  () ! Water Extraction parameter (0-1)
-xf =    1.0   0.6   0.2  0.2  0.2 0.0  0.0   ()! Root Exploration factor (0-1)
-
-
-!*******************************************************************************************************************************
-[salmon_gums.SoilWat.parameters]    
-insoil =  2.0   
-u =  3   
-cn2_bare =  80
-cn_red =  20 ()   
-cn_cov =  0.8 ()   
-salb =  0.18 !    
-cona =  3.0 ! NB BAK has used 2 for sands in WA
-diffus_const =  88.   
-diffus_slope =  35.0   
-
-runoff_filename =  blank   
-
-!layer       1      2      3      4      5      6      7     
-!depth      100    200    500    700    1000   1200   1500
-dlayer =    100    100    300    200    300    200     300
-bd =        1.50   1.50   1.65   1.65   1.65   1.65   1.65   
-ll15 =      .04     .03    0.17   0.17   .17   .17     .17    
-dul =       .12     .12    .30    .30    .30   .30     .30
-sat =       .43    .43    .35    .35    .35    .35    .35       
-swcon =     0.5    0.5    0.3    0.3    0.3    0.3    0.3 
-air_dry =  .017    .017    .17    .17    .17    .17    .17
-
-sw =       .12     .12    .30    .30    .30   .30     .30
-
-[salmon_gums.SoilN.parameters]    
-!layer       1    2    3      4      5      6      7     
-oc =        0.9  0.3  0.2    0.1    0.1    0.1    0.1    
-ph =        7.0  7.0  7.0    7.0    7.0    7.0    7.0    
-nh4ppm =    0.3  0.3  0.3    0.3    0.3    0.3    0.3    
-no3ppm =    9.52 4.04 3.03   0.3    0.3    0.3    0.3   ! 40 kg/ha distributed in the first 3 layers  
-ureappm =    0    0    0      0      0      0      0     
-fbiom =    0.04 0.025 0.015 0.01   0.01    0.01  0.01      
-finert =    0.1  0.3  0.75  0.90   0.95    0.99  0.99   
-
-!amp =  8.9   ! temperature amplitude (oC) - difference between highest and
-             ! lowest mean monthly air temperatures
-!tav =  16.85  ! mean annual air temperature (oC)
-
-soil_cn =  14.5   
-enr_a_coeff =  7.4 ()   !stuff for mapping erosion
-enr_b_coeff =  0.2   
-profile_reduction =  on   
-
-root_wt =  1500.   ! root residues as biomass (kg/ha)
-root_cn =  30.   
-
-[salmon_gums.residue2.parameters]    
-pot_decomp_rate =  0.10   
-
-! --- assume little residue at initialisation ---
-residue_wt =  1000.0   
-residue_cnr =  70.0   
-residue_type =  wheat   
-
 
-[salmon_gums.soiltemp.parameters]
 
-bound_layer_cond = 20.0  ! (J/s/m2/K)
-!layer       1      2      3      4      5      6      7     
-!depth      100    200    500    700    1000   1200   1500
-clay =     0.05    0.05   0.45  0.45    0.45   0.45    0.45
-
 
-[salmon_gums.sorghum.parameters]  
-!layer       1      2      3      4      5      6      7     
-!depth      100    200    500    700    1000   1200   1500
-ll   =     .04     .03    0.17   0.17   .17   .17     .17   ! lower limit mm water/mm soil
-xf =       1.00    1.0    1.0    1.0    0.0   0.00   0.00    ! Root Exploration factor (0-1)
-kl =       0.08   0.05   0.04    0.03   0.0    0.0    0.0     ! Water Extraction parameter (0-1)
+[all.SoilN.parameters]
+
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+oc =                1.64    1.25    1.03    0.93    0.75    0.53    0.42    0.42    0.42    0.42    0.42    0.42    0.42    0.42    0.42    0.42 ! Organic carbon % = Walkley Black OC x1.3
+fbiom =            0.030   0.030   0.020   0.015   0.010   0.010   0.010   0.010   0.010   0.010   0.010   0.010   0.010   0.010   0.010   0.010 ! Initial microbial biomass fraction
+finert =            0.45    0.45    0.60    0.70    0.85    0.90    0.99    0.99    0.99    0.99    0.99    0.99    0.99    0.99    0.99    0.99 ! Initial inert fraction of soil carbon
+ph =                7.40    7.60    7.60    7.60    8.10    8.10    8.10    8.10    8.10    8.10    8.10    8.10    8.10    8.10    8.10    8.10 ! pH (water) = pH(CaCl2) + 0.5 when <7
+nh4ppm =            0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30
+ureappm =              0       0       0       0       0       0       0       0       0       0       0       0       0       0       0       0
+!no3ppm =            1.19    0.95    1.00    0.97    0.93    0.88    0.82    0.75    0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30 ! 50kg nitrate/ha adjusted for BD over 1.5m, 0.3ppm below
+no3ppm =            3.19    2.95    3.00    2.97    2.93    2.88    2.82    2.75    0.30    0.30    0.30    0.30    0.30    0.30    0.30    0.30 ! 50kg nitrate/ha adjusted for BD over 1.5m, 0.3ppm below
+
+
+root_wt =           1000 ! Root residues as biomass (kg/ha)
+root_cn =             40
+soil_cn =           14.5
+
+enr_a_coeff =        7.4()       ! Erosion mapping
+enr_b_coeff =        0.2
+profile_reduction = off
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!! cd2 soil type !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[cd2.SoilWat.parameters]
+
+! soil =        cd2              ! SLU (+ profile type)
+insoil =             2.0     ()  ! indicator for initial soil water
+
+diffus_const =        40     ()  !   coeffs for unsaturated water flow
+diffus_slope =        16     ()
+
+cn2_bare =            67     ()  ! bare soil runoff curve number
+cn_red =              20         ! potential reduction in curve number due to residue
+cn_cov =             0.8         ! cover for maximum reduction in curve number
+salb =              0.13     ()  ! bare soil albedo
+cona =                 5     ()  ! stage 2 evap coef.
+u =                 7.34   (mm)  ! stage 1 soil evaporation coefficient (mm)
+
+! Layer                1       2       3       4       5       6       7       8       9      10      11      12      13      14      15      16
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+dlayer =             100     200     200     200     200     200     200     200     200     200     200     200     200     200     200     200 ! layer thickness mm soil
+bd =               0.935   1.012   1.012   1.077   1.146   1.160   1.187   1.220   1.241   1.249   1.253   1.254   1.254   1.254   1.254   1.254 ! bulk density gm dry soil/cc moist soil
+sat=               0.602   0.575   0.575   0.554   0.532   0.526   0.515   0.502   0.493   0.489   0.488   0.488   0.488   0.487   0.487   0.487 ! saturation mm water/mm soil
+dul =              0.552   0.521   0.520   0.524   0.527   0.521   0.510   0.497   0.489   0.485   0.484   0.483   0.483   0.483   0.483   0.483 ! drained upper limit mm water/mm soil
+ll15 =             0.382   0.397   0.396   0.406   0.415   0.411   0.402   0.392   0.385   0.382   0.381   0.381   0.381   0.381   0.381   0.381 ! lower limit mm water/mm soil
+air_dry =          0.191   0.198   0.198   0.203   0.208   0.205   0.201   0.196   0.192   0.191   0.191   0.190   0.190   0.190   0.190   0.190 ! air dry mm water/ mm soil
+swcon =            0.249   0.176   0.176   0.357   0.900   0.900   0.900   0.900   0.900   0.900   0.900   0.900   0.900   0.900   0.900   0.900 ! drainage coefficient
+sw =              0.552   0.521   0.520   0.524   0.527   0.521   0.510   0.497   0.489   0.485   0.484   0.483   0.483   0.483   0.483   0.483 ! drained upper limit mm water/mm soil
+
+[cd2deep.wheat.parameters]
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+ll =               0.382   0.397   0.396   0.414   0.437   0.446   0.450   0.452   0.458   0.461   0.460   0.459   0.459   0.459   0.459   0.459 ! Lower limit for crop
+kl =                0.04    0.04    0.04    0.04    0.04    0.03    0.03    0.03    0.03    0.02    0.00    0.00    0.00    0.00    0.00    0.00 ! Root length weighting factor
+xf =                1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root depth weighting factor
+
+[cd2deep.chickpea.parameters]
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+ll =               0.382   0.397   0.396   0.414   0.437   0.446   0.450   0.452   0.458   0.461   0.460   0.459   0.459   0.459   0.459   0.459 ! Lower limit for crop
+kl =                0.04    0.04    0.04    0.04    0.04    0.03    0.03    0.03    0.03    0.02    0.00    0.00    0.00    0.00    0.00    0.00 ! Root length weighting factor
+xf =                1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root depth weighting factor
+
+[cd2deep.lucerne.parameters]
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+ll =               0.382   0.397   0.396   0.414   0.437   0.446   0.450   0.452   0.458   0.461   0.460   0.459   0.459   0.459   0.459   0.459 ! Lower limit for crop
+kl =                0.04    0.04    0.04    0.04    0.04    0.03    0.03    0.03    0.03    0.02    0.02    0.02    0.02    0.02    0.02    0.02 ! Root length weighting factor
+xf =                1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00 ! Root depth weighting factor
+
+[cd2deep.sorghum.parameters]
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+ll =               0.382   0.397   0.396   0.414   0.437   0.446   0.450   0.452   0.458   0.461   0.460   0.459   0.459   0.459   0.459   0.459 ! Lower limit for crop
+kl =                0.04    0.04    0.04    0.04    0.04    0.03    0.03    0.03    0.03    0.02    0.02    0.00    0.00    0.00    0.00    0.00 ! Root length weighting factor
+xf =                1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    0.00    0.00    0.00    0.00    0.00 ! Root depth weighting factor
+
+[cd2shallow.wheat.parameters]
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+ll =               0.382   0.397   0.396   0.414   0.437   0.446   0.450   0.452   0.458   0.461   0.460   0.459   0.459   0.459   0.459   0.459 ! Lower limit for crop
+kl =                0.04    0.04    0.04    0.04    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root length weighting factor
+xf =                1.00    1.00    1.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root depth weighting factor
+
+[cd2shallow.chickpea.parameters]
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+ll =               0.382   0.397   0.396   0.414   0.437   0.446   0.450   0.452   0.458   0.461   0.460   0.459   0.459   0.459   0.459   0.459 ! Lower limit for crop
+kl =                0.04    0.04    0.04    0.04    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root length weighting factor
+xf =                1.00    1.00    1.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root depth weighting factor
+
+[cd2shallow.lucerne.parameters]
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+ll =               0.382   0.397   0.396   0.414   0.437   0.446   0.450   0.452   0.458   0.461   0.460   0.459   0.459   0.459   0.459   0.459 ! Lower limit for crop
+kl =                0.04    0.04    0.04    0.04    0.04    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root length weighting factor
+xf =                1.00    1.00    1.00    1.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root depth weighting factor
+
+[cd2shallow.sorghum.parameters]
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+ll =               0.382   0.397   0.396   0.414   0.437   0.446   0.450   0.452   0.458   0.461   0.460   0.459   0.459   0.459   0.459   0.459 ! Lower limit for crop
+kl =                0.04    0.04    0.04    0.04    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root length weighting factor
+xf =                1.00    1.00    1.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root depth weighting factor
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!! lg1 soil type !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+[lg1.SoilWat.parameters]
+! soil =        lg1              ! SLU (+ profile type)
+insoil =             2.0     ()  ! indicator for initial soil water
+
+diffus_const =        40     ()  !   coeffs for unsaturated water flow
+diffus_slope =        16     ()
+
+cn2_bare =            72     ()  ! bare soil runoff curve number
+cn_red =              20     ()  ! potential reduction in curve number due to residue
+cn_cov =             0.8     ()  ! cover for maximum reduction in curve number
+salb =              0.13     ()  ! bare soil albedo
+cona =                 5     ()  ! stage 2 evap coef.
+u =                 6.28   (mm)  ! stage 1 soil evaporation coefficient (mm)
+
+! Layer                1       2       3       4       5       6       7       8       9      10      11      12      13      14      15      16
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+dlayer =             100     200     200     200     200     200     200     200     200     200     200     200     200     200     200     200 ! layer thickness mm soil
+bd =               1.045   1.128   1.110   1.122   1.136   1.158   1.184   1.213   1.235   1.244   1.247   1.248   1.305   1.305   1.305   1.305 ! bulk density gm dry soil/cc moist soil
+sat=               0.539   0.544   0.542   0.548   0.546   0.539   0.531   0.529   0.520   0.517   0.515   0.515   0.494   0.494   0.494   0.494 ! saturation mm water/mm soil
+dul =              0.489   0.514   0.506   0.503   0.500   0.496   0.483   0.464   0.456   0.453   0.452   0.452   0.481   0.481   0.481   0.481 ! drained upper limit mm water/mm soil
+ll15 =             0.307   0.346   0.346   0.338   0.340   0.342   0.335   0.328   0.322   0.320   0.319   0.319   0.358   0.358   0.358   0.358 ! lower limit mm water/mm soil
+air_dry =          0.154   0.173   0.173   0.169   0.170   0.171   0.167   0.164   0.161   0.160   0.160   0.160   0.179   0.179   0.179   0.179 ! air dry mm water/ mm soil
+swcon =            0.900   0.513   0.232   0.186   0.228   0.237   0.222   0.195   0.199   0.200   0.200   0.201   0.535   0.535   0.535   0.535 ! drainage coefficient
+sw =               0.489   0.514   0.506   0.503   0.500   0.496   0.483   0.464   0.456   0.453   0.452   0.452   0.481   0.481   0.481   0.481 ! initial soil water mm water/mm soil
+
+[lg1deep.wheat.parameters]
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+ll =               0.307   0.346   0.346   0.338   0.340   0.342   0.335   0.355   0.376   0.373   0.372   0.372   0.407   0.407   0.407   0.407 ! Lower limit for crop
+kl =                0.04    0.04    0.04    0.04    0.04    0.03    0.03    0.03    0.03    0.02    0.00    0.00    0.00    0.00    0.00    0.00 ! Root length weighting factor
+xf =                1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root depth weighting factor
+
+[lg1deep.chickpea.parameters]
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+ll =               0.307   0.346   0.346   0.338   0.340   0.342   0.335   0.355   0.376   0.373   0.372   0.372   0.407   0.407   0.407   0.407 ! Lower limit for crop
+kl =                0.04    0.04    0.04    0.04    0.04    0.03    0.03    0.03    0.03    0.02    0.00    0.00    0.00    0.00    0.00    0.00 ! Root length weighting factor
+xf =                1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root depth weighting factor
+
+[lg1deep.lucerne.parameters]
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+ll =               0.307   0.346   0.346   0.338   0.340   0.342   0.335   0.355   0.376   0.373   0.372   0.372   0.407   0.407   0.407   0.407 ! Lower limit for crop
+kl =                0.04    0.04    0.04    0.04    0.04    0.03    0.03    0.03    0.03    0.02    0.02    0.02    0.02    0.02    0.02    0.02 ! Root length weighting factor
+xf =                1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00 ! Root depth weighting factor
+
+[lg1deep.sorghum.parameters]
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+ll =               0.307   0.346   0.346   0.338   0.340   0.342   0.335   0.355   0.376   0.373   0.372   0.372   0.407   0.407   0.407   0.407 ! Lower limit for crop
+kl =                0.04    0.04    0.04    0.04    0.04    0.03    0.03    0.03    0.03    0.02    0.02    0.00    0.00    0.00    0.00    0.00 ! Root length weighting factor
+xf =                1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    1.00    0.00    0.00    0.00    0.00    0.00 ! Root depth weighting factor
+
+[lg1shallow.wheat.parameters]
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+ll =               0.307   0.346   0.346   0.338   0.340   0.342   0.335   0.355   0.376   0.373   0.372   0.372   0.407   0.407   0.407   0.407 ! Lower limit for crop
+kl =                0.04    0.04    0.04    0.04    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root length weighting factor
+xf =                1.00    1.00    1.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root depth weighting factor
+
+[lg1shallow.chickpea.parameters]
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+ll =               0.307   0.346   0.346   0.338   0.340   0.342   0.335   0.355   0.376   0.373   0.372   0.372   0.407   0.407   0.407   0.407 ! Lower limit for crop
+kl =                0.04    0.04    0.04    0.04    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root length weighting factor
+xf =                1.00    1.00    1.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root depth weighting factor
+
+[lg1shallow.lucerne.parameters]
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+ll =               0.307   0.346   0.346   0.338   0.340   0.342   0.335   0.355   0.376   0.373   0.372   0.372   0.407   0.407   0.407   0.407 ! Lower limit for crop
+kl =                0.04    0.04    0.04    0.04    0.04    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root length weighting factor
+xf =                1.00    1.00    1.00    1.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root depth weighting factor
+
+[lg1shallow.sorghum.parameters]
+! depth, cm           10      30      50      70      90     110     130     150     170     190     210     230     250     270     290     310
+ll =               0.307   0.346   0.346   0.338   0.340   0.342   0.335   0.355   0.376   0.373   0.372   0.372   0.407   0.407   0.407   0.407 ! Lower limit for crop
+kl =                0.04    0.04    0.04    0.04    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root length weighting factor
+xf =                1.00    1.00    1.00    1.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00 ! Root depth weighting factor
 
-[salmon_gums.wheat.parameters]  
-!layer       1      2      3      4      5      6      7     
-!depth      100    200    500    700    1000   1200   1500
-ll   =     .04     .03    0.17   0.17   .17   .17     .17   ! lower limit mm water/mm soil
-xf =       1.00    1.0    1.0    1.0    0.0   0.00   0.00    ! Root Exploration factor (0-1)
-kl =       0.08   0.05   0.04    0.03   0.0    0.0    0.0     ! Water Extraction parameter (0-1)
-
-
-!************************************************************************************************************************
-
-
-[myrup.SoilWat.parameters]    
-insoil =  2.0   
-u =  3   
-cn2_bare =  80
-cn_red =  20 ()   
-cn_cov =  0.8 ()   
-salb =  0.18 !    
-cona =  3.0 ! NB BAK has used 2 for sands in WA
-diffus_const =  88.   
-diffus_slope =  35.0   
-
-runoff_filename =  blank   
-
-!layer       1      2      3      4      5      6      7     
-!depth      150    300    500    700    1000   1200   1500
-dlayer =    150    150    200    200    300    200     300
-bd =        1.40   1.40   1.4    1.4    1.4    1.4    1.4   
-ll15 =      .03     .03   0.03   0.03   .03   .03     .03    
-dul =       .09     .09   .09    .09    .09   .09     .09
-sat =       .40     .4    .40    .40    .40    .40    .40       
-swcon =     0.5    0.5    0.5    0.5    0.5    0.5    0.5 
-air_dry =  .015    .015   .015   .015   .015   .015   .015
-
-sw =       .09     .09   .09    .09    .09   .09     .09
-
-[myrup.SoilN.parameters]    
-!layer       1    2    3      4      5      6      7     
-oc =        0.9  0.3  0.2    0.1    0.1    0.1    0.1    
-ph =        7.0  7.0  7.0    7.0    7.0    7.0    7.0    
-nh4ppm =    0.3  0.3  0.3    0.3    0.3    0.3    0.3    
-no3ppm =    9.52 4.04 3.03   0.3    0.3    0.3    0.3   ! 40 kg/ha distributed in the first 3 layers  
-ureappm =    0    0    0      0      0      0      0     
-fbiom =    0.04 0.025 0.015 0.01   0.01    0.01  0.01      
-finert =    0.1  0.3  0.75  0.90   0.95    0.99  0.99   
-
-!amp =  8.9   ! temperature amplitude (oC) - difference between highest and
-             ! lowest mean monthly air temperatures
-!tav =  16.85  ! mean annual air temperature (oC)
-
-soil_cn =  14.5   
-enr_a_coeff =  7.4 ()   !stuff for mapping erosion
-enr_b_coeff =  0.2   
-profile_reduction =  on   
-
-root_wt =  1500.   ! root residues as biomass (kg/ha)
-root_cn =  30.   
-
-[myrup.residue2.parameters]    
-pot_decomp_rate =  0.10   
-
-! --- assume little residue at initialisation ---
-residue_wt =  1000.0   
-residue_cnr =  80.0   
-residue_type =  wheat   
-
-
-[myrup.soiltemp.parameters]
-
-bound_layer_cond = 20.0  ! (J/s/m2/K)
-!layer       1      2      3      4      5      6      7     
-!depth      150    300    500    700    1000   1200   1500
-clay =     0.05    0.05   0.05  0.45    0.45   0.45    0.45
-
-
-[myrup.sorghum.parameters]  
-
-!layer       1      2      3      4      5      6      7     
-!depth      150    300    500    700    1000   1200   1500
-ll   =     .03     .03   0.03   0.03   .03   .03     .03     ! lower limit mm water/mm soil
-xf =       1.00    1.0    1.0    1.0     1.0   1.00   1.00    ! Root Exploration factor (0-1)
-kl =       0.08   0.08   0.08    0.08    0.06   0.04    0.03     ! Water Extraction parameter (0-1)
-
-
-[myrup.wheat.parameters]  
-
-!layer       1      2      3      4      5      6      7     
-!depth      150    300    500    700    1000   1200   1500
-ll   =     .03     .03   0.03   0.03   .03   .03     .03     ! lower limit mm water/mm soil
-xf =       1.00    1.0    1.0    1.0     1.0   1.00   1.00    ! Root Exploration factor (0-1)
-kl =       0.08   0.08   0.08    0.08    0.06   0.04    0.03     ! Water Extraction parameter (0-1)
-
-
-!************************************************************************************************************************
-
-[kendenup.SoilWat.parameters]    
-insoil =  2.0   
-u =  3   
-cn2_bare =  80
-cn_red =  20 ()   
-cn_cov =  0.8 ()   
-salb =  0.18 !    
-cona =  3.0 ! NB BAK has used 2 for sands in WA
-diffus_const =  88.   
-diffus_slope =  35.0   
-
-runoff_filename =  blank   
-
-
-!layer       1      2      3      4      5      6      7     
-!depth      200    400    600    700    1000   1200   1500
-dlayer =    200    200    200    100    300    200     300
-bd =        1.40   1.40   1.70   1.70   1.70   1.70   1.70   
-ll15 =      .03     .02    0.18  0.18   .18   .18     .18    
-dul =       .09     .06    .29    .29    .29   .29     .29
-sat =       .40    .34    .35    .35    .35    .35    .35       
-swcon =     0.5    0.5    0.3    0.3    0.3    0.3    0.3 
-air_dry =  .015    .01    .17    .17    .17    .17    .17
-
-sw =       .09     .06    .29    .29    .29   .29     .29
-
-[kendenup.SoilN.parameters]    
-!layer       1    2    3      4      5      6      7     
-oc =        0.9  0.3  0.2    0.1    0.1    0.1    0.1    
-ph =        7.0  7.0  7.0    7.0    7.0    7.0    7.0    
-nh4ppm =    0.3  0.3  0.3    0.3    0.3    0.3    0.3    
-no3ppm =    9.52 4.04 3.03   0.3    0.3    0.3    0.3   ! 40 kg/ha distributed in the first 3 layers  
-ureappm =    0    0    0      0      0      0      0     
-fbiom =    0.04 0.025 0.015 0.01   0.01    0.01  0.01      
-finert =    0.1  0.3  0.75  0.90   0.95    0.99  0.99   
-
-!amp =  8.9   ! temperature amplitude (oC) - difference between highest and
-             ! lowest mean monthly air temperatures
-!tav =  16.85  ! mean annual air temperature (oC)
-
-soil_cn =  14.5   
-enr_a_coeff =  7.4 ()   !stuff for mapping erosion
-enr_b_coeff =  0.2   
-profile_reduction =  on   
-
-root_wt =  1500.   ! root residues as biomass (kg/ha)
-root_cn =  30.   
-
-[kendenup.residue2.parameters]    
-pot_decomp_rate =  0.10   
-
-! --- assume little residue at initialisation ---
-residue_wt =  1000.0   
-residue_cnr =  70.0   
-residue_type =  wheat   
-
-
-[kendenup.soiltemp.parameters]
-
-bound_layer_cond = 20.0  ! (J/s/m2/K)
-!layer       1      2      3      4      5      6      7     
-!depth      200    400    600    700    1000   1200   1500
-clay =     0.05    0.05   0.45  0.45    0.45   0.45    0.45
-
-
-[kendenup.sorghum.parameters]  
-!layer       1      2      3      4      5      6      7     
-!depth      200    400    600    700    1000   1200   1500
-ll   =     .03     .02    0.18  0.18   .18   .18     .18    ! lower limit mm water/mm soil
-xf =       1.00    1.0    1.0    0.0   0.0    0.00   0.00    ! Root Exploration factor (0-1)
-kl =       0.08   0.05   0.035    0.0    0.0    0.0    0.0     ! Water Extraction parameter (0-1)
-
-[kendenup.wheat.parameters]  
-!layer       1      2      3      4      5      6      7     
-!depth      200    400    600    700    1000   1200   1500
-ll   =     .03     .02    0.18  0.18   .18   .18     .18    ! lower limit mm water/mm soil
-xf =       1.00    1.0    1.0    0.0   0.0    0.00   0.00    ! Root Exploration factor (0-1)
-kl =       0.08   0.05   0.035    0.0    0.0    0.0    0.0     ! Water Extraction parameter (0-1)
-
-
-
-!************************************************************************************************************************
 

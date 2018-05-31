@@ -1,7 +1,6 @@
 //------------------------------------------------------------------------------------------------
 #include <stdio.h>
 
-#include <limits>
 #include <ComponentInterface2/ScienceAPI2.h>
 using namespace std;
 
@@ -102,22 +101,22 @@ void checkRange(ScienceAPI2 &api, double value, double lower, double upper, cons
 "                      -------------------\n";
    char m2[] = "     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
 
-   float epsilon =  numeric_limits<float>::epsilon();
-   if ((lower - epsilon) > (upper + epsilon))
+
+   if(lower > upper)
       {
       sprintf(msg,
          "%s     %s: Lower bound (%f) exceeds upper bound (%f)\n        Variable is not checked\n%s",
          m1, vName.c_str(),lower, upper, m2);
       api.write(msg);
       }
-   else if (value > (upper + epsilon))    // is the value too big
+   else if (value > upper)                   //is the value too big?
       {
       sprintf(msg,
               "%s     %s = %f\n        exceeds upper limit of %f\n%s",
               m1, vName.c_str(),value,upper, m2);
       api.write(msg);
       }
-   else if (value  < (lower - epsilon))   // is the value too small
+   else if (value  < lower)                  //is the value too small?
       {
       sprintf(msg,
               "%s     %s = %f\n        less than lower limit of %f\n%s",
@@ -492,4 +491,14 @@ void FVecToDVec(vector<double> *dVec, vector<float> fVec)
       }
    }
 //------------------------------------------------------------------------------------------------
-   
+//------------------------------------------------------------------------------------------------
+double DegToRad(double degs)
+{
+	return degs * PI / 180.0;
+}
+//------------------------------------------------------------------------------------------------
+double RadToDeg(double rads)
+{
+	return rads * 180.0 / PI;
+}
+//-----

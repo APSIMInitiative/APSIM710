@@ -82,13 +82,13 @@ class Plant
    double ftn;                   // fertile tiller number
    double vpd;
 
-   vector<double> rue;
+   double rue;
    double radnIntercepted;
    double transpEff;
 
    double tempStress;
 
-   vector<double> transpEffCf;
+   double transpEffCf;
    double svpFract;
 
 
@@ -104,7 +104,6 @@ class Plant
 //  Variables  -----------------------------------------------------
    Status plantStatus;               // plant status - out, dead, alive
    string statusString;
-   string vpSource;                  // if "apsim", use external vp value to calculate vpd 
 //   int das;
    double dltPlants;
    double frIntcRadn;
@@ -147,10 +146,10 @@ class Plant
    void onNewProfile(NewProfileType &v) ;
 
    void onSowCrop(SowType &);
-   void onHarvest(void) ;
+   void onHarvest(HarvestType &) ;
    void onEndCrop(void) ;
    void onEndRun(void) ;
-   void onKillCrop(void);
+   void onKillCrop(KillCropType &);
 
    void getOtherVariables(void);
 

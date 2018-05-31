@@ -7,6 +7,7 @@ SRC = PlantInterface.cpp \
       Phosphorus.cpp \
       PlantActions.cpp \
       Leaf.cpp \
+      LeafCulms.cpp \
       Stem.cpp \
       Nitrogen.cpp \
       Rachis.cpp \

@@ -23,7 +23,8 @@ class Grain : public PlantPart
 
    // heat effects on grain number
    vector<double> grainTempWindow;
-   vector<double> grainTempOrdinals;
+   vector<double> grainHiTemperature;
+   vector<double> grainStressSeverity;
    TableFn grainTempTable;
 
 

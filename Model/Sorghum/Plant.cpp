@@ -4,11 +4,11 @@
 
 #include <vector>
 #include <General/date_class.h>
-#include <General/string_functions.h>
 #include <ComponentInterface2/ScienceAPI2.h>
 
 #include "Plant.h"
 #include "PlantInterface.h"
+#include "LeafCulms.h"
 
 using namespace std;
 using namespace Sorghum;
@@ -33,7 +33,6 @@ void Plant::initialize(void)
    dltDeadPlants = 0.0;
    vpd = 0.0;
    radnIntercepted  = 0.0;
-   ftn =    0.0;
    }
 //------------------------------------------------------------------------------------------------
 //------------ read the crop and cultivar parameters
@@ -46,10 +45,7 @@ void Plant::readParams(void)
    tempStressTable.read(scienceAPI, "x_ave_temp","y_stress_photo");
 
    scienceAPI.read("rue",   "",   0, rue,  0.0f,   10.0f);
-   rue.insert(rue.begin(),0);                  // for compatibility with fortran
    scienceAPI.read("transp_eff_cf", "", 0, transpEffCf, 0.0f, 0.1f);
-   transpEffCf.insert(transpEffCf.begin(),0);  // for compatibility with fortran
-
    scienceAPI.read("svp_fract","",       0, svpFract, 0.0f, 1.0f);
    scienceAPI.read("tt_emerg_limit", "", 0, ttEmergeLimit);
 
@@ -59,10 +55,6 @@ void Plant::readParams(void)
 
    // CO2 stuff
    co2_te_modifier.read(scienceAPI, "x_co2_te_modifier", "y_co2_te_modifier");
-
-   if (!scienceAPI.read("vp_source", "", true, vpSource))
-       vpSource = "internal";
-   To_lower(vpSource);
 
    }
 
@@ -97,9 +89,21 @@ void Plant::plantInit1(void)
    scienceAPI.read("crop_type",           "", false, cropType);
    scienceAPI.read("default_crop_class",  "", false, defaultCropClass);
    scienceAPI.read("row_spacing_default", "", false, rowSpacingDefault);
+   scienceAPI.read("leaf_area_calc_type", "", true, leafAreaCalcType);
 
    roots     = new Roots(scienceAPI, this);   PlantComponents.push_back(roots); PlantParts.push_back(roots);
-	leaf      = new Leaf(scienceAPI, this);    PlantComponents.push_back(leaf);  PlantParts.push_back(leaf);
+	if (leafAreaCalcType == "bellcurve")
+	{
+      leaf      = new LeafCulms(scienceAPI, this); 
+	}
+   else 
+   {
+	   leaf      = new LeafCulms_Fixed(scienceAPI, this);    
+   }
+   
+   PlantComponents.push_back(leaf);  
+   PlantParts.push_back(leaf);
+
    stem      = new Stem(scienceAPI, this);    PlantComponents.push_back(stem);  PlantParts.push_back(stem);
    rachis    = new Rachis(scienceAPI, this);  PlantComponents.push_back(rachis);PlantParts.push_back(rachis);
    grain     = new Grain(scienceAPI, this);   PlantComponents.push_back(grain); PlantParts.push_back(grain);
@@ -119,11 +123,11 @@ void Plant::plantInit1(void)
 
    setStatus(out);
 
-   // Cruft for adding sowing/harvesting events to UI
+   //  sowing/harvesting events to UI
    scienceAPI.notifyFutureEvent("sowing");
    scienceAPI.notifyFutureEvent("harvesting");
    
-   // DeanH - Fix for bug#: 1242 - How many other variables should be zero'd??
+
    transpEff = 0.0;
    co2 = 0.0;
    coverGreen = 0.0;
@@ -149,6 +153,7 @@ void Plant::onSowCrop(SowType &sow)
 
    scienceAPI.write("Sowing initiate\n");
 
+   string temp;
    if (sow.crop_class == "")
       cropClass = defaultCropClass;
    else
@@ -185,18 +190,14 @@ void Plant::onSowCrop(SowType &sow)
    checkRange(scienceAPI, rowSpacing, 100.0, 10000.0, "row_spacing");
 
    skipRow = 1.0;
-   if (sow.SkipRow != 0)
-   {
-	   skipRow = sow.SkipRow;
-   }
-   else if (sow.Skip != "")
-   {
+   if (sow.Skip != "")
+      {
       if (sow.Skip == "single")skipRow = 1.5;
       else if (sow.Skip == "double")skipRow = 2.0;
       else if (sow.Skip == "solid")skipRow = 1.0;
       else
-         throw std::runtime_error("Unknown skip row configuration '" + sow.Skip + "'");
-   }             
+        throw std::runtime_error("Unknown skip row configuration '" + temp + "'");
+      }             
 
    checkRange(scienceAPI,skipRow, 0.0, 2.0, "skiprow");
    
@@ -252,16 +253,17 @@ void Plant::onSowCrop(SowType &sow)
 //------------------------------------------------------------------------------------------------
 void Plant::prepare (void)
    {
-   scienceAPI.get("co2", "mg/kg", true, co2, 300.0f, 1000.0f);
-   
-   if (fabs(co2 - 350.0) > 0.1 && co2_te_modifier.x.size() == 0) 
-       throw std::runtime_error("CO2 is not 350ppm and there is no CO2xTE parameterisation");
+   if (!scienceAPI.get("co2", "mg/kg", true, co2, 300.0f, 1000.0f))
+       co2 = 350.0;
+   else 
+       if (fabs(co2 - 350.0) > 0.1 && co2_te_modifier.x.size() == 0) 
+	       throw std::runtime_error("CO2 is not 350ppm and there is no CO2xTE parameterisation");
 		   
    tempStress = tempStressTable.value(today.avgT);
 
    radnIntercepted = radnInt();
 
-   float rueToday = (float)(rue[(int) stage] * rue_co2_modifier());
+   float rueToday = (float)(rue * rue_co2_modifier());
 
    biomass->calcBiomassRUE(rueToday,radnIntercepted);
    transpEff = transpEfficiency();
@@ -430,13 +432,9 @@ double Plant::radnInt(void)
 double Plant::transpEfficiency(void)
    {
    // get vapour pressure deficit when net radiation is positive.
+   vpd = Max(svpFract * (svp(today.maxT) - svp(today.minT)), 0.01);
 
-   if (vpSource == "apsim" && today.vp > 0.0)
-     vpd = std::max(0.01, svpFract * svp(today.maxT) + (1.0 - svpFract) * svp(today.minT) - today.vp * mb2kpa);
-   else
-     vpd = std::max(svpFract * (svp(today.maxT) - svp(today.minT)), 0.01);
-
-   return divide (transpEffCf[int (stage)], vpd, 0.0) / g2mm;
+   return divide (transpEffCf, vpd, 0.0) / g2mm;
    }
 //------------------------------------------------------------------------------------------------
 //-------- function to get saturation vapour pressure for a given temperature in oC (kpa)
@@ -540,7 +538,7 @@ bool Plant::estimateTillers(double &ftn)
 
    if(latitude > -25.0)                            // CQ
       {
-      if(today.doy < 319)                          //  < 15-Nov
+      if(today.doy < 319 && today.doy > 182)       //   1-Jul  - 15-Nov 
          {
          if(skipRow > 1.9)                         // double  (2.0)
             {
@@ -573,7 +571,7 @@ bool Plant::estimateTillers(double &ftn)
       }
    else if(latitude > -29.0)                       // SQ
       {
-      if(today.doy < 319)                          //  < 15-Nov
+      if(today.doy < 319 && today.doy > 182)       //   1-Jul  - 15-Nov 
          {
          if(skipRow > 1.9)                         // double  (2.0)
             {
@@ -606,7 +604,7 @@ bool Plant::estimateTillers(double &ftn)
       }
    else                                            // NNSW
       {
-      if(today.doy < 319)                          // < 15-Nov
+      if(today.doy < 319 && today.doy > 182)       //  1-Jul  - 15-Nov 
          {
          if(skipRow > 1.9)                         // double  (2.0)
             {
@@ -621,7 +619,7 @@ bool Plant::estimateTillers(double &ftn)
             intercept = 3.1143; slope = -0.2386;
             }
          }
-      else if (today.doy > 349)                    // > 15-Dec
+      else if (today.doy > 349 || today.doy < 182)   // > 15-Dec and < 1-Jul
          {
          if(skipRow > 1.9)                         // double  (2.0)
             {

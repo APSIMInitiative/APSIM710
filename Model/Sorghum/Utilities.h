@@ -11,6 +11,9 @@
 #include "conversions.h"
 using namespace std;
 
+#define PI 3.14159265358979
+
+
 
 class ScienceAPI2;
 
@@ -93,5 +96,9 @@ class TableFn
 
 void DVecToFVec(vector<float>&, vector<double>);
 void FVecToDVec(vector<double>*, vector<float>);
+
+double DegToRad(double degs);
+double RadToDeg(double rads);
+
 
 #endif

@@ -68,6 +68,13 @@ class Water : public PlantProcess
    vector<double> phenoStressTotal;
    vector<double> expanStressTotal;
 
+	vector<double> dailyWaterSD;	// store daily supply / demand ratio 
+	vector<double> dailyTT;			// store daily thermal time
+	vector<double> avSD;				// average s/d for each 100dd centred on flowering
+
+	int EnvType;
+
+
    
 // Private Methods -------------------------------------------------------
    void  doRegistrations(void);
@@ -81,6 +88,10 @@ class Water : public PlantProcess
    double calcSwDefExpansion(void);
 
    void   setOtherVariables (void);
+	void  calcStressTrace(void);
+	int classify(vector<double> stress);
+	int minIndx(vector<double> distances);
+
 
 // public Methods -------------------------------------------------------
    public:

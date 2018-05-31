@@ -42,6 +42,8 @@ void Leaf::doRegistrations(void)
    scienceAPI.expose("LeafGreenN",     "g/m^2", "N in green leaf",                 false, nGreen);
    scienceAPI.expose("LeafSenescedN",  "g/m^2", "N in senesced leaf",              false, nSenesced);
    scienceAPI.expose("SLN",            "g(N)/m2","Specific Leaf Nitrogen",         false, SLN);
+   scienceAPI.expose("SLA",            "cm2/g","Specific Leaf Area",               false, SLA);
+   scienceAPI.expose("maxSLA",            "cm2/g","Maximum Specific Leaf Area",    false, maxSLA);
    scienceAPI.expose("LeafGreenNConc", "%",     "Live leaf N concentration",       false, nConc);
    scienceAPI.expose("LeafNDemand",    "g/m^2", "Today's N demand from leaves",    false, nDemand);
    scienceAPI.expose("DeltaLeafGreenN","g/m^2", "Daily N increase in leaves",      false, dltNGreen);
@@ -83,6 +85,9 @@ void Leaf::initialize(void)
    SLN0 = 0.0;
    dltNSenesced = 0.0;
 
+	SLA = 0.0;
+	maxSLA = 0.0;
+
    coverGreen = 0.0;
    coverSen   = 0.0;
    coverTot   = 0.0;
@@ -104,12 +109,8 @@ void Leaf::readParams (void)
    scienceAPI.read("leaf_app_rate2"     ,"", false, appearanceRate2);
    scienceAPI.read("leaf_no_rate_change","", false, noRateChange);
 
-   // leaf area TPLA
+   // leaf area
    scienceAPI.read("initial_tpla"         ,"", false, initialTPLA);
-   scienceAPI.read("tpla_inflection_ratio","", false, tplaInflectionRatio);
-   scienceAPI.read("tpla_prod_coef"       ,"", false, tplaProductionCoef);
-   scienceAPI.read("tiller_coef"          ,"", false, tillerCoef);
-   scienceAPI.read("main_stem_coef"       ,"", false, mainStemCoef);
 
    // dry matter
    scienceAPI.read("dm_leaf_init"       , "", false, initialDM);
@@ -144,10 +145,7 @@ void Leaf::readParams (void)
    density = plant->getPlantDensity();
 
    // report
-   char msg[120];
    scienceAPI.write("    -------------------------------------------------------\n");
-   sprintf(msg, "    tpla_prod_coef           =  %6.2f\n",tplaProductionCoef); scienceAPI.write(msg);
-   sprintf(msg, "    tpla_inflection_ratio    =  %6.2f\n",tplaInflectionRatio); scienceAPI.write(msg);
 
 
 
@@ -319,9 +317,15 @@ void Leaf::senesceArea(void)
 double Leaf::calcLaiSenescenceFrost(void)
    {
    //  calculate senecence due to frost
+	if (stage <= emergence)return 0.0;
    double dltSlaiFrost = 0.0;
    if (plant->today.minT < frostKill)
-      dltSlaiFrost = lai;
+		{
+		if(stage < fi)
+         dltSlaiFrost = Max(0.0,lai - 0.01);
+		else
+			dltSlaiFrost = lai;
+		}
 
    return dltSlaiFrost;
    }

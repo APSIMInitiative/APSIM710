@@ -5,8 +5,8 @@
     <ShowInMainTree>Yes</ShowInMainTree>
     <Image>%apsim%\UserInterface\Images\sorghum.jpg</Image>
     <Description>Most APSIM crop or plant modules do not require extra user input.  Crop specific parameters are either provided for your chosen soil, or are captured as part of the standard model validation process.</Description>
-    <Documentation>%apsim%\Documentation\Model,CropandSoil\CropModuleDocumentation\Sorghum.html</Documentation>
-    <!--<Documentation name="Darling downs sensibility tests">http://www.apsim.info/apsim/publish/apsim/sorghum/sensibility/sorghum.gif</Documentation>-->
+    <Documentation>%apsim%\Documentation\4 Module Reference\Sorghum.htm</Documentation>
+    <Documentation name="Darling downs sensibility tests">http://www.apsim.info/apsim/publish/apsim/sorghum/sensibility/sorghum.gif</Documentation>
     <LargeIcon>%apsim%\UserInterface\Images\sorghum32.png</LargeIcon>
     <SmallIcon>%apsim%\UserInterface\Images\sorghum16.png</SmallIcon>
     <dll>%apsim%/Model/Sorghum.%dllext%</dll>
@@ -43,8 +43,8 @@
       -->
     <stage_names>sowing germination emergence end_of_juvenile floral_initiation flag_leaf flowering start_grain_fill end_grain_fill maturity harvest_ripe end_crop</stage_names>
     <!--                  sow ger eme  juv    fi  flag   fl  st_gf end_gf mat hv_rpe end_crop
+      stage codes are numbered starting fom 1 
       -->
-    <stage_code>1   2   3    4      5     6     7    8    9    10   11   12</stage_code>
     <!-- ______________________________________________________________________________
       Seed Germination
       Water stress factor for germination
@@ -93,7 +93,7 @@
       sow ger eme  juv    fi  flag   fl  st_gf end_gf mat hv_rpe end_crop
       stage_code       = 1   2   3    4     5     6    7    8     9    10    11   12
       -->
-    <rue description="g bio/MJ Radn radiation use efficiency">0   0  1.25  1.25  1.25 1.25  1.25 1.25 1.25 1.25    0    0 </rue>
+    <rue description="g bio/MJ Radn radiation use efficiency">1.25</rue>
     <!-- __________________________________________________________________________________________________________-
       Extinction coefficient before anthesis
       Row spacing determined
@@ -137,8 +137,9 @@
     <!-- __________________________________________________________________________________________________________-
       Effect of temperature stress on Grain number
       -->
-    <GrainTempWindow>-150 50</GrainTempWindow>
-    <GrainTempOrdinals>36 40</GrainTempOrdinals>
+    <GrainTempWindow>-50 100</GrainTempWindow>
+    <GrainHiTemperature type="text" description="Grain High Temperature">32 33 36 38</GrainHiTemperature>
+    <GrainStressSeverity type="text" description="Severity of seed set stress">0 0.14 0.23 0.65</GrainStressSeverity>
     <!-- *****************************************************************************************************
       SECTION 3 - LEAF/STEM/POD AREA GROWTH
       *****************************************************************************************************
@@ -149,25 +150,25 @@
     <!-- ______________________________________________________________________________
       SPECIFIC LEAF AREA - SLA
       -->
-    <x_lai>0.1    4</x_lai>
-    <y_lai_sla_max description="maximum specific leaf area for delta LAI">50000 25000 </y_lai_sla_max>
-    <lai_sla_min description="minimum specific leaf area for delta LAI">8000  8000 </lai_sla_min>
     <sla_max units="mm^2/g">45000</sla_max>
     <sla_min units="mm^2/g" description="minimum specific leaf area for new leaf area">8000</sla_min>
     <!-- ______________________________________________________________________________
       TPLA  - USED TO INTIALISE THE INITIAL LAI
       -->
     <initial_tpla units="mm^2/plant" description="initial total plant leaf area">200.0</initial_tpla>
+
     <!-- ______________________________________________________________________________
-      Leaf Area development - TPLA
+      Individual leaf size parameters using Fixed Tillers and Bell Curve calculation
       -->
-    <tiller_coef description="exponent for determining leaf area on each additional tiller">0.66</tiller_coef>
-    <tpla_inflection_ratio description="inflection coefficient of TPLA curve">0.66</tpla_inflection_ratio>
-    <!-- ______________________________________________________________________________
-      Height
-      -->
-    <height_max units="mm" description="maximum canopy height">3500.0</height_max>
-    <height_stem_slope units="mm/g/stem" description="rate of height growth (mm/g/stem)">250.0</height_stem_slope>
+    <tillerSlaBound type="text" description="SLA Range (%)">30</tillerSlaBound>
+    <aX0 type="text" description="Largest leaf multiplier">0.786</aX0>
+    <aMaxS type="text" description="Largest Leaf Area Slope">46.312</aMaxS>
+    <aMaxI type="text" description="Intercept for Largest leaf calculation">-321.13</aMaxI>
+    <aMaxVert type="text" description="Vertical Offset for Largest Leaf Calc">0.3</aMaxVert>
+    <aTillerVert type="text" description="Additional Vertical Offset for each additional Tiller">0,05</aTillerVert>
+    <tilleringPropensity type="text" description="Propensity to Tiller">-0.82</tilleringPropensity>
+    <tillerSdSlope type="text" description="Tiller Supply/demand slope">0.2065</tillerSdSlope>
+
     <!-- *****************************************************************************************************
       SECTION 4 - ROOT DEPTH AND ROOT LENGTH GROWTH
       *****************************************************************************************************
@@ -184,7 +185,6 @@
     <!-- __________________________________________________________________________________________________________-
       ROOT LENGTH CALCULATION
       -->
-    <initial_root_depth units="mm" description="initial depth of roots (mm)">50</initial_root_depth>
     <specific_root_length units="mm/g">100000</specific_root_length>
     <!-- The following can increase or decrease the root length density in a layer based on the rld per plant
       -->
@@ -195,12 +195,8 @@
       *****************************************************************************************************
       STAGE DEPENDENT TRANSPIRATION COEFFICIENTS
       Transpiration efficiency coefficient to convert vpd to transpiration efficiency (kpa)
-      The following transp_eff_cf values are from i_wheat model  - ew
-      in the form kpa/g carbo per m^2 / g water per m^2 (kpa/g carbo per m^2 / mm water) because 1g water = 1 cm^3 water
-      sow    ger     eme    juv      fi      flag   fl  st_gf end_gf mat hv_rpe end_crop
-      stage_code       = 1    2       3       4       5       6      7      8      9      10     11     12
       -->
-    <transp_eff_cf units="kpa">0.009 0.009 0.009 0.009 0.009 0.009  0.009  0.009  0.009  0.009   0.009   0.009</transp_eff_cf>
+    <transp_eff_cf units="kpa">0.009</transp_eff_cf>
     <!-- __________________________________________________________________________________________________________-
       VPD FRACTION
       Fraction of distance between svp at min temp and svp at max temp where average svp during transpiration lies.
@@ -271,8 +267,6 @@
     <rachisDilnNInt>-0.001</rachisDilnNInt>
     <grainFillRate units="mg/grain/dd">0.001</grainFillRate>
     <targetGrainNConc>0.0175</targetGrainNConc>
-    <grainFillIntercept>0.0000319</grainFillIntercept>
-    <grainFillSlope>0.4026</grainFillSlope>
     <nUptakeCease>570</nUptakeCease>
     <nSupplyFrac>5</nSupplyFrac>
     <!-- *****************************************************************************************************
@@ -282,20 +276,6 @@
       DM SENESCENCE
       -->
     <dm_root_sen_frac description="fraction of root dry matter senesced each day">0.002</dm_root_sen_frac>
-    <!-- ______________________________________________________________________________
-      LEAF NUMBER AND AREA SENESCENCE
-      -->
-    <lai_sen_light units="m^2/m^2" description="induced senescence occurs (m^2/m^2)">4.0</lai_sen_light>
-    <sen_light_slope description="sensitivity of leaf area senescence to shading">0.008</sen_light_slope>
-    <x_temp_senescence description="minimum temperature for frost senescence table (oC)">0.0 6.0 </x_temp_senescence>
-    <y_senescence_fac description="daily fraction of leaf area senesced due to frost (0-1)">1   0 </y_senescence_fac>
-    <sen_rate_water description="slope in linear eqn relating soil water stress during photosynthesis to leaf senesence rate">0.05</sen_rate_water>
-    <!-- ______________________________________________________________________________
-      DETACHMENT
-      root leaf stem flower grain
-      -->
-    <dead_detach_frac description="fraction detached from each part of a dead plant per day.">0 0 0 0 0</dead_detach_frac>
-    <dm_leaf_detach_frac>0</dm_leaf_detach_frac>
     <!-- ______________________________________________________________________________
       Sorghum Senescence
       light
@@ -309,9 +289,6 @@
       -->
     <sen_water_time_const units="days" description="delay factor for water senescence">10.0</sen_water_time_const>
     <sen_threshold description="supply:demand ratio for onset of water senescence">0.25</sen_threshold>
-    <!-- age
-      -->
-    <spla_slope units="oC/leaf" description="regression slope for calculating inflection point for leaf senescence">81.5</spla_slope>
     <!-- *****************************************************************************************************
       SECTION 8 - WE MIGHT PUT RETRANSLOCATION OF DM AND N IN THIS SECTION
       *****************************************************************************************************
@@ -322,29 +299,19 @@
       crop failure
       -->
     <tt_emerg_limit units="oCd" description="maximum degree days allowed for emergence to take place">150.0</tt_emerg_limit>
-    <days_germ_limit units="days" description="maximum days allowed after sowing for germination to take place (days)">40.0</days_germ_limit>
-    <swdf_photo_limit description="critical cumulative photosynthesis water stress, above which the crop partly fails (unitless)">99.0</swdf_photo_limit>
-    <swdf_photo_rate description="rate of plant reduction with photosynthesis water stress">0.0</swdf_photo_rate>
-    <swdf_pheno_limit description="critical cumulative phenology water stress, above which the crop fails (unitless)">99.0</swdf_pheno_limit>
     <!-- ______________________________________________________________________________
       PLANT DEATH
       -->
-    <x_weighted_temp units="oC">55.0  60.0</x_weighted_temp>
-    <y_plant_death>0.0   1.0</y_plant_death>
     <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       SECTION 10 - PHOSPHORUS RELATIONS, UPTAKE AND STRESS FACTORS
       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
       ______________________________________________________________________________
       PHOSPHORUS CONCENTRATION LIMITS: MAXIMUM, MINIMUM AND SENESCED P CONCENTRATIONS
       -->
-    <stress_determinants>leaf stem grain</stress_determinants>
-    <yield_parts>grain</yield_parts>
-    <retrans_parts>leaf stem  flower</retrans_parts>
     <pfact_photo_slope>2.5</pfact_photo_slope>
     <pfact_expansion_slope>2.5</pfact_expansion_slope>
     <pfact_pheno_slope>100</pfact_pheno_slope>
     <pfact_grain_slope>20</pfact_grain_slope>
-    <p_uptake_factor description="factor to calc total P uptake from demand for today's growth">1.5 </p_uptake_factor>
     <x_p_stage_code>3       4      5      6      7      8      10</x_p_stage_code>
     <y_p_conc_max_leaf>0.0059  0.0054 0.0040 0.0029 0.0026 0.0025 0.0022</y_p_conc_max_leaf>
     <y_p_conc_min_leaf>0.003   0.003  0.0029 0.0011 0.0011 0.0008 0.0006</y_p_conc_min_leaf>
@@ -361,107 +328,44 @@
     <y_p_conc_max_grain>0.001   0.001  0.001  0.001  0.052  0.0044  0.0034</y_p_conc_max_grain>
     <y_p_conc_min_grain description="based on Kenya maize data">0.001   0.001  0.001  0.001  0.001  0.0015  0.0015</y_p_conc_min_grain>
     <y_p_conc_sen_grain>0.001   0.001  0.001  0.001  0.001  0.0015  0.0015</y_p_conc_sen_grain>
-    <y_p_conc_max_energy>0.001   0.001  0.001  0.001  0.001  0.001  0.001</y_p_conc_max_energy>
-    <y_p_conc_min_energy>0.001   0.001  0.001  0.001  0.001  0.001  0.001</y_p_conc_min_energy>
-    <y_p_conc_sen_energy>0.001   0.001  0.001  0.001  0.001  0.001  0.001</y_p_conc_sen_energy>
     <p_conc_init_leaf>0.0059</p_conc_init_leaf>
     <p_conc_init_stem>0.0057</p_conc_init_stem>
     <p_conc_init_root>0.010</p_conc_init_root>
     <p_conc_init_flower>0.0057</p_conc_init_flower>
     <p_conc_init_grain>0.0052</p_conc_init_grain>
-    <p_conc_init_energy>0.0</p_conc_init_energy>
     <!-- *****************************************************************************************************
       SECTION 11 - VALUE LIMITS - MAX AND MINS
       *****************************************************************************************************
       ______________________________________________________________________________
       ROOT PARAMETERS
       -->
-    <ll_ub description="upper limit of lower limit">1000.0</ll_ub>
-    <kl_ub description="upper limit of water uptake factor">1.0</kl_ub>
     <!-- ______________________________________________________________________________
       SOIL WATER
       -->
-    <minsw description="lowest acceptable value for ll">0.00001</minsw>
     <!-- ______________________________________________________________________________
       OTHER VARIABLES
       limits set to check inputs
       -->
-    <latitude_ub units="oL" description="latitude upper limit">90</latitude_ub>
-    <latitude_lb units="oL" description="latitude lower limit">-90</latitude_lb>
-    <maxt_ub units="oC" description="max. temperature upper limit">55</maxt_ub>
-    <maxt_lb units="oC" description="max. temperature lower limit">0</maxt_lb>
-    <mint_ub units="oC" description="min. temperature upper limit">40</mint_ub>
-    <mint_lb units="oC" description="min. temperature lower limit">-10</mint_lb>
-    <radn_ub units="MJ/m^2" description="radiation upper limit">50</radn_ub>
-    <radn_lb units="MJ/m^2" description="radiation lower limit">1</radn_lb>
-    <dlayer_ub units="mm" description="layer depth upper limit">1000</dlayer_ub>
-    <dlayer_lb units="mm" description="layer depth lower limit">0</dlayer_lb>
-    <dul_dep_ub units="mm" description="drained upper limit upper limit">1000</dul_dep_ub>
-    <dul_dep_lb units="mm" description="drained upper limit lower limit">0</dul_dep_lb>
-    <sw_dep_ub units="mm" description="soil water upper limit">1000</sw_dep_ub>
-    <sw_dep_lb units="mm" description="soil water lower limit">0</sw_dep_lb>
-    <sw_ub units="mm" description="soil water upper limit">1.0</sw_ub>
-    <sw_lb units="mm" description="soil water upper limit">0.0</sw_lb>
-    <no3_ub units="kg/ha" description="soil nitrate upper limit">10000</no3_ub>
-    <no3_lb units="kg/ha" description="soil nitrate lower limit">0</no3_lb>
-    <no3_min_ub units="kg/ha" description="min. soil nitrate upper limit">10000</no3_min_ub>
-    <no3_min_lb units="kg/ha" description="min. soil nitrate lower limit">0</no3_min_lb>
-    <nh4_ub units="kg/ha" description="soil nitrate upper limit">10000</nh4_ub>
-    <nh4_lb units="kg/ha" description="soil nitrate lower limit">0</nh4_lb>
-    <nh4_min_ub units="kg/ha" description="min. soil nitrate upper limit">10000</nh4_min_ub>
-    <nh4_min_lb units="kg/ha" description="min. soil nitrate lower limit">0</nh4_min_lb>
-    <!--  cultivar parameter upper bounds
-      -->
-    <head_grain_no_max_ub description="upper limit  !NOT USED">45000.0</head_grain_no_max_ub>
-    <grain_gth_rate_ub description="upper limit  !NOT USED">20.0</grain_gth_rate_ub>
-    <tt_emerg_to_endjuv_ub description="upper limit">500.0</tt_emerg_to_endjuv_ub>
-    <pp_endjuv_to_init_ub description="upper limit oC h-1">200.0</pp_endjuv_to_init_ub>
-    <tt_flower_to_maturity_ub description="upper limit">1000.0</tt_flower_to_maturity_ub>
-    <tt_maturity_to_ripe_ub description="upper limit">1000.0</tt_maturity_to_ripe_ub>
-    <tt_flower_to_start_grain_ub description="upper limit">1000.0</tt_flower_to_start_grain_ub>
-    <tt_flag_to_flower_ub description="upper limit">1000.0</tt_flag_to_flower_ub>
     <senescedLeafSLN>0.3</senescedLeafSLN>
     <Buster cultivar="yes">
-      <!-- ________________________________________________________________________________________________________
-         PHENOLOGY
-         ________________________________________________________________________________________________________
-         -->
-      <tt_emerg_to_endjuv units="oC" description="fixed for all genotypes">100</tt_emerg_to_endjuv>
-      <photoperiod_crit1 units="hours">11.5</photoperiod_crit1>
-      <photoperiod_crit2 units="hours">13.5</photoperiod_crit2>
-      <photoperiod_slope>11.5</photoperiod_slope>
-      <tt_endjuv_to_init units="oC">160</tt_endjuv_to_init>
-      <tt_flag_to_flower>170</tt_flag_to_flower>
-      <tt_flower_to_start_grain>80</tt_flower_to_start_grain>
-      <tt_maturity_to_ripe>1</tt_maturity_to_ripe>
-      <tt_flower_to_maturity units="oC" description="using base temp of 5.7">761</tt_flower_to_maturity>
-      <!-- ________________________________________________________________________________________________________
-         LEAF AREA - TPLA approach
-         ________________________________________________________________________________________________________
-         -->
-      <main_stem_coef description="Power coeff for TPLAmax=TLN^coef">2.90</main_stem_coef>
-      <tpla_prod_coef units="1/oC" description="curvature coefficient for leaf area">0.018</tpla_prod_coef>
-      <!-- ________________________________________________________________________________________________________
-         SENESCING LEAF AREA - SPLA approach
-         ________________________________________________________________________________________________________
-         ________________________________________________________________________________________________________
-         GRAIN GROWTH - source/sink approach
-         ________________________________________________________________________________________________________
-         -->
-      <dm_per_seed>0.00083</dm_per_seed>
-      <maxGFRate>0.09</maxGFRate>
-      <!-- ________________________________________________________________________________________________________
-         CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
-         ________________________________________________________________________________________________________
-         -->
-      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
-      <y_height units="mm" description="plant canopy height">0  2000</y_height>
+      <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
+      <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
+      <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
+      <photoperiod_slope type="text" description="photoperiod_slope">11.5</photoperiod_slope>
+      <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">160</tt_endjuv_to_init>
+      <tt_flag_to_flower type="text" description="tt_flag_to_flower">170</tt_flag_to_flower>
+      <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
+      <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">761</tt_flower_to_maturity>
+      <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
+      <dm_per_seed type="text" description="dm_per_seed">0.00083</dm_per_seed>
+      <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
+      <x_stem_wt type="text" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height type="text" description="plant canopy height">0  2000</y_height>
+      <aX0 type="text" description="Largest leaf multiplier">0.687</aX0>
+      <aMaxS type="text" description="Largest Leaf Area Slope">22.25</aMaxS>
+      <aMaxI type="text" description="Intercept for Largest leaf calculation">92.45</aMaxI>
     </Buster>
     <early cultivar="yes">
-      <!-- ________________________________________________________________________________________________________
-         PHENOLOGY
-         ________________________________________________________________________________________________________
-         -->
       <tt_emerg_to_endjuv units="oC" description="fixed for all genotypes">100</tt_emerg_to_endjuv>
       <photoperiod_crit1 units="hours">11.5</photoperiod_crit1>
       <photoperiod_crit2 units="hours">13.5</photoperiod_crit2>
@@ -471,30 +375,12 @@
       <tt_flower_to_start_grain>80</tt_flower_to_start_grain>
       <tt_maturity_to_ripe>1</tt_maturity_to_ripe>
       <tt_flower_to_maturity units="oC" description="using base temp of 5.7">761</tt_flower_to_maturity>
-      <!-- ________________________________________________________________________________________________________
-         LEAF AREA - TPLA approach
-         ________________________________________________________________________________________________________
-         -->
-      <main_stem_coef description="Power coeff for TPLAmax=TLN^coef">2.9</main_stem_coef>
-      <tpla_prod_coef units="1/oC" description="curvature coefficient for leaf area">0.018</tpla_prod_coef>
-      <!-- ________________________________________________________________________________________________________
-         GRAIN GROWTH - source/sink approach
-         ________________________________________________________________________________________________________
-         -->
       <dm_per_seed>0.00083</dm_per_seed>
       <maxGFRate>0.09</maxGFRate>
-      <!-- ________________________________________________________________________________________________________
-         CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
-         ________________________________________________________________________________________________________
-         -->
       <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  2000</y_height>
     </early>
     <medium cultivar="yes">
-      <!-- ________________________________________________________________________________________________________
-         PHENOLOGY
-         ________________________________________________________________________________________________________
-         -->
       <tt_emerg_to_endjuv units="oC" description="fixed for all genotypes">100</tt_emerg_to_endjuv>
       <photoperiod_crit1 units="hours">11.5</photoperiod_crit1>
       <photoperiod_crit2 units="hours">13.5</photoperiod_crit2>
@@ -504,30 +390,12 @@
       <tt_flower_to_start_grain>80</tt_flower_to_start_grain>
       <tt_maturity_to_ripe>1</tt_maturity_to_ripe>
       <tt_flower_to_maturity units="oC" description="using base temp of 5.7">761</tt_flower_to_maturity>
-      <!-- ________________________________________________________________________________________________________
-         LEAF AREA - TPLA approach
-         ________________________________________________________________________________________________________
-         -->
-      <main_stem_coef description="Power coeff for TPLAmax=TLN^coef">2.9</main_stem_coef>
-      <tpla_prod_coef units="1/oC" description="curvature coefficient for leaf area">0.018</tpla_prod_coef>
-      <!-- ________________________________________________________________________________________________________
-         GRAIN GROWTH - source/sink approach
-         ________________________________________________________________________________________________________
-         -->
       <dm_per_seed>0.00083</dm_per_seed>
       <maxGFRate>0.09</maxGFRate>
-      <!-- ________________________________________________________________________________________________________
-         CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
-         ________________________________________________________________________________________________________
-         -->
       <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  2000</y_height>
     </medium>
     <late cultivar="yes">
-      <!-- ________________________________________________________________________________________________________
-         PHENOLOGY
-         ________________________________________________________________________________________________________
-         -->
       <tt_emerg_to_endjuv units="oC" description="fixed for all genotypes">100</tt_emerg_to_endjuv>
       <photoperiod_crit1 units="hours">11.5</photoperiod_crit1>
       <photoperiod_crit2 units="hours">13.5</photoperiod_crit2>
@@ -537,63 +405,30 @@
       <tt_flower_to_start_grain>80</tt_flower_to_start_grain>
       <tt_maturity_to_ripe>1</tt_maturity_to_ripe>
       <tt_flower_to_maturity units="oC" description="using base temp of 5.7">761</tt_flower_to_maturity>
-      <!-- ________________________________________________________________________________________________________
-         LEAF AREA - TPLA approach
-         ________________________________________________________________________________________________________
-         -->
-      <main_stem_coef description="Power coeff for TPLAmax=TLN^coef">2.9</main_stem_coef>
-      <tpla_prod_coef units="1/oC" description="curvature coefficient for leaf area">0.018</tpla_prod_coef>
-      <!-- ________________________________________________________________________________________________________
-         GRAIN GROWTH - source/sink approach
-         ________________________________________________________________________________________________________
-         -->
       <dm_per_seed>0.00083</dm_per_seed>
       <maxGFRate>0.09</maxGFRate>
-      <!-- ________________________________________________________________________________________________________
-         CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
-         ________________________________________________________________________________________________________
-         -->
       <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  2000</y_height>
     </late>
     <QL41xQL36 cultivar="yes">
-      <!-- ________________________________________________________________________________________________________
-         PHENOLOGY
-         ________________________________________________________________________________________________________
-         -->
-      <tt_emerg_to_endjuv units="oC" description="fixed for all genotypes">100</tt_emerg_to_endjuv>
-      <photoperiod_crit1 units="hours">11.5</photoperiod_crit1>
-      <photoperiod_crit2 units="hours">13.5</photoperiod_crit2>
-      <photoperiod_slope>12.5</photoperiod_slope>
-      <tt_endjuv_to_init units="oC">179</tt_endjuv_to_init>
-      <tt_flag_to_flower>170</tt_flag_to_flower>
-      <tt_flower_to_start_grain>80</tt_flower_to_start_grain>
-      <tt_maturity_to_ripe>1</tt_maturity_to_ripe>
-      <tt_flower_to_maturity units="oC" description="using base temp of 5.7">761</tt_flower_to_maturity>
-      <!-- ________________________________________________________________________________________________________
-         LEAF AREA - TPLA approach
-         ________________________________________________________________________________________________________
-         -->
-      <main_stem_coef description="Power coeff for TPLAmax=TLN^coef">2.90</main_stem_coef>
-      <tpla_prod_coef units="1/oC" description="curvature coefficient for leaf area">0.018</tpla_prod_coef>
-      <!-- ________________________________________________________________________________________________________
-         GRAIN GROWTH - source/sink approach
-         ________________________________________________________________________________________________________
-         -->
-      <dm_per_seed>0.00083</dm_per_seed>
-      <maxGFRate>0.09</maxGFRate>
-      <!-- ________________________________________________________________________________________________________
-         CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
-         ________________________________________________________________________________________________________
-         -->
-      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
-      <y_height units="mm" description="plant canopy height">0  2000</y_height>
+        <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
+        <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
+        <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
+        <photoperiod_slope type="text" description="photoperiod_slope">12.5</photoperiod_slope>
+        <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">179</tt_endjuv_to_init>
+        <tt_flag_to_flower type="text" description="tt_flag_to_flower">170</tt_flag_to_flower>
+        <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
+        <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">761</tt_flower_to_maturity>
+        <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
+        <dm_per_seed type="text" description="dm_per_seed">0.00083</dm_per_seed>
+        <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
+        <x_stem_wt type="text" description="look up table for canopy height">0    80</x_stem_wt>
+        <y_height type="text" description="plant canopy height">0  2000</y_height>
+        <aX0 type="text" description="Largest leaf multiplier">0.687</aX0>
+        <aMaxS type="text" description="Largest Leaf Area Slope">0</aMaxS>
+        <aMaxI type="text" description="Intercept for Largest leaf calculation">450</aMaxI>
     </QL41xQL36>
     <QL39xQL36 cultivar="yes">
-      <!-- ________________________________________________________________________________________________________
-         PHENOLOGY
-         ________________________________________________________________________________________________________
-         -->
       <tt_emerg_to_endjuv units="oC" description="fixed for all genotypes">100</tt_emerg_to_endjuv>
       <photoperiod_crit1 units="hours">11.8</photoperiod_crit1>
       <photoperiod_crit2 units="hours">14</photoperiod_crit2>
@@ -603,30 +438,56 @@
       <tt_flower_to_start_grain>80</tt_flower_to_start_grain>
       <tt_maturity_to_ripe>1</tt_maturity_to_ripe>
       <tt_flower_to_maturity units="oC" description="using base temp of 5.7">761</tt_flower_to_maturity>
-      <!-- ________________________________________________________________________________________________________
-         LEAF AREA - TPLA approach
-         ________________________________________________________________________________________________________
-         -->
-      <main_stem_coef description="Power coeff for TPLAmax=TLN^coef">2.9</main_stem_coef>
-      <tpla_prod_coef units="1/oC" description="curvature coefficient for leaf area">0.018</tpla_prod_coef>
-      <!-- ________________________________________________________________________________________________________
-         GRAIN GROWTH - source/sink approach
-         ________________________________________________________________________________________________________
-         -->
       <dm_per_seed>0.00083</dm_per_seed>
       <maxGFRate>0.09</maxGFRate>
-      <!-- ________________________________________________________________________________________________________
-         CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
-         ________________________________________________________________________________________________________
-         -->
       <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  2000</y_height>
     </QL39xQL36>
+    <M35-1>
+      <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
+      <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
+      <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
+      <photoperiod_slope type="text" description="photoperiod_slope">61</photoperiod_slope>
+      <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">252</tt_endjuv_to_init>
+      <tt_flag_to_flower type="text" description="tt_flag_to_flower">170</tt_flag_to_flower>
+      <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
+      <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">761</tt_flower_to_maturity>
+      <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
+      <dm_per_seed type="text" description="dm_per_seed">0.001427844</dm_per_seed>
+      <x_stem_wt type="text" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height type="text" description="plant canopy height">0  2000</y_height>
+      <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
+      <partition_rate_leaf type="text" description="partition_rate_leaf">0.018</partition_rate_leaf>
+      <nUptakeCease type="text" description="nUptakeCease">10</nUptakeCease>
+      <leaf_init_rate type="text" description="leaf_init_rate">26.1</leaf_init_rate>
+      <targetLeafSLN type="text" description="targetLeafSLN">1.2</targetLeafSLN>
+      <aX0 type="text" description="Largest leaf multiplier">0.687</aX0>
+      <aMaxS type="text" description="Largest Leaf Area Slope">8.9</aMaxS>
+      <aMaxI type="text" description="Intercept for Largest leaf calculation">245.3</aMaxI>
+    </M35-1>
+    <CSH13R>
+      <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
+      <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
+      <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
+      <photoperiod_slope type="text" description="photoperiod_slope">17</photoperiod_slope>
+      <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">228</tt_endjuv_to_init>
+      <tt_flag_to_flower type="text" description="tt_flag_to_flower">170</tt_flag_to_flower>
+      <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
+      <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">761</tt_flower_to_maturity>
+      <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
+      <dm_per_seed type="text" description="dm_per_seed">0.0015</dm_per_seed>
+      <x_stem_wt type="text" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height type="text" description="plant canopy height">0  2000</y_height>
+      <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
+      <rue type="text" description="rue">1.6</rue>
+      <partition_rate_leaf type="text" description="partition_rate_leaf">0.018</partition_rate_leaf>
+      <targetLeafSLN type="text" description="targetLeafSLN">1.2</targetLeafSLN>
+      <leaf_init_rate type="text" description="leaf_init_rate">23.2</leaf_init_rate>
+      <aX0 type="text" description="Largest leaf multiplier">0.687</aX0>
+      <aMaxS type="text" description="Largest Leaf Area Slope">22.25</aMaxS>
+      <aMaxI type="text" description="Intercept for Largest leaf calculation">92.45</aMaxI>
+    </CSH13R>
     <dekalb_DK55 cultivar="yes">
-      <!-- ________________________________________________________________________________________________________
-         PHENOLOGY
-         ________________________________________________________________________________________________________
-         -->
       <tt_emerg_to_endjuv units="oC" description="fixed for all genotypes">100</tt_emerg_to_endjuv>
       <photoperiod_crit1 units="hours">11</photoperiod_crit1>
       <photoperiod_crit2 units="hours">13</photoperiod_crit2>
@@ -636,30 +497,12 @@
       <tt_flower_to_start_grain>30</tt_flower_to_start_grain>
       <tt_maturity_to_ripe>1</tt_maturity_to_ripe>
       <tt_flower_to_maturity units="oC" description="using base temp of 5.7">695</tt_flower_to_maturity>
-      <!-- ________________________________________________________________________________________________________
-         LEAF AREA - TPLA approach
-         ________________________________________________________________________________________________________
-         -->
-      <main_stem_coef description="Power coeff for TPLAmax=TLN^coef">2.95</main_stem_coef>
-      <tpla_prod_coef units="1/oC" description="curvature coefficient for leaf area">0.012</tpla_prod_coef>
-      <!-- ________________________________________________________________________________________________________
-         GRAIN GROWTH - source/sink approach
-         ________________________________________________________________________________________________________
-         -->
       <dm_per_seed>0.00083</dm_per_seed>
       <maxGFRate>0.09</maxGFRate>
-      <!-- ________________________________________________________________________________________________________
-         CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
-         ________________________________________________________________________________________________________
-         -->
       <x_stem_wt units="g/stem" description="look up table for canopy height">0  80</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  2000</y_height>
     </dekalb_DK55>
     <texas_RS610 cultivar="yes">
-      <!-- ________________________________________________________________________________________________________
-         PHENOLOGY
-         ________________________________________________________________________________________________________
-         -->
       <tt_emerg_to_endjuv units="oC" description="fixed for all genotypes">100</tt_emerg_to_endjuv>
       <photoperiod_crit1 units="hours">12.3</photoperiod_crit1>
       <photoperiod_crit2 units="hours">14.6</photoperiod_crit2>
@@ -669,30 +512,12 @@
       <tt_flower_to_start_grain>30</tt_flower_to_start_grain>
       <tt_maturity_to_ripe>1</tt_maturity_to_ripe>
       <tt_flower_to_maturity units="oC" description="using base temp of 5.7">695</tt_flower_to_maturity>
-      <!-- ________________________________________________________________________________________________________
-         LEAF AREA - TPLA approach
-         ________________________________________________________________________________________________________
-         -->
-      <main_stem_coef description="Power coeff for TPLAmax=TLN^coef">2.88</main_stem_coef>
-      <tpla_prod_coef units="1/oC" description="curvature coefficient for leaf area">0.018</tpla_prod_coef>
-      <!-- ________________________________________________________________________________________________________
-         GRAIN GROWTH - source/sink approach
-         ________________________________________________________________________________________________________
-         -->
       <dm_per_seed>0.00083</dm_per_seed>
       <maxGFRate>0.09</maxGFRate>
-      <!-- ________________________________________________________________________________________________________
-         CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
-         ________________________________________________________________________________________________________
-         -->
       <x_stem_wt units="g/stem" description="look up table for canopy height">0  80</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  2000</y_height>
     </texas_RS610>
     <pioneer_s34 cultivar="yes">
-      <!-- ________________________________________________________________________________________________________
-         PHENOLOGY
-         ________________________________________________________________________________________________________
-         -->
       <tt_emerg_to_endjuv units="oC" description="fixed for all genotypes">100</tt_emerg_to_endjuv>
       <photoperiod_crit1 units="hours">12.3</photoperiod_crit1>
       <photoperiod_crit2 units="hours">14.6</photoperiod_crit2>
@@ -702,30 +527,12 @@
       <tt_flower_to_start_grain>30</tt_flower_to_start_grain>
       <tt_maturity_to_ripe>1</tt_maturity_to_ripe>
       <tt_flower_to_maturity units="oC" description="using base temp of 5.7">695</tt_flower_to_maturity>
-      <!-- ________________________________________________________________________________________________________
-         LEAF AREA - TPLA approach
-         ________________________________________________________________________________________________________
-         -->
-      <main_stem_coef description="Power coeff for TPLAmax=TLN^coef">2.95</main_stem_coef>
-      <tpla_prod_coef units="1/oC" description="curvature coefficient for leaf area">0.015</tpla_prod_coef>
-      <!-- ________________________________________________________________________________________________________
-         GRAIN GROWTH - source/sink approach
-         ________________________________________________________________________________________________________
-         -->
       <dm_per_seed>0.00083</dm_per_seed>
       <maxGFRate>0.09</maxGFRate>
-      <!-- ________________________________________________________________________________________________________
-         CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
-         ________________________________________________________________________________________________________
-         -->
       <x_stem_wt units="g/stem" description="look up table for canopy height">0  80</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  2000</y_height>
     </pioneer_s34>
     <texas_671 cultivar="yes">
-      <!-- ________________________________________________________________________________________________________
-         PHENOLOGY
-         ________________________________________________________________________________________________________
-         -->
       <tt_emerg_to_endjuv units="oC" description="fixed for all genotypes">100</tt_emerg_to_endjuv>
       <photoperiod_crit1 units="hours">12.3</photoperiod_crit1>
       <photoperiod_crit2 units="hours">14.6</photoperiod_crit2>
@@ -735,181 +542,247 @@
       <tt_flower_to_start_grain>30</tt_flower_to_start_grain>
       <tt_maturity_to_ripe>1</tt_maturity_to_ripe>
       <tt_flower_to_maturity units="oC" description="using base temp of 5.7">695</tt_flower_to_maturity>
-      <!-- ________________________________________________________________________________________________________
-         LEAF AREA - TPLA approach
-         ________________________________________________________________________________________________________
-         -->
-      <main_stem_coef description="Power coeff for TPLAmax=TLN^coef">2.88</main_stem_coef>
-      <tpla_prod_coef units="1/oC" description="curvature coefficient for leaf area">0.015</tpla_prod_coef>
-      <!-- ________________________________________________________________________________________________________
-         GRAIN GROWTH - source/sink approach
-         ________________________________________________________________________________________________________
-         -->
       <dm_per_seed>0.00083</dm_per_seed>
       <maxGFRate>0.09</maxGFRate>
-      <!-- ________________________________________________________________________________________________________
-         CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
-         ________________________________________________________________________________________________________
-         -->
       <x_stem_wt units="g/stem" description="look up table for canopy height">0  80</x_stem_wt>
       <y_height units="mm" description="plant canopy height">0  2000</y_height>
     </texas_671>
-    <M35-1 cultivar="yes">
-      <!-- ________________________________________________________________________________________________________
-         PHENOLOGY
-         ________________________________________________________________________________________________________
-         -->
-      <tt_emerg_to_endjuv units="oC" description="fixed for all genotypes">100</tt_emerg_to_endjuv>
-      <photoperiod_crit1 units="hours">11.5</photoperiod_crit1>
-      <photoperiod_crit2 units="hours">13.5</photoperiod_crit2>
-      <photoperiod_slope>61</photoperiod_slope>
-      <tt_endjuv_to_init units="oC">252</tt_endjuv_to_init>
-      <tt_flag_to_flower>170</tt_flag_to_flower>
-      <tt_flower_to_start_grain>80</tt_flower_to_start_grain>
-      <tt_maturity_to_ripe>1</tt_maturity_to_ripe>
-      <tt_flower_to_maturity units="oC" description="using base temp of 5.7">761</tt_flower_to_maturity>
-      <!-- ________________________________________________________________________________________________________
-         LEAF AREA - TPLA approach
-         ________________________________________________________________________________________________________
-         -->
-      <main_stem_coef description="Power coeff for TPLAmax=TLN^coef">2.82</main_stem_coef>
-      <tpla_prod_coef units="1/oC" description="curvature coefficient for leaf area">0.011</tpla_prod_coef>
-      <!-- 
-         GRAIN GROWTH - source/sink approach
-         ________________________________________________________________________________________________________
-         -->
-      <dm_per_seed>0.001427844</dm_per_seed>
-      <maxGFRate>0.09</maxGFRate>
-      <!-- ________________________________________________________________________________________________________
-         CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
-         ________________________________________________________________________________________________________
-         -->
-      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
-      <y_height units="mm" description="plant canopy height">0  3000</y_height>
-      <partition_rate_leaf description="coefficient of sigmoidal function between leaf partition fraction and internode no**2 (0-1)">0.018</partition_rate_leaf>
-      <nUptakeCease units="g/stem" description="tt after flowering when N uptake ceases">10</nUptakeCease>
-      <leaf_init_rate units="oCd" description="degree days to initiate each leaf primordium until floral init (deg day)">26.1</leaf_init_rate>
-      <targetLeafSLN>1.2</targetLeafSLN>
-    </M35-1>
-    <CSH13R cultivar="yes">
-      <!-- ________________________________________________________________________________________________________
-         PHENOLOGY
-         ________________________________________________________________________________________________________
-         -->
-      <tt_emerg_to_endjuv units="oC" description="fixed for all genotypes">100</tt_emerg_to_endjuv>
-      <photoperiod_crit1 units="hours">11.5</photoperiod_crit1>
-      <photoperiod_crit2 units="hours">13.5</photoperiod_crit2>
-      <photoperiod_slope>17</photoperiod_slope>
-      <tt_endjuv_to_init units="oC">228</tt_endjuv_to_init>
-      <tt_flag_to_flower>170</tt_flag_to_flower>
-      <tt_flower_to_start_grain>80</tt_flower_to_start_grain>
-      <tt_maturity_to_ripe>1</tt_maturity_to_ripe>
-      <tt_flower_to_maturity units="oC" description="using base temp of 5.7">761</tt_flower_to_maturity>
-      <!-- ________________________________________________________________________________________________________
-         LEAF AREA - TPLA approach
-         ________________________________________________________________________________________________________
-         -->
-      <main_stem_coef description="Power coeff for TPLAmax=TLN^coef">2.95</main_stem_coef>
-      <tpla_prod_coef units="1/oC" description="curvature coefficient for leaf area">0.014</tpla_prod_coef>
-      <!-- 
-         GRAIN GROWTH - source/sink approach
-         ________________________________________________________________________________________________________
-         -->
-      <dm_per_seed>0.0015</dm_per_seed>
-      <maxGFRate>0.09</maxGFRate>
-      <!-- ________________________________________________________________________________________________________
-         CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
-         ________________________________________________________________________________________________________
-         -->
-      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
-      <y_height units="mm" description="plant canopy height">0  3000</y_height>
-	  <!-- ________________________________________________________________________________________________________
-         Genotype specific parameters
-         ________________________________________________________________________________________________________
-         -->
-      <partition_rate_leaf description="coefficient of sigmoidal function between leaf partition fraction and internode no**2 (0-1)">0.018</partition_rate_leaf>
-      <leaf_init_rate units="oCd" description="degree days to initiate each leaf primordium until floral init (deg day)">23.2</leaf_init_rate>
-      <targetLeafSLN>1.2</targetLeafSLN>
-      <rue description="g bio/MJ Radn radiation use efficiency">0   0  1.6  1.6  1.6 1.6  1.6 1.6 1.6 1.6    0    0 </rue>
-    </CSH13R>
-	<ATX623xRTX430 cultivar="yes">
-      <!-- ________________________________________________________________________________________________________
-         PHENOLOGY
-         ________________________________________________________________________________________________________
-         -->
-      <tt_emerg_to_endjuv units="oC" description="fixed for all genotypes">100</tt_emerg_to_endjuv>
-      <photoperiod_crit1 units="hours">11.5</photoperiod_crit1>
-      <photoperiod_crit2 units="hours">13.5</photoperiod_crit2>
-      <photoperiod_slope>13</photoperiod_slope>
-      <tt_endjuv_to_init units="oC">202</tt_endjuv_to_init>
-      <tt_flag_to_flower>170</tt_flag_to_flower>
-      <tt_flower_to_start_grain>80</tt_flower_to_start_grain>
-      <tt_maturity_to_ripe>1</tt_maturity_to_ripe>
-      <tt_flower_to_maturity units="oC" description="using base temp of 5.7">761</tt_flower_to_maturity>
-      <!-- ________________________________________________________________________________________________________
-         LEAF AREA - TPLA approach
-         ________________________________________________________________________________________________________
-         -->
-      <main_stem_coef description="Power coeff for TPLAmax=TLN^coef">2.90</main_stem_coef>
-      <tpla_prod_coef units="1/oC" description="curvature coefficient for leaf area">0.018</tpla_prod_coef>
-      <!-- ________________________________________________________________________________________________________
-         SENESCING LEAF AREA - SPLA approach
-         ________________________________________________________________________________________________________
-         ________________________________________________________________________________________________________
-         GRAIN GROWTH - source/sink approach
-         ________________________________________________________________________________________________________
-         -->
-      <dm_per_seed>0.00083</dm_per_seed>
-      <maxGFRate>0.09</maxGFRate>
-      <!-- ________________________________________________________________________________________________________
-         CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
-         ________________________________________________________________________________________________________
-         -->
-      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
-      <y_height units="mm" description="plant canopy height">0  2000</y_height>
-    </ATX623xRTX430>
-	<A35xQL36 cultivar="yes">
-      <!-- ________________________________________________________________________________________________________
-         PHENOLOGY
-         ________________________________________________________________________________________________________
-         -->
-      <tt_emerg_to_endjuv units="oC" description="fixed for all genotypes">100</tt_emerg_to_endjuv>
-      <photoperiod_crit1 units="hours">11.8</photoperiod_crit1>
-      <photoperiod_crit2 units="hours">14</photoperiod_crit2>
-      <photoperiod_slope>39.7</photoperiod_slope>
-      <tt_endjuv_to_init units="oC">134.4</tt_endjuv_to_init>
-      <tt_flag_to_flower>170</tt_flag_to_flower>
-      <tt_flower_to_start_grain>80</tt_flower_to_start_grain>
-      <tt_maturity_to_ripe>1</tt_maturity_to_ripe>
-      <tt_flower_to_maturity units="oC" description="using base temp of 5.7">761</tt_flower_to_maturity>
-      <!-- ________________________________________________________________________________________________________
-         LEAF AREA - TPLA approach
-         ________________________________________________________________________________________________________
-         -->
-      <main_stem_coef description="Power coeff for TPLAmax=TLN^coef">2.90</main_stem_coef>
-      <tpla_prod_coef units="1/oC" description="curvature coefficient for leaf area">0.018</tpla_prod_coef>
-      <!-- ________________________________________________________________________________________________________
-         SENESCING LEAF AREA - SPLA approach
-         ________________________________________________________________________________________________________
-         ________________________________________________________________________________________________________
-         GRAIN GROWTH - source/sink approach
-         ________________________________________________________________________________________________________
-         -->
-      <dm_per_seed>0.00083</dm_per_seed>
-      <maxGFRate>0.09</maxGFRate>
-      <!-- ________________________________________________________________________________________________________
-         CANOPY HEIGHT - function of stem biomass per plant (need to adjust this for density effects)
-         ________________________________________________________________________________________________________
-         -->
-      <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
-      <y_height units="mm" description="plant canopy height">0  2000</y_height>
-    </A35xQL36>
-    <MR-Scorpio cultivar="yes">
-       <derived_from>Buster</derived_from> 
-    </MR-Scorpio>
-    <MR-Apollo cultivar="yes">
-       <derived_from>Buster</derived_from> 
-    </MR-Apollo>
-  </Model>
-  
+    <Scorpio cultivar="yes">
+       <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
+      <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
+      <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
+      <photoperiod_slope type="text" description="photoperiod_slope">0</photoperiod_slope>
+      <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">130</tt_endjuv_to_init>
+      <tt_flag_to_flower type="text" description="tt_flag_to_flower">120</tt_flag_to_flower>
+      <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
+      <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">810</tt_flower_to_maturity>
+      <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
+      <dm_per_seed type="text" description="dm_per_seed">0.00065</dm_per_seed>
+      <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
+      <x_stem_wt type="text" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height type="text" description="plant canopy height">0  2000</y_height>
+      <aX0 type="text" description="Largest leaf multiplier">0.83</aX0>
+      <aMaxS type="text" description="Largest Leaf Area Slope">2.3</aMaxS>
+      <aMaxI type="text" description="Intercept for Largest leaf calculation">514</aMaxI>
+	  <rue description="g bio/MJ Radn radiation use efficiency">1.75</rue>
+    </Scorpio>
+    <Apollo cultivar="yes">
+       <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
+      <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
+      <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
+      <photoperiod_slope type="text" description="photoperiod_slope">0</photoperiod_slope>
+      <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">185</tt_endjuv_to_init>
+      <tt_flag_to_flower type="text" description="tt_flag_to_flower">130</tt_flag_to_flower>
+      <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
+      <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">810</tt_flower_to_maturity>
+      <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
+      <dm_per_seed type="text" description="dm_per_seed">0.00083</dm_per_seed>
+      <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
+      <x_stem_wt type="text" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height type="text" description="plant canopy height">0  2000</y_height>
+      <aX0 type="text" description="Largest leaf multiplier">0.71</aX0>
+      <aMaxS type="text" description="Largest Leaf Area Slope">37</aMaxS>
+      <aMaxI type="text" description="Intercept for Largest leaf calculation">-101</aMaxI>
+	  <rue description="g bio/MJ Radn radiation use efficiency">1.75</rue>
+    </Apollo>
+	<Bazley cultivar="yes">
+       <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
+      <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
+      <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
+      <photoperiod_slope type="text" description="photoperiod_slope">0</photoperiod_slope>
+      <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">185</tt_endjuv_to_init>
+      <tt_flag_to_flower type="text" description="tt_flag_to_flower">130</tt_flag_to_flower>
+      <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
+      <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">810</tt_flower_to_maturity>
+      <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
+      <dm_per_seed type="text" description="dm_per_seed">0.00083</dm_per_seed>
+      <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
+      <x_stem_wt type="text" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height type="text" description="plant canopy height">0  2000</y_height>
+      <aX0 type="text" description="Largest leaf multiplier">0.71</aX0>
+      <aMaxS type="text" description="Largest Leaf Area Slope">37</aMaxS>
+      <aMaxI type="text" description="Intercept for Largest leaf calculation">-101</aMaxI>
+	  <rue description="g bio/MJ Radn radiation use efficiency">1.75</rue>
+    </Bazley>
+	<Taurus cultivar="yes">
+      <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
+      <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
+      <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
+      <photoperiod_slope type="text" description="photoperiod_slope">7.5</photoperiod_slope>
+      <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">118</tt_endjuv_to_init>
+      <tt_flag_to_flower type="text" description="tt_flag_to_flower">150</tt_flag_to_flower>
+      <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
+      <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">810</tt_flower_to_maturity>
+      <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
+      <dm_per_seed type="text" description="dm_per_seed">0.00065</dm_per_seed>
+      <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
+      <x_stem_wt type="text" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height type="text" description="plant canopy height">0  2000</y_height>
+      <aX0 type="text" description="Largest leaf multiplier">0.8</aX0>
+      <aMaxS type="text" description="Largest Leaf Area Slope">1</aMaxS>
+      <aMaxI type="text" description="Intercept for Largest leaf calculation">451</aMaxI>
+    </Taurus>
+    <P85G33 cultivar="yes">
+      <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
+      <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
+      <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
+      <photoperiod_slope type="text" description="photoperiod_slope">0</photoperiod_slope>
+      <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">118</tt_endjuv_to_init>
+      <tt_flag_to_flower type="text" description="tt_flag_to_flower">150</tt_flag_to_flower>
+      <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
+      <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">810</tt_flower_to_maturity>
+      <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
+      <dm_per_seed type="text" description="dm_per_seed">0.0006</dm_per_seed>
+      <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
+      <x_stem_wt type="text" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height type="text" description="plant canopy height">0  2000</y_height>
+      <aX0 type="text" description="Largest leaf multiplier">0.86</aX0>
+      <aMaxS type="text" description="Largest Leaf Area Slope">0</aMaxS>
+      <aMaxI type="text" description="Intercept for Largest leaf calculation">542</aMaxI>
+    </P85G33>
+    <P84G22 cultivar="yes">
+      <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
+      <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
+      <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
+      <photoperiod_slope type="text" description="photoperiod_slope">0</photoperiod_slope>
+      <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">160</tt_endjuv_to_init>
+      <tt_flag_to_flower type="text" description="tt_flag_to_flower">140</tt_flag_to_flower>
+      <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
+      <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">810</tt_flower_to_maturity>
+      <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
+      <dm_per_seed type="text" description="dm_per_seed">0.0006</dm_per_seed>
+      <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
+      <x_stem_wt type="text" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height type="text" description="plant canopy height">0  2000</y_height>
+      <aX0 type="text" description="Largest leaf multiplier">0.81</aX0>
+      <aMaxS type="text" description="Largest Leaf Area Slope">0</aMaxS>
+      <aMaxI type="text" description="Intercept for Largest leaf calculation">578</aMaxI>
+    </P84G22>
+    <P84G99 cultivar="yes">
+      <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
+      <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
+      <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
+      <photoperiod_slope type="text" description="photoperiod_slope">0</photoperiod_slope>
+      <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">135</tt_endjuv_to_init>
+      <tt_flag_to_flower type="text" description="tt_flag_to_flower">140</tt_flag_to_flower>
+      <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
+      <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">810</tt_flower_to_maturity>
+      <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
+      <dm_per_seed type="text" description="dm_per_seed">0.0005</dm_per_seed>
+      <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
+      <x_stem_wt type="text" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height type="text" description="plant canopy height">0  2000</y_height>
+      <aX0 type="text" description="Largest leaf multiplier">0.84</aX0>
+      <aMaxS type="text" description="Largest Leaf Area Slope">0</aMaxS>
+      <aMaxI type="text" description="Intercept for Largest leaf calculation">495</aMaxI>
+    </P84G99>
+    <P86G56 cultivar="yes">
+      <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
+      <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
+      <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
+      <photoperiod_slope type="text" description="photoperiod_slope">10</photoperiod_slope>
+      <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">138</tt_endjuv_to_init>
+      <tt_flag_to_flower type="text" description="tt_flag_to_flower">150</tt_flag_to_flower>
+      <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
+      <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">810</tt_flower_to_maturity>
+      <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
+      <dm_per_seed type="text" description="dm_per_seed">0.0005</dm_per_seed>
+      <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
+      <x_stem_wt type="text" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height type="text" description="plant canopy height">0  2000</y_height>
+      <aX0 type="text" description="Largest leaf multiplier">0.84</aX0>
+      <aMaxS type="text" description="Largest Leaf Area Slope">0</aMaxS>
+      <aMaxI type="text" description="Intercept for Largest leaf calculation">495</aMaxI>
+    </P86G56>
+	<MR43 cultivar="yes">
+      <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
+      <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
+      <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
+      <photoperiod_slope type="text" description="photoperiod_slope">7.5</photoperiod_slope>
+      <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">118</tt_endjuv_to_init>
+      <tt_flag_to_flower type="text" description="tt_flag_to_flower">150</tt_flag_to_flower>
+      <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
+      <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">810</tt_flower_to_maturity>
+      <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
+      <dm_per_seed type="text" description="dm_per_seed">0.00083</dm_per_seed>
+      <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
+      <x_stem_wt type="text" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height type="text" description="plant canopy height">0  2000</y_height>
+      <aX0 type="text" description="Largest leaf multiplier">0.71</aX0>
+      <aMaxS type="text" description="Largest Leaf Area Slope">37</aMaxS>
+      <aMaxI type="text" description="Intercept for Largest leaf calculation">-101</aMaxI>
+    </MR43>
+	<N_14NUS01 cultivar="yes">
+      <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
+      <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
+      <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
+      <photoperiod_slope type="text" description="photoperiod_slope">0</photoperiod_slope>
+      <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">180</tt_endjuv_to_init>
+      <tt_flag_to_flower type="text" description="tt_flag_to_flower">140</tt_flag_to_flower>
+      <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
+      <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">810</tt_flower_to_maturity>
+      <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
+      <dm_per_seed type="text" description="dm_per_seed">0.0007</dm_per_seed>
+      <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
+      <x_stem_wt type="text" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height type="text" description="plant canopy height">0  2000</y_height>
+      <aX0 type="text" description="Largest leaf multiplier">0.82</aX0>
+      <aMaxS type="text" description="Largest Leaf Area Slope">8.5</aMaxS>
+      <aMaxI type="text" description="Intercept for Largest leaf calculation">378</aMaxI>
+    </N_14NUS01>
+	<N_14NUS02 cultivar="yes">
+      <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
+      <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
+      <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
+      <photoperiod_slope type="text" description="photoperiod_slope">10</photoperiod_slope>
+      <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">174</tt_endjuv_to_init>
+      <tt_flag_to_flower type="text" description="tt_flag_to_flower">150</tt_flag_to_flower>
+      <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
+      <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">810</tt_flower_to_maturity>
+      <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
+      <dm_per_seed type="text" description="dm_per_seed">0.0006</dm_per_seed>
+      <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
+      <x_stem_wt type="text" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height type="text" description="plant canopy height">0  2000</y_height>
+      <aX0 type="text" description="Largest leaf multiplier">0.82</aX0>
+      <aMaxS type="text" description="Largest Leaf Area Slope">8.5</aMaxS>
+      <aMaxI type="text" description="Intercept for Largest leaf calculation">378</aMaxI>
+    </N_14NUS02>
+	<N_14NUS03 cultivar="yes">
+      <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
+      <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
+      <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
+      <photoperiod_slope type="text" description="photoperiod_slope">7.5</photoperiod_slope>
+      <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">110</tt_endjuv_to_init>
+      <tt_flag_to_flower type="text" description="tt_flag_to_flower">100</tt_flag_to_flower>
+      <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
+      <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">810</tt_flower_to_maturity>
+      <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
+      <dm_per_seed type="text" description="dm_per_seed">0.00045</dm_per_seed>
+      <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
+      <x_stem_wt type="text" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height type="text" description="plant canopy height">0  2000</y_height>
+      <aX0 type="text" description="Largest leaf multiplier">0.84</aX0>
+      <aMaxS type="text" description="Largest Leaf Area Slope">9.3</aMaxS>
+      <aMaxI type="text" description="Intercept for Largest leaf calculation">384</aMaxI>
+    </N_14NUS03>
+	<N_14NUS04 cultivar="yes">
+      <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
+      <photoperiod_crit1 type="text" description="photoperiod_crit1">11.5</photoperiod_crit1>
+      <photoperiod_crit2 type="text" description="photoperiod_crit2">13.5</photoperiod_crit2>
+      <photoperiod_slope type="text" description="photoperiod_slope">0</photoperiod_slope>
+      <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">120</tt_endjuv_to_init>
+      <tt_flag_to_flower type="text" description="tt_flag_to_flower">120</tt_flag_to_flower>
+      <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">80</tt_flower_to_start_grain>
+      <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">810</tt_flower_to_maturity>
+      <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
+      <dm_per_seed type="text" description="dm_per_seed">0.00045</dm_per_seed>
+      <maxGFRate type="text" description="maxGFRate">0.09</maxGFRate>
+      <x_stem_wt type="text" description="look up table for canopy height">0    80</x_stem_wt>
+      <y_height type="text" description="plant canopy height">0  2000</y_height>
+      <aX0 type="text" description="Largest leaf multiplier">0.81</aX0>
+      <aMaxS type="text" description="Largest Leaf Area Slope">0</aMaxS>
+      <aMaxI type="text" description="Intercept for Largest leaf calculation">445</aMaxI>
+    </N_14NUS04>
+ </Model>
 </Type>

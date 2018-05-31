@@ -58,6 +58,9 @@ void Water::doRegistrations(void)
    scienceAPI.exposeFunction("ll_dep", "mm", "Crop lower limit",
                     FloatArrayFunction(&Water::getllDep));
 
+   scienceAPI.expose("StressTrace",                "",   "Water Stress values",                                false, avSD);
+   scienceAPI.expose("EnvType",                "",   "Environment type",                                false, EnvType);
+	
    }
 //------------------------------------------------------------------------------------------------
 //------- Initialize variables
@@ -79,6 +82,12 @@ void Water::initialize(void)
    photoStressTotal.assign(nStages,0.0);
    expanStressTotal.assign(nStages,0.0);
 
+	// init WaterSD variables
+	dailyWaterSD.clear();
+	dailyTT.clear();
+	avSD.assign(9,0.0);
+	EnvType = 1;
+
    }
 //------------------------------------------------------------------------------------------------
 //------ read Water parameters
@@ -88,13 +97,9 @@ void Water::readParams (void)
    swPhenoTable.read(    scienceAPI,"x_sw_avail_ratio", "y_swdef_pheno");
    swExpansionTable.read(scienceAPI,"x_sw_demand_ratio","y_swdef_leaf");
 
-   vector<float> ll15, dul;
-   
    scienceAPI.read("kl", "", 0, kl);
    scienceAPI.read("xf", "", 0, xf);
    scienceAPI.read("ll","mm/mm", 0, ll);
-   scienceAPI.get("ll15","mm/mm", 0, ll15);
-   scienceAPI.get("dul","mm/mm", 0, dul);
 
    if (ll.size() != (unsigned int)nLayers)
       {
@@ -105,10 +110,6 @@ void Water::readParams (void)
       msg += ").";
       throw std::runtime_error(msg);
       }
-      
-   // Bound check LL
-   for (unsigned int layer = 0; layer != ll.size(); layer++)
-      checkRange(scienceAPI, ll[layer], ll15[layer], dul[layer], "CLL");
 
    llDep.clear();
    eswCap.clear();
@@ -158,6 +159,8 @@ void Water::updateVars(void)
       dltSwDep[i] = 0.0;
       }
    eswTot = sumVector(esw);
+
+	calcStressTrace();
 
    }
 //------------------------------------------------------------------------------------------------
@@ -405,4 +408,105 @@ double Water::sumExpanStressTotal(int from, int to)
    return sumVector(expanStressTotal,from,to);
    }
 //------------------------------------------------------------------------------------------------
+void Water::calcStressTrace(void)
+	{
+	// store daily for stress trace
+	dailyWaterSD.push_back(sdRatio);
+	dailyTT.push_back(plant->phenology->getDltTT());
 
+	// if the stage is >= flowering, calculate the 9 average stresses up to the latest stress
+	double currentStage = plant->phenology->currentStage();
+	if(currentStage < flowering)return;
+
+	static int daysToFlower = 0;
+
+	if(currentStage == flowering)
+		{
+		daysToFlower = plant->das;
+		// calculate the stresses up to flowering going back in 100oCdd
+		double accTT = 0;
+		double accStress = 0;
+		int period = 4;int days = 0;
+		for(int das = daysToFlower;das;das--)
+			{
+			accTT += dailyTT[das];
+			accStress += dailyWaterSD[das];
+			days++;
+			if(accTT >= 100.0)	//end of one window - calculate average daily stress
+				{
+				avSD[period] = accStress / days;
+				days = 0;accStress = 0;accTT = 0;
+				period--;
+				}
+			if(period < 0)break;
+			}
+		}
+	else
+		{		// post anthesis
+		double accTT = 0;
+		double accStress = 0;
+		int period = 5;int days = 0;
+		for(unsigned int das = daysToFlower + 1;das < dailyTT.size();das++)
+			{
+			accTT += dailyTT[das];
+			accStress += dailyWaterSD[das];
+			days++;
+			if(accTT >= 100.0)	//end of one window - calculate average daily stress forward in 100oCdd
+				{
+				avSD[period] = accStress / days;
+				days = 0;accStress = 0;accTT = 0;
+				period++;
+				}
+			if(period > 8)break;
+			}
+		}
+	// if the 5 standard stress traces are available, select the closest stress trace
+	EnvType = classify(avSD);
+	
+	}
+
+int Water::classify(vector<double> stress)
+   {
+   // see which class is closest to this line bu adding up the squares of the distances
+   // at each point
+	   // Australian Sorghum. Used as default if centres.csv cannot be found
+   double sdIndex[][9] = {
+		{0.9994660,0.9877131,0.9627857,0.9479593,0.9497890,0.9526913,0.9543730,0.9702138,0.9717316},
+		{0.9986755,0.9777828,0.9336676,0.9052058,0.9042635,0.9007016,0.8298966,0.6586733,0.5532561},
+		{0.9926408,0.8824799,0.6839383,0.5238767,0.4114531,0.4135201,0.5787614,0.8622198,0.8936729},
+		{0.9944262,0.9038232,0.6964455,0.4601622,0.3360969,0.3294746,0.3231550,0.2993245,0.4153366},
+		{0.9981921,0.9688293,0.9035107,0.8408004,0.7362116,0.5745088,0.4196704,0.3369962,0.3818236}};
+
+
+   vector<double> distances;
+   for(int i=0;i < 5;i++)
+      {
+      double dist =0.0;
+      for(int j=0;j < 9;j++)
+         {
+         dist += pow(sdIndex[i][j] - stress[j],2.0);
+         }
+      distances.push_back(dist);
+      }
+
+	
+   return minIndx(distances) + 1;
+
+
+   }
+
+int Water::minIndx(vector<double> distances)
+   {
+   // return the index (0 - n) of the lowest value in the vector
+   double minValue = 10e10;
+   int indx = 0;
+   for(unsigned i=0;i < distances.size(); i++)
+      {
+      if(distances[i] < minValue)
+         {
+         minValue = distances[i];
+         indx = i;
+         }
+      }
+   return indx;
+   }
