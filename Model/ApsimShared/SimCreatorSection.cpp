@@ -282,7 +282,7 @@ void SimCreatorSectionNew::convertLine(const std::string& line)
             if (!Str_i_Eq(key, "variable") && !Str_i_Eq(key, "module_names") &&
                 !Str_i_Eq(key, "variable_names"))               
                splitOffBracketedValue(value, '(', ')');
-            
+            replaceAll(value, "&", "&amp;");
             xml += "         <" + key + ">" + value + "</" + key + ">\n";
 
             if (!Str_i_Eq(key, "variable") && !Str_i_Eq(key, "module_names") &&

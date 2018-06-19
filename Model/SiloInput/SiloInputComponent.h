@@ -11,11 +11,7 @@ class SiloInputComponent : public InputComponent
       ~SiloInputComponent(void);
 
    protected:
-      int stationNumber;
-      std::string baseURL;
-
       virtual void openInputFile(void);
       virtual void doInit2(void);
-
    };
 #endif

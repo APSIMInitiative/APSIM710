@@ -15,6 +15,7 @@
 #include <General/http.h>
 
 #include <ApsimShared/ApsimDataFile.h>
+#include <ApsimShared/ApsimDirectories.h>
 #include <ComponentInterface/Component.h>
 
 #include "../Input/StringVariant.h"
@@ -63,7 +64,6 @@ protocol::Component* createComponent(void)
 // ------------------------------------------------------------------
 SiloInputComponent::SiloInputComponent(void)
    {
-   stationNumber = 0;
    }
 // ------------------------------------------------------------------
 // destructor
@@ -79,44 +79,63 @@ SiloInputComponent::~SiloInputComponent(void)
 // ------------------------------------------------------------------
 void SiloInputComponent::doInit2(void)
    {
-   string msg = "SILOINPUT station number: " + itoa(stationNumber);
+   string msg = "SILO URL: " + getProperty("parameters", "url");
    writeString(msg.c_str());
    }
 // ------------------------------------------------------------------
 // Open the input file associtated with this module.
 // ------------------------------------------------------------------
 void SiloInputComponent::openInputFile(void)
-   {
-   // Find a unique temporary name to hold our data
-   unsigned int pid = getpid();
+    {
+    // Find a unique temporary name to hold our data
+    unsigned int pid = getpid();
 
-   fileName = getCurrentDirectory() + string("/temp") + itoa(pid) + string(".met");
+#ifdef __WIN32__
+    string pathsep = "\\";
+#else 
+    string pathsep = "/";
+#endif
 
-   // Now the SILO station number 
-   readParameter ("parameters", "station_number", stationNumber, 0, 100000);
-   if (stationNumber == 0)  // This happens during GetDescription call.
-      return;
-   
-   baseURL = getProperty("parameters", "url");
-   string requestString =
-      baseURL +
-      string("?format=apsim&station=") + itoa(stationNumber) +
-      string("&ddStart=1&mmStart=1&yyyyStart=1800&ddFinish=31&mmFinish=12&yyyyFinish=2100");
+    fileName = getCurrentDirectory() + pathsep + string("temp") + itoa(pid) + string(".met");
+    string csFileName = getCurrentDirectory() + pathsep + string("temp") + itoa(pid) + string(".cs");
+    ofstream f(csFileName);
 
-   tHTTP http;
-   bool ok = http.Get(fileName, requestString);
-   
-   // HTTP connection errors are caught here (eg webserver down / unreachable)
-   if (!ok) {throw std::runtime_error(http.ErrorMessage());}    
-   
-   // But you still may get a zero-sized reponse, eg invalid station number.
-   struct stat statbuf;
-   if (stat(fileName.c_str(), &statbuf) < 0) 
-       throw std::runtime_error("Temporary met file " + fileName + " is missing");
+    f << "//css_ref System;\n\
+using System;\n\
+using System.Net;\n\
+class Download {\n\
+    static int Main(string[] args)\n\
+    {\n\
+        using (var client = new WebClient())\n\
+        {\n\
+            try {client.DownloadFile(\"" + getProperty("parameters", "url") + "\", @\"" + fileName + "\");}\n\
+            catch (Exception e) {Console.WriteLine(@\"Error downloading to " + getCurrentDirectory() + "\n\" +  e.Message ); return(1);}\n\
+            return(0);\n\
+        }\n\
+    }\n\
+}";
+    f.close();
 
-   if (statbuf.st_size == 0) 
-       throw std::runtime_error("No data for station " + itoa(stationNumber) + 
-                                 " appeared from silo.\n\nIs the station number correct?");
+    string CommandLine = "%APSIM%" + pathsep + "Model" + pathsep + "cscs.exe";
+    replaceAll(CommandLine, "%APSIM%", getApsimDirectory());
+    if (CommandLine.find_first_of(' ') != string::npos)
+	   CommandLine = "\"" + CommandLine + "\"";
 
-   data.open(fileName);
-   }
+#ifndef __WIN32__
+    CommandLine = "mono " + CommandLine + " -nl"; 
+#else 
+    CommandLine += " /nl"; 
+#endif
+
+    if (csFileName.find_first_of(' ') != string::npos)
+        CommandLine += " \"" + csFileName + "\"";
+    else 
+        CommandLine += " " + csFileName;
+    
+    if (system(CommandLine.c_str()) != 0) {
+       throw std::runtime_error("Download error");
+    }    
+    unlink(csFileName.c_str());
+
+    data.open(fileName);
+    }
