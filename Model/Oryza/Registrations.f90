@@ -6,6 +6,7 @@ module Registrations
       integer :: incorp_fom
       integer :: sowing
       integer :: harvesting
+      integer :: newcrop
       integer :: create
       integer :: sysinit
       integer :: sow
@@ -31,6 +32,7 @@ module Registrations
          id%incorp_fom = add_registration(eventReg, 'incorpfom', FomLayerTypeDDML, '')
          id%sowing = add_registration(eventReg, 'sowing', nullTypeDDML, '')
          id%harvesting = add_registration(eventReg, 'harvesting', nullTypeDDML, '')
+         id%newcrop = add_registration(eventReg, 'newcrop', NewCropTypeDDML, '')
          id%create = add_registration(respondToEventReg, 'create', nullTypeDDML, '')
          id%sysinit = add_registration(respondToEventReg, 'sysinit', nullTypeDDML, '')
          id%sow = add_registration(respondToEventReg, 'sow', sowTypeDDML, '')

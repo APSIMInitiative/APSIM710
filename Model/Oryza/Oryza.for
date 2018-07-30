@@ -97,19 +97,19 @@
          REAL WRT                  ! Dry weight of roots  !kg ha-1
          REAL DVS                  ! Development stage of crop   !-
          REAL LESTRS               ! Drought stress factor reducing leaf expansion  !-
-         REAL TMPCOV               ! Temperature increase caused by greenhouse use (over seedbed)  !°C
-         REAL TAV                  ! Average daily temperature   !°C
-         REAL TAVD                 ! Average daytime temperature  !°C
+         REAL TMPCOV               ! Temperature increase caused by greenhouse use (over seedbed)  !ï¿½C
+         REAL TAV                  ! Average daily temperature   !ï¿½C
+         REAL TAVD                 ! Average daytime temperature  !ï¿½C
          REAL DTR                  ! Daily total global radiation  !J m-2 d-1
-         REAL TMAX                 ! Daily maximum temperature   !°C
-         REAL TMIN                 ! Daily minimum temperature   !°C
-         REAL hu                   ! Daily heat units effective for phenological development  !°Cd d-1
-         REAL hulv                 ! Daily heat units effective for leaf area development  !°Cd d-1
-         REAL DVR                  ! Development rate of crop   !°Cd-1
+         REAL TMAX                 ! Daily maximum temperature   !ï¿½C
+         REAL TMIN                 ! Daily minimum temperature   !ï¿½C
+         REAL hu                   ! Daily heat units effective for phenological development  !ï¿½Cd d-1
+         REAL hulv                 ! Daily heat units effective for leaf area development  !ï¿½Cd d-1
+         REAL DVR                  ! Development rate of crop   !ï¿½Cd-1
          REAL DAYL                 ! Astronomic daylength (base = 0 degrees)   !h
-         REAL TS                   ! Temperature sum for phenological development  !°Cd
+         REAL TS                   ! Temperature sum for phenological development  !ï¿½Cd
          REAL TSTR		 
-         REAL TSHCKD               ! Transplanting shock for phenological development   !°Cd
+         REAL TSHCKD               ! Transplanting shock for phenological development   !ï¿½Cd
          REAL LRSTRS               ! Drought stress factor causing leaf rolling  !-
          REAL LAIROL               ! Rolled leaf area index caused by drought  !ha leaf ha-1 soil
          REAL SSGA                 ! Specific green stem area  !ha stem kg-1 stem
@@ -185,10 +185,10 @@
          REAL GNGR                 ! Rate of increase in grain number   !no. ha-1 d-1
          REAL NSP                  ! Number of spikelets   !no. ha-1
          REAL sla                  ! Specific leaf area   !ha leaf kg-1 leaf
-         REAL RGRL                 ! Relative growth rate for leaf development   !°Cd-1
+         REAL RGRL                 ! Relative growth rate for leaf development   !ï¿½Cd-1
          REAL RNSTRS               ! Reduction factor on relative leaf growth rate caused by N stress  !-
          REAL GLAI                 ! Growth rate of leaf area index   !ha ha-1 d-1
-         REAL TSLV                 ! Temperature sum for leaf area development  !°Cd
+         REAL TSLV                 ! Temperature sum for leaf area development  !ï¿½Cd
          REAL DLDR                 ! Death rate of leaves caused by drought  !kg DM ha-1 d-1
          REAL DLDRT                ! Total death rate of leaves caused by drought  !kg DM ha-1 d-1
          REAL LDSTRS               ! Drought stress factor accelerating leaf death   !-
@@ -235,10 +235,10 @@
          REAL NACRS                ! Cumulative amount of nitrogen taken up by crop  !kg N ha-1
          REAL NTRTS                ! Amount of N translocated from roots to storage organs  !kg N ha-1
          real COLDTT               ! Accumulated cold degree days (degree days)
-         real TFERT                ! Average daily maximum temperature during flowering  !°C
+         real TFERT                ! Average daily maximum temperature during flowering  !ï¿½C
          REAL NTFERT               ! Number of days of flowering period  !d
-         REAL TSLVTR               ! Temperature sum for leaf area development at transplanting  !°Cd
-         REAL TSHCKL               ! Transplanting shock for leaf area development  !°Cd
+         REAL TSLVTR               ! Temperature sum for leaf area development at transplanting  !ï¿½Cd
+         REAL TSHCKL               ! Transplanting shock for leaf area development  !ï¿½Cd
          REAL X                    ! Intermediate variable for numerical integration  !-
          REAL TESTSET              ! Maximum difference between simulated and user-supplied SLA  !ha leaf kg-1 leaf
          REAL WLVGEXP              ! Value of WLVG at end of exponential growth phase after transplanting  !kg ha-1
@@ -278,23 +278,23 @@
          Real nplsb                 ! Number of plants in seedbed   !pl m-2
          Real nplds                 ! Number of plants direct-seeded in main field  !pl m-2
          REAL zrttr                 ! Root length/depth at transplanting  !m
-         REAL TMPSB                 ! Temperature increase caused by greenhouse use (over seedbed)  !°C
-         REAL TBD                   ! Base temperature for development   !°C
-         REAL TOD                   ! Optimum temperature for development   !°C
-         REAL TMD                   ! Maximum temperature for development   !°C
-         REAL DVRJ                  ! Development rate during juvenile phase  !°Cd-1
-         REAL DVRI                  ! Development rate during photoperiod-sensitive phase  !°Cd-1
-         REAL DVRP                  ! Development rate during panicle development phase  !°Cd-1
-         REAL DVRR                  ! Development rate in reproductive phase (post anthesis)  !°Cd-1
+         REAL TMPSB                 ! Temperature increase caused by greenhouse use (over seedbed)  !ï¿½C
+         REAL TBD                   ! Base temperature for development   !ï¿½C
+         REAL TOD                   ! Optimum temperature for development   !ï¿½C
+         REAL TMD                   ! Maximum temperature for development   !ï¿½C
+         REAL DVRJ                  ! Development rate during juvenile phase  !ï¿½Cd-1
+         REAL DVRI                  ! Development rate during photoperiod-sensitive phase  !ï¿½Cd-1
+         REAL DVRP                  ! Development rate during panicle development phase  !ï¿½Cd-1
+         REAL DVRR                  ! Development rate in reproductive phase (post anthesis)  !ï¿½Cd-1
          REAL PPSE                  ! Photoperiod sensitivity   !h-1
          REAL MOPP                  ! Maximum optimum photoperiod   !h
-         REAL SHCKD                 ! Delay parameter in phenology   !°Cd (°Cd)-1
+         REAL SHCKD                 ! Delay parameter in phenology   !ï¿½Cd (ï¿½Cd)-1
          REAL FRPAR                 ! Fraction of short-wave radiation that is photosynthetically active  !-
          REAL CO2REF                ! Reference level of atmospheric CO2 (340 ppm)  !ppm
          REAL SCP                   ! Scattering coefficient of leaves for photosynthetically active radiation  !-
          REAL tclstr                ! Time coefficient for loss of stem reserves  !d-1
-         REAL Q10                   ! Factor accounting for increase in maintenance respiration with a 10 °C rise in temperature  !-
-         REAL TREF                  ! Reference temperature  !°C
+         REAL Q10                   ! Factor accounting for increase in maintenance respiration with a 10 ï¿½C rise in temperature  !-
+         REAL TREF                  ! Reference temperature  !ï¿½C
          REAL MAINLV                ! Maintenance respiration coefficient of leaves  !kg CH2O kg-1 DM d-1
          REAL MAINSO                ! Maintenance respiration coefficient of storage organs  !kg CH2Okg-1 DM d-1
          REAL MAINST                ! Maintenance respiration coefficient of stems  !kg CH2O kg-1 DM d-1
@@ -315,9 +315,9 @@
          REAL CSLA                  !C parameter of function to calculate SLA  !-
          REAL DSLA                  !D parameter of function to calculate SLA  !-
          REAL SLAMAX                !Maximum value of specific leaf area  !ha leaf kg-1 leaf
-         REAL RGRLMX                !Minimum value of relative growth rate of leaf area  !°Cd-1
-         REAL RGRLMN                !Maximum value of relative growth rate of leaf area  !°Cd-1
-         REAL SHCKL                 !Delay parameter in development   !°Cd (°Cd)-1
+         REAL RGRLMX                !Minimum value of relative growth rate of leaf area  !ï¿½Cd-1
+         REAL RGRLMN                !Maximum value of relative growth rate of leaf area  !ï¿½Cd-1
+         REAL SHCKL                 !Delay parameter in development   !ï¿½Cd (ï¿½Cd)-1
          REAL FCLV                  !Mass fraction of carbon in leaves  !kg C kg-1 DM
          REAL FCST                  !Mass fraction of carbon in stems  !kg C kg-1 DM
          REAL FCSO                  !Mass fraction of carbon in storage organs  !kg C kg-1 DM
@@ -2980,9 +2980,9 @@
 ! TOD     R4  Optimum temperature for development (oC)              I  *
 ! TMD     R4  Maximum temperature for development (oC)              I  *
 ! HU      R4  Heat units (oCd d-1)                                  O  *
-! TD  !Hourly temperature  !°C                                                                     *
-! TM  !Mean daily temperature  !°C
-! TT  !Daily increment in heat units   !°Cd d-1
+! TD  !Hourly temperature  !ï¿½C                                                                     *
+! TM  !Mean daily temperature  !ï¿½C
+! TT  !Daily increment in heat units   !ï¿½Cd d-1
 !
 !  FILE usage : none                                                   *
 !----------------------------------------------------------------------*
@@ -3072,7 +3072,7 @@
 ! TSHCKD  R4  Transpl. shock for Oryza_PHENOL. development (oCd)          O  *
 ! DL  !Photoperiod daylength  !h                                                                     *
 ! PPFAC  !Factor determining photoperiod sensitivity  !-
-! TSTR  !Temperature sum for phenological development at transplanting  !°Cd
+! TSTR  !Temperature sum for phenological development at transplanting  !ï¿½Cd
 !
 !  FILE usage : none                                                   *
 !----------------------------------------------------------------------*
@@ -3856,13 +3856,13 @@
 ! GNGR    R4  Rate of increase in grain number (no ha-1 d-1)        O  *
 ! SPFERT  R4  Spikelet fertility (-)                                O  *
 ! GRAINS  L*  Fortran logical function whether grains are formed    O  *
-! COLDTT  !Accumulated cold degree days  !°Cd                                                                     *
-! CTT  !Cold degree day  !°Cd
+! COLDTT  !Accumulated cold degree days  !ï¿½Cd                                                                     *
+! CTT  !Cold degree day  !ï¿½Cd
 ! DVSF  !Development stage of crop at flowering  !-
 ! DVSPI  !Development stage of crop at panicle initiation  !-
 ! NTFERT  !Number of days of flowering period  !d
-! TFERT   !Average daily maximum temperature during flowering  !°C
-! TINCR   !Temperature increase because of leaf rolling  !°C
+! TFERT   !Average daily maximum temperature during flowering  !ï¿½C
+! TINCR   !Temperature increase because of leaf rolling  !ï¿½C
 !  FILE usage : none                                                   *
 !----------------------------------------------------------------------*
       SUBROUTINE Oryza_SUBGRN()
@@ -3950,7 +3950,7 @@
 ! TEST  !Difference between simulated and user-supplied SLA  !ha leaf kg-1 leaf
 ! TESTL  !Logical variable to indicate whether the difference between simulated and imposed SLA is smaller than TESTSET  !-
 ! TESTSET  !Maximum difference between simulated and user-supplied SLA  !ha leaf kg-1 leaf
-! TSLVTR  !Temperature sum for leaf area development at transplanting  !°Cd
+! TSLVTR  !Temperature sum for leaf area development at transplanting  !ï¿½Cd
 ! WLVGEXP  !Value of WLVG at end of exponential growth phase after transplanting  !kg ha-1
 ! WLVGEXS  !Value of WLVG at end of exponential growth phase in seedbed  !kg ha-1
 !
@@ -4181,7 +4181,7 @@
 ! RWLVG1  !Reduction in leaf weight at transplanting  !kg ha-1
 ! RWSTR1  !Reduction in stem reserve weight at transplanting  !kg ha-1
 ! TEFF  !Factor accounting for effect of temperature on respiration  !-
-! TSHCKL  !Transplanting shock for leaf area development  !°Cd
+! TSHCKL  !Transplanting shock for leaf area development  !ï¿½Cd
 ! WLVGIT  !Temporary storage variable of WLVG  !kg ha-1
 !
 !
@@ -5957,6 +5957,10 @@
 *     190599 jngh removed reference to version and mes_presence
 *     191099 dph  moved the zero_variables to the action_create handler
 
+*+  Local Variables
+      type(NewCropType) :: new_crop
+
+
 *+  Constant Values
       character*(*) myname                 ! Name of this procedure
       parameter (myname = 'apsim_oryza')
@@ -5971,6 +5975,10 @@
          call oryza_create ()
          call write_string ('   - Initialising')
          call oryza_Init ()
+
+         call get_name(new_crop%sender)
+         new_crop%crop_type = p%crop_type
+         call publish_NewCrop(id%newcrop, new_crop)
 
       else if (Action.eq.ACTION_Prepare) then
          call oryza_prepare ()

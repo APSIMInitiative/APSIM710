@@ -1,4 +1,4 @@
-<folder version="36" name="Simulations">
+<folder version="37" creator="Apsim 7.10-r4176" name="Simulations">
   <simulation name="Upland Aus">
     <memo>Upland broadcast - local cultivar - short season low yielding.</memo>
     <climatechange>
@@ -244,6 +244,10 @@
           <CN2Bare>84</CN2Bare>
           <CNRed>20</CNRed>
           <CNCov>0.8</CNCov>
+          <Slope>NaN</Slope>
+          <DischargeWidth>NaN</DischargeWidth>
+          <CatchmentArea>NaN</CatchmentArea>
+          <MaxPond>NaN</MaxPond>
           <Thickness>
             <double>150</double>
             <double>150</double>
@@ -328,6 +332,7 @@
             <double>1</double>
             <double>1</double>
           </FInert>
+          <OCUnits>Total</OCUnits>
         </SoilOrganicMatter>
         <Analysis>
           <Thickness>
@@ -376,7 +381,6 @@
           </CL>
         </Analysis>
         <Sample name="Initial nitrogen">
-          <Date type="date" description="Sample date:" />
           <Thickness>
             <double>150</double>
             <double>150</double>
@@ -410,9 +414,13 @@
             <double>0.1</double>
             <double>0.1</double>
           </NH4>
+          <NO3Units>ppm</NO3Units>
+          <NH4Units>ppm</NH4Units>
+          <SWUnits>Volumetric</SWUnits>
+          <OCUnits>Total</OCUnits>
+          <PHUnits>Water</PHUnits>
         </Sample>
         <Sample name="Initial water">
-          <Date type="date" description="Sample date:" />
           <Thickness>
             <double>150</double>
             <double>150</double>
@@ -435,6 +443,11 @@
             <double>0.425</double>
             <double>0.425</double>
           </SW>
+          <NO3Units>ppm</NO3Units>
+          <NH4Units>ppm</NH4Units>
+          <SWUnits>Volumetric</SWUnits>
+          <OCUnits>Total</OCUnits>
+          <PHUnits>Water</PHUnits>
         </Sample>
       </Soil>
       <surfaceom name="SurfaceOM">
@@ -2077,6 +2090,632 @@ endif
             <Y>tnsoil</Y>
             <Y>TopsTotalN</Y>
             <Y>no3()</Y>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+        </Graph>
+        <Graph name="Stress">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>ldstrs</Y>
+            <Y>lestrs</Y>
+            <Y>lrstrs</Y>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+        </Graph>
+        <Graph name="Irrigation">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>irrig</Y>
+            <YRight>evap_amount</YRight>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+        </Graph>
+        <Graph name="Residue">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>surfaceom_wt</Y>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+        </Graph>
+      </outputfile>
+    </area>
+  </simulation>
+  <simulation name="Upland Aus Swim">
+    <memo>Upland broadcast - local cultivar - short season low yielding.
+
+
+SWIM characterisation needs work.</memo>
+    <metfile name="met">
+      <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Bhola.met</filename>
+    </metfile>
+    <clock>
+      <start_date type="date" description="Select the start date of the simulation">1/01/1988</start_date>
+      <end_date type="date" description="Select the end date of the simulation">30/6/1989</end_date>
+    </clock>
+    <summaryfile />
+    <area name="paddock">
+      <Soil name="SWIM Soil">
+        <RecordNumber>0</RecordNumber>
+        <Latitude>0</Latitude>
+        <Longitude>0</Longitude>
+        <YearOfSampling>0</YearOfSampling>
+        <Analysis>
+          <PHUnits>Water</PHUnits>
+          <BoronUnits>HotWater</BoronUnits>
+        </Analysis>
+        <Water>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>500</double>
+            <double>500</double>
+          </Thickness>
+          <BD>
+            <double>1.458</double>
+            <double>1.348</double>
+            <double>1.413</double>
+            <double>1.4</double>
+            <double>1.36</double>
+            <double>1.32</double>
+            <double>1.32</double>
+            <double>1.32</double>
+            <double>1.32</double>
+          </BD>
+          <AirDry>
+            <double>0.18</double>
+            <double>0.19</double>
+            <double>0.19</double>
+            <double>0.2</double>
+            <double>0.25</double>
+            <double>0.28</double>
+            <double>0.3</double>
+            <double>0.34</double>
+            <double>0.36</double>
+          </AirDry>
+          <LL15>
+            <double>0.18</double>
+            <double>0.19</double>
+            <double>0.2</double>
+            <double>0.25</double>
+            <double>0.27</double>
+            <double>0.3</double>
+            <double>0.34</double>
+            <double>0.38</double>
+            <double>0.38</double>
+          </LL15>
+          <DUL>
+            <double>0.345</double>
+            <double>0.311</double>
+            <double>0.387</double>
+            <double>0.392</double>
+            <double>0.407</double>
+            <double>0.407</double>
+            <double>0.407</double>
+            <double>0.41</double>
+            <double>0.41</double>
+          </DUL>
+          <SAT>
+            <double>0.42</double>
+            <double>0.461</double>
+            <double>0.437</double>
+            <double>0.442</double>
+            <double>0.457</double>
+            <double>0.457</double>
+            <double>0.457</double>
+            <double>0.457</double>
+            <double>0.457</double>
+          </SAT>
+          <KS>
+            <double>25</double>
+            <double>25</double>
+            <double>25</double>
+            <double>25</double>
+            <double>25</double>
+            <double>25</double>
+            <double>25</double>
+            <double>25</double>
+            <double>25</double>
+          </KS>
+          <SoilCrop name="rice">
+            <Thickness>
+              <double>150</double>
+              <double>150</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>500</double>
+              <double>500</double>
+            </Thickness>
+            <LL>
+              <double>0.18</double>
+              <double>0.19</double>
+              <double>0.22</double>
+              <double>0.27</double>
+              <double>0.3</double>
+              <double>0.35</double>
+              <double>0.407</double>
+              <double>0.41</double>
+              <double>0.41</double>
+            </LL>
+            <KL>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.06</double>
+              <double>0.03</double>
+              <double>0.02</double>
+              <double>0.02</double>
+              <double>0.02</double>
+              <double>0.02</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </XF>
+          </SoilCrop>
+        </Water>
+        <Sample name="Soil sample">
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>500</double>
+            <double>500</double>
+          </Thickness>
+          <NO3>
+            <double>0.4</double>
+            <double>0.6</double>
+            <double>0.6</double>
+            <double>0.3</double>
+            <double>0.7</double>
+            <double>0.4</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+          </NO3>
+          <NH4>
+            <double>0.6</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+            <double>0.1</double>
+          </NH4>
+          <SW>
+            <double>0.345</double>
+            <double>0.311</double>
+            <double>0.387</double>
+            <double>0.392</double>
+            <double>0.407</double>
+            <double>0.407</double>
+            <double>0.407</double>
+            <double>0.41</double>
+            <double>0.41</double>
+          </SW>
+          <PH>
+            <double>6.5</double>
+            <double>7</double>
+            <double>7.4</double>
+            <double>8.1</double>
+            <double>8.3</double>
+            <double>8.5</double>
+            <double>8.5</double>
+            <double>8.5</double>
+            <double>8.5</double>
+          </PH>
+          <NO3Units>ppm</NO3Units>
+          <NH4Units>ppm</NH4Units>
+          <SWUnits>Volumetric</SWUnits>
+          <OCUnits>Total</OCUnits>
+          <PHUnits>Water</PHUnits>
+        </Sample>
+        <LayerStructure>
+          <Thickness>
+            <double>10</double>
+            <double>20</double>
+            <double>30</double>
+            <double>40</double>
+            <double>100</double>
+            <double>100</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>500</double>
+            <double>500</double>
+          </Thickness>
+        </LayerStructure>
+        <SoilOrganicMatter>
+          <RootCN>40</RootCN>
+          <RootWt>1500</RootWt>
+          <SoilCN>12.5</SoilCN>
+          <EnrACoeff>7.4</EnrACoeff>
+          <EnrBCoeff>0.2</EnrBCoeff>
+          <Thickness>
+            <double>150</double>
+            <double>150</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>300</double>
+            <double>500</double>
+            <double>500</double>
+          </Thickness>
+          <OC>
+            <double>1.5</double>
+            <double>1.2</double>
+            <double>0.75</double>
+            <double>0.38</double>
+            <double>0.23</double>
+            <double>0.15</double>
+            <double>0.15</double>
+            <double>0.15</double>
+            <double>0.15</double>
+          </OC>
+          <FBiom>
+            <double>0.04</double>
+            <double>0.02</double>
+            <double>0.02</double>
+            <double>0.02</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+            <double>0.01</double>
+          </FBiom>
+          <FInert>
+            <double>0.4</double>
+            <double>0.6</double>
+            <double>0.8</double>
+            <double>0.9</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+            <double>1</double>
+          </FInert>
+          <OCUnits>Total</OCUnits>
+        </SoilOrganicMatter>
+        <Swim>
+          <Salb>0.13</Salb>
+          <CN2Bare>75</CN2Bare>
+          <CNRed>20</CNRed>
+          <CNCov>0.8</CNCov>
+          <KDul>0.1</KDul>
+          <PSIDul>-100</PSIDul>
+          <VC>true</VC>
+          <DTmin>0</DTmin>
+          <DTmax>1440</DTmax>
+          <MaxWaterIncrement>10</MaxWaterIncrement>
+          <SpaceWeightingFactor>0</SpaceWeightingFactor>
+          <SoluteSpaceWeightingFactor>0</SoluteSpaceWeightingFactor>
+          <Diagnostics>false</Diagnostics>
+          <SwimSoluteParameters>
+            <Dis>15</Dis>
+            <Disp>1</Disp>
+            <A>1</A>
+            <DTHC>0</DTHC>
+            <DTHP>1</DTHP>
+            <WaterTableCl>0</WaterTableCl>
+            <WaterTableNO3>0</WaterTableNO3>
+            <WaterTableNH4>0</WaterTableNH4>
+            <WaterTableUrea>0</WaterTableUrea>
+            <WaterTableTracer>0</WaterTableTracer>
+            <WaterTableMineralisationInhibitor>0</WaterTableMineralisationInhibitor>
+            <WaterTableUreaseInhibitor>0</WaterTableUreaseInhibitor>
+            <WaterTableNitrificationInhibitor>0</WaterTableNitrificationInhibitor>
+            <WaterTableDenitrificationInhibitor>0</WaterTableDenitrificationInhibitor>
+            <Thickness>
+              <double>1000</double>
+              <double>1000</double>
+              <double>1000</double>
+            </Thickness>
+            <NO3Exco>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </NO3Exco>
+            <NO3FIP>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </NO3FIP>
+            <NH4Exco>
+              <double>100</double>
+              <double>100</double>
+              <double>100</double>
+            </NH4Exco>
+            <NH4FIP>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </NH4FIP>
+            <UreaExco>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </UreaExco>
+            <UreaFIP>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </UreaFIP>
+            <ClExco>
+              <double>0</double>
+              <double>0</double>
+              <double>0</double>
+            </ClExco>
+            <ClFIP>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </ClFIP>
+          </SwimSoluteParameters>
+          <SwimWaterTable>
+            <WaterTableDepth>2800</WaterTableDepth>
+          </SwimWaterTable>
+          <SwimSubsurfaceDrain>
+            <DrainDepth>600</DrainDepth>
+            <DrainSpacing>30000</DrainSpacing>
+            <DrainRadius>50</DrainRadius>
+            <Klat>1000</Klat>
+            <ImpermDepth>3000</ImpermDepth>
+          </SwimSubsurfaceDrain>
+        </Swim>
+      </Soil>
+      <surfaceom name="SurfaceOM">
+        <PoolName type="text" description="Organic Matter pool name">wheat_stubble</PoolName>
+        <type type="list" listvalues="bambatsi,barley,base_type,broccoli,camaldulensis,canola,centro,chickpea,chikenmanure_base,cm,cmA,cmB,constants,cotton,cowpea,danthonia,fababean,fieldpea,fym,gbean,globulus,goatmanure,grandis,grass,horsegram,inert,lablab,lentil,lucerne,lupin,maize,manB,manure,medic,millet,mucuna,nativepasture,navybean,oats,orobanche,peanut,pigeonpea,potato,rice,sorghum,soybean,stylo,sugar,sunflower,sweetcorn,sweetsorghum,tillage,tithonia,vetch,weed,wheat" description="Organic Matter type">wheat</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">1000</mass>
+        <cnr type="text" description="C:N ratio of initial residue">80</cnr>
+        <cpr type="text" description="C:P ratio of initial residue (optional)">
+        </cpr>
+        <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
+      </surfaceom>
+      <fertiliser name="Fertiliser" />
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">300</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.6</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+      </irrigation>
+      <rice>
+        <estab type="text" description="estab">
+        </estab>
+        <sbdur type="text" description="sbdur">
+        </sbdur>
+        <nplh type="text" description="nplh">
+        </nplh>
+        <nh type="text" description="nh">
+        </nh>
+        <nplsb type="text" description="nplsb">
+        </nplsb>
+        <nplds type="text" description="nplds">
+        </nplds>
+        <eo_source type="text" description="eo_source">eo</eo_source>
+      </rice>
+      <folder name="Manager folder">
+        <manager name="Rice sowing rule">
+          <script>
+            <text>
+!Inital variables
+Irrigation_amount = 0
+evap_amount = 0</text>
+            <event>init</event>
+          </script>
+          <script>
+            <text>!Upland Aus
+                                      ! plant 25th Mar (Mar-July)
+if (day = 84) then
+    rice sow cultivar = local, establishment = direct-seed, nplds = 180 (p/m2)
+endif
+</text>
+            <event>start_of_day</event>
+          </script>
+          <script>
+            <text>
+if (rice.plant_status = 'dead') then
+  rice end_crop
+  Irrigation_amount = 0                                                   !reset  counters
+  evap_amount = 0
+                                                                                           !remove stubble
+  SurfaceOM tillage type = burn, remove = 0.95
+endif
+
+
+                                                                                           !counters
+ Irrigation_amount = Irrigation_amount + irrig_tot
+ evap_amount = evap_amount + es
+
+</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager name="Fertilise_sowing">
+          <ui>
+            <category description="When should fertiliser be applied" type="category" />
+            <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">15-aug</fert_date>
+            <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
+            <category description="Fertiliser application details" type="category" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">0</fert_amount>
+            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, UAN_N, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Fertiliser type : ">urea_N</fert_type>
+          </ui>
+          <script>
+            <text>
+         if (today = date('[fert_date]') then
+            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+            if (N_topsoil &lt; [fert_criteria]) then
+               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
+            endif
+         endif </text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="First_Fertilise_DAS">
+          <ui>
+            <category description="When should fertiliser be applied" type="category" />
+            <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">05-Apr</fert_date>
+            <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
+            <category description="Fertiliser application details" type="category" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">15</fert_amount>
+            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, UAN_N, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Fertiliser type : ">urea_N</fert_type>
+          </ui>
+          <script>
+            <text>
+         if (today = date('[fert_date]') then
+            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+            if (N_topsoil &lt; [fert_criteria]) then
+               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
+            endif
+         endif </text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Second_Fertilise_DAS">
+          <ui>
+            <category description="When should fertiliser be applied" type="category" />
+            <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">25-Apr</fert_date>
+            <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
+            <category description="Fertiliser application details" type="category" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">20</fert_amount>
+            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, UAN_N, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Fertiliser type : ">urea_N</fert_type>
+          </ui>
+          <script>
+            <text>
+         if (today = date('[fert_date]') then
+            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+            if (N_topsoil &lt; [fert_criteria]) then
+               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
+            endif
+         endif </text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+        <manager name="Third_Fertilise_DAS">
+          <ui>
+            <category description="When should fertiliser be applied" type="category" />
+            <fert_date type="ddmmmdate" description="Enter fertiliser date (dd-mmm) : ">10-May</fert_date>
+            <fert_criteria type="text" description="Don't add fertiliser if N in top 2 layers exceeds (kg/ha) : ">1000</fert_criteria>
+            <category description="Fertiliser application details" type="category" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">Fertiliser</fertmodule>
+            <fert_amount type="text" description="Amount of fertiliser to apply (kg/ha) : ">40</fert_amount>
+            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, UAN_N, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Fertiliser type : ">urea_N</fert_type>
+          </ui>
+          <script>
+            <text>
+         if (today = date('[fert_date]') then
+            N_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+            if (N_topsoil &lt; [fert_criteria]) then
+               [fertmodule] apply amount = [fert_amount] (kg/ha), depth = 50 (mm), type = [fert_type] ()
+            endif
+         endif </text>
+            <event>start_of_day</event>
+          </script>
+        </manager>
+      </folder>
+      <outputfile name="Output">
+        <filename output="yes">Upland Aus Swim Output.out</filename>
+        <title>Upland Aus Swim Output</title>
+        <variables name="Variables">
+          <variable>dd/mm/yyyy as Date</variable>
+          <variable>year</variable>
+          <variable>crop_type</variable>
+          <variable>DaysAfterSowing</variable>
+          <variable>dae as Rice.DaysAfterSowing</variable>
+          <variable>cropsta</variable>
+          <variable>wagt</variable>
+          <variable>wso</variable>
+          <variable>rlai</variable>
+          <variable>zrt</variable>
+          <variable>ldstrs</variable>
+          <variable>lestrs</variable>
+          <variable>lrstrs</variable>
+          <variable>ancr</variable>
+          <variable>irrigation_amount as irrig</variable>
+          <variable>evap_amount </variable>
+          <variable>biomass</variable>
+          <variable>yield</variable>
+          <variable>TopsTotalN</variable>
+          <variable>esw</variable>
+          <variable>tnsoil as N_avail_4_rice</variable>
+          <variable>NO3()</variable>
+          <variable>surfaceom_wt</variable>
+          <variable>water_table</variable>
+        </variables>
+        <events name="Reporting Frequency">
+          <event description="End of daily simulation time step">daily</event>
+        </events>
+        <Graph name="Yield">
+          <Plot>
+            <SeriesType>Bar</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>wso</Y>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+        </Graph>
+        <Graph name="Biomass">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>wagt</Y>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+        </Graph>
+        <Graph name="Water">
+          <Plot>
+            <SeriesType>Bar</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>esw</Y>
+            <YRight>water_table</YRight>
+            <GDApsimFileReader name="OutputFile" />
+          </Plot>
+        </Graph>
+        <Graph name="Nitrogen">
+          <Plot>
+            <SeriesType>Solid line</SeriesType>
+            <PointType>None</PointType>
+            <X>Date</X>
+            <Y>ancr</Y>
+            <Y>TopsTotalN</Y>
+            <Y>NO3()</Y>
             <GDApsimFileReader name="OutputFile" />
           </Plot>
         </Graph>
