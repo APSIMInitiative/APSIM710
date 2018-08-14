@@ -63,6 +63,10 @@
          character cultivar*20     ! name of cultivar
          real no3(max_layer)       ! amount of NO3 in each soil layer (kg/ha)
          real nh4(max_layer)       ! amount of NH4 in each soil layer (kg/ha)
+         real chloride(max_layer)  ! amount of chloride in each soil layer (ppm)
+         real osm(max_layer)     ! osmotic potential of the soil solution with the included salts (kPa)
+         real av_chloride          ! average chloride over rice rooting depth (ppm)
+         real dsm                  ! average dS/m over rice rooting depth (dS/m)
          REAL MSKPA(max_layer)     ! Array with soil water potential/layer (KPa)
          REAL WCL(max_layer)       ! Array of actual soil water content, per soil layer (m3/m3)
          Real Fact(max_layer)      ! Soil-water tension (pF)
@@ -97,19 +101,19 @@
          REAL WRT                  ! Dry weight of roots  !kg ha-1
          REAL DVS                  ! Development stage of crop   !-
          REAL LESTRS               ! Drought stress factor reducing leaf expansion  !-
-         REAL TMPCOV               ! Temperature increase caused by greenhouse use (over seedbed)  !ï¿½C
-         REAL TAV                  ! Average daily temperature   !ï¿½C
-         REAL TAVD                 ! Average daytime temperature  !ï¿½C
+         REAL TMPCOV               ! Temperature increase caused by greenhouse use (over seedbed)  !°C
+         REAL TAV                  ! Average daily temperature   !°C
+         REAL TAVD                 ! Average daytime temperature  !°C
          REAL DTR                  ! Daily total global radiation  !J m-2 d-1
-         REAL TMAX                 ! Daily maximum temperature   !ï¿½C
-         REAL TMIN                 ! Daily minimum temperature   !ï¿½C
-         REAL hu                   ! Daily heat units effective for phenological development  !ï¿½Cd d-1
-         REAL hulv                 ! Daily heat units effective for leaf area development  !ï¿½Cd d-1
-         REAL DVR                  ! Development rate of crop   !ï¿½Cd-1
+         REAL TMAX                 ! Daily maximum temperature   !°C
+         REAL TMIN                 ! Daily minimum temperature   !°C
+         REAL hu                   ! Daily heat units effective for phenological development  !°Cd d-1
+         REAL hulv                 ! Daily heat units effective for leaf area development  !°Cd d-1
+         REAL DVR                  ! Development rate of crop   !°Cd-1
          REAL DAYL                 ! Astronomic daylength (base = 0 degrees)   !h
-         REAL TS                   ! Temperature sum for phenological development  !ï¿½Cd
+         REAL TS                   ! Temperature sum for phenological development  !°Cd
          REAL TSTR		 
-         REAL TSHCKD               ! Transplanting shock for phenological development   !ï¿½Cd
+         REAL TSHCKD               ! Transplanting shock for phenological development   !°Cd
          REAL LRSTRS               ! Drought stress factor causing leaf rolling  !-
          REAL LAIROL               ! Rolled leaf area index caused by drought  !ha leaf ha-1 soil
          REAL SSGA                 ! Specific green stem area  !ha stem kg-1 stem
@@ -156,6 +160,8 @@
          REAL DPARI                ! The amount of photosynthetically active radiation that is absorbed in a day by canopy  !MJ m-2 d-1
          REAL DPAR                 ! Daily incoming photosynthetically active radiation  !MJ m-2 d-1
          REAL PCEW                 ! Effect of drought stress on daily total gross CO2 assimilation of crop; reduction in potential transpiration rate  !-
+         REAL fsalttr             ! Effect of salt stress on reduction in potential transpiration rate add Ando August 20 2013!-
+         REAL fsaltpn             ! Effect of salt stress on daily total gross CO2 assimilation of crop add Ando August 20 2013 !-
          REAL FSH                  ! Fraction of total dry matter allocated to shoots  !-
          REAL FLV                  ! Fraction of shoot dry matter allocated to leaves  !-
          REAL FST                  ! Fraction of shoot dry matter allocated to stems  !-
@@ -185,10 +191,10 @@
          REAL GNGR                 ! Rate of increase in grain number   !no. ha-1 d-1
          REAL NSP                  ! Number of spikelets   !no. ha-1
          REAL sla                  ! Specific leaf area   !ha leaf kg-1 leaf
-         REAL RGRL                 ! Relative growth rate for leaf development   !ï¿½Cd-1
+         REAL RGRL                 ! Relative growth rate for leaf development   !°Cd-1
          REAL RNSTRS               ! Reduction factor on relative leaf growth rate caused by N stress  !-
          REAL GLAI                 ! Growth rate of leaf area index   !ha ha-1 d-1
-         REAL TSLV                 ! Temperature sum for leaf area development  !ï¿½Cd
+         REAL TSLV                 ! Temperature sum for leaf area development  !°Cd
          REAL DLDR                 ! Death rate of leaves caused by drought  !kg DM ha-1 d-1
          REAL DLDRT                ! Total death rate of leaves caused by drought  !kg DM ha-1 d-1
          REAL LDSTRS               ! Drought stress factor accelerating leaf death   !-
@@ -235,10 +241,10 @@
          REAL NACRS                ! Cumulative amount of nitrogen taken up by crop  !kg N ha-1
          REAL NTRTS                ! Amount of N translocated from roots to storage organs  !kg N ha-1
          real COLDTT               ! Accumulated cold degree days (degree days)
-         real TFERT                ! Average daily maximum temperature during flowering  !ï¿½C
+         real TFERT                ! Average daily maximum temperature during flowering  !°C
          REAL NTFERT               ! Number of days of flowering period  !d
-         REAL TSLVTR               ! Temperature sum for leaf area development at transplanting  !ï¿½Cd
-         REAL TSHCKL               ! Transplanting shock for leaf area development  !ï¿½Cd
+         REAL TSLVTR               ! Temperature sum for leaf area development at transplanting  !°Cd
+         REAL TSHCKL               ! Transplanting shock for leaf area development  !°Cd
          REAL X                    ! Intermediate variable for numerical integration  !-
          REAL TESTSET              ! Maximum difference between simulated and user-supplied SLA  !ha leaf kg-1 leaf
          REAL WLVGEXP              ! Value of WLVG at end of exponential growth phase after transplanting  !kg ha-1
@@ -251,7 +257,8 @@
          real rat_graze_perc        ! daily rat-grazing proportion of crop (if vegetative applied to g%WLVG (dry weight of leaves) 
                                     !                                     if reproductive applied to g%WSO (weight of storage organs))
          real gr_rat_grazed         !  grain weight grazed by rats on daily basis (kg/ha/d)
-         REAL llv_rat               !  Loss rate of leaf weightdue to rat grazing !kg ha-1 d-1 
+         REAL llv_rat               !  Loss rate of leaf weightdue to rat grazing !kg ha-1 d-1
+         real daily_C_resp_crop     !  daily C respiration of crop (maintenance + growth) - dsg 130614 for AgMIP Rice team work 
 
          character plant_status*5  ! status of crop
 
@@ -278,23 +285,27 @@
          Real nplsb                 ! Number of plants in seedbed   !pl m-2
          Real nplds                 ! Number of plants direct-seeded in main field  !pl m-2
          REAL zrttr                 ! Root length/depth at transplanting  !m
-         REAL TMPSB                 ! Temperature increase caused by greenhouse use (over seedbed)  !ï¿½C
-         REAL TBD                   ! Base temperature for development   !ï¿½C
-         REAL TOD                   ! Optimum temperature for development   !ï¿½C
-         REAL TMD                   ! Maximum temperature for development   !ï¿½C
-         REAL DVRJ                  ! Development rate during juvenile phase  !ï¿½Cd-1
-         REAL DVRI                  ! Development rate during photoperiod-sensitive phase  !ï¿½Cd-1
-         REAL DVRP                  ! Development rate during panicle development phase  !ï¿½Cd-1
-         REAL DVRR                  ! Development rate in reproductive phase (post anthesis)  !ï¿½Cd-1
+         REAL TMPSB                 ! Temperature increase caused by greenhouse use (over seedbed)  !°C
+         REAL TBD                   ! Base temperature for development   !°C
+         REAL TOD                   ! Optimum temperature for development   !°C
+         REAL TMD                   ! Maximum temperature for development   !°C
+         REAL DVRJ                  ! Development rate during juvenile phase  !°Cd-1
+         REAL DVRI                  ! Development rate during photoperiod-sensitive phase  !°Cd-1
+         REAL DVRP                  ! Development rate during panicle development phase  !°Cd-1
+         REAL DVRR                  ! Development rate in reproductive phase (post anthesis)  !°Cd-1
          REAL PPSE                  ! Photoperiod sensitivity   !h-1
          REAL MOPP                  ! Maximum optimum photoperiod   !h
-         REAL SHCKD                 ! Delay parameter in phenology   !ï¿½Cd (ï¿½Cd)-1
+	 REAL salinity_resilience_photo    ! varietal parameter for salinity resilience - photosynthesis (/dS/m) - slope of response curve
+	 REAL salinity_resilience_transp   ! varietal parameter for salinity resilience - transpiration (/dS/m) - slope of response curve
+	 REAL salinity_tol_photo    ! varietal parameter describing salinity tolerance of photosynthetic response (dS/m)  
+	 REAL salinity_tol_transp   ! varietal parameter describing salinity tolerance of transpiration response (dS/m)
+         REAL SHCKD                 ! Delay parameter in phenology   !°Cd (°Cd)-1
          REAL FRPAR                 ! Fraction of short-wave radiation that is photosynthetically active  !-
          REAL CO2REF                ! Reference level of atmospheric CO2 (340 ppm)  !ppm
          REAL SCP                   ! Scattering coefficient of leaves for photosynthetically active radiation  !-
          REAL tclstr                ! Time coefficient for loss of stem reserves  !d-1
-         REAL Q10                   ! Factor accounting for increase in maintenance respiration with a 10 ï¿½C rise in temperature  !-
-         REAL TREF                  ! Reference temperature  !ï¿½C
+         REAL Q10                   ! Factor accounting for increase in maintenance respiration with a 10 °C rise in temperature  !-
+         REAL TREF                  ! Reference temperature  !°C
          REAL MAINLV                ! Maintenance respiration coefficient of leaves  !kg CH2O kg-1 DM d-1
          REAL MAINSO                ! Maintenance respiration coefficient of storage organs  !kg CH2Okg-1 DM d-1
          REAL MAINST                ! Maintenance respiration coefficient of stems  !kg CH2O kg-1 DM d-1
@@ -315,9 +326,9 @@
          REAL CSLA                  !C parameter of function to calculate SLA  !-
          REAL DSLA                  !D parameter of function to calculate SLA  !-
          REAL SLAMAX                !Maximum value of specific leaf area  !ha leaf kg-1 leaf
-         REAL RGRLMX                !Minimum value of relative growth rate of leaf area  !ï¿½Cd-1
-         REAL RGRLMN                !Maximum value of relative growth rate of leaf area  !ï¿½Cd-1
-         REAL SHCKL                 !Delay parameter in development   !ï¿½Cd (ï¿½Cd)-1
+         REAL RGRLMX                !Minimum value of relative growth rate of leaf area  !°Cd-1
+         REAL RGRLMN                !Maximum value of relative growth rate of leaf area  !°Cd-1
+         REAL SHCKL                 !Delay parameter in development   !°Cd (°Cd)-1
          REAL FCLV                  !Mass fraction of carbon in leaves  !kg C kg-1 DM
          REAL FCST                  !Mass fraction of carbon in stems  !kg C kg-1 DM
          REAL FCSO                  !Mass fraction of carbon in storage organs  !kg C kg-1 DM
@@ -507,7 +518,58 @@
      :          ,0.0                  ! Lower Limit for bound check
      :          ,50.0)                 ! Upper Limit for bound check
 
+      call read_real_var_optional (
+     :           g%cultivar         ! Section header
+     :          ,'salinity_resilience_photo'  ! Keyword
+     :          ,'(/dS/m)'              ! Units
+     :          ,p%salinity_resilience_photo  ! Array
+     :          ,numvals              ! Number of values returned
+     :          ,0.0                  ! Lower Limit for bound check
+     :          ,1.0)                 ! Upper Limit for bound check
 
+	   if (numvals.eq.0) then
+	    p%salinity_resilience_photo = 0.22
+	   end if
+	   
+      call read_real_var_optional (
+     :           g%cultivar         ! Section header
+     :          ,'salinity_resilience_transp'  ! Keyword
+     :          ,'(/dS/m)'              ! Units
+     :          ,p%salinity_resilience_transp  ! Array
+     :          ,numvals              ! Number of values returned
+     :          ,0.0                  ! Lower Limit for bound check
+     :          ,1.0)                 ! Upper Limit for bound check
+
+	   if (numvals.eq.0) then
+	    p%salinity_resilience_transp = 0.22
+	   end if
+	   
+      call read_real_var_optional (
+     :           g%cultivar         ! Section header
+     :          ,'salinity_tol_photo'  ! Keyword
+     :          ,'(dS/m)'              ! Units
+     :          ,p%salinity_tol_photo  ! Array
+     :          ,numvals              ! Number of values returned
+     :          ,0.0                  ! Lower Limit for bound check
+     :          ,100.0)                 ! Upper Limit for bound check
+
+	   if (numvals.eq.0) then
+	    p%salinity_tol_photo = 13.17
+	   end if
+	   
+      call read_real_var_optional (
+     :           g%cultivar         ! Section header
+     :          ,'salinity_tol_transp'  ! Keyword
+     :          ,'(/dS/m)'              ! Units
+     :          ,p%salinity_tol_transp  ! Array
+     :          ,numvals              ! Number of values returned
+     :          ,0.0                  ! Lower Limit for bound check
+     :          ,100.0)                 ! Upper Limit for bound check
+
+	   if (numvals.eq.0) then
+	    p%salinity_tol_transp = 9.83
+	   end if
+	   
       call pop_routine (my_name)
       return
       end subroutine
@@ -813,6 +875,8 @@
       Integer I,num_layers, numvals
       REAL zrti
       real dummy(max_layer)
+	  character  Err_string*400      ! Event message string
+
 
 *- Implementation Section ----------------------------------
       call push_routine (myname)
@@ -838,6 +902,8 @@
       g%TRW    = 0.
       g%NSLLV  = 1.
       g%RNSTRS = 1.
+      g%fsalttr = 1. !addAndo08202013
+      g%fsaltpn = 1. !add Ando08202013
 
       call get_real_var (unknown_module, 'latitude', '()'
      :                                  , g%lat, numvals
@@ -1141,17 +1207,14 @@
       g%amax1 = 0.0   !! XXnot used anywhere??
       g%eff1=0.0      !! XXnot used anywhere??
       g%fnlv=0.0
-      g%NMAXL = 0.0
-      g%NMINL = 0.0
-      g%NMINSO = 0.0
-      g%fnst = 0.0
-      g%fvpd = 0.0
-      g%rain = 0.0
+      g%fsalttr=1. !add Ando08202013
+      g%fsaltpn=1. !add Ando08202013
 
       ! dsg 030809 rat grazing work with Peter Brown
       g%rat_graze_perc=0.0
       g%gr_rat_grazed = 0.0      
       g%LLV_RAT = 0.0
+      g%daily_C_resp_crop = 0.0
 
       p%lape = 0.0
       p%nplsb = 0.0
@@ -1167,6 +1230,10 @@
       p%DVRR = 0.0
       p%PPSE = 0.0
       p%MOPP = 0.0
+	  p%salinity_resilience_photo = 0.0  ! added dsg 270813
+	  p%salinity_resilience_transp = 0.0 ! added dsg 270813
+	  p%salinity_tol_photo = 0.0         ! added dsg 270813
+	  p%salinity_tol_transp = 0.0        ! added dsg 270813
       p%SHCKD = 0.0
       p%FRPAR = 0.0
       p%CO2REF = 0.0
@@ -1335,7 +1402,8 @@
        integer num_layers              ! no. of rlv layers
        real    cover_green
        real    cover_tot
-       real    height
+       real    height,height1,height2
+
 !       real ep
 *- Implementation Section ----------------------------------
       call push_routine (myname)
@@ -1634,7 +1702,10 @@
 
       elseif (variable_name .eq. 'height') then
 
-         height = 500.0
+!  dsg 130717 Added rough estimate for crop height asa function of dae (from graph in Rice Almanac)
+         height1 = (-0.0008*(g%dae**3))+(0.1437*(g%dae**2))
+         height2 =  (0.4318*g%dae)+24.476 
+         height = height1 + height2 		 
          call respond2get_real_var (
      :               variable_name      ! variable name
      :              ,'(mm)'            ! variable units
@@ -1796,6 +1867,66 @@
      :               variable_name      ! variable name
      :              ,'()'               ! variable units
      :              ,g%gr_rat_grazed)  ! variable
+     
+      elseif (variable_name .eq. 'resp_crop') then
+
+         call respond2get_real_var (
+     :               variable_name         ! variable name
+     :              ,'(kg C ha-1)'                  ! variable units
+     :              ,g%daily_C_resp_crop)  ! variable
+     
+
+      elseif (variable_name .eq. 'chloride') then
+         num_layers = count_of_real_vals (p%tkl, max_layer)
+         call respond2get_real_array (variable_name
+     :                               , '(ppm)'
+     :                               , g%chloride
+     :                               , num_layers)
+
+      elseif (variable_name .eq. 'av_chloride') then
+
+         call respond2get_real_var (
+     :               variable_name      ! variable name
+     :              ,'(ppm)'               ! variable units
+     :              ,g%av_chloride)  ! variable
+
+      elseif (variable_name .eq. 'dsm') then
+
+         call respond2get_real_var (
+     :               variable_name      ! variable name
+     :              ,'(dS/m)'               ! variable units
+     :              ,g%dsm)  ! variable
+
+      elseif (variable_name .eq. 'osm') then
+         num_layers = count_of_real_vals (p%tkl, max_layer)
+         call respond2get_real_array (
+     :               variable_name      ! variable name
+     :              ,'(KPa)'               ! variable units
+     :              ,g%osm  ! variable
+     :              , num_layers)
+    !! ADD ANDO08202013
+      elseif (variable_name .eq. 'fsalttr') then
+!             Effect of salt  stress on reduction in potential transpiration rate
+         call respond2get_real_var (
+     :               variable_name    ! variable name
+     :              ,'()'          ! variable units
+     :              ,g%fsalttr)         ! variable
+
+      elseif (variable_name .eq. 'fsaltpn') then
+!             Effect of drought stress on daily total gross CO2 assimilation of crop;
+         call respond2get_real_var (
+     :               variable_name    ! variable name
+     :              ,'()'          ! variable units
+     :              ,g%fsaltpn)         ! variable
+
+! end Ando add 20082013
+! dsg 200215 Added an output for the variable g%nsllv - the N stress factor that accelerates leaf death 
+      elseif (variable_name .eq. 'nsllv') then
+         ! Rate of increase in grain number   !no. ha-1 d-1
+         call respond2get_real_var (
+     :               variable_name     ! variable name
+     :              ,'()'              ! variable units
+     :              ,g%nsllv)            ! variable
       else
          call Message_Unused ()
       endif
@@ -1829,6 +1960,7 @@
 
 *+  Local Variables
       integer    numvals,maxirr,I               ! number of values read
+       character  Err_string*400      ! Event message string
 
 *- Implementation Section ----------------------------------
 
@@ -2753,14 +2885,18 @@
      :          ,0.0                  ! Lower Limit for bound check
      :          ,100.0)               ! Upper Limit for bound check
 
-      call read_real_var (
+      call read_real_var_optional (
      :           section_name         ! Section header
      :          ,'httmax'             ! Keyword
      :          ,'()'                 ! Units
      :          ,p%httmax             ! value
      :          ,numvals              ! Number of values returned
      :          ,0.0                  ! Lower Limit for bound check
-     :          ,100.0)               ! Upper Limit for bound check	 
+     :          ,100.0)               ! Upper Limit for bound check	
+      if (numvals .eq. 0) then
+        p%httmax = 36.6
+      else
+      endif 
 
       call pop_routine  (myname)
       return
@@ -2834,10 +2970,107 @@
       else
       endif
 
+!  dsg 200812  Get cl from solute
+	  call get_real_array_optional (unknown_module, 'cl_ppm', 
+     :                                    max_layer, '(ppm)'
+     :                                    , g%chloride, numvals
+     :                                    , 0.0, 100000.0)
+      if (numvals .eq. 0) then
+        g%chloride(:) = 0.0
+		g%fsalttr = 1.0
+		g%fsaltpn = 1.0
+      else
+      endif
+	   
+	 
+	 call oryza_average_salinity ()
+
       call pop_routine(myname)
       return
       end subroutine
 
+* ====================================================================
+       subroutine oryza_average_salinity()
+* ====================================================================
+      implicit none
+
+*+  Purpose
+*      Calculate an average salinity as experienced by the rice plant
+
+*+  Changes
+
+
+*+  Constant Values
+      character  myname*(*)            ! name of subroutine
+      parameter (myname = 'oryza_average_salinity')
+
+*+  Local Variables
+      integer deepest_layer
+      integer numvals,i, check, finish_layer, num_layers, layer
+	  real cum_depth, tot_chloride, fract, bd
+      character  Err_string*400      ! Event message string
+ 
+
+*- Implementation Section ----------------------------------
+      call push_routine(myname)
+      check = 0   ! flag
+	  cum_depth = 0
+	  finish_layer = 0
+	  tot_chloride = 0.0
+      num_layers = count_of_real_vals (p%tkl, max_layer)
+	
+      do layer = 1, num_layers
+        cum_depth = cum_depth + p%tkl(layer)
+		! 20082013 Ando - define osmotic potential of soil solution in each layer
+	
+	g%osm(layer) = ((divide(g%chloride(layer),640.0,0.0)**0.5))/0.038
+
+        if (cum_depth.ge.(g%zrt*1000).and.check.eq.0) then
+            finish_layer = layer
+            check = 1
+        end if	 		
+      end do
+!      character  Err_string*400      ! Event message string
+!	          Write (Err_string,*) '#2 cum_depth tot_chloride g%chloride',
+!     &  	i, cum_depth, tot_chloride, g%chloride(i)
+
+
+      cum_depth = 0  
+      do i = 1,finish_layer
+		  cum_depth = cum_depth + p%tkl(i)
+ 
+        if (i.lt.finish_layer) then
+		!  weighting each layer according to its thickness
+		  tot_chloride = tot_chloride + (g%chloride(i)*p%tkl(i))
+
+		  else
+           !  fraction of layer with rice roots		
+		   fract = divide((p%tkl(i) - (cum_depth - (g%zrt*1000.0))),
+     &             p%tkl(i),0.0)
+		   tot_chloride = tot_chloride + (g%chloride(i)*fract* p%tkl(i))
+
+		   end if
+      end do
+
+ !  average chloride over rice rooting depth (in kg/ha)  
+ !       g%av_chloride = divide(tot_chloride,finish_layer,0.0)
+ !   average chloride over the rooting depth is the total divided by rooting depth
+      bd = 1.4 ! soil bulk density
+      if (g%zrt. eq. 0.0) then 
+         g%av_chloride = 0.0
+      else
+         g%av_chloride = tot_chloride/(g%zrt*1000.0)
+		g%dsm = divide(g%av_chloride,640.0,0.0)*bd
+!	          Write (Err_string,*) 'tot_chloride fract g%zrt',
+!     &  	tot_chloride, fract, g%zrt 
+!  	      call Write_string (Err_string)
+
+      end if 		
+      call pop_routine(myname)
+      return
+      end subroutine
+
+	  
 !----------------------------------------------------------------------!
 ! SUBROUTINE ORYZAMODELS                                               !
 !                                                                      !
@@ -2980,9 +3213,9 @@
 ! TOD     R4  Optimum temperature for development (oC)              I  *
 ! TMD     R4  Maximum temperature for development (oC)              I  *
 ! HU      R4  Heat units (oCd d-1)                                  O  *
-! TD  !Hourly temperature  !ï¿½C                                                                     *
-! TM  !Mean daily temperature  !ï¿½C
-! TT  !Daily increment in heat units   !ï¿½Cd d-1
+! TD  !Hourly temperature  !°C                                                                     *
+! TM  !Mean daily temperature  !°C
+! TT  !Daily increment in heat units   !°Cd d-1
 !
 !  FILE usage : none                                                   *
 !----------------------------------------------------------------------*
@@ -3072,7 +3305,7 @@
 ! TSHCKD  R4  Transpl. shock for Oryza_PHENOL. development (oCd)          O  *
 ! DL  !Photoperiod daylength  !h                                                                     *
 ! PPFAC  !Factor determining photoperiod sensitivity  !-
-! TSTR  !Temperature sum for phenological development at transplanting  !ï¿½Cd
+! TSTR  !Temperature sum for phenological development at transplanting  !°Cd
 !
 !  FILE usage : none                                                   *
 !----------------------------------------------------------------------*
@@ -3825,7 +4058,7 @@
 
       !! Integration of absorption rate to a daily total (RAPCDT)
       g%RAPCDT = g%RAPCDT*g%DAYL*3600.
-      g%DTGA=g%GPCDT
+      g%DTGA=g%GPCDT*g%fsaltpn
       RETURN
       END Subroutine
 
@@ -3856,13 +4089,13 @@
 ! GNGR    R4  Rate of increase in grain number (no ha-1 d-1)        O  *
 ! SPFERT  R4  Spikelet fertility (-)                                O  *
 ! GRAINS  L*  Fortran logical function whether grains are formed    O  *
-! COLDTT  !Accumulated cold degree days  !ï¿½Cd                                                                     *
-! CTT  !Cold degree day  !ï¿½Cd
+! COLDTT  !Accumulated cold degree days  !°Cd                                                                     *
+! CTT  !Cold degree day  !°Cd
 ! DVSF  !Development stage of crop at flowering  !-
 ! DVSPI  !Development stage of crop at panicle initiation  !-
 ! NTFERT  !Number of days of flowering period  !d
-! TFERT   !Average daily maximum temperature during flowering  !ï¿½C
-! TINCR   !Temperature increase because of leaf rolling  !ï¿½C
+! TFERT   !Average daily maximum temperature during flowering  !°C
+! TINCR   !Temperature increase because of leaf rolling  !°C
 !  FILE usage : none                                                   *
 !----------------------------------------------------------------------*
       SUBROUTINE Oryza_SUBGRN()
@@ -3950,7 +4183,7 @@
 ! TEST  !Difference between simulated and user-supplied SLA  !ha leaf kg-1 leaf
 ! TESTL  !Logical variable to indicate whether the difference between simulated and imposed SLA is smaller than TESTSET  !-
 ! TESTSET  !Maximum difference between simulated and user-supplied SLA  !ha leaf kg-1 leaf
-! TSLVTR  !Temperature sum for leaf area development at transplanting  !ï¿½Cd
+! TSLVTR  !Temperature sum for leaf area development at transplanting  !°Cd
 ! WLVGEXP  !Value of WLVG at end of exponential growth phase after transplanting  !kg ha-1
 ! WLVGEXS  !Value of WLVG at end of exponential growth phase in seedbed  !kg ha-1
 !
@@ -4181,7 +4414,7 @@
 ! RWLVG1  !Reduction in leaf weight at transplanting  !kg ha-1
 ! RWSTR1  !Reduction in stem reserve weight at transplanting  !kg ha-1
 ! TEFF  !Factor accounting for effect of temperature on respiration  !-
-! TSHCKL  !Transplanting shock for leaf area development  !ï¿½Cd
+! TSHCKL  !Transplanting shock for leaf area development  !°Cd
 ! WLVGIT  !Temporary storage variable of WLVG  !kg ha-1
 !
 !
@@ -4309,7 +4542,9 @@
 !!----------Effect of drought stress on DTGA
 !
            g%DTGA  = g%DTGA*g%PCEW
+!!----------Effect of salt stress on DTGA        !  Ando add 08212013   
 !
+           g%DTGA  = g%DTGA*g%fsaltpn
 !!----------Relative growth rates of shoots and roots
 !!          Effect of drought stress on shoot-root partitioning
 !!BB: Changed for aerobic rice according to SUCROS2
@@ -4454,6 +4689,12 @@
            RGCR = (g%GRT+GRT1)*CO2RT + (g%GLV+RWLVG1)*CO2LV +
      :        (g%GST+GST1)*CO2ST + g%GSO*CO2SO+(g%GSTR+RWSTR1)*CO2STR+
      :                  (1.-P%LRSTR)*LSTR*P%FCSTR*44./12.
+
+!
+!    dsg 130614  Special variable calculation for AgMIP Rice Team work
+!           total daily C respiration = RMCR *12/30 + RGCR*12/44 (converting molecular weights of CO2 and CH2O to equivalent C)
+           g%daily_C_resp_crop = divide(RMCR*12.0,30.0,0.0) + 
+     :                           divide(RGCR*12.0,44.0,0.0)
 !
            CTRANS=RWLVG1*P%FCLV+GST1*P%FCST+RWSTR1*P%FCSTR+GRT1*P%FCRT
            g%RTNASS=((g%DTGA*30./44.-RMCR)*44./30.)-RGCR-
@@ -4666,7 +4907,11 @@
             ENDIF
 
             !! Note: MSKPA(I) is matrix moisture suction in kPa!
-            g%MSKPA(I) = (g%MSUC(I)/10.)
+            !g%MSKPA(I) = (g%MSUC(I)/10.)
+            !! Ando Add 08212013 calculate MSKPA with MSO, g%chloride/640 converts ppm to dS/M
+
+	        g%MSKPA(I) = (g%MSUC(I)/10.0) + g%osm(I)
+  !   :          + ((100.0*((g%chloride(I)/640.0)**0.5))/3.8))			
 
             !!-----------Root length in each soil layer
             g%ZRTL(I)  = MIN(p%TKL(I)/1000,MAX((g%ZRT-g%ZLL/1000),0.0))
@@ -4710,14 +4955,15 @@
                TRR(I) = 0.
             ELSE
                IF (p%SWIRTR .EQ. ET_EXPONENTIAL) THEN
-                  ! Woperis, p91
+                  ! Woperis, p911 ando add08212013
                   TRR(I) = (LOG10(g%MSKPA(I)+TINY)-LOG10(p%LLRT))
-     :                              /(LOG10(p%ULRT)-LOG10(p%LLRT))
+     :                              /(LOG10(p%ULRT)-LOG10(p%LLRT)) 
+     :                              * g%fsalttr
                   If(TRR(I).lt.0.0) TRR(I)=0.0
                   If(TRR(I).gt.1.0) TRR(I)=1.0
                ELSEIF (p%SWIRTR .EQ. ET_LINEAR) THEN
-                  ! Tanner & sinclair, p91
-                  TRR(I)  = 2./(1.+EXP(0.003297*g%MSKPA(I)))
+                  ! Tanner & sinclair, p91 ! Ando add08212013
+                  TRR(I)  = 2./(1.+EXP(0.003297*g%MSKPA(I)))*g%fsalttr 
                ELSE
                   call fatal_error(err_user, 'ET method wrong??')
                END IF
@@ -4765,7 +5011,21 @@
             ! notreached
          endif
          g%PCEW   = g%TRW/g%TRC
-
+! ando add 23082013        
+	  if (g%av_chloride .GT. 0.) then 
+		 g%fsaltpn = (1.00/(1.00+exp(p%salinity_resilience_photo*
+     &        (g%dsm-p%salinity_tol_photo))))+0.052  !Add ando 08212013
+         g%fsalttr = (1.00/(1.00+exp(p%salinity_resilience_transp*
+     &        (g%dsm-p%salinity_tol_transp))))+0.052  !Add ando 08212013
+       else
+		 g%fsaltpn = 1.00
+         g%fsalttr = 1.00
+       end if 
+         
+! end ando add 23082013	
+!     	Write (Err_string,*) 'fsaltpn dsm',g%fsaltpn,g%dsm 
+!              call Write_string (Err_string)
+		 
          !!-----Set stress factors as average over all layers: DEFAULT
          g%LRSTRS = g%LRAV
          g%LDSTRS = g%LDAV
@@ -4776,6 +5036,8 @@
         g%LRSTRS = 1.
         g%LDSTRS = 1.
         g%LESTRS = 1.
+        g%fsaltpn = 1.  !Add ando 08212013
+        g%fsalttr = 1. !Add ando 08212013
       END IF
 
       g%CPEW = g%LESTRS
@@ -4820,6 +5082,8 @@
       g%LESTRS = 1.
       g%CPEW   = 1.
       g%PCEW   = 1.
+      g%fsaltpn = 1.  !Add ando 08212013
+      g%fsalttr = 1.  !Add ando 08212013
 
       num_layers = count_of_real_vals(p%tkl,max_layer)
       num_layers = max(1,num_layers)
@@ -5559,10 +5823,10 @@
 
       !!== Termination when there is too little N in leaves
       IF (g%RLAI .GT. 1. .AND. g%FNLV .LE. 0.5*g%NMINL) THEN
-         call warning_error (ERR_USER,
-     :               'Leaf N < 0.5*MINIMUM; crop death')
+!         call warning_error (ERR_USER,
+!     :               'Leaf N < 0.5*MINIMUM; crop death')
          !! XXX should call crop_death()??
-         g%plant_status = status_dead
+!         g%plant_status = status_dead
       END IF
 
       !!== Termination when too cold

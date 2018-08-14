@@ -509,7 +509,12 @@
      :                c%ub_solute)         ! upper bound
 
                do 100 layer = 1, numvals
-                  g%solute (solnum,layer) = sol(layer)
+                ! dsg 221014 added for rice salinty work, setting EC values in water tables
+                  if (reals_are_equal(sol(layer), 0.0)) then
+                     g%solute(solnum,layer) = g%solute(solnum,layer)
+                  else
+                     g%solute (solnum,layer) = sol(layer)
+                  endif   
   100          continue
                found = .true.
 
