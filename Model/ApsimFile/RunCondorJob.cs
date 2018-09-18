@@ -383,7 +383,9 @@ namespace ApsimFile
 			PBSWriter.WriteLine (" cd \\$TMPDIR");
 
 			PBSWriter.WriteLine ("# extra environment settings");
-			PBSWriter.WriteLine (" module load singularity");
+			PBSWriter.WriteLine (" module load singularity/2.3.1");
+			PBSWriter.WriteLine (" module load glibc/2.23");
+
 			PBSWriter.WriteLine (" export SINGULARITYENV_NUMBER_OF_PROCESSORS=24");
 			PBSWriter.WriteLine (" export SINGULARITYENV_R_LIBS_USER=$HOME/R");
 			PBSWriter.WriteLine (" mapfile -t joblist <<'XXXXXX'");

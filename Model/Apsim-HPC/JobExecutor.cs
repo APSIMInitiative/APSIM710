@@ -119,15 +119,17 @@ namespace ApsimHPC
 			});
 		}
 
-		public void waitForCompletion (object o) 
+		public void waitForCompletion(object o)
 		{
-            if (pollForCompletion())
-            {
-                Application.Invoke(delegate
-                {
-                    MainClass.win.OnJobCompletion(this);
-                });
-            } else { 
+			bool completed = false;
+			try
+			{
+				completed = pollForCompletion();
+			}
+			catch (Exception e) { logMessage(e.Message); }
+			if (completed) {
+				Application.Invoke(delegate { MainClass.win.OnJobCompletion(this); });
+			} else { 
                 Timer timer = new Timer(new TimerCallback(waitForCompletion), null, 60000, -1);
             } 
 		}
@@ -181,9 +183,9 @@ namespace ApsimHPC
                     File.Delete(Path.GetFileName(tgz));
                     server.runCommand("rm " + tgz);
                 }
-                    // Now do Apsim.<1-X>.[o,e]* as well
-                    string idShort = System.Text.RegularExpressions.Regex.Match(jobId, "\\d+").Value;
-                    server.runCommand("find " + remoteDir + " -name \"*" + idShort + "\" -maxdepth 1");
+                // Now do Apsim.<1-X>.[o,e]* as well
+                string idShort = System.Text.RegularExpressions.Regex.Match(jobId, "\\d+").Value;
+                server.runCommand("find " + remoteDir + " -name \"*" + idShort + "*\"");
                 lines = server.output.Result.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 if (lines.Count() == 0)
                     logMessage("Warning - no PBS log files appeared!");
