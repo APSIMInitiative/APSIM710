@@ -501,14 +501,14 @@ Public Class SoilTemperature2
         BoundCheck(clay.Length, gNumLayers, gNumLayers, "clay layers")
         BoundCheckArray(clay, 0.01, 100.0, "clay")
 
+        Dim clayFrac(gNumLayers) As Double
         For layer As Integer = 0 To gNumLayers - 1
-            clay(layer) = clay(layer) / 100.0   'convert from % units ased as user input to proportion 
+            clayFrac(layer) = clay(layer) / 100.0   'convert from % units ased as user input to proportion 
         Next 'layer
 
         ReDim Preserve gClay(gNumLayers + 1)     ' Clay dimensioned for layers 1 to gNumlayers + 1 extra for zone below bottom layer
-        clay.CopyTo(gClay, 1)
+        clayFrac.CopyTo(gClay, 1)
         gClay(gNz) = gClay(gNumLayers)   ' Set zone below bottom layer to the same as bottom layer
-
         doThermalConductivityCoeffs()
 
         'set t and tn values to TAve. soil_temp is currently not used
