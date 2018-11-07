@@ -1,8 +1,8 @@
-testGetFile : OK
-testGetText : OK
-testGetError : OK
-testGetError2 : OK
-testGetError3 : OK
+testGetFile : assertion
+testGetText : assertion
+testGetError : assertion
+testGetError2 : assertion
+testGetError3 : assertion
 testGetName : OK
 testGetAttributes : OK
 testGetAttribute : OK
@@ -78,4 +78,30 @@ TestGetSectionName : OK
 TestGetKeyValue : OK
 TestGetKeyNameAndValue : OK
 TestFindSubString : OK
-OK (80)
+TestHttp.cpp(25) : error : Assertion
+Test name: testGetFile
+assertion failed
+- Expression: t.Get(filename, url) == true
+
+TestHttp.cpp(31) : error : Assertion
+Test name: testGetText
+assertion failed
+- Expression: t.Get(url) == "This is a test\n"
+
+TestHttp.cpp(40) : error : Assertion
+Test name: testGetError
+assertion failed
+- Expression: code == 404
+
+TestHttp.cpp(56) : error : Assertion
+Test name: testGetError2
+assertion failed
+- Expression: code == 200 && result == "format \"APSIM\" is unrecognised."
+
+TestHttp.cpp(71) : error : Assertion
+Test name: testGetError3
+assertion failed
+- Expression: code == 200
+
+Failures !!!
+Run: 80   Failure total: 5   Failures: 5   Errors: 0
