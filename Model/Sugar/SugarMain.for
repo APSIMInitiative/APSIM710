@@ -912,7 +912,7 @@
 
       ! request and receive variables from owner-modules
       call sugar_get_met_variables ()
-      call sugar_get_soil_variables ()
+      call sugar_get_soil_variables () 
 
       call sugar_root_depth(1)
       call sugar_root_Depth_init(1) ! after because it sets the delta
@@ -1934,6 +1934,7 @@ cnh     :                 ' Initialising')
       call sugar_get_met_variables ()
       call sugar_get_soil_variables ()
 
+	  call sugar_send_new_crop_event()
       
       call pop_routine (my_name)
       return
@@ -2243,7 +2244,7 @@ cnh     :                 ' Initialising')
       else
       endif
 
-
+ 
       call read_char_var   (section_name
      :                     , 'uptake_source'
      :                     , '()'
@@ -3589,7 +3590,7 @@ c      call sugar_nit_stress_expansion (1)
       elseif (variable_name .eq. 'ep') then
          num_layers = count_of_real_vals (g%dlayer, max_layer)
          ep = abs(sum(g%dlt_sw_Dep(1:num_layers)))
-         call respond2get_real_var (variable_name
+         call respond2get_real_var (variable_name 
      :                               , '(mm)'
      :                               , ep)
 
@@ -3599,7 +3600,7 @@ c      call sugar_nit_stress_expansion (1)
             rwu(layer) = - g%dlt_sw_dep(layer)
    10    continue
          call respond2get_real_array (variable_name
-     :                               , '(mm)'
+     :                               , '(mm)' 
      :                               , rwu
      :                               , num_layers)
 
@@ -5464,9 +5465,47 @@ cnh      c%crop_type = ' '
       return
       end subroutine
 
+* ====================================================================
+       subroutine sugar_send_new_crop_event ()
+* ====================================================================
+
+      implicit none
+
+*+  Purpose
+*      Notify all interested modules about this module's ownership
+*      of crop information.
+
+*+  Mission Statement
+*     Notify other modules of ownership of crop information
+
+*+  Constant Values
+
+      character*(*) myname               ! name of current procedure
+      parameter (myname = 'sugar_send_new_crop_event')
+
+*+  Local Variables
+
+      type(NewCropType) :: new_crop
+
+
+*- Implementation Section ----------------------------------
+      call push_routine (myname)
+
+      call get_name(new_crop%sender)
+      new_crop%crop_type = c%crop_type
+
+      call publish_NewCrop(id%newcrop, new_crop)
+
+      call pop_routine (myname)
+      return
+      end subroutine
+
+	  
+	  
       end module sugarModule
 
-
+	  
+	  
 !     ===========================================================
       subroutine alloc_dealloc_instance(doAllocate)
 !     ===========================================================

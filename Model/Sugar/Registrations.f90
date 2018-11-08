@@ -20,6 +20,8 @@ module Registrations
       integer :: prepare
       integer :: process
       integer :: dummy
+	  integer :: newcrop
+      
 
    end type IDsType
 
@@ -47,6 +49,7 @@ module Registrations
          id%tick = add_registration(respondToEventReg, 'tick', nullTypeDDML, '')
          id%prepare = add_registration(respondToEventReg, 'prepare', nullTypeDDML, '')
          id%process = add_registration(respondToEventReg, 'process', nullTypeDDML, '')
+         id%newcrop = add_registration(eventReg, 'newcrop', NewCropTypeDDML, '')
          id%dummy = add_reg(respondToGetReg, 'crop_status', stringTypeDDML, ' ', 'Sugar Crop status (dead,alive,out)')
          id%dummy = add_reg(respondToGetReg, 'stage', floatTypeDDML, '', 'Sugar current phenological stage')
          id%dummy = add_reg(respondToGetReg, 'stage_code', floatTypeDDML, '', '')

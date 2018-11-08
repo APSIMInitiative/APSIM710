@@ -529,10 +529,10 @@
 !- Implementation Section ----------------------------------
       call push_routine (myname)
 
-      if ((uptake_source.eq.'apsim')          &
+      if ((uptake_source.eq.'apsim' .or. uptake_source.eq.'swim3')         &
           .and.          &
-    (crop_type.ne.' '))          &
-then
+           (crop_type.ne.' '))          &
+                               then
          ! NB - if crop type is blank then swim will know nothing
          ! about this crop (eg if not initialised yet)
 
