@@ -615,6 +615,285 @@ public class Script
 }
        </text>
         </manager2>
+        <manager2 name="Intercrop Management">
+          <ui>
+            <category type="category" description="Crop properties" />
+            <crop1 type="crop" description="Name of first crop">sorghum</crop1>
+            <crop2 type="crop" description="Name of second crop">cowpea</crop2>
+            <category type="category" description="Sowing criteria" />
+            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm)">15-oct</date1>
+            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm)">10-jan</date2>
+            <must_sow type="yesno" description="Must Sow">yes</must_sow>
+            <rain_amount type="text" description="Enter amount of cumulative rainfall (mm)">30</rain_amount>
+            <rain_days type="text" description="Enter number of days to accumulate rainfall (days)">3</rain_days>
+            <esw_amount type="text" description="Enter amount of soil water (mm)">200</esw_amount>
+            <category type="category" description="1st Crop Sowing Parameters" />
+            <cultivar1 type="cultivars" description="Enter cultivar : ">early</cultivar1>
+            <density1 type="text" description="Enter sowing density  (plants/m2)">7</density1>
+            <depth1 type="text" description="Enter sowing depth  (mm)">30</depth1>
+            <row_spacing1 type="text" description="Enter row spacing  (mm)">1000</row_spacing1>
+            <category type="category" description="2nd Crop Sowing Parameters" />
+            <crop2DAS type="text" description="Days to delay sowing second crop">15</crop2DAS>
+            <cultivar2 type="cultivars" description="Enter cultivar : ">banjo</cultivar2>
+            <density2 type="text" description="Enter sowing density  (plants/m2)">2</density2>
+            <depth2 type="text" description="Enter sowing depth  (mm)">30</depth2>
+            <row_spacing2 type="text" description="Enter row spacing  (mm)">1000</row_spacing2>
+            <category type="category" description="Extra Parameters" />
+            <ftn1 type="text" description="1st Crop Fertile Tiller Number (na for auto) : ">na</ftn1>
+            <tillageImplement type="text" description="Name of tillage implement (na if not in use): ">na</tillageImplement>
+          </ui>
+          <text>using System;
+using System.Collections.Generic;
+using ModelFramework;
+using CSGeneral;
+
+// Basic intercrop management: sowing &amp; harvesting.
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+// It will assume it is the only crop in the system if it doesnt find a sequencer.
+// If it does find a sequencer, it will do nothing until told to (via Enter/Leave).
+public class Script 
+{      
+   [Link()]  public Simulation MySimulation;
+   
+   [Param()] private string crop1;         // The module name of 1st crop
+   [Param()] private string crop2;         // The module name of 2nd crop
+   [Param()] private string date1;         //Start of sowing window
+   [Param()] private string date2;         //End of sowing window
+   [Param()] int esw_amount;
+   [Param()] private string must_sow;
+
+   [Input()] private DateTime today;
+
+   // Rainfall accumulator
+   [Param()] int rain_days;              //check for rain over this period
+   [Param()] int rain_amount;            //this much rain over that period
+
+   // Daily rainfall from the system
+   [Input] private double rain;
+   private ManagerUtility.Tracker&lt;double&gt; rainTracker; 
+
+   private bool inWindow = false;
+   private bool endOfWindow = false;
+
+   // Counter for the second crop delay (unique for each paddock)
+   private Dictionary&lt;string,int&gt; dasCounter = new Dictionary&lt;string,int&gt;();
+
+   //initialise tracker, telling it how many days to track
+   [EventHandler] public void OnInitialised()
+   {
+      rainTracker = new ManagerUtility.Tracker&lt;double&gt;(rain_days); 
+      dasCounter.Add("", -1);
+      foreach (Paddock paddock in MySimulation.ChildPaddocks) 
+            dasCounter.Add(paddock.Name, -1);
+
+   }
+
+   // Daily tests common to all paddocks
+   [EventHandler] public void OnPrepare()
+   {
+      bool startOfWindow = DateUtility.DatesEqual(date1, today);
+
+      inWindow = DateUtility.WithinDates(date1, today, date2);
+      endOfWindow = DateUtility.DatesEqual(date2, today);
+
+      rainTracker.Add(rain);
+      string currentPaddock = "";
+      if (MySimulation.Get("currentPaddock", out currentPaddock) == false) 
+      {
+         // If there is no sequencer plugged in then we are it..
+         if (canEnter &gt; 0) {
+            OnEnter();
+         }
+         if (canLeave &gt; 0) {
+            OnLeave();
+         }
+      }
+   }
+   // Test whether we can sow a crop today
+   // +ve number - yes
+   // 0          - no
+   // -ve number - no, out of scope (planting window)
+   [Output, Description("Test whether we can sow a crop today")] public int canEnter  {
+      get {
+         bool isPossibleToday = false;
+         
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+         //Console.WriteLine("1. '" + currentPaddock + "'");
+
+         Component paddockModule;
+         if (currentPaddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(currentPaddock);
+         else
+            paddockModule = (Component) MySimulation.ChildPaddocks[0];
+         //Console.WriteLine("2. " + paddockModule.Name);
+         
+         // This "is planted" logic tests only the first crop. The second crop will be planted (soon) after the 1st.
+         Component crop1Module = (Component) paddockModule.LinkByName( crop1 );
+
+         //Console.WriteLine("3. " + crop1Module.Name);
+         string plantStatus1 = "";
+         crop1Module.Get("plant_status", out plantStatus1);
+
+         double esw = 0.0;
+         Component soilModule = (Component) paddockModule.LinkByType("SoilWat");
+         soilModule.Get("esw", out esw);
+         if (plantStatus1 == "out" &amp;&amp;
+             inWindow &amp;&amp;
+             rainTracker.Sum() &gt;= rain_amount &amp;&amp;
+             esw &gt; esw_amount) 
+         {
+             isPossibleToday = true;
+         } 
+
+	     if (isPossibleToday)
+            return 1;
+			
+        if (plantStatus1 == "out" &amp;&amp; endOfWindow &amp;&amp; must_sow == "yes")
+            return 1;
+
+        if (plantStatus1 == "out" &amp;&amp; !inWindow)
+            return -1;
+         
+        return 0;
+      }
+   }  
+   
+   // Sow a crop
+   [Param()] private string cultivar1;
+   [Param()] private string cultivar2;
+   [Param()] private double density1;
+   [Param()] private double depth1;
+   [Param()] private double row_spacing1;
+   [Param()] private string ftn1;
+   [Param()] private int crop2DAS;
+   [Param()] private double density2;
+   [Param()] private double depth2;
+   [Param()] private double row_spacing2;
+   [Param()] private string tillageImplement;
+   
+   [EventHandler, Description("Sow the crop")] public void OnEnter()
+   {
+      Console.WriteLine(today + " Sowing Crop");
+      SowType data = new SowType();
+      data.Cultivar = cultivar1;
+
+      data.plants = density1;
+      data.sowing_depth = depth1;
+      data.row_spacing = row_spacing1;
+      data.tiller_no_fertile = (ftn1 == "na") ? "" : ftn1;
+      data.SkipRow = 0 ;
+
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      Component cropModule;
+      if (currentPaddock != "")
+         cropModule = (Component) MySimulation.LinkByName(currentPaddock + "." + crop1);
+      else 
+         cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop1);
+
+      cropModule.Publish("Sow", data);
+      
+      // register how many days to wait before planting the second crop. This 
+      // will occur at the end of that day (OnPost, below). 
+      dasCounter[currentPaddock] = crop2DAS;
+   
+      // Do any tillage operations if requested
+      if (tillageImplement.ToLower() != "na") {
+         TillageType t = new TillageType();
+         t.type = tillageImplement;
+         Component paddockModule;
+         if (currentPaddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(currentPaddock);
+         else
+            paddockModule = MySimulation.ChildPaddocks[0];
+         paddockModule.Publish("tillage", t);
+      }		 
+   }
+
+   // See if any 2nd crops need to be planted today. 
+   [EventHandler] public void OnPost()
+   {
+      List &lt;string&gt; paddocks = new List &lt;string&gt;(dasCounter.Keys);
+      foreach (string paddock in paddocks) {
+         if (dasCounter[paddock] == 0) {
+            Console.WriteLine(today + " Sowing " + crop2);
+            SowType data = new SowType();
+            data.Cultivar = cultivar2;
+            data.plants = density2;
+            data.sowing_depth = depth2;
+            data.row_spacing = row_spacing2;
+            data.SkipRow = 0;
+
+            Component cropModule;
+            if (paddock != "")
+               cropModule = (Component) MySimulation.LinkByName(paddock + "." + crop2);
+            else 
+               cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop2);
+
+            cropModule.Publish("Sow", data);
+         }
+         // Decrement counter if active
+         if (dasCounter[paddock] &gt;= 0) {
+            dasCounter[paddock]--;
+         }
+      }
+   }
+   // Test whether we can harvest a crop today
+   // +ve number - yes
+   // 0          - no
+   // -ve        - out of scope
+   [Output] public int canLeave  
+   {
+      get 
+      {
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+
+         string plantStatus1 = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop1 + ".plant_status", out plantStatus1);
+         string plantStatus2 = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop2 + ".plant_status", out plantStatus2);
+         if (plantStatus1 == "out" &amp;&amp; plantStatus2 == "out")
+            return -1;
+
+         string StageName1 = "";
+         string StageName2 = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop1 + ".StageName", out StageName1);
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop2 + ".StageName", out StageName2);
+         if ((StageName1 == "harvest_ripe" || StageName1 == "end_crop" || plantStatus1 == "dead") &amp;&amp;
+		       (StageName2 == "harvest_ripe" || StageName2 == "end_crop" || plantStatus2 == "dead"))
+            return 1;
+         return 0;
+      }
+   }
+
+   [EventHandler] public void OnLeave()
+   {
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      
+	   foreach (string crop in new string[] {crop1, crop2}) {
+        Console.WriteLine(today + " Harvesting " + crop);
+        Component cropModule;
+        if (currentPaddock != "")
+           cropModule = (Component) MySimulation.LinkByName(currentPaddock + "." + crop);
+        else 
+           cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop);
+		   
+        HarvestType hdata = new HarvestType();
+        hdata.Remove = 0.0;
+        cropModule.Publish("harvest", hdata);
+
+        KillCropType kdata = new KillCropType();
+        kdata.KillFraction = 0.0F;
+        cropModule.Publish("killcrop", kdata);
+        cropModule.Publish("end_crop");
+	  }
+   } 
+}       </text>
+        </manager2>
         <manager2 name="Monoculture Sequencer">
           <ui>
             <category type="category" description="Extra Tests at Sowing" />
