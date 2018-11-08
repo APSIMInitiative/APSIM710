@@ -145,13 +145,40 @@ namespace ApsimFile
 				return;
 
 			// No factorials. 
-			if (SimulationPaths == null || SimulationPaths.Length == 0) {
-			    // No simulation specified. Run everything.
-				List<String> AllPaths = new List<String> ();
-				ApsimFile.ExpandSimsToRun (AFile.RootComponent, ref AllPaths);
-				SimulationPaths = AllPaths.ToArray ();
+			if (SimulationPaths == null || SimulationPaths.Length == 0)
+            {
+                // No simulation specified. Run everything.
+                string ApsimToSimExe = Path.Combine(Configuration.ApsimBinDirectory(), "ApsimToSim.exe");
+                Process ApsimToSim = new Process();
+                ApsimToSim.StartInfo.FileName = ApsimToSimExe;
+                ApsimToSim.StartInfo.Arguments = StringManip.DQuote(Path.GetFileName(FileName));
+                ApsimToSim.StartInfo.WorkingDirectory = Directory.GetCurrentDirectory();
+                ApsimToSim.StartInfo.CreateNoWindow = true;
+                ApsimToSim.StartInfo.UseShellExecute = false;
+                ApsimToSim.Start();
+                ApsimToSim.WaitForExit();
+
+                List<String> AllPaths = new List<String>();
+                ApsimFile.ExpandSimsToRun(AFile.RootComponent, ref AllPaths);
+                for (int i = 0; i < AllPaths.Count; i++)
+                {
+                    int lastSlash = AllPaths[i].LastIndexOf('/');
+                    if (lastSlash != -1)
+                    {
+                        AllPaths[i] = Path.Combine(Directory.GetCurrentDirectory(), AllPaths[i].Substring(lastSlash + 1)) + ".sim";
+                    }
+                }
+
+                // Create a series of jobs for each simulation in the .con file.
+                foreach (string SimFileName in AllPaths)
+                {
+                    Job J = CreateJob(SimFileName, SimFileName.Replace(".sim", ".sum"));
+                    jobs.Add(J);
+                    J = CleanupJob(SimFileName, J.Name);
+                    jobs.Add(J);
+                }
 			}
-            if (SimulationPaths.Length == 1)
+            else if (SimulationPaths.Length == 1)
             {
                 string SumFileName = SimulationPaths[0];
                 int PosLastSlash = SumFileName.LastIndexOf('/');
@@ -166,7 +193,6 @@ namespace ApsimFile
             }
             else if (SimulationPaths.Length > 1)
             {
-                ApsimFile df = new ApsimFile(FileName);
                 // For each path, create a simfile, and a job in our target.
                 foreach (string SimulationPath in SimulationPaths)
                 {

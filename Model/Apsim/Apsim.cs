@@ -33,6 +33,8 @@ public class Apsim
     /// </summary>
     static int Main(string[] args)
     {
+        string savedWorkingDirectory = Directory.GetCurrentDirectory();
+
         Thread.CurrentThread.CurrentUICulture = CultureInfo.CreateSpecificCulture("en-au");
         try
         {
@@ -94,6 +96,8 @@ public class Apsim
 			Console.WriteLine("  ... doAllFactors=true|false (run, or not all factors in factorials)");
 			Console.WriteLine("  ... SaveProfileOutput=filename (write detailed timings to filename)");
         }
+
+        Directory.SetCurrentDirectory(savedWorkingDirectory);
 		return 1;
     }
     /// <summary>
