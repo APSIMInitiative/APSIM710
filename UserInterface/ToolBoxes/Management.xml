@@ -79,30 +79,31 @@ public class Script
     <ref type="text" description="Path to assembly:">xxxxxxx.dll</ref>
   </Reference>
   <folder name="Manager.NET (common tasks)">
-    <manager2 name="Crop Management">
-      <ui>
-        <category type="category" description="Crop properties" />
-        <crop type="crop" description="Name of this crop">wheat</crop>
-        <category type="category" description="Sowing criteria" />
-        <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm)">1-may</date1>
-        <date3 type="ddmmmdate" description="Enter cultivar change date (na if not in use)">na</date3>
-        <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm)">1-jul</date2>
-        <must_sow type="yesno" description="Must Sow">no</must_sow>
-        <rain_amount type="text" description="Enter amount of cumulative rainfall (mm)">15</rain_amount>
-        <rain_days type="text" description="Enter number of days to accumulate rainfall (days)">3</rain_days>
-        <esw_amount type="text" description="Enter amount of soil water (mm)">200</esw_amount>
-        <category type="category" description="Sowing Parameters" />
-        <cultivar1 type="cultivars" description="Enter cultivar : ">hartog</cultivar1>
-        <cultivar2 type="cultivars" description="Enter 2nd Cultivar (na if not using a second cultivar)">na</cultivar2>
-        <density1 type="text" description="Enter sowing density  (plants/m2)">10</density1>
-        <depth1 type="text" description="Enter sowing depth  (mm)">30</depth1>
-        <row_spacing1 type="text" description="Enter row spacing  (mm)">250</row_spacing1>
-        <category type="category" description="Extra Parameters" />
-        <ftn1 type="text" description="Enter Fertile Tiller Number (na for auto) : ">na</ftn1>
-        <skiprow1 type="list" listvalues="solid, single, double" description="Skip row : ">solid</skiprow1>
-        <tillageImplement type="text" description="Name of tillage implement (na if not in use): ">planter</tillageImplement>
-      </ui>
-      <text>using System;
+        <manager2 name="Crop Management">
+          <ui>
+            <category type="category" description="Crop properties" />
+            <crop type="crop" description="Name of this crop">wheat</crop>
+            <category type="category" description="Sowing criteria" />
+            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm)">15-may</date1>
+            <date3 type="ddmmmdate" description="Enter cultivar change date (na if not in use)">na</date3>
+            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm)">10-jul</date2>
+            <must_sow type="yesno" description="Must Sow">no</must_sow>
+            <rain_amount type="text" description="Enter amount of cumulative rainfall (mm)">25</rain_amount>
+            <rain_days type="text" description="Enter number of days to accumulate rainfall (days)">7</rain_days>
+            <esw_amount type="text" description="Enter amount of soil water (mm)">100</esw_amount>
+            <category type="category" description="Sowing Parameters" />
+            <cultivar1 type="cultivars" description="Enter cultivar : ">hartog</cultivar1>
+            <cultivar2 type="cultivars" description="Enter 2nd Cultivar (na if not using a second cultivar)">na</cultivar2>
+            <density1 type="text" description="Enter sowing density  (plants/m2)">100</density1>
+            <depth1 type="text" description="Enter sowing depth  (mm)">30</depth1>
+            <row_spacing1 type="text" description="Enter row spacing  (mm)">250</row_spacing1>
+            <category type="category" description="Extra Parameters" />
+            <plants_pm1 type="text" description="Enter sowing density  (plants/ m row cotton)"></plants_pm1>
+            <ftn1 type="text" description="Enter Fertile Tiller Number (na for auto) : ">na</ftn1>
+            <skiprow1 type="list" listvalues="solid, single, double" description="Skip row : ">solid</skiprow1>
+            <tillageImplement type="text" description="Name of tillage implement (na if not in use): ">na</tillageImplement>
+          </ui>
+          <text>using System;
 using ModelFramework;
 using CSGeneral;
 
@@ -202,7 +203,7 @@ public class Script
              isPossibleToday = true;
          } 
 
-      if (isPossibleToday)
+	     if (isPossibleToday)
             return 1;
          
          if (plantStatus == "out" &amp;&amp; endOfWindow &amp;&amp; must_sow == "yes")
@@ -215,16 +216,16 @@ public class Script
       }
    }  
    
-   [Output, Description("Test whether we have passed the end of the window")] public int pastWindow  {
+[Output, Description("Test whether we have passed the end of the window")] public int pastWindow  {
       get {
          return( (DateUtility.CompareDates(date2, today) &lt; 0) ? 1 : 0);
       }
-   }
-   
+   }   
    // Sow a crop
    [Param()] private string cultivar1;
    [Param()] private string cultivar2;
-   [Param()] private double density1;
+   [Param()] private string density1;
+   [Param()] private string plants_pm1;
    [Param()] private double depth1;
    [Param()] private double row_spacing1;
    [Param()] private string ftn1;
@@ -233,13 +234,22 @@ public class Script
    
    [EventHandler, Description("Sow the crop")] public void OnEnter()
    {
-      Console.WriteLine(today + " Sowing Crop");
+      Console.WriteLine(today.ToString("dd/MM/yyyy") + " Sowing Crop");
       SowType data = new SowType();
       data.Cultivar = cultivar1;
       if(ChangeCultivar)
          data.Cultivar = cultivar2;
 
-      data.plants = density1;
+      double density = 0;
+      if (! double.TryParse(density1, out density) &amp;&amp; density1 != "")
+         Console.WriteLine(today.ToString("dd/MM/yyyy") + " Ignoring density parameter \"" + density1 + "\"");
+
+      double plants_pm = 0;
+      if (! double.TryParse(plants_pm1, out plants_pm)&amp;&amp; plants_pm1 != "")
+         Console.WriteLine(today.ToString("dd/MM/yyyy") + " Ignoring plants_pm parameter \"" + plants_pm1 + "\"");
+
+      data.plants = density;
+      data.plants_pm = plants_pm;
       data.sowing_depth = depth1;
       data.row_spacing = row_spacing1;
       data.tiller_no_fertile = (ftn1 == "na") ? "" : ftn1;
@@ -258,8 +268,9 @@ public class Script
          cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop);
 
       cropModule.Publish("Sow", data);
+
       if (tillageImplement.ToLower() != "na") 
-   {
+	  {
          TillageType t = new TillageType();
          t.type = tillageImplement;
          Component paddockModule;
@@ -268,7 +279,7 @@ public class Script
          else
             paddockModule = MySimulation.ChildPaddocks[0];
          paddockModule.Publish("tillage", t);
-      }   
+      }		 
    }
 
    // Test whether we can harvest a crop today
@@ -317,7 +328,7 @@ public class Script
    } 
 }
        </text>
-    </manager2>
+        </manager2>
          <manager2 name="Lucerne Ley Management">
           <ui>
             <category type="category" description="Crop properties" />
@@ -1314,6 +1325,42 @@ public class Script
 }
       </text>
     </manager2>
+        <manager2 name="Cotton defoliation rule">
+          <ui>
+            <category type="category" description="No parameters" />
+          </ui>
+          <text>
+using System;
+using System.Collections.Generic;
+using ModelFramework;
+
+// Crop management: cotton defoliation
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+
+public class Script 
+{      
+   [Link]  public Simulation MySimulation;
+   [EventHandler] public void OnPost()
+   {
+      foreach (Paddock paddock in MySimulation.ChildPaddocks) 
+      {
+         foreach (Component child in paddock.Children) {
+            string stageName = "";
+            int defol_das = 0;
+            if(child.Get("stageName", out stageName) &amp;&amp;
+               child.Get("defol_das", out defol_das)){
+               if(stageName == "mature" &amp;&amp; defol_das == 0) {
+                  // Console.WriteLine(/*today.ToString("dd/MM/yyyy") + */"Defoliating " + child.FullName); 
+                  child.Publish("defoliate");
+               }
+            }
+         }
+      }
+   }
+}
+           </text>
+        </manager2>
     <manager2 name="Fertilise on fixed date">
       <ui>
         <category type="category" description="When should fertiliser be applied" />
@@ -2027,6 +2074,79 @@ public class Script
 }
    </text>
     </manager2>
+        <manager2 name="Post Harvest Tillage">
+          <ui>
+            <tag type="category" description="When should fertiliser be applied" />
+            <EventName type="text" description="Which event to listen for">harvesting</EventName>
+            <daysToWait type="text" description="How many days to delay after event">3</daysToWait>
+            <tag type="category" description="Event details" />
+            <tillage_type type="list" listvalues="user_defined, chisel, disc, planter, burn, burn_90, graze, scarifier, rip, blade, tine" description="Tillage type : ">user_defined</tillage_type>
+            <tillage_depth type="text" description="User_defined depth of seedbed preparation (mm) : ">150</tillage_depth>
+            <tillage_f_incorp type="text" description="User_defined fraction of surface residues to incorporate (0-1): ">0.95</tillage_f_incorp>
+          </ui>
+          <text>using System;
+using System.Linq;
+using System.Collections.Generic;
+using ModelFramework;
+
+// Crop management: tillage after an event
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+
+public class Script 
+{      
+   [Link]  public Simulation MySimulation;
+   [Param] string EventName;
+   //[Param] int daysToWait;
+   private Dictionary&lt;string,int&gt; daysAfter = new Dictionary&lt;string,int&gt;();
+   
+   [EventHandler] public void OnStart_Simulation()
+   {
+      daysAfter.Add("", -1);
+      foreach (Paddock paddock in MySimulation.ChildPaddocks) 
+      {
+         daysAfter.Add(paddock.Name, -1);
+         RuntimeEventHandler.NullFunction curried = () =&gt; OnTrigger(paddock.Name);
+         paddock.Subscribe( EventName, curried);
+      }
+   }
+
+   public void OnTrigger(string paddock)
+   {
+      daysAfter[paddock] = 0;
+   }
+
+   [Param] string tillage_type;
+   [Param] int tillage_depth;
+   [Param] float tillage_f_incorp;
+   [Param] int daysToWait;
+   
+   [EventHandler] public void OnPost()
+   {
+      List &lt;string&gt; paddocks = new List&lt;string&gt;(daysAfter.Keys);
+      foreach (string p in paddocks)  {
+         if (daysAfter[p] &gt;= 0) {
+            daysAfter[p]++;
+            if (daysAfter[p] == daysToWait) {      
+               Component paddockModule;
+               if (p != "")
+                  paddockModule = (Component) MySimulation.LinkByName(p);
+               else
+                  paddockModule = (Component) MySimulation.ChildPaddocks[0];
+
+               TillageType t = new TillageType();
+               t.type = tillage_type;
+               t.tillage_depth = tillage_depth;
+               t.f_incorp = tillage_f_incorp;
+
+               paddockModule.Publish("tillage", t);
+            }
+         }
+      }
+   }
+}
+       </text>
+        </manager2>
     <manager2 name="Report on specific days">
       <ui>
         <title type="category" description="Don't forget to remove any reporting frquency variables from your selected Outputfile." />

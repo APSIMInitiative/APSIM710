@@ -1,4 +1,4 @@
-<folder version="36" creator="Apsim 7.8-r3996" name="Cotton Simulations">
+<folder version="37" creator="Apsim 7.10-r4181" name="Cotton Simulations">
   <simulation name="Continuous Dryland Cotton">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%\Examples\MetFiles\WeeWaa1889_2012.met</filename>
@@ -1218,134 +1218,546 @@
         </initsection>
       </Cotton2>
       <folder name="Manager folder">
-        <manager name="Sowing fertiliser">
+        <manager2 name="Crop Management">
           <ui>
-            <category type="category" description="When should fertiliser be applied" />
-            <modulename type="modulename" description="On which module should the event come from : ">Cotton</modulename>
-            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
-            <category type="category" description="Fertiliser application details" />
-            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
-            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">150</fert_amount_sow>
-            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, UAN_N, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
-          </ui>
-          <script>
-            <text>
-        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
-            </text>
-            <event>[modulename].[eventname]</event>
-          </script>
-        </manager>
-        <manager name="Cotton sowing rule">
-          <ui>
+            <category type="category" description="Crop properties" />
+            <crop type="crop" description="Name of this crop">cotton</crop>
             <category type="category" description="Sowing criteria" />
-            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">1-oct</date1>
-            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">10-nov</date2>
-            <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
-            <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
-            <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
-            <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">0</esw_amount>
-            <category type="category" description="Sowing parameters" />
-            <crop type="crop" description="Enter name of crop to sow : ">cotton</crop>
-            <density type="text" description="Enter sowing density  (plants/m in row) : ">10</density>
-            <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" description="Enter cultivar : ">S71BR</cultivar>
-            <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
-            <skiprow type="list" listvalues="0, 1, 2" description="Skip row : "> 1</skiprow>
+            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm)">1-oct</date1>
+            <date3 type="ddmmmdate" description="Enter cultivar change date (na if not in use)">na</date3>
+            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm)">10-nov</date2>
+            <must_sow type="yesno" description="Must Sow">yes</must_sow>
+            <rain_amount type="text" description="Enter amount of cumulative rainfall (mm)">30</rain_amount>
+            <rain_days type="text" description="Enter number of days to accumulate rainfall (days)">3</rain_days>
+            <esw_amount type="text" description="Enter amount of soil water (mm)">0</esw_amount>
+            <category type="category" description="Sowing Parameters" />
+            <cultivar1 type="cultivars" description="Enter cultivar : ">S71BR</cultivar1>
+            <cultivar2 type="cultivars" description="Enter 2nd Cultivar (na if not using a second cultivar)">na</cultivar2>
+            <density1 type="text" description="Enter sowing density  (plants/m2)" />
+            <depth1 type="text" description="Enter sowing depth  (mm)">50</depth1>
+            <row_spacing1 type="text" description="Enter row spacing  (mm)">1000</row_spacing1>
+            <category type="category" description="Extra Parameters" />
+            <plants_pm1 type="text" description="Enter sowing density  (plants/ m row cotton)">10</plants_pm1>
+            <ftn1 type="text" description="Enter Fertile Tiller Number (na for auto) : ">na</ftn1>
+            <skiprow1 type="list" listvalues="solid, single, double" description="Skip row : ">single</skiprow1>
+            <tillageImplement type="text" description="Name of tillage implement (na if not in use): ">na</tillageImplement>
           </ui>
-          <script>
-            <text>      if (paddock_is_fallow() = 1 and FallowIn &lt;&gt; 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
-         if (date_within('[date1], [date2]') = 1) then
-            if (rain[[rainnumdays]] &gt;= [raincrit] AND esw &gt;= [esw_amount]) OR
-                ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
-               ChooseNextCrop = 'yes'   ! for rotations
-               [crop] sow plants_pm =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skiprow = [skiprow]
-            endif
-            if today = date('[date2]') then
-               ChooseNextCrop = 'yes'
-            endif
-         endif
-      endif
-            </text>
-            <event>start_of_day</event>
-          </script>
-        </manager>
-        <manager name="Harvesting rule">
+          <text>using System;
+using ModelFramework;
+using CSGeneral;
+
+// Basic crop management: sowing &amp; harvesting.
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+// It will assume it is the only crop in the system if it doesnt find a sequencer.
+// If it does find a sequencer, it will do nothing until told to (via Enter/Leave).
+public class Script 
+{      
+   [Link()]  public Simulation MySimulation;
+   
+   [Param()] private string crop;         // The module name of this crop
+   [Param()] private string date1;         //Start of sowing window
+   [Param()] private string date2;         //End of sowing window
+   [Param()] private string date3;         //date to change to different cultivar
+   [Param()] int esw_amount;
+   [Param()] private string must_sow;
+
+   [Input()] private DateTime today;
+
+   // Rainfall accumulator
+   [Param()] int rain_days;              //check for rain over this period
+   [Param()] int rain_amount;            //this much rain over that period
+
+   // Daily rainfall from the system
+   [Input] private double rain;
+   private ManagerUtility.Tracker&lt;double&gt; rainTracker; 
+
+   private bool inWindow = false;
+   private bool endOfWindow = false;
+   private bool ChangeCultivar = false;
+
+   //initialise tracker, telling it how many days to track
+   [EventHandler] public void OnInitialised()
+   {
+      rainTracker = new ManagerUtility.Tracker&lt;double&gt;(rain_days); 
+   }
+
+   // Daily tests common to all paddocks
+   [EventHandler] public void OnPrepare()
+   {
+      bool startOfWindow = DateUtility.DatesEqual(date1, today);
+
+      inWindow = DateUtility.WithinDates(date1, today, date2);
+      ChangeCultivar = false;
+      if(date3 != "na")  
+         ChangeCultivar = DateUtility.WithinDates(date3, today, date2);
+      endOfWindow = DateUtility.DatesEqual(date2, today);
+
+      rainTracker.Add(rain);
+      string currentPaddock = "";
+      if (MySimulation.Get("currentPaddock", out currentPaddock) == false) 
+      {
+         // If there is no sequencer plugged in then we are it..
+         if (canEnter &gt; 0) {
+            OnEnter();
+         }
+         if (canLeave &gt; 0) {
+            OnLeave();
+         }
+      }
+   }
+   // Test whether we can sow a crop today
+   // +ve number - yes
+   // 0          - no
+   // -ve number - no, out of scope (planting window)
+   [Output, Description("Test whether we can sow a crop today")] public int canEnter  {
+      get {
+         bool isPossibleToday = false;
+         
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+         //Console.WriteLine("1. '" + currentPaddock + "'");
+
+         Component paddockModule;
+         if (currentPaddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(currentPaddock);
+         else
+            paddockModule = (Component) MySimulation.ChildPaddocks[0];
+         //Console.WriteLine("2. " + paddockModule.Name);
+
+         Component cropModule = (Component) paddockModule.LinkByName( crop );
+
+         //Console.WriteLine("3. " + cropModule.Name);
+         string plantStatus = "";
+         cropModule.Get("plant_status", out plantStatus);
+
+         double esw = 0.0;
+         Component soilModule = (Component) paddockModule.LinkByType("SoilWat");
+         soilModule.Get("esw", out esw);
+         if (plantStatus == "out" &amp;&amp;
+             inWindow &amp;&amp;
+             rainTracker.Sum() &gt;= rain_amount &amp;&amp;
+             esw &gt; esw_amount) 
+         {
+             isPossibleToday = true;
+         } 
+
+	     if (isPossibleToday)
+            return 1;
+         
+         if (plantStatus == "out" &amp;&amp; endOfWindow &amp;&amp; must_sow == "yes")
+            return 1;
+
+         if (plantStatus == "out" &amp;&amp; !inWindow)
+            return -1;
+         
+         return 0;
+      }
+   }  
+   
+   
+   // Sow a crop
+   [Param()] private string cultivar1;
+   [Param()] private string cultivar2;
+   [Param()] private string density1;
+   [Param()] private string plants_pm1;
+   [Param()] private double depth1;
+   [Param()] private double row_spacing1;
+   [Param()] private string ftn1;
+   [Param()] private string skiprow1;
+   [Param()] private string tillageImplement;
+   
+   [EventHandler, Description("Sow the crop")] public void OnEnter()
+   {
+      Console.WriteLine(today.ToString("dd/MM/yyyy") + " Sowing Crop");
+      SowType data = new SowType();
+      data.Cultivar = cultivar1;
+      if(ChangeCultivar)
+         data.Cultivar = cultivar2;
+
+      double density = 0;
+      if (! double.TryParse(density1, out density) &amp;&amp; density1 != "")
+         Console.WriteLine(today.ToString("dd/MM/yyyy") + " Ignoring density parameter \"" + density1 + "\"");
+
+      double plants_pm = 0;
+      if (! double.TryParse(plants_pm1, out plants_pm)&amp;&amp; plants_pm1 != "")
+         Console.WriteLine(today.ToString("dd/MM/yyyy") + " Ignoring plants_pm parameter \"" + plants_pm1 + "\"");
+
+      data.plants = density;
+      data.plants_pm = plants_pm;
+      data.sowing_depth = depth1;
+      data.row_spacing = row_spacing1;
+      data.tiller_no_fertile = (ftn1 == "na") ? "" : ftn1;
+      data.SkipRow = 0 ;
+      if (skiprow1 == "single")
+         data.SkipRow = 1;
+      else if (skiprow1 == "double")
+         data.SkipRow = 2;
+
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      Component cropModule;
+      if (currentPaddock != "")
+         cropModule = (Component) MySimulation.LinkByName(currentPaddock + "." + crop);
+      else 
+         cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop);
+
+      cropModule.Publish("Sow", data);
+
+      if (tillageImplement.ToLower() != "na") 
+	  {
+         TillageType t = new TillageType();
+         t.type = tillageImplement;
+         Component paddockModule;
+         if (currentPaddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(currentPaddock);
+         else
+            paddockModule = MySimulation.ChildPaddocks[0];
+         paddockModule.Publish("tillage", t);
+      }		 
+   }
+
+   // Test whether we can harvest a crop today
+   // +ve number - yes
+   // 0          - no
+   // -ve        - out of scope
+   [Output] public int canLeave  
+   {
+      get 
+      {
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+
+         string plantStatus = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop + ".plant_status", out plantStatus);
+         if (plantStatus == "out")
+            return -1;
+
+         string StageName = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop + ".StageName", out StageName);
+         if (StageName == "harvest_ripe" || plantStatus == "dead")
+            return 1;
+         return 0;
+      }
+   }
+
+   [EventHandler] public void OnLeave()
+   {
+      Console.WriteLine(today + " Harvesting Crop");
+      HarvestType hdata = new HarvestType();
+      hdata.Remove = 0.0;
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      Component cropModule;
+      if (currentPaddock != "")
+         cropModule = (Component) MySimulation.LinkByName(currentPaddock + "." + crop);
+      else 
+         cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop);
+
+      cropModule.Publish("harvest", hdata);
+
+      KillCropType kdata = new KillCropType();
+      kdata.KillFraction = 0.0F;
+      cropModule.Publish("killcrop", kdata);
+      cropModule.Publish("end_crop");
+   } 
+}
+       </text>
+        </manager2>
+        <manager2 name="Fertilise at Sowing">
           <ui>
-            <category type="category" description="Harvesting criteria" />
-            <crop type="crop" description="Enter name of crop to harvest when ripe : ">Cotton</crop>
+            <tag type="category" description="When should fertiliser be applied" />
+            <ModuleName type="modulename" description="On which module should the event come from: ">Cotton</ModuleName>
+            <EventName type="text" description="On which event should spraying be triggered">sowing</EventName>
+            <tag type="category" description="Event details" />
+            <fertType type="text" description="The type of fertiliser">urea_N</fertType>
+            <fertAmt type="text" description="Amount of fertiliser to apply (kg/ha)">150</fertAmt>
           </ui>
-          <script>
-            <text>
-           if ('[crop]' = 'cotton') then
+          <text>using System;
+using System.Linq;
+using System.Collections.Generic;
+using ModelFramework;
 
-               !!  cotton defoliation
-                if ([crop].stageName = 'mature'  and  [crop].defol_das = 0) then
-                    [crop] defoliate
-                endif
-          
-                !! cotton harvest
-                if ([crop].stageName = 'harvest_ripe' or [crop].PlantStatus = 'dead') then
-                   !!report_harvest do_output
-                   [crop] harvest
-                   [crop] end_crop
-                endif
+// Crop management: fertilise at sowing
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
 
-           endif</text>
-            <event>end_of_day</event>
-          </script>
-        </manager>
-        <manager name="Fertilise on days after sowing - top up">
+public class Script 
+{      
+   [Link]  public Simulation MySimulation;
+   [Param] string fertType;
+   [Param] float fertAmt;
+   [Param] string ModuleName;
+   [Param] string EventName;
+   
+   [EventHandler] public void OnStart_Simulation()
+   {
+      foreach (Paddock paddock in MySimulation.ChildPaddocks) 
+      {
+         foreach (Component child in paddock.Children) {
+            if(child.Name == ModuleName){
+               RuntimeEventHandler.NullFunction curried = () =&gt; OnTrigger(paddock.Name);
+               MySimulation.Subscribe(child.FullName + "." + EventName, curried);
+               //Console.WriteLine("Subscribed '" + child.FullName + "." + EventName + " =&gt; " + paddock.Name + "'"); 
+            }
+         }
+      }
+   }
+
+   public void OnTrigger(string paddock)
+   {
+      //Console.WriteLine("Fertiliser OnTrigger called, paddock='" + paddock + "'"); 
+      if (fertAmt &gt; 0) 
+      {         
+         Component paddockModule;
+         if (paddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(paddock);
+         else
+            paddockModule = (Component) MySimulation.ChildPaddocks[0];
+         //Console.WriteLine("2. " + paddockModule.Name);
+
+         Fertiliser fertModule = (Fertiliser) paddockModule.LinkByName("Fertiliser");
+         fertModule.Apply(fertAmt, 50, fertType);
+      }
+   }
+}
+       </text>
+        </manager2>
+        <manager2 name="Cotton defoliation rule">
           <ui>
-            <category type="category" description="When should fertiliser be applied" />
-            <modulename type="modulename" description="On which crop is fertiliser being applied : ">Cotton</modulename>
-            <fert_das type="text" description="Enter fertiliser days after sowing  : ">60</fert_das>
-            <fert_criteria type="text" description="Amount of N required in top 3 layers (kg/ha) : ">250</fert_criteria>
+            <category type="category" description="No parameters" />
+          </ui>
+          <text>
+using System;
+using System.Collections.Generic;
+using ModelFramework;
+
+// Crop management: cotton defoliation
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+
+public class Script 
+{      
+   [Link]  public Simulation MySimulation;
+   [EventHandler] public void OnPost()
+   {
+      foreach (Paddock paddock in MySimulation.ChildPaddocks) 
+      {
+         foreach (Component child in paddock.Children) {
+            string stageName = "";
+            int defol_das = 0;
+            if(child.Get("stageName", out stageName) &amp;&amp;
+               child.Get("defol_das", out defol_das)){
+               if(stageName == "mature" &amp;&amp; defol_das == 0) {
+                  // Console.WriteLine(/*today.ToString("dd/MM/yyyy") + */"Defoliating " + child.FullName); 
+                  child.Publish("defoliate");
+               }
+            }
+         }
+      }
+   }
+}
+           </text>
+        </manager2>
+        <manager2 name="Fertilise on days after sowing">
+          <ui>
+            <category type="category" description="Test for the mineral N in the soil and don't apply the fertiliser if greater than X kgN/ha is stored in the soil above a depth of Y mm" />
+            <ModuleName type="modulename" description="On which module should the event come from : ">wheat1</ModuleName>
+            <EventName type="text" description="On which event should fertiliser be applied : (see the list by module in Reporting Frequency for possible events)">sowing</EventName>
+            <Days2Wait type="text" description="Number of days to wait after the event happens before the fertiliser is applied">60</Days2Wait>
+            <category type="category" description="Test for the mineral N in the soil and don't apply the fertiliser if greater than X kgN/ha is stored in the soil above a depth of Y mm" />
+            <FertAmtCriteria type="text" description="Don't add fertiliser if N in the soil to the depth below exceeds (kg/ha)  (insert a large value to avoid this test)">1000</FertAmtCriteria>
+            <FertDepthCriteria type="text" description="Depth to which the amount of N in the soil should be calculated (mm)">600</FertDepthCriteria>
             <category type="category" description="Fertiliser application details" />
-            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
-            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, UAN_N, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Fertiliser type : ">urea_N</fert_type>
+            <FertDepth type="text" description="Depth at which to apply the fertiliser (mm)">50</FertDepth>
+            <FertAmt type="text" description="Amount of fertiliser to add (kg N /ha)">250</FertAmt>
+            <FertType type="list" listvalues="no3_n,nh4_n,nh4no3,urea_n,urea_no3,urea,nh4so4_n,rock_p,banded_p,broadcast_p" description="Fertiliser type - select from the list">urea_n</FertType>
           </ui>
-          <script>
-            <text>
-         if ([modulename].DaysAfterSowing = [fert_das]) then
-            N_deficit = [fert_criteria] - (no3(1) + nh4(1) + no3(2) + nh4(2) + no3(3) + nh4(3))
-            if (N_deficit &gt; 0) then
-                '[fertmodule]' apply amount = N_deficit (kg/ha), depth = 50 (mm), type = [fert_type] ()
-            endif
-         endif </text>
-            <event>start_of_day</event>
-          </script>
-        </manager>
-        <manager name="PostHarvestTillage">
+          <text>Imports System
+Imports ModelFramework
+
+Public Class Script 
+   &lt;Link()&gt; Dim MyPaddock As Paddock
+   &lt;Link()&gt; Dim Fert As Fertiliser
+
+   'Parameters - user inputs from the Properties tab
+
+   &lt;Param&gt; Private ModuleName As String         'Module that sends the even that will be used in the decision
+   &lt;Param&gt; Private EventName As String          'The name of the event (e.g. "sowing", "irrigated") to control the fertiliser decision
+   &lt;Param&gt; Private Days2Wait As Integer         'Wait this many days after the event before applying the fertiliser
+
+   &lt;Param&gt; Private FertAmtCriteria As Single    'Don't apply fertiliser if the N stored in the soil is greater than this.  Disregard the test if the value is -ve
+   &lt;Param&gt; Private FertDepthCriteria As Single  'Depth in the soil to calculate the N storage
+
+   &lt;Param&gt; Private FertDepth As Single          'Depth in the soil that the fertilser will be applied
+   &lt;Param&gt; Private FertAmt As Single            'Total annual application - needs to be split up between the various application dates listed
+   &lt;Param&gt; Private FertType As String           'Type of fertliser to apply
+
+   'Inputs - got by this Manager from elsewhere in APSIM
+   &lt;Input&gt; Private Today As DateTime            'Today's date from APSIM 
+   &lt;Input&gt; Private dlayer As Single()           'Array of soil layer thicknesses - for calculation of mineral N in the soil
+   &lt;Input&gt; Private no3 As Single()              'Array of nitrate-N (kg N /ha) for each soil layer - for calculation of mineral N in the soil
+   &lt;Input&gt; Private nh4 As Single()              'Array of ammonium-N (kg N /ha) for each soil layer - for calculation of mineral N in the soil
+   &lt;Input&gt; Private urea As Single()             'Array of urea-N (kg N /ha) for each soil layer - for calculation of mineral N in the soil
+
+   'Outputs - calculated by this Manager and available to be output by the user
+   &lt;Output&gt; Private CumSoilN As Single          'Mineral-N stored in the soil to a depth of FertDepthCriteria
+
+   'Other variables that are calculated but not needed for outputs
+   Private LayerWeights As Single()             'Weigthing of each layer for FertAmtCriteria calculation
+   Private CountingTheDays As Integer           'Variable to count the days from the event to the fertiliser application
+   Private DoFert As Boolean                    'Variable to help with the fertiliser application decision
+
+
+   &lt;EventHandler()&gt; Public Sub OnInit2()
+      '"OnInit2" is an event handler gets called once at the start of the simulation 
+
+      'Initialise the variables for the delay between the event and the actual application
+      CountingTheDays = 0
+      DoFert = False
+
+   End Sub
+
+   &lt;EventHandler("[ModuleName].[EventName]")&gt; Public Sub TriggerApplyMyFertiliser() 
+      'This subroutine will be called when [ModuleName].[EventName] is fired
+
+      'Initialise the counter between the event and the fertiliser application.  The actual fertiliser aplication is done in the ApplyMyFertiliser subroutine
+      CountingTheDays = 1
+      DoFert = True
+
+      'if there is to be no delay between the event and the fertiliser application then just go  do it now (don't wait for a Prepare stage which might not be until tomorrow)
+      'reset the DoFert because now the fertiliser has been applied (nothing in the queue anymore)
+      If Days2Wait = 0 Then
+         ApplyMyFertiliser
+         DoFert = False
+      End If
+
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+      '"OnPrepare" is an event handler gets called once at the start of every day (before Prepare and Post) 
+
+      'Increment the counter once per day if are in that delay stage between the event and the application
+      'If the delay period is over then go to the subroutine for the fertiliser application and reset DoFert
+      If DoFert Then
+         CountingTheDays += 1
+         If CountingTheDays &gt;= Days2Wait Then
+            ApplyMyFertiliser
+            DoFert = False
+         End If
+      End If
+
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub ApplyMyFertiliser()
+      'This subroutine sends Fertiliser the command to apply the fertiliser 
+
+      'Set the number of elements in the LayerWeights array to equal the number of soil layers - do this here because erosion can change the layering
+      'Then move through the array and assign a LayerWeighting from 0 to 1 quantifying what proportion of the soil and mineral N in this layer is above FertDepthCriteria
+      ReDim LayerWeights(dlayer.length - 1)                
+      Dim CumDepth As Single = 0.0
+         For i As Integer = 0 To dlayer.Length - 1     
+            CumDepth += dlayer(i)                      
+         If CumDepth &lt;= FertDepthCriteria Then
+            LayerWeights(i) = 1.0                   
+         ElseIf (CumDepth - dlayer(i)) &lt;= FertDepthCriteria Then
+            LayerWeights(i) = (FertDepthCriteria - (CumDepth - dlayer(i))) / dlayer(i)
+         Else
+            LayerWeights(i) = 0.0
+         End If
+      Next
+
+      'Add up the no3, nh4 and urea (all already in kg N /ha) in each layer and multiply by the layer weighting to get the total mineral N to the set depth
+      CumSoilN = 0.0
+      For i As Integer = 0 To dlayer.Length - 1     
+         CumSoilN += (no3(i) + nh4(i) + urea(i)) * LayerWeights(i)                         
+      Next
+
+      'If there is less mineral N in the soil than FertAmtCriteria then it is OK to add fertiliser
+      '"Fert.Apply" send the command to apply the specified amount of fertiliser at the specified depth of the specified type of fertiliser
+      If CumSoilN &lt;= FertAmtCriteria Then
+         Fert.Apply(FertAmt, FertDepth, FertType)
+      Else 
+         Console.WriteLine("Too much fertiliser - upper threshold " &amp; FertAmtCriteria &amp; "(kg/ha) reached")
+      End If
+
+   End Sub
+
+End Class
+   </text>
+        </manager2>
+        <manager2 name="Post Harvest Tillage">
           <ui>
-            <category type="category" description="Tillage details" />
-            <surfaceommodule type="modulename" description="Module used to apply the tillage : ">SurfaceOrganicMatter</surfaceommodule>
+            <tag type="category" description="When should fertiliser be applied" />
+            <EventName type="text" description="Which event to listen for">harvesting</EventName>
+            <daysToWait type="text" description="How many days to delay after event">3</daysToWait>
+            <tag type="category" description="Event details" />
             <tillage_type type="list" listvalues="user_defined, chisel, disc, planter, burn, burn_90, graze, scarifier, rip, blade, tine" description="Tillage type : ">user_defined</tillage_type>
             <tillage_depth type="text" description="User_defined depth of seedbed preparation (mm) : ">150</tillage_depth>
             <tillage_f_incorp type="text" description="User_defined fraction of surface residues to incorporate (0-1): ">0.95</tillage_f_incorp>
           </ui>
-          <script>
-            <text>
-if (plant_status = 'out'  AND  yesterdays_plant_status &lt;&gt; 'out' ) then
+          <text>using System;
+using System.Linq;
+using System.Collections.Generic;
+using ModelFramework;
 
-            if ('[tillage_type]' = 'user_defined') then
-                '[surfaceommodule]' tillage type = [tillage_type], f_incorp = [tillage_f_incorp] (), tillage_depth = [tillage_depth]
-            else
-                '[surfaceommodule]' tillage type = [tillage_type]
-            endif
+// Crop management: tillage after event
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
 
-endif
+public class Script 
+{      
+   [Link]  public Simulation MySimulation;
+   [Param] string EventName;
+   private Dictionary&lt;string,int&gt; daysAfter = new Dictionary&lt;string,int&gt;();
+   
+   [EventHandler] public void OnStart_Simulation()
+   {
+      daysAfter.Add("", -1);
+      foreach (Paddock paddock in MySimulation.ChildPaddocks) 
+      {
+         daysAfter.Add(paddock.Name, -1);
+         RuntimeEventHandler.NullFunction curried = () =&gt; OnTrigger(paddock.Name);
+         paddock.Subscribe( EventName, curried);
+      }
+   }
 
-yesterdays_plant_status = plant_status
+   public void OnTrigger(string paddock)
+   {
+      daysAfter[paddock] = 0;
+   }
 
+   [Param] string tillage_type;
+   [Param] int tillage_depth;
+   [Param] float tillage_f_incorp;
+   [Param] int daysToWait;
+   
+   [EventHandler] public void OnPost()
+   {
+      List &lt;string&gt; paddocks = new List&lt;string&gt;(daysAfter.Keys);
+      foreach (string p in paddocks)  {
+         if (daysAfter[p] &gt;= 0) {
+            daysAfter[p]++;
+            if (daysAfter[p] == daysToWait) {      
+               Component paddockModule;
+               if (p != "")
+                  paddockModule = (Component) MySimulation.LinkByName(p);
+               else
+                  paddockModule = (Component) MySimulation.ChildPaddocks[0];
 
-  </text>
-            <event>start_of_day</event>
-          </script>
-          <script>
-            <text>yesterdays_plant_status = 'out'</text>
-            <event>init</event>
-          </script>
-        </manager>
+               TillageType t = new TillageType();
+               t.type = tillage_type;
+               t.tillage_depth = tillage_depth;
+               t.f_incorp = tillage_f_incorp;
+
+               paddockModule.Publish("tillage", t);
+            }
+         }
+      }
+   }
+}
+       </text>
+        </manager2>
       </folder>
       <outputfile>
         <filename output="yes">Continuous Dryland Cotton.out</filename>
@@ -2621,78 +3033,474 @@ yesterdays_plant_status = plant_status
         </initsection>
       </Cotton2>
       <folder name="Manager folder">
-        <manager name="Sowing fertiliser">
+        <manager2 name="Crop Management">
           <ui>
-            <category type="category" description="When should fertiliser be applied" />
-            <modulename type="modulename" description="On which module should the event come from : ">Cotton</modulename>
-            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
-            <category type="category" description="Fertiliser application details" />
-            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
-            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">160</fert_amount_sow>
-            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, UAN_N, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
-          </ui>
-          <script>
-            <text>
-        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
-            </text>
-            <event>[modulename].[eventname]</event>
-          </script>
-        </manager>
-        <manager name="Cotton sowing rule">
-          <ui>
+            <category type="category" description="Crop properties" />
+            <crop type="crop" description="Name of this crop">cotton</crop>
             <category type="category" description="Sowing criteria" />
-            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm) : ">15-oct</date1>
-            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm) : ">15-oct</date2>
-            <must_sow type="yesno" description="Must sow? : ">yes</must_sow>
-            <raincrit type="text" description="Amount of rainfall : ">30</raincrit>
-            <rainnumdays type="text" description="Number of days of rainfall : ">3</rainnumdays>
-            <esw_amount type="text" description="Enter minimum allowable available soil water (mm) : ">0</esw_amount>
-            <category type="category" description="Sowing parameters" />
-            <crop type="crop" description="Enter name of crop to sow : ">cotton</crop>
-            <density type="text" description="Enter sowing density  (plants/m in row) : ">12</density>
-            <depth type="text" description="Enter sowing depth  (mm) : ">50</depth>
-            <cultivar type="cultivars" description="Enter cultivar : ">S71BR</cultivar>
-            <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
-            <skiprow type="list" listvalues="0, 1, 2" description="Skip row : ">0</skiprow>
+            <date1 type="ddmmmdate" description="Enter sowing window START date (dd-mmm)">15-oct</date1>
+            <date3 type="ddmmmdate" description="Enter cultivar change date (na if not in use)">na</date3>
+            <date2 type="ddmmmdate" description="Enter sowing window END date (dd-mmm)">15-oct</date2>
+            <must_sow type="yesno" description="Must Sow">yes</must_sow>
+            <rain_amount type="text" description="Enter amount of cumulative rainfall (mm)">30</rain_amount>
+            <rain_days type="text" description="Enter number of days to accumulate rainfall (days)">3</rain_days>
+            <esw_amount type="text" description="Enter amount of soil water (mm)">0</esw_amount>
+            <category type="category" description="Sowing Parameters" />
+            <cultivar1 type="cultivars" description="Enter cultivar : ">S71BR</cultivar1>
+            <cultivar2 type="cultivars" description="Enter 2nd Cultivar (na if not using a second cultivar)">na</cultivar2>
+            <density1 type="text" description="Enter sowing density  (plants/m2)" />
+            <depth1 type="text" description="Enter sowing depth  (mm)">50</depth1>
+            <row_spacing1 type="text" description="Enter row spacing  (mm)">1000</row_spacing1>
+            <category type="category" description="Extra Parameters" />
+            <plants_pm1 type="text" description="Enter sowing density  (plants/ m row cotton)">12</plants_pm1>
+            <ftn1 type="text" description="Enter Fertile Tiller Number (na for auto) : ">na</ftn1>
+            <skiprow1 type="list" listvalues="solid, single, double" description="Skip row : ">solid</skiprow1>
+            <tillageImplement type="text" description="Name of tillage implement (na if not in use): ">na</tillageImplement>
           </ui>
-          <script>
-            <text>      if (paddock_is_fallow() = 1 and FallowIn &lt;&gt; 'yes' and (NextCrop = 0 or NextCrop = '[crop]')) then
-         if (date_within('[date1], [date2]') = 1) then
-            if (rain[[rainnumdays]] &gt;= [raincrit] AND esw &gt;= [esw_amount]) OR
-                ('[must_sow]' = 'yes' AND today = date('[date2]'))) THEN
-               ChooseNextCrop = 'yes'   ! for rotations
-               [crop] sow plants_pm =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skiprow = [skiprow]
-            endif
-            if today = date('[date2]') then
-               ChooseNextCrop = 'yes'
-            endif
-         endif
-      endif
-            </text>
-            <event>start_of_day</event>
-          </script>
-        </manager>
-        <manager name="Fertilise on days after sowing - top up">
+          <text>using System;
+using ModelFramework;
+using CSGeneral;
+
+// Basic crop management: sowing &amp; harvesting.
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+// It will assume it is the only crop in the system if it doesnt find a sequencer.
+// If it does find a sequencer, it will do nothing until told to (via Enter/Leave).
+public class Script 
+{      
+   [Link()]  public Simulation MySimulation;
+   
+   [Param()] private string crop;         // The module name of this crop
+   [Param()] private string date1;         //Start of sowing window
+   [Param()] private string date2;         //End of sowing window
+   [Param()] private string date3;         //date to change to different cultivar
+   [Param()] int esw_amount;
+   [Param()] private string must_sow;
+
+   [Input()] private DateTime today;
+
+   // Rainfall accumulator
+   [Param()] int rain_days;              //check for rain over this period
+   [Param()] int rain_amount;            //this much rain over that period
+
+   // Daily rainfall from the system
+   [Input] private double rain;
+   private ManagerUtility.Tracker&lt;double&gt; rainTracker; 
+
+   private bool inWindow = false;
+   private bool endOfWindow = false;
+   private bool ChangeCultivar = false;
+
+   //initialise tracker, telling it how many days to track
+   [EventHandler] public void OnInitialised()
+   {
+      rainTracker = new ManagerUtility.Tracker&lt;double&gt;(rain_days); 
+   }
+
+   // Daily tests common to all paddocks
+   [EventHandler] public void OnPrepare()
+   {
+      bool startOfWindow = DateUtility.DatesEqual(date1, today);
+
+      inWindow = DateUtility.WithinDates(date1, today, date2);
+      ChangeCultivar = false;
+      if(date3 != "na")  
+         ChangeCultivar = DateUtility.WithinDates(date3, today, date2);
+      endOfWindow = DateUtility.DatesEqual(date2, today);
+
+      rainTracker.Add(rain);
+      string currentPaddock = "";
+      if (MySimulation.Get("currentPaddock", out currentPaddock) == false) 
+      {
+         // If there is no sequencer plugged in then we are it..
+         if (canEnter &gt; 0) {
+            OnEnter();
+         }
+         if (canLeave &gt; 0) {
+            OnLeave();
+         }
+      }
+   }
+   // Test whether we can sow a crop today
+   // +ve number - yes
+   // 0          - no
+   // -ve number - no, out of scope (planting window)
+   [Output, Description("Test whether we can sow a crop today")] public int canEnter  {
+      get {
+         bool isPossibleToday = false;
+         
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+         //Console.WriteLine("1. '" + currentPaddock + "'");
+
+         Component paddockModule;
+         if (currentPaddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(currentPaddock);
+         else
+            paddockModule = (Component) MySimulation.ChildPaddocks[0];
+         //Console.WriteLine("2. " + paddockModule.Name);
+
+         Component cropModule = (Component) paddockModule.LinkByName( crop );
+
+         //Console.WriteLine("3. " + cropModule.Name);
+         string plantStatus = "";
+         cropModule.Get("plant_status", out plantStatus);
+
+         double esw = 0.0;
+         Component soilModule = (Component) paddockModule.LinkByType("SoilWat");
+         soilModule.Get("esw", out esw);
+         if (plantStatus == "out" &amp;&amp;
+             inWindow &amp;&amp;
+             rainTracker.Sum() &gt;= rain_amount &amp;&amp;
+             esw &gt; esw_amount) 
+         {
+             isPossibleToday = true;
+         } 
+
+	     if (isPossibleToday)
+            return 1;
+         
+         if (plantStatus == "out" &amp;&amp; endOfWindow &amp;&amp; must_sow == "yes")
+            return 1;
+
+         if (plantStatus == "out" &amp;&amp; !inWindow)
+            return -1;
+         
+         return 0;
+      }
+   }  
+   
+   
+   // Sow a crop
+   [Param()] private string cultivar1;
+   [Param()] private string cultivar2;
+   [Param()] private string density1;
+   [Param()] private string plants_pm1;
+   [Param()] private double depth1;
+   [Param()] private double row_spacing1;
+   [Param()] private string ftn1;
+   [Param()] private string skiprow1;
+   [Param()] private string tillageImplement;
+   
+   [EventHandler, Description("Sow the crop")] public void OnEnter()
+   {
+      Console.WriteLine(today.ToString("dd/MM/yyyy") + " Sowing Crop");
+      SowType data = new SowType();
+      data.Cultivar = cultivar1;
+      if(ChangeCultivar)
+         data.Cultivar = cultivar2;
+
+      double density = 0;
+      if (! double.TryParse(density1, out density) &amp;&amp; density1 != "")
+         Console.WriteLine(today.ToString("dd/MM/yyyy") + " Ignoring density parameter \"" + density1 + "\"");
+
+      double plants_pm = 0;
+      if (! double.TryParse(plants_pm1, out plants_pm)&amp;&amp; plants_pm1 != "")
+         Console.WriteLine(today.ToString("dd/MM/yyyy") + " Ignoring plants_pm parameter \"" + plants_pm1 + "\"");
+
+      data.plants = density;
+      data.plants_pm = plants_pm;
+      data.sowing_depth = depth1;
+      data.row_spacing = row_spacing1;
+      data.tiller_no_fertile = (ftn1 == "na") ? "" : ftn1;
+      data.SkipRow = 0 ;
+      if (skiprow1 == "single")
+         data.SkipRow = 1;
+      else if (skiprow1 == "double")
+         data.SkipRow = 2;
+
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      Component cropModule;
+      if (currentPaddock != "")
+         cropModule = (Component) MySimulation.LinkByName(currentPaddock + "." + crop);
+      else 
+         cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop);
+
+      cropModule.Publish("Sow", data);
+
+      if (tillageImplement.ToLower() != "na") 
+	  {
+         TillageType t = new TillageType();
+         t.type = tillageImplement;
+         Component paddockModule;
+         if (currentPaddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(currentPaddock);
+         else
+            paddockModule = MySimulation.ChildPaddocks[0];
+         paddockModule.Publish("tillage", t);
+      }		 
+   }
+
+   // Test whether we can harvest a crop today
+   // +ve number - yes
+   // 0          - no
+   // -ve        - out of scope
+   [Output] public int canLeave  
+   {
+      get 
+      {
+         string currentPaddock;
+         MySimulation.Get("currentPaddock", out currentPaddock);
+
+         string plantStatus = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop + ".plant_status", out plantStatus);
+         if (plantStatus == "out")
+            return -1;
+
+         string StageName = "";
+         MySimulation.Get((currentPaddock != "" ? currentPaddock + "." : "") + crop + ".StageName", out StageName);
+         if (StageName == "harvest_ripe" || plantStatus == "dead")
+            return 1;
+         return 0;
+      }
+   }
+
+   [EventHandler] public void OnLeave()
+   {
+      Console.WriteLine(today + " Harvesting Crop");
+      HarvestType hdata = new HarvestType();
+      hdata.Remove = 0.0;
+      string currentPaddock;
+      MySimulation.Get("currentPaddock", out currentPaddock);
+      Component cropModule;
+      if (currentPaddock != "")
+         cropModule = (Component) MySimulation.LinkByName(currentPaddock + "." + crop);
+      else 
+         cropModule = (Component) MySimulation.ChildPaddocks[0].LinkByName(crop);
+
+      cropModule.Publish("harvest", hdata);
+
+      KillCropType kdata = new KillCropType();
+      kdata.KillFraction = 0.0F;
+      cropModule.Publish("killcrop", kdata);
+      cropModule.Publish("end_crop");
+   } 
+}
+       </text>
+        </manager2>
+        <manager2 name="Cotton defoliation rule">
           <ui>
-            <category type="category" description="When should fertiliser be applied" />
-            <modulename type="modulename" description="On which crop is fertiliser being applied : ">Cotton</modulename>
-            <fert_das type="text" description="Enter fertiliser days after sowing  : ">60</fert_das>
-            <fert_criteria type="text" description="Amount of N required in top 3 layers (kg/ha) : ">250</fert_criteria>
-            <category type="category" description="Fertiliser application details" />
-            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
-            <fert_type type="list" listvalues="NO3_N, NH4_N, NH4NO3, UAN_N, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Fertiliser type : ">urea_N</fert_type>
+            <category type="category" description="No parameters" />
           </ui>
-          <script>
-            <text>
-         if ([modulename].DaysAfterSowing = [fert_das]) then
-            N_deficit = [fert_criteria] - (no3(1) + nh4(1) + no3(2) + nh4(2) + no3(3) + nh4(3))
-            if (N_deficit &gt; 0) then
-                '[fertmodule]' apply amount = N_deficit (kg/ha), depth = 50 (mm), type = [fert_type] ()
-            endif
-         endif </text>
-            <event>start_of_day</event>
-          </script>
-        </manager>
+          <text>
+using System;
+using System.Collections.Generic;
+using ModelFramework;
+
+// Crop management: cotton defoliation
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+
+public class Script 
+{      
+   [Link]  public Simulation MySimulation;
+   [EventHandler] public void OnPost()
+   {
+      foreach (Paddock paddock in MySimulation.ChildPaddocks) 
+      {
+         foreach (Component child in paddock.Children) {
+            string stageName = "";
+            int defol_das = 0;
+            if(child.Get("stageName", out stageName) &amp;&amp;
+               child.Get("defol_das", out defol_das)){
+               if(stageName == "mature" &amp;&amp; defol_das == 0) {
+                  // Console.WriteLine(/*today.ToString("dd/MM/yyyy") + */"Defoliating " + child.FullName); 
+                  child.Publish("defoliate");
+               }
+            }
+         }
+      }
+   }
+}
+           </text>
+        </manager2>
+        <manager2 name="Fertilise at Sowing">
+          <ui>
+            <tag type="category" description="When should fertiliser be applied" />
+            <ModuleName type="modulename" description="On which module should the event come from: ">Cotton</ModuleName>
+            <EventName type="text" description="On which event should spraying be triggered">sowing</EventName>
+            <tag type="category" description="Event details" />
+            <fertType type="text" description="The type of fertiliser">urea_N</fertType>
+            <fertAmt type="text" description="Amount of fertiliser to apply (kg/ha)">160</fertAmt>
+          </ui>
+          <text>using System;
+using System.Linq;
+using System.Collections.Generic;
+using ModelFramework;
+
+// Crop management: fertilise at sowing
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
+
+public class Script 
+{      
+   [Link]  public Simulation MySimulation;
+   [Param] string fertType;
+   [Param] float fertAmt;
+   [Param] string ModuleName;
+   [Param] string EventName;
+   
+   [EventHandler] public void OnStart_Simulation()
+   {
+      foreach (Paddock paddock in MySimulation.ChildPaddocks) 
+      {
+         foreach (Component child in paddock.Children) {
+            if(child.Name == ModuleName){
+               RuntimeEventHandler.NullFunction curried = () =&gt; OnTrigger(paddock.Name);
+               MySimulation.Subscribe(child.FullName + "." + EventName, curried);
+               //Console.WriteLine("Subscribed '" + child.FullName + "." + EventName + " =&gt; " + paddock.Name + "'"); 
+            }
+         }
+      }
+   }
+
+   public void OnTrigger(string paddock)
+   {
+      //Console.WriteLine("Fertiliser OnTrigger called, paddock='" + paddock + "'"); 
+      if (fertAmt &gt; 0) 
+      {         
+         Component paddockModule;
+         if (paddock != "")
+            paddockModule = (Component) MySimulation.LinkByName(paddock);
+         else
+            paddockModule = (Component) MySimulation.ChildPaddocks[0];
+         //Console.WriteLine("2. " + paddockModule.Name);
+
+         Fertiliser fertModule = (Fertiliser) paddockModule.LinkByName("Fertiliser");
+         fertModule.Apply(fertAmt, 50, fertType);
+      }
+   }
+}
+       </text>
+        </manager2>
+        <manager2 name="Fertilise on days after sowing">
+          <ui>
+            <category type="category" description="Test for the mineral N in the soil and don't apply the fertiliser if greater than X kgN/ha is stored in the soil above a depth of Y mm" />
+            <ModuleName type="modulename" description="On which module should the event come from : ">Cotton</ModuleName>
+            <EventName type="text" description="On which event should fertiliser be applied : (see the list by module in Reporting Frequency for possible events)">sowing</EventName>
+            <Days2Wait type="text" description="Number of days to wait after the event happens before the fertiliser is applied">60</Days2Wait>
+            <category type="category" description="Test for the mineral N in the soil and don't apply the fertiliser if greater than X kgN/ha is stored in the soil above a depth of Y mm" />
+            <FertAmtCriteria type="text" description="Don't add fertiliser if N in the soil to the depth below exceeds (kg/ha)  (insert a large value to avoid this test)">1000</FertAmtCriteria>
+            <FertDepthCriteria type="text" description="Depth to which the amount of N in the soil should be calculated (mm)">600</FertDepthCriteria>
+            <category type="category" description="Fertiliser application details" />
+            <FertDepth type="text" description="Depth at which to apply the fertiliser (mm)">50</FertDepth>
+            <FertAmt type="text" description="Amount of fertiliser to add (kg N /ha)">250</FertAmt>
+            <FertType type="list" listvalues="no3_n,nh4_n,nh4no3,urea_n,urea_no3,urea,nh4so4_n,rock_p,banded_p,broadcast_p" description="Fertiliser type - select from the list">urea_n</FertType>
+          </ui>
+          <text>Imports System
+Imports ModelFramework
+
+Public Class Script 
+   &lt;Link()&gt; Dim MyPaddock As Paddock
+   &lt;Link()&gt; Dim Fert As Fertiliser
+
+   'Parameters - user inputs from the Properties tab
+
+   &lt;Param&gt; Private ModuleName As String         'Module that sends the even that will be used in the decision
+   &lt;Param&gt; Private EventName As String          'The name of the event (e.g. "sowing", "irrigated") to control the fertiliser decision
+   &lt;Param&gt; Private Days2Wait As Integer         'Wait this many days after the event before applying the fertiliser
+
+   &lt;Param&gt; Private FertAmtCriteria As Single    'Don't apply fertiliser if the N stored in the soil is greater than this.  Disregard the test if the value is -ve
+   &lt;Param&gt; Private FertDepthCriteria As Single  'Depth in the soil to calculate the N storage
+
+   &lt;Param&gt; Private FertDepth As Single          'Depth in the soil that the fertilser will be applied
+   &lt;Param&gt; Private FertAmt As Single            'Total annual application - needs to be split up between the various application dates listed
+   &lt;Param&gt; Private FertType As String           'Type of fertliser to apply
+
+   'Inputs - got by this Manager from elsewhere in APSIM
+   &lt;Input&gt; Private Today As DateTime            'Today's date from APSIM 
+   &lt;Input&gt; Private dlayer As Single()           'Array of soil layer thicknesses - for calculation of mineral N in the soil
+   &lt;Input&gt; Private no3 As Single()              'Array of nitrate-N (kg N /ha) for each soil layer - for calculation of mineral N in the soil
+   &lt;Input&gt; Private nh4 As Single()              'Array of ammonium-N (kg N /ha) for each soil layer - for calculation of mineral N in the soil
+   &lt;Input&gt; Private urea As Single()             'Array of urea-N (kg N /ha) for each soil layer - for calculation of mineral N in the soil
+
+   'Outputs - calculated by this Manager and available to be output by the user
+   &lt;Output&gt; Private CumSoilN As Single          'Mineral-N stored in the soil to a depth of FertDepthCriteria
+
+   'Other variables that are calculated but not needed for outputs
+   Private LayerWeights As Single()             'Weigthing of each layer for FertAmtCriteria calculation
+   Private CountingTheDays As Integer           'Variable to count the days from the event to the fertiliser application
+   Private DoFert As Boolean                    'Variable to help with the fertiliser application decision
+
+
+   &lt;EventHandler()&gt; Public Sub OnInit2()
+      '"OnInit2" is an event handler gets called once at the start of the simulation 
+
+      'Initialise the variables for the delay between the event and the actual application
+      CountingTheDays = 0
+      DoFert = False
+
+   End Sub
+
+   &lt;EventHandler("[ModuleName].[EventName]")&gt; Public Sub TriggerApplyMyFertiliser() 
+      'This subroutine will be called when [ModuleName].[EventName] is fired
+
+      'Initialise the counter between the event and the fertiliser application.  The actual fertiliser aplication is done in the ApplyMyFertiliser subroutine
+      CountingTheDays = 1
+      DoFert = True
+
+      'if there is to be no delay between the event and the fertiliser application then just go  do it now (don't wait for a Prepare stage which might not be until tomorrow)
+      'reset the DoFert because now the fertiliser has been applied (nothing in the queue anymore)
+      If Days2Wait = 0 Then
+         ApplyMyFertiliser
+         DoFert = False
+      End If
+
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub OnPrepare()
+      '"OnPrepare" is an event handler gets called once at the start of every day (before Prepare and Post) 
+
+      'Increment the counter once per day if are in that delay stage between the event and the application
+      'If the delay period is over then go to the subroutine for the fertiliser application and reset DoFert
+      If DoFert Then
+         CountingTheDays += 1
+         If CountingTheDays &gt;= Days2Wait Then
+            ApplyMyFertiliser
+            DoFert = False
+         End If
+      End If
+
+   End Sub
+
+   &lt;EventHandler()&gt; Public Sub ApplyMyFertiliser()
+      'This subroutine sends Fertiliser the command to apply the fertiliser 
+
+      'Set the number of elements in the LayerWeights array to equal the number of soil layers - do this here because erosion can change the layering
+      'Then move through the array and assign a LayerWeighting from 0 to 1 quantifying what proportion of the soil and mineral N in this layer is above FertDepthCriteria
+      ReDim LayerWeights(dlayer.length - 1)                
+      Dim CumDepth As Single = 0.0
+         For i As Integer = 0 To dlayer.Length - 1     
+            CumDepth += dlayer(i)                      
+         If CumDepth &lt;= FertDepthCriteria Then
+            LayerWeights(i) = 1.0                   
+         ElseIf (CumDepth - dlayer(i)) &lt;= FertDepthCriteria Then
+            LayerWeights(i) = (FertDepthCriteria - (CumDepth - dlayer(i))) / dlayer(i)
+         Else
+            LayerWeights(i) = 0.0
+         End If
+      Next
+
+      'Add up the no3, nh4 and urea (all already in kg N /ha) in each layer and multiply by the layer weighting to get the total mineral N to the set depth
+      CumSoilN = 0.0
+      For i As Integer = 0 To dlayer.Length - 1     
+         CumSoilN += (no3(i) + nh4(i) + urea(i)) * LayerWeights(i)                         
+      Next
+
+      'If there is less mineral N in the soil than FertAmtCriteria then it is OK to add fertiliser
+      '"Fert.Apply" send the command to apply the specified amount of fertiliser at the specified depth of the specified type of fertiliser
+      If CumSoilN &lt;= FertAmtCriteria Then
+         Fert.Apply(FertAmt, FertDepth, FertType)
+      Else 
+         Console.WriteLine("Too much fertiliser - upper threshold " &amp; FertAmtCriteria &amp; "(kg/ha) reached")
+      End If
+
+   End Sub
+
+End Class
+   </text>
+        </manager2>
         <manager2 name="Irrigate on event">
           <ui>
             <amount type="text" description="Amount of irrigation to apply (mm)">100</amount>
@@ -2725,62 +3533,78 @@ public class Script
 }
        </text>
         </manager2>
-        <manager name="Harvesting rule">
+        <manager2 name="Post Harvest Tillage">
           <ui>
-            <category type="category" description="Harvesting criteria" />
-            <crop type="crop" description="Enter name of crop to harvest when ripe : ">Cotton</crop>
-          </ui>
-          <script>
-            <text>
-           if ('[crop]' = 'cotton') then
-
-               !!  cotton defoliation
-                if ([crop].stageName = 'mature'  and  [crop].defol_das = 0) then
-                    [crop] defoliate
-                endif
-          
-                !! cotton harvest
-                if ([crop].stageName = 'harvest_ripe' or [crop].PlantStatus = 'dead') then
-                   !!report_harvest do_output
-                   [crop] harvest
-                   [crop] end_crop
-                endif
-
-           endif</text>
-            <event>end_of_day</event>
-          </script>
-        </manager>
-        <manager name="PostHarvestTillage">
-          <ui>
-            <category type="category" description="Tillage details" />
-            <surfaceommodule type="modulename" description="Module used to apply the tillage : ">SurfaceOrganicMatter</surfaceommodule>
+            <tag type="category" description="When should fertiliser be applied" />
+            <EventName type="text" description="Which event to listen for">harvesting</EventName>
+            <daysToWait type="text" description="How many days to delay after event">3</daysToWait>
+            <tag type="category" description="Event details" />
             <tillage_type type="list" listvalues="user_defined, chisel, disc, planter, burn, burn_90, graze, scarifier, rip, blade, tine" description="Tillage type : ">user_defined</tillage_type>
             <tillage_depth type="text" description="User_defined depth of seedbed preparation (mm) : ">150</tillage_depth>
             <tillage_f_incorp type="text" description="User_defined fraction of surface residues to incorporate (0-1): ">0.95</tillage_f_incorp>
           </ui>
-          <script>
-            <text>
-if (plant_status = 'out'  AND  yesterdays_plant_status &lt;&gt; 'out' ) then
+          <text>using System;
+using System.Linq;
+using System.Collections.Generic;
+using ModelFramework;
 
-            if ('[tillage_type]' = 'user_defined') then
-                '[surfaceommodule]' tillage type = [tillage_type], f_incorp = [tillage_f_incorp] (), tillage_depth = [tillage_depth]
-            else
-                '[surfaceommodule]' tillage type = [tillage_type]
-            endif
+// Crop management: tillage after event
+// Multi-paddock aware.
+// This component DOES NOT require a trigger from the sequencer.
 
-endif
+public class Script 
+{      
+   [Link]  public Simulation MySimulation;
+   [Param] string EventName;
+   private Dictionary&lt;string,int&gt; daysAfter = new Dictionary&lt;string,int&gt;();
+   
+   [EventHandler] public void OnStart_Simulation()
+   {
+      daysAfter.Add("", -1);
+      foreach (Paddock paddock in MySimulation.ChildPaddocks) 
+      {
+         daysAfter.Add(paddock.Name, -1);
+         RuntimeEventHandler.NullFunction curried = () =&gt; OnTrigger(paddock.Name);
+         paddock.Subscribe( EventName, curried);
+      }
+   }
 
-yesterdays_plant_status = plant_status
+   public void OnTrigger(string paddock)
+   {
+      daysAfter[paddock] = 0;
+   }
 
+   [Param] string tillage_type;
+   [Param] int tillage_depth;
+   [Param] float tillage_f_incorp;
+   [Param] int daysToWait;
+   
+   [EventHandler] public void OnPost()
+   {
+      List &lt;string&gt; paddocks = new List&lt;string&gt;(daysAfter.Keys);
+      foreach (string p in paddocks)  {
+         if (daysAfter[p] &gt;= 0) {
+            daysAfter[p]++;
+            if (daysAfter[p] == daysToWait) {      
+               Component paddockModule;
+               if (p != "")
+                  paddockModule = (Component) MySimulation.LinkByName(p);
+               else
+                  paddockModule = (Component) MySimulation.ChildPaddocks[0];
 
-  </text>
-            <event>start_of_day</event>
-          </script>
-          <script>
-            <text>yesterdays_plant_status = 'out'</text>
-            <event>init</event>
-          </script>
-        </manager>
+               TillageType t = new TillageType();
+               t.type = tillage_type;
+               t.tillage_depth = tillage_depth;
+               t.f_incorp = tillage_f_incorp;
+
+               paddockModule.Publish("tillage", t);
+            }
+         }
+      }
+   }
+}
+       </text>
+        </manager2>
       </folder>
       <outputfile>
         <filename output="yes">Continuous Irrigated Cotton - deficit rule.out</filename>
