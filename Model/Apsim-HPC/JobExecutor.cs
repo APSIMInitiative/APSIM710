@@ -92,17 +92,21 @@ namespace ApsimHPC
 				logMessage ("Error uploading " + localTgzPath);
 				return(false);
 			}
-			File.Delete (localTgzPath);
+            logMessage("Finished uploading files.");
+            File.Delete (localTgzPath);
 			Directory.Delete (WorkingFolder, true);
 
-			if (!server.runCommand ("cd $HOME/" + runName + " ;tar xfz " + tgz + " ;rm " + tgz + " ;bash Apsim.pbs")) {
-				logMessage ("Error starting job " + server.output.Error);
+            if (!server.runCommand("cd $HOME/" + runName + " && tar xfz " + tgz + " && rm -f " + tgz + " && bash Apsim.pbs")) { 
+                logMessage("Error starting job " + server.output.Error);
 				return(false);
 			}
-			jobId = server.output.Result.Split (new[] { '\n', '[', '.' }, StringSplitOptions.None).FirstOrDefault ();
-
-			Configuration.Instance.SetSetting("remoteJobId", jobId);
-
+            //jobId = server.output.Result.Split (new[] { '\n', '[', '.' }, StringSplitOptions.None).FirstOrDefault ();
+            jobId = server.output.Result.Split(new[] { '\n', '.' }, StringSplitOptions.None).FirstOrDefault();
+            if (jobId == "") {
+                logMessage("Error starting job - no ID string returned from server\n" + server.output.Result);
+                return (false);
+            }
+            Configuration.Instance.SetSetting("remoteJobId", jobId);
 			logMessage ("Submitted " + runName + ", id=" + jobId);
 			return(true);
 		}

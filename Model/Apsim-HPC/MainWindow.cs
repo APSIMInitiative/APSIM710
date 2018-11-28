@@ -165,7 +165,9 @@ public partial class MainWindow: Gtk.Window
                     setMessage("go", "Cancelling existing monitor thread");
                     workerThread.Abort();
                 }
-  		       ex.server.cred = getCreds ();
+               OnLogMessage("Resuming existing session, id = \"" + 
+                            Configuration.Instance.Setting("remoteJobId") + "\"");
+               ex.server.cred = getCreds ();
 			   ex.jobId = Configuration.Instance.Setting("remoteJobId");
 			   label14.Text = "Job Running";
                workerThread = new Thread (() => ex.waitForCompletion (null));
@@ -182,7 +184,7 @@ public partial class MainWindow: Gtk.Window
 		if (ok) {
 			this.label14.Text = "Job Running";
 		    notebook1.Page = 1;
-			workerThread = new Thread (() => ex.waitForCompletion (null));
+            workerThread = new Thread(() => new Timer(new TimerCallback(ex.waitForCompletion), null, 30000, -1));
 			workerThread.Start ();
 		}
 	}
@@ -386,8 +388,8 @@ Usage:
   shorter jobs.
 
 - Version: The versions of APSIM available on the cluster are changed infrequently. Once
-  your username / password is entered, the list of available versions can be updated. 
-  Select the appropriate version for your needs.
+  your username / password is entered, the list of available versions can be updated by
+  pressing the Update button. Select the appropriate version for your needs.
 
 - Press 'Go' and *wait*. Once you've got to here, the program can be disconnected/
   restarted/rebooted etc. If you start it again, you have to enter your password and 

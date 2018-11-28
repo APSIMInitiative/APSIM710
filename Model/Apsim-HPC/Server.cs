@@ -108,41 +108,33 @@ namespace ApsimHPC
         private sshCommandOutput run(string cmd)
         {
             sshCommandOutput result = new sshCommandOutput();
-            result.ExitStatus = -1;
-            if (cred.remoteHost == "" || cred.username == "" || cred.password == "")
+            try
             {
-                logMessage("Please set username / password");
+                if (_sshClient == null)
+                {
+                    logMessage("Opening new ssh connection to " + cred.remoteHost);
+                    ConnectionInfo ConnNfo = new ConnectionInfo(cred.remoteHost, cred.username,
+                                                 new AuthenticationMethod[] { new PasswordAuthenticationMethod(cred.username, cred.password) });
+                    ConnNfo.Timeout = TimeSpan.FromSeconds(60);
+                    _sshClient = new SshClient(ConnNfo);
+                    //_sshClient.ErrorOccurred += ... FIXME (only for async calls)
+                }
+                if (!_sshClient.IsConnected)
+                {
+                    _sshClient.Connect(); // failure will throw
+                    logMessage("Ssh connected to " + cred.remoteHost);
+                }
+                SshCommand o = _sshClient.RunCommand(cmd);
+                result.ExitStatus = o.ExitStatus;
+                result.Error = o.Error;
+                result.Result = o.Result;
             }
-            else
+            catch (Exception e)
             {
-
-                try
-                {
-                    if (_sshClient == null)
-                    {
-                        logMessage("Opening new ssh connection to " + cred.remoteHost);
-                        ConnectionInfo ConnNfo = new ConnectionInfo(cred.remoteHost, cred.username,
-                                                     new AuthenticationMethod[] { new PasswordAuthenticationMethod(cred.username, cred.password) });
-                        _sshClient = new SshClient(ConnNfo);
-                        //_sshClient.ErrorOccurred += ... FIXME
-                    }
-                    if (!_sshClient.IsConnected)
-                    {
-                        _sshClient.Connect();
-                        logMessage("Ssh connected to " + cred.remoteHost);
-                    }
-                    SshCommand o = _sshClient.RunCommand(cmd);
-                    result.ExitStatus = o.ExitStatus;
-                    result.Error = o.Error;
-                    result.Result = o.Result;
-                }
-                catch (Renci.SshNet.Common.SshException e)
-                {
-                    logMessage(e.Message);
-                    result.ExitStatus = 1;
-                    result.Error = e.Message;
-                    result.Result = "";
-                }
+                logMessage(e.Message);
+                result.ExitStatus = 1;
+                result.Error = e.Message;
+                result.Result = "";
             }
             return (result);
         }
@@ -175,7 +167,7 @@ namespace ApsimHPC
             logMessage("Executing command \"" + cmd + "\"");
 
             output = run(cmd);
-            if (output.ExitStatus >= 0)
+            if (output.ExitStatus != 0)
                 logMessage((output.ExitStatus == 0 ? "" : "Return status=" + output.ExitStatus + "\n") +
                                (output.Result != "" ? "stdout=" + output.Result : "") +
                                (output.Error != "" ? "stderr=" + output.Error : ""));

@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Apsim-HPC"
-#define MyAppVersion "1.5"
+#define MyAppVersion "1.8"
 #define MyAppPublisher "Apsim "
 #define MyAppURL "http://www.apsim.info/"
 #define MyAppExeName "Apsim-HPC.exe"
@@ -169,9 +169,9 @@ Source: ..\*.xml; DestDir: {app}\Model; Flags: ignoreversion;
 Source: ..\..\Apsim.xml; DestDir: {app}\; Flags: ignoreversion;
 
 [Icons]
-Name: "{commonprograms}\Model\{#MyAppName}"; Filename: "{app}\Model\{#MyAppExeName}"
-Name: "{commondesktop}\Model\{#MyAppName}"; Filename: "{app}\Model\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{commonprograms}\{#MyAppName}"; Filename: "{app}\Model\{#MyAppExeName}"
+Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\Model\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\Model\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
