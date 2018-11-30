@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Threading;
 using Gtk;
 
 namespace ApsimHPC
@@ -6,11 +8,11 @@ namespace ApsimHPC
     class MainClass
     {
         public static MainWindow win;
+
         public static void Main(string[] args)
         {
             Application.Init();
-            JobExecutor executor = new JobExecutor();
-            win = new MainWindow(executor);
+            win = new MainWindow();
             win.Show();
             Application.Run();
         }

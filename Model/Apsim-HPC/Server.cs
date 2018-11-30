@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Linq;
 using System.Collections.Generic;
 using Renci.SshNet;
@@ -81,7 +82,7 @@ namespace ApsimHPC
                 {
                     if (_scpClient == null)
                     {
-                        logMessage("Opening new scp connection to " + cred.remoteHost);
+                        logMessage("Thread " + Thread.CurrentThread.ManagedThreadId + " opening new scp connection to " + cred.remoteHost);
                         ConnectionInfo ConnNfo = new ConnectionInfo(cred.remoteHost, cred.username,
                                                      new AuthenticationMethod[] { new PasswordAuthenticationMethod(cred.username, cred.password) });
                         _scpClient = new ScpClient(ConnNfo);
@@ -112,7 +113,7 @@ namespace ApsimHPC
             {
                 if (_sshClient == null)
                 {
-                    logMessage("Opening new ssh connection to " + cred.remoteHost);
+                    logMessage("Thread " + Thread.CurrentThread.ManagedThreadId + " opening new ssh connection to " + cred.remoteHost);
                     ConnectionInfo ConnNfo = new ConnectionInfo(cred.remoteHost, cred.username,
                                                  new AuthenticationMethod[] { new PasswordAuthenticationMethod(cred.username, cred.password) });
                     ConnNfo.Timeout = TimeSpan.FromSeconds(60);
@@ -164,7 +165,7 @@ namespace ApsimHPC
 
         public bool runCommand(string cmd)
         {
-            logMessage("Executing command \"" + cmd + "\"");
+            logMessage("Thread " + Thread.CurrentThread.ManagedThreadId + " executing command \"" + cmd + "\"");
 
             output = run(cmd);
             if (output.ExitStatus != 0)

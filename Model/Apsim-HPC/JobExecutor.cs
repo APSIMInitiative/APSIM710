@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Linq;
 using System.Xml;
 using System.Collections.Generic;
@@ -13,10 +14,28 @@ using ApsimFile;
 
 namespace ApsimHPC
 {
-	// Most of the work is done in a separate thread from the GUI. It synchronises via Invoke() calls
-	public class JobExecutor
+    public class GoEventArgs : EventArgs
+    {
+        public GoEventArgs(cred _cred, List<string> _files, string _container, int _numberSimsPerJob, int _hoursPerJob)
+        {
+            cred = _cred;
+            files = _files;
+            container = _container;
+            numberSimsPerJob = _numberSimsPerJob;
+            hoursPerJob = _hoursPerJob;
+        }
+
+        public cred cred { get; }
+        public List<string> files { get; }
+        public string container { get; }
+        public int hoursPerJob { get; }
+        public int numberSimsPerJob { get; }
+    }
+
+    // Most of the work is done in a separate thread from the GUI. It synchronises via Invoke() calls
+    public class JobExecutor
 	{
-		public ApsimHPC.Server server = new Server ();
+		private ApsimHPC.Server server = new Server ();
 		public string jobId = "";
 
 		public JobExecutor ()
@@ -25,21 +44,24 @@ namespace ApsimHPC
 				logMessage (args.MessageText);
 			};
 		}
+        //public event EventHandler<GoEventArgs> Go;
 
-		public void Go (List<string>files, string sfx, int numberSimsPerJob, int hoursPerJob)
+        public async void Go(object sender, GoEventArgs e)
 		{
 			bool ok = false;
 			try {
-				ok = _Go (files, sfx, numberSimsPerJob, hoursPerJob);
-			} catch (Exception e) {
-				logMessage (e.Message);
+                server.cred = e.cred;
+                ok = await Task.Run<bool>(() => _Go(e.files, e.container, e.numberSimsPerJob, e.hoursPerJob)); ;
+			} catch (Exception ex) {
+				logMessage (ex.Message);
 			}
+
 			Application.Invoke (delegate {
 				MainClass.win.OnGoFinished (this, ok);
 			});
 		}
 
-		private bool _Go (List<string>files, string sfx, int numberSimsPerJob, int hoursPerJob)
+		private bool _Go (List<string>files, string container, int numberSimsPerJob, int hoursPerJob)
 		{
 			string WorkingFolder = System.IO.Path.Combine (System.IO.Path.GetTempPath (), System.IO.Path.GetRandomFileName ());
 			Directory.CreateDirectory (WorkingFolder);
@@ -50,7 +72,7 @@ namespace ApsimHPC
 			jobMaker.arch = ApsimFile.Configuration.architecture.unix;
 			jobMaker.numberSimsPerJob = numberSimsPerJob;
 			jobMaker.WorkingFolder = WorkingFolder;
-			jobMaker.SelfExtractingExecutableLocation = sfx;
+			jobMaker.SelfExtractingExecutableLocation = container;
 			jobMaker.hoursPerJob = hoursPerJob;
 			XmlDocument jobDoc = new XmlDocument ();
 			jobDoc.LoadXml ("<apsimfiles/>");
@@ -111,11 +133,16 @@ namespace ApsimHPC
 			return(true);
 		}
 
-		public void getRemoteVersions ()
+		public async void getRemoteVersions (cred cred)
 		{
-			List<string> versions = new List<string>();
-		    try {
-			  versions = server.getRemoteVersions ();
+            List<string> versions = new List<string>();
+            try
+            {
+                versions = await Task.Run< List<string> >(() =>
+                {
+                server.cred = cred;
+                return(server.getRemoteVersions());
+                }) ;
 			} catch (Exception e) { logMessage(e.Message); }
 
 			Application.Invoke (delegate {
@@ -142,23 +169,29 @@ namespace ApsimHPC
 		// will also return true if it hasn't been started, or has failed before submission.
 		private bool pollForCompletion () 
 		{
-			if (server.runCommand ("qstat")) {
-                string[] lines = server.output.Result.Split(new[] { '\n' }, StringSplitOptions.None);
+            lock (server)
+            {
+                if (server.runCommand("qstat"))
+                {
+                    string[] lines = server.output.Result.Split(new[] { '\n' }, StringSplitOptions.None);
 
-                foreach (string line in lines) {
-			      if (jobId != "" && line.Contains(jobId)) {
-			         return (false); // The job is still executing
-			      }
-			    }
-                logMessage("qstat is empty - job '" + jobId + "' has finished");
-                return (true); 
-			}
-			return (false); // An error occurred
+                    foreach (string line in lines)
+                    {
+                        if (jobId != "" && line.Contains(jobId))
+                        {
+                            return (false); // The job is still executing
+                        }
+                    }
+                    logMessage("qstat is empty - job '" + jobId + "' has finished");
+                    return (true);
+                }
+                return (false); // An error occurred
+            }
 		}
 
 		public void doDownloadOutputs ()
 		{
-			string wd = Directory.GetCurrentDirectory ();
+            string wd = Directory.GetCurrentDirectory ();
 			string remoteDir = Configuration.Instance.Setting ("remoteRunDir").Replace("\\", "/");
 			bool ok = true;
             try
@@ -250,6 +283,11 @@ namespace ApsimHPC
 			Directory.SetCurrentDirectory (wd);
 			return ok;
 		}
-	}
+        public cred cred
+        {
+            get { return server.cred; }
+            set { server.cred = value; }
+        }
+    }
 }
 
