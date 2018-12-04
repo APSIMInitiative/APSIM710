@@ -110,8 +110,8 @@ namespace ApsimHPC
             long nMegs = (new System.IO.FileInfo(localTgzPath).Length) / (1024 * 1024);
             
             logMessage ("Uploading files (" + nMegs.ToString() + " Mb)");
-			if (!(server.upload ("$HOME/" + runName + "/", new FileInfo (localTgzPath)))) {
-				logMessage ("Error uploading " + localTgzPath);
+			if (!(server.upload ("$HOME/" + runName + "/" + tgz, new FileInfo (localTgzPath)))) {
+				logMessage ("Error uploading " + localTgzPath + " to " + "$HOME/" + runName + "/" + tgz);
 				return(false);
 			}
             logMessage("Finished uploading files.");
@@ -171,7 +171,7 @@ namespace ApsimHPC
 		{
             lock (server)
             {
-                if (server.runCommand("qstat"))
+                if (server.runCommand("/opt/pbs/bin/qstat"))
                 {
                     string[] lines = server.output.Result.Split(new[] { '\n' }, StringSplitOptions.None);
 
@@ -218,7 +218,7 @@ namespace ApsimHPC
                     tarArchive.Close();
                     inStream.Close();
                     File.Delete(Path.GetFileName(tgz));
-                    server.runCommand("rm " + tgz);
+                    server.runCommand("rm \"" + tgz + "\"");
                 }
                 // Now do Apsim.<1-X>.[o,e]* as well
                 string idShort = System.Text.RegularExpressions.Regex.Match(jobId, "\\d+").Value;
@@ -230,7 +230,7 @@ namespace ApsimHPC
                     {
                             logMessage("Downloading " + filename);
                             server.download(filename, new FileInfo(Path.GetFileName(filename)));
-                            server.runCommand("rm " + filename);
+                            server.runCommand("rm \"" + filename + "\"");
                     }
             }
             catch (Exception e)
@@ -241,7 +241,7 @@ namespace ApsimHPC
 			Directory.SetCurrentDirectory (wd);
 
 			if (ok) {
-			    server.runCommand ("rm -rf " + remoteDir);
+			    server.runCommand ("rm -rf \"" + remoteDir + "\"");
                 if (server.output.ExitStatus == 0)
                 {
                     Configuration.Instance.SetSetting("remoteJobId", "");

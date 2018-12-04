@@ -135,19 +135,18 @@ public partial class MainWindow : Gtk.Window
             });
 
         button5.Clicked += new EventHandler(
-                    (object sender, EventArgs e) =>
-                    {
-                        versionStore.Clear();
-                        pushMessage("UpdateRemoteVersions", "Finding remote versions");
-                        exec.getRemoteVersions(getCreds());
-                    });
+            (object sender, EventArgs e) => {
+                  versionStore.Clear();
+                  pushMessage("UpdateRemoteVersions", "Finding remote versions");
+                  exec.getRemoteVersions(getCreds());
+             });
 
         button6.Clicked += new EventHandler(
-            (object sender, EventArgs e) =>
+            async (object sender, EventArgs e) =>
             {
-                pushMessage("doDownloadOutputs", "Downloading data");
-                        //workerThread = new Thread (() => exec.doDownloadOutputs ());
-                    });
+            pushMessage("doDownloadOutputs", "Downloading data");
+            await Task.Run(() => exec.doDownloadOutputs()  );
+            });
         button7.Clicked += new EventHandler(
             (object sender, EventArgs e) =>
             {

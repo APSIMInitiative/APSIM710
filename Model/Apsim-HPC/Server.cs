@@ -106,7 +106,7 @@ namespace ApsimHPC
         public sshCommandOutput output;
         private SshClient _sshClient = null;
 
-        private sshCommandOutput run(string cmd)
+        private sshCommandOutput run(string command)
         {
             sshCommandOutput result = new sshCommandOutput();
             try
@@ -117,18 +117,41 @@ namespace ApsimHPC
                     ConnectionInfo ConnNfo = new ConnectionInfo(cred.remoteHost, cred.username,
                                                  new AuthenticationMethod[] { new PasswordAuthenticationMethod(cred.username, cred.password) });
                     ConnNfo.Timeout = TimeSpan.FromSeconds(60);
+
                     _sshClient = new SshClient(ConnNfo);
+                    _sshClient.KeepAliveInterval = TimeSpan.FromMilliseconds(30000d);
+                    _sshClient.ConnectionInfo.RetryAttempts = 3;
                     //_sshClient.ErrorOccurred += ... FIXME (only for async calls)
+                    logMessage("Ssh client connected to " + cred.remoteHost);
+
+                    
+                    logMessage("retry attempts =" + _sshClient.ConnectionInfo.RetryAttempts);
+                    logMessage("KeepAliveInterval = "+ _sshClient.KeepAliveInterval);
                 }
                 if (!_sshClient.IsConnected)
                 {
-                    _sshClient.Connect(); // failure will throw
-                    logMessage("Ssh connected to " + cred.remoteHost);
+                    _sshClient.Connect(); 
                 }
-                SshCommand o = _sshClient.RunCommand(cmd);
+#if true
+                SshCommand o = _sshClient.RunCommand(command);
                 result.ExitStatus = o.ExitStatus;
                 result.Error = o.Error;
                 result.Result = o.Result;
+#else
+                var cmdStub = _sshClient.CreateCommand(command);
+                var asyncResult = cmdStub.BeginExecute(null, null);
+                while (!asyncResult.IsCompleted)
+                {
+                    Thread.Sleep(100);
+                }
+
+                cmdStub.EndExecute(asyncResult);
+
+                result.ExitStatus = cmdStub.ExitStatus;
+                result.Error = cmdStub.Error;
+                result.Result = cmdStub.Result;
+#endif
+                _sshClient.Disconnect();
             }
             catch (Exception e)
             {
