@@ -31,14 +31,14 @@ class RemoveUnwantedFiles
             if (!Macros.ContainsKey("Directory"))
                 throw new Exception("Usage: RemoveUnversionedFiles Directory=xxx [Recursive=Yes]");
             string directory = Macros["Directory"];
-            string svnexe = "svn.exe";
-            if (Path.DirectorySeparatorChar == '/') svnexe = "svn";
+            string svnexe = "git.exe";
+            if (Path.DirectorySeparatorChar == '/') svnexe = "git";
             string SVNFileName = CSGeneral.Utility.FindFileOnPath(svnexe);
             if (SVNFileName == "")
-                throw new Exception("Cannot find " + svnexe + " on PATH");
+            { Console.WriteLine("Cannot find " + svnexe + " on PATH"); return (0); }
 
             // Start an SVN process to return a list of unversioned files.
-            string Arguments = "status --non-interactive --no-ignore";
+            string Arguments = "status --porcelain";
             bool FullClean = false;
             if (Macros.ContainsKey("FullClean") && Macros["FullClean"] == "Yes")
                 FullClean = true;

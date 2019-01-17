@@ -24,40 +24,31 @@ class VersionStamper
                 throw new Exception("Usage: VersionStamper Directory=c:\\Apsim [Increment=Yes]");
 
             // Find SVN
-            string svnexe = "svn.exe";
-            if (Path.DirectorySeparatorChar == '/') svnexe = "svn";
-            int RevisionNumber = 0;
+            string svnexe = "git.exe";
+            if (Path.DirectorySeparatorChar == '/') svnexe = "git";
+            string RevisionNumber = "";
             try
             {
                 // Start an SVN process and get head revision number
                 string SVNFileName = FindFileOnPath(svnexe);
-                string Arguments = "log -q -r HEAD:1 --limit 1 " + Macros["Directory"];
+                string Arguments = "show-ref --head --tags -s";
                 
-                Process P = RunProcess(SVNFileName, Arguments, Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+                Process P = RunProcess(SVNFileName, Arguments, 
+				    Macros["Directory"] == "" ? 
+					  Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) :
+					  Macros["Directory"]);
                 string StdOut = CheckProcessExitedProperly(P);
                 string[] StdOutLines = StdOut.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                if (StdOutLines.Length != 3)
-                    throw new Exception("Invalid string returned from svn: " + StdOut);
-                string[] Bits = StdOutLines[1].Split(" ".ToCharArray());
-                if (Bits.Length == 0)
-                    throw new Exception("Invalid revision number line from svn: " + Bits[1]);
-                RevisionNumber = Convert.ToInt32(Bits[0].Replace("r", ""));
+                RevisionNumber = StdOutLines[0];
             }
-            catch (Exception e) {Console.WriteLine("WARNING - while finding svn revision number" + e.Message);}
+            catch (Exception e) {Console.WriteLine("WARNING - while finding git commit hash" + e.Message);}
             
-            // Increment the revision number if necessary.
-            // If Bob is running this, then we will increment the revision number.
-            // Explanation: Because Bob does a commit at the end of
-            // a build (causing the revision number to increment by 1), Bob writes the revision number + 1
-            // to the apsim.xml file in anticipation of the pending commit.
-            if (Macros.ContainsKey("Increment") && Macros["Increment"] == "Yes")
-                RevisionNumber++;
 
             // Write the VersionInfo.make
             StreamWriter Out = new StreamWriter("VersionInfo.make");
             Out.WriteLine("MAJOR_VERSION=" + Major.ToString());
             Out.WriteLine("MINOR_VERSION=" + Minor.ToString());
-            Out.WriteLine("BUILD_NUMBER=" + RevisionNumber.ToString());
+            Out.WriteLine("BUILD_NUMBER=" + RevisionNumber);
             Out.Close();
 
             // Write the VersionInfo.bat
@@ -65,7 +56,7 @@ class VersionStamper
             Out.WriteLine("@echo off");
             Out.WriteLine("set MAJOR_VERSION=" + Major.ToString());
             Out.WriteLine("set MINOR_VERSION=" + Minor.ToString());
-            Out.WriteLine("set BUILD_NUMBER=" + RevisionNumber.ToString());
+            Out.WriteLine("set BUILD_NUMBER=" + RevisionNumber);
             Out.Close();
 
             // Write the VersionInfo.sh
@@ -73,7 +64,7 @@ class VersionStamper
             Out.WriteLine("#!/bin/sh");
             Out.WriteLine("export MAJOR_VERSION=" + Major.ToString());
             Out.WriteLine("export MINOR_VERSION=" + Minor.ToString());
-            Out.WriteLine("export BUILD_NUMBER=" + RevisionNumber.ToString());
+            Out.WriteLine("export BUILD_NUMBER=" + RevisionNumber);
             Out.Close();
 
             // Write the VersionInfo.cs
@@ -81,7 +72,7 @@ class VersionStamper
             Out.WriteLine("using System.Reflection;");
             Out.WriteLine("[assembly: AssemblyFileVersion(\"" + Major.ToString() + "." +
                                                                 Minor.ToString() + "." +
-                                                                RevisionNumber.ToString() + ".0\")]");
+                                                                "0.0\")]");
             Out.Close();
 
             // Write the VersionInfo.vb
@@ -89,7 +80,7 @@ class VersionStamper
             Out.WriteLine("Imports System.Reflection");
             Out.WriteLine("<Assembly: AssemblyFileVersion(\"" + Major.ToString() + "." +
                                                                 Minor.ToString() + "." +
-                                                                RevisionNumber.ToString() + ".0\")>");
+                                                                "0.0\")>");
             Out.Close();
 
             // Write the VersionInfo.cpp
@@ -97,8 +88,7 @@ class VersionStamper
             Out.WriteLine("std::string EXPORT getApsimVersion(void) {return \"" + 
                                                                 Major.ToString() + "." +
                                                                 Minor.ToString() + "\";}");
-            Out.WriteLine("std::string EXPORT getApsimBuildNumber(void) {return \"" +
-                                                                RevisionNumber.ToString() + "\";}");
+            Out.WriteLine("std::string EXPORT getApsimBuildNumber(void) {return \"" + RevisionNumber + "\";}");
             Out.Close();
         }
         catch (Exception err)
