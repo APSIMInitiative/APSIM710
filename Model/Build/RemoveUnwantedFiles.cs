@@ -50,9 +50,9 @@ class RemoveUnwantedFiles
             // Loop through all lines the SVN process produced.
             foreach (string line in StdOutLines)
             {
-                if (line.Length > 8)
+                if (line.Length > 3)
                 {
-                    string relativePath = line.Substring(8);
+                    string relativePath = line.Substring(3);
                     string path = Path.Combine(directory, relativePath);
 
                     bool DoDelete = false;
@@ -83,6 +83,9 @@ class RemoveUnwantedFiles
                             {
                                 // Must be a locked or readonly file - ignore.
                             }
+                        } else if (!File.Exists(path)) 
+                        {
+                            Console.WriteLine("Oops! \"" + path + "\" doesnt exist!");
                         }
                     }
                 }
