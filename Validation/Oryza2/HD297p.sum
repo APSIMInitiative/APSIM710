@@ -1,0 +1,653 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.4
+Title                  = HD297p
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                       "Output" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                  "Rice extras" = %apsim%\Model\Manager.dll
+   Component             "Rice sowing rule" = %apsim%\Model\Manager.dll
+   Component                           "eo" = %apsim%\Model\Eo.dll
+   Component                       "Oryza2" = %apsim%\Model\Oryza2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        post
+        end_step
+     Simulation start date = 13/05/2003
+     Simulation end date   = 30/10/2003
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: CHINA3.met
+
+------- Output Initialisation -------------------------------------------------
+     Output variables:
+        year
+        day
+        timex as time
+        dae
+        trc
+        rain
+        dvs
+        nflv
+        lai
+        wlvg
+        wagt
+        cover_green
+        zrt
+        parcum
+        sla
+
+     Output file = HD297p Output.out
+     Format = normal
+
+------- accum Initialisation --------------------------------------------------
+     Initialising
+
+------- Rice extras Initialisation --------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     sand =      0.5     0.5   0.5     0.5     0.3   0.3    0.3    0.3   0.3    0.3
+     clay =      0.3     0.3   0.3     0.3     0.5   0.5    0.5    0.5   0.5    0.5
+     ksat =     3.79    3.79   4.07 1.1648 1.9748 1.148   1.441  1.065 1.065  1.065
+     alphavg = 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3
+     mvg = 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3
+     nvg = 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3 0.3
+     co2    = 375.3
+     END of rules
+     
+     Manager creating a new local real variable : sand = 0.50000
+     Manager creating a new local real variable : clay = 0.30000
+     Manager creating a new local real variable : ksat = 3.79000
+     Manager creating a new local real variable : alphavg = 0.30000
+     Manager creating a new local real variable : mvg = 0.30000
+     Manager creating a new local real variable : nvg = 0.30000
+     Manager creating a new local real variable : co2 = 375.29999
+
+------- Rice sowing rule Initialisation ---------------------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if (day = 141) then
+         oryza2 sow cultivar = hd297, establishment = direct-seed
+         timex = 1
+     endif
+     
+     SECTION:- end_of_day
+     if (timex > 0) then
+       output do_output
+       timex = timex + 1
+     endif
+     if (oryza2.plant_status = 'dead') then
+       oryza2 harvest remove = 0.9
+       oryza2 end_crop
+       timex = 0
+     endif
+     
+     SECTION:- init
+     timex = 0
+     END of rules
+     
+     Manager creating a new local real variable : timex = 0.00000
+
+------- eo Initialisation -----------------------------------------------------
+     Initialising:
+     
+        - Reading Eo Parameters
+     
+     
+     
+                      Eo Parameters
+          -------------------------------------------------------------------
+        Vpd Factor  Albedo  Max albedo  Z0soil  Dflt_Wind  Dflt_Pa Dflt_instrum_ht
+            (-)       (-)       (-)       (mm)   (km/day)   (hpa)      (mm)
+          -------------------------------------------------------------------
+           0.75      0.13      0.23     3.000     60.00   1000.00   2000.00
+     
+      instrum_disp instrum_z0  extn_cf  plant_method wind_day_fr  adj_fact  wind_mlt
+           (mm)      (mm)       (-)                     (-)         (-)      (-)
+          -------------------------------------------------------------------------
+          37.00      4.00      0.80 eo_transpiration      0.66      1.00      1.00
+          -------------------------------------------------------------------------
+     
+     
+     
+          Default instrument height used =      2000. (mm)
+          Source of VPD is mint
+          Default atmospheric pressure used =   1000.0 (mb)
+          Default wind used =     60.0 (km/day)
+------- Start of simulation  --------------------------------------------------
+21 May 2003(Day of year=141), Rice sowing rule: 
+     Manager sending message :- oryza2 sow  cultivar = hd297, establishment = direct-seed
+21 May 2003(Day of year=141), Oryza2: 
+ SUCCESS
+      Establishment method = DIRECT-SEED
+      Cultivar = hd297
+      Number of plants direct seeded (pl/m^2) =    360.00000
+      Evapotranspiration is (internal) Penman
+      Sowing in seedbed
+17 July 2003(Day of year=198): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.5142479
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+18 July 2003(Day of year=199): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.9393578
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+19 July 2003(Day of year=200): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.7982407
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+20 July 2003(Day of year=201): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       21.1932449
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+21 July 2003(Day of year=202): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       21.7067814
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+22 July 2003(Day of year=203): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       21.6970043
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+23 July 2003(Day of year=204): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       21.9210987
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+24 July 2003(Day of year=205): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       22.1230812
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+25 July 2003(Day of year=206): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       21.8822899
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+26 July 2003(Day of year=207): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       21.6342144
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+27 July 2003(Day of year=208): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       21.5749893
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+28 July 2003(Day of year=209): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       21.3494282
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+29 July 2003(Day of year=210): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       21.1049881
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+30 July 2003(Day of year=211): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       21.1712074
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+31 July 2003(Day of year=212): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       21.3796768
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+1 August 2003(Day of year=213): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       21.0973587
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+2 August 2003(Day of year=214): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       21.0643787
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+3 August 2003(Day of year=215): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.9282379
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+4 August 2003(Day of year=216): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.9724789
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+5 August 2003(Day of year=217): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.9269161
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+6 August 2003(Day of year=218): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.9682713
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+7 August 2003(Day of year=219): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.8522224
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+8 August 2003(Day of year=220): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.8940563
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+9 August 2003(Day of year=221): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.9447079
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+10 August 2003(Day of year=222): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.6788425
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+11 August 2003(Day of year=223): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.6492996
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+12 August 2003(Day of year=224): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.6025085
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+13 August 2003(Day of year=225): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.5516186
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+14 August 2003(Day of year=226): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.5866394
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+15 August 2003(Day of year=227): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.6160927
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+16 August 2003(Day of year=228): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.6216259
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+17 August 2003(Day of year=229): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.4519978
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+18 August 2003(Day of year=230): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.4587994
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+19 August 2003(Day of year=231): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.4338970
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+20 August 2003(Day of year=232): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.3663158
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+21 August 2003(Day of year=233): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.2277775
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+22 August 2003(Day of year=234): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: lai
+     Value:       20.1341591
+     Bounds:        0.0000000 to       20.0000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+ Crop reached maturity
+5 October 2003(Day of year=278), Rice sowing rule: 
+     Manager sending message :- oryza2 harvest  remove = 0.9
+5 October 2003(Day of year=278), Oryza2: 
+     Harvesting
+     Manager sending message :- oryza2 end_crop
+     Crop ended. Rough Rice Yield (dw) =  4900.7 (kg/ha)
+     Removing 15705.4 kg/ha biomass from field
+     Adding  1745.0 kg/ha to surface residues
+7 October 2003(Day of year=280): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     pen_mon =   -0.8535359E-01
+             less than lower limit of    0.000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+9 October 2003(Day of year=282): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     pen_mon =   -0.1043198
+             less than lower limit of    0.000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+11 October 2003(Day of year=284): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     pen_mon =   -0.3960589
+             less than lower limit of    0.000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     pen =   -0.8880643E-01
+             less than lower limit of    0.000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     pen =   -0.4856457E-01
+             less than lower limit of    0.000000
+     Component name: eo
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+30 October 2003(Day of year=303), clock: 
+     Simulation is terminating due to end criteria being met.
