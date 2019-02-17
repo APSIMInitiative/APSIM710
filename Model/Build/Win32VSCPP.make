@@ -8,16 +8,9 @@
 
 include $(APSIM)\Model\Build\VersionInfo.make
 
-CC="$(VSINSTALLDIR)\VC\bin\cl.exe"
-LD="$(VSINSTALLDIR)\VC\bin\link.exe"
-
-# Apparently Microsoft changed the path to mt.exe when going from v7 to v8 of the SDK
-ifneq (,$(findstring v7.,$(WindowsSdkDir)))
-MT="$(WindowsSdkDir)\bin\mt.exe"
-else
-MT="$(WindowsSdkDir)\bin\x86\mt.exe"
-endif
-
+CC="cl.exe"
+LD="link.exe"
+MT="mt.exe"
 RC=rc
 
 CPPUNIT = $(APSIM)\..\BuildLibraries\cppunit-1.13.2
@@ -33,7 +26,7 @@ LIBS := $(foreach library,$(LIBS),$(library).lib) libxml2.lib
 
 WARNINGS := /wd4996 /wd4068 /wd4290 /wd4251 /wd4244
 
-CFLAGS := $(INCLUDES) $(DEFINES) /EHsc /W3 /nologo /c /TP /Fd"$(APSIM)\Model\$(PROJECT).pdb"
+CFLAGS := $(INCLUDES) $(DEFINES) /EHsc /W3 /nologo /c /TP /Fd"$(APSIM)\Model\$(PROJECT).pdb"  /Zm1000
 
 LFLAGS := /NOLOGO /SUBSYSTEM:CONSOLE /DYNAMICBASE /NXCOMPAT /MACHINE:X86 /LTCG
 
@@ -75,20 +68,18 @@ OBJSSRC:=$(OBJS:.obj=.cpp)
 
 ifeq ($(PROJECTTYPE),exe)
 #### EXEs
-RESOBJ = exeres.res
-all: $(PRECOMPILEDHEADERS) $(RESOBJ) $(PROJECT).exe
-$(PROJECT).exe: $(PREBUILD) $(SOURCEOBJS) $(RESOBJ)
-	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(RESOBJ) $(LIBPATH) $(LIBS) > $(PROJECT).rsp
+all: $(PRECOMPILEDHEADERS)  $(PROJECT).exe
+$(PROJECT).exe: $(PREBUILD) $(SOURCEOBJS)
+	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(LIBPATH) $(LIBS) > $(PROJECT).rsp
 	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).exe" /MANIFEST @$(PROJECT).rsp
 	$(MT) -manifest "$(APSIM)\Model\$(PROJECT).exe.manifest" -outputresource:"$(APSIM)\Model\$(PROJECT).exe;1"
 
 else
 
-RESOBJ = dllres.r
-all: $(PRECOMPILEDHEADERS) $(OBJS) $(RESOBJ) $(PROJECT).dll
+all: $(PRECOMPILEDHEADERS) $(OBJS) $(PROJECT).dll
 
-$(PROJECT).dll: $(PREBUILD) $(SOURCEOBJS) $(RESOBJ) $(OBJS) $(PRECOMPILEDHEADERS)
-	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(OBJS) $(RESOBJ) /DEF:$(PROJECT).def $(LIBPATH) $(LIBS) > $(PROJECT).rsp
+$(PROJECT).dll: $(PREBUILD) $(SOURCEOBJS) $(OBJS) $(PRECOMPILEDHEADERS)
+	echo $(LFLAGS) $(SOURCEOBJS) $(SYSOBJS) $(OBJS) /DEF:$(PROJECT).def $(LIBPATH) $(LIBS) > $(PROJECT).rsp
 	$(LD) /OUT:"$(APSIM)\Model\$(PROJECT).dll" /MANIFEST @$(PROJECT).rsp
 	$(MT) -manifest "$(APSIM)\Model\$(PROJECT).dll.manifest" -outputresource:"$(APSIM)\Model\$(PROJECT).dll;2"
 

@@ -21,7 +21,6 @@
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>      
       <Job name="Version stamp the build">
-         <DependsOn>Clean model directory</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
          <CommandLine>%APSIM%/Model/cscs.exe VersionStamper.cs Directory=%APSIM% Increment=%INCREMENT%</CommandLine>
          <CommandLineUnix>mono %APSIM%/Model/cscs.exe VersionStamper.cs Directory=%APSIM% Increment=%INCREMENT%</CommandLineUnix>
@@ -342,20 +341,6 @@
          <DependsOn>Compile ComponentInterface2</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Report</WorkingDirectory>
          <CommandLine>make</CommandLine>
-      </Job>
-      <Job name="Compile ReportDb">
-         <DependsOn>Compile CSGeneral</DependsOn>
-         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
-         <DependsOn>Compile CMPServices</DependsOn>
-         <DependsOn>Compile DotNetProxies</DependsOn>
-         <WorkingDirectory>%APSIM%/Model/ReportDb</WorkingDirectory>
-         <CommandLine>make</CommandLine>
-      </Job>
-      <Job name="Compile RLink">
-         <DependsOn>Compile ComponentInterface2</DependsOn>
-         <WorkingDirectory>%APSIM%/Model/RLink</WorkingDirectory>
-         <CommandLine>make</CommandLine>
-         <CommandLineUnix>make -f Makefile.linux</CommandLineUnix>
       </Job>
       <Job name="Compile Root">
          <DependsOn>Compile DotNetProxies</DependsOn>
@@ -770,12 +755,12 @@
    <!-- ############### Release target ############### -->
    <Target name="Release">
       <DependsOn>BobBuildAndRun</DependsOn>
-	  <!--
       <Job name="Compile InsertFilesIntoSetup">
          <WorkingDirectory>%APSIM%/Release/InsertFilesIntoSetup</WorkingDirectory>
          <CommandLine>make</CommandLine>
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
+	  <!--
       <Job name="Create Bootleg MSI">
          <DependsOn>Compile InsertFilesIntoSetup</DependsOn>
          <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
@@ -790,20 +775,22 @@
       </Job>
 	  -->
       <Job name="Create Bootleg MSI">
+	     <DependsOn>Compile InsertFilesIntoSetup</DependsOn>
          <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-         <CommandLine>%APSIM%\Release\CreateInstall.bat %PatchFileNameShort%.Bootleg Bootleg</CommandLine>
+         <CommandLine>%APSIM%\Release\CreateInstall.bat %sha1%.Bootleg Bootleg</CommandLine>
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
       <Job name="Create Release MSI">
+	     <DependsOn>Compile InsertFilesIntoSetup</DependsOn>
          <WorkingDirectory>%APSIM%\Release</WorkingDirectory>
-         <CommandLine>%APSIM%\Release\CreateInstall.bat %PatchFileNameShort%.ApsimSetup ApsimSetup</CommandLine>
+         <CommandLine>%APSIM%\Release\CreateInstall.bat %sha1%.ApsimSetup ApsimSetup</CommandLine>
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
 	  
       <Job name="Create SFX Binaries">
        <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-       <CommandLine>%APSIM%/Release/Release.bat %PatchFileNameShort%</CommandLine>
-       <CommandLineUnix>%APSIM%/Release/Release.sh %PatchFileNameShort%</CommandLineUnix>
+       <CommandLine>%APSIM%/Release/Release.bat %sha1%</CommandLine>
+       <CommandLineUnix>%APSIM%/Release/Release.sh %sha1%</CommandLineUnix>
       </Job>
    </Target>
 
@@ -891,7 +878,12 @@
          <CommandLine>%APSIM%/Model/Build/RunAllUnitTests.bat</CommandLine>
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
+	  <Job name="RestoreTestPackages">
+		<WorkingDirectory>%APSIM%/Model/Tests</WorkingDirectory>
+		<CommandLine>nuget restore -verbosity quiet</CommandLine>
+	  </Job>
       <Job name="Compile Tests">
+	     <DependsOn>RestoreTestPackages</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Tests</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
