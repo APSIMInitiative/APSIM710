@@ -816,14 +816,10 @@
         <WorkingDirectory>%APSIM%</WorkingDirectory>
         <CommandLine>%APSIM%/Model/CreateDiffZip.exe Directory=%APSIM% PatchFileName=%PatchFileName%</CommandLine>
       </Job>
-		<Job name="Create Build Tree Zip">
-			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-			<CommandLine>"C:\Program Files\7-Zip\7z.exe" -xr!.svn a -mx=7 -mmt=on C:\inetpub\wwwroot\Files\%PatchFileNameShort%.buildtree.zip %APSIM%</CommandLine>
-		</Job>
-		<Job name="CreateBinariesZip">
-			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-			<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on C:\inetpub\wwwroot\Files\%PatchFileNameShort%.binaries.zip %APSIM%\Model\*.exe %APSIM%\Model\*.dll</CommandLine>
-		</Job>
+	  <Job name="CreateBinariesZip">
+	  	<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
+	  	<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on C:\inetpub\wwwroot\Files\%PatchFileNameShort%.binaries.zip %APSIM%\Model\*.exe %APSIM%\Model\*.dll</CommandLine>
+	  </Job>
    </Target>
 
    <Target name="LinuxX64">
