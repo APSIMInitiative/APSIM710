@@ -1,0 +1,334 @@
+<Type name="Oryza2">
+   <MetaData>
+      <UItype>CSUserInterface.EmptyUI</UItype>
+      <IsCrop>Yes</IsCrop>
+      <ShowInMainTree>Yes</ShowInMainTree>
+      <Image>%apsim%\UserInterface\Images\rice.jpg</Image>
+      <Description>ORYZA is wholely owned by IRRI and is distributed in APSIM with permission. Goto http://www.knowledgebank.irri.org/oryza2000 for more info.
+This version is Supplied by Tao Li, Sept 2011, the same as distributed in DSSAT.</Description>
+      <Documentation name="Rice science documentation"></Documentation>
+      <LargeIcon>%apsim%\UserInterface\Images\rice32.png</LargeIcon>
+      <SmallIcon>%apsim%\UserInterface\Images\rice16.png</SmallIcon>
+      <dll>%apsim%/Model/Oryza2.%dllext%</dll>
+      <drops>
+         <drop>toolbox</drop>
+         <drop>area</drop>
+         <drop>simulation</drop>
+         <drop>folder</drop>
+      </drops>
+      <ApsimToSim>
+         <component name="[Oryza2.name]" executable="[dll]" class="Oryza2.Oryza2">
+            <executable name="[dll]" version="1.0"/>
+            <initdata>
+               [Model]
+               [Oryza2.innerxml]
+            </initdata>
+         </component>
+      </ApsimToSim>
+   </MetaData>
+   <Model>
+      <crop_type>rice</crop_type>
+      <local cultivar="yes">
+         <DVRJ description="Development rate in juvenile phase (oCd-1)">.000773</DVRJ>
+         <DVRI description="Development rate in photoperiod-sensitive phase (oCd-1)">.000758</DVRI>
+         <DVRP description="Development rate in panicle development (oCd-1)">.000784</DVRP>
+         <DVRR description="Development rate in reproductive phase (oCd-1)">.001984</DVRR>
+         <MOPP description="Maximum optimum photoperiod (h)">11.50</MOPP>
+         <PPSE description="Photoperiod sensitivity (h-1)">0.0</PPSE>
+      </local>
+<!--*********************************************************************
+ Template Crop data file for ORYZA2000 rice growth model            *
+ File name   : HD297.DAT                                          *
+ Crop        : Handao 297                                           *
+ Experiment  : Parameter values derived from various experiments    *
+               at Changping,Beijing,China.                          *
+ Information Yang Xiaoguang                                          *
+*********************************************************************
+ 1. Phenological development parameters
+-->
+<TBD description=" Base temperature for development (oC)">8.</TBD>
+<TBLV description=" Base temperature for juvenile leaf area growth (oC)">8.</TBLV>
+<TMD description=" Maximum temperature for development (oC)">42.</TMD>
+<TOD description=" Optimum temperature for development (oC)">30.</TOD>
+<TMPSB description="Temperature increase in seed-bed due to cover Zero when no cover over seed-bed; 9.5 with seed-bed">0</TMPSB>
+<MOPP description=" Maximum optimum photoperiod (h)">11.50</MOPP>
+<PPSE description=" Photoperiod sensitivity (h-1)">0.0</PPSE>
+<SHCKD description=" Relation between seedling age and delay in phenological ">0.4</SHCKD>
+<!--                ! development (oCd oCd-1)
+ development (oCd oCd-1)
+-->
+<COLDMIN description=" Lower air temperature treshhold for growth (oC)">12.</COLDMIN>
+<COLDEAD description=" Consecutive number of days below COLDMIN that crop dies (-)">3.</COLDEAD>
+<CTSTER description="Critical air temperature causing sterility">36.6</CTSTER>
+<!-- 2. Leaf and stem growth parameters
+-->
+<RGRLMX description=" Maximum relative growth rate of leaf area (oCd-1)">0.0085</RGRLMX>
+<RGRLMN description=" Minimum relative growth rate of leaf area (oCd-1)">0.0040</RGRLMN>
+<SHCKL description=" Relation between seedling age and delay in leaf area ">0.25</SHCKL>
+<!--                ! development (oCd oCd-1)
+ Switch to use SLA as table (give values below) or as fixed function
+SWISLA = 'FUNCTION' ! Give function parameters  ASLA, BSLA, CSLA, DSLA, SLAMAX
+-->
+<SWISLA description=" Give SLA as a function of DVS in the table SLATB">TABLE</SWISLA>
+<!-- If SWISLA='FUNCTION', supply SLA function parameters: 
+ SLA = ASLA + BSLA*EXP(CSLA*(DVS-DSLA)), and SLAMAX
+-->
+<ASLA description=" (-)">0.0024</ASLA>
+<BSLA description=" (-)">0.0025</BSLA>
+<CSLA description=" (-)">-4.5</CSLA>
+<DSLA description=" (-)">0.14</DSLA>
+<SLAMAX description=" maximum value of SLA (ha/kg)">0.0045</SLAMAX>
+<!-- If SWISLA='TABLE', supply table of specific leaf area (ha kg-1; Y value) 
+ as a function of development stage (-; X value):
+SLATB = 0.00, 0.0045,   !this is for IR72
+        0.16, 0.0045,
+        0.33, 0.0033,
+        0.65, 0.0028,
+        0.79, 0.0024,
+        2.10, 0.0023,
+        2.50, 0.0023   
+-->
+<SLATB description="">0.000 0.0047 0.160 0.0045 0.364 0.0038 0.680 0.0029 0.837 0.0026 0.949 0.0025 1.766 0.0025 2.000 0.0021 2.500 0.0021</SLATB>
+<!-- Table of specific green stem area (ha kg-1; Y value) as a function of 
+ development stage (-; X value):
+-->
+<SSGATB description="">0.0 0.0003 0.9 0.0003 2.1 0.0000 2.5 0.0000</SSGATB>
+<!-- 3. Photosynthesis parameters
+-->
+<FRPAR description=" fraction of sunlight energy that is ">0.5</FRPAR>
+<!--             ! photosynthetically active (-)
+-->
+<SCP description=" Scattering coefficient of leaves for PAR (-)">0.2</SCP>
+<CO2REF description=" Reference level of atmospheric CO2 (ppm)">340.</CO2REF>
+
+<!--CO2    = 340. ! Ambient CO2 concentration (ppm)
+ Table of light extinction coefficient for leaves (-; Y-value) as a function
+ of development stage (-; X value):
+-->
+<KDFTB description="">0.00 0.45 0.65 0.45 1.00 0.60 2.50 0.6</KDFTB>
+<!-- Table of extinction coefficient of N profile in the canopy (-; Y-value) 
+ as a functionof development stage (-; X value):
+-->
+<KNFTB description="">0.0 0.4 2.5 0.4</KNFTB>
+<!-- Table of light use effiency (-; Y-value) as a function of 
+ temperature (oC; X value):
+-->
+<EFFTB description="">0. 0.60 10. 0.60 40. 0.40</EFFTB>
+<!-- Table of effect of temperature on AMAX (-; Y-value) as a function of 
+ temperature (oC; X value):
+-->
+<REDFTT description="">-10. 0. 10. 0. 20. 1. 37. 1. 43. 0.</REDFTT>
+<!-- Table of N fraction in leaves on leaf area basis (g N m-2 leaf; Y-value) 
+ as a function of development stage (-; X value):
+-->
+<NFLVTB description="">0.00 0.54 0.16 0.52 0.33 1.53 0.65 1.22 0.79 1.56 1.00 1.29 1.46 1.37 2.02 0.83 2.50 0.83</NFLVTB>
+AMAXSLN0 = 22.0
+MINSLN = 0.2
+<!--Leaf nitrogen content corresponding coefficient to AMax (/(g N m-2 leaf))
+Minimum leaf nitrogen content for that Am (maximum rate co2 assimilation) is 0.0 (g N/m2 leaf)
+ 4. Maintenance parameters
+ Maintenance respiration coefficient (kg CH2O kg-1 DM d-1) of:
+-->
+<MAINLV description=" Leaves ">0.02</MAINLV>
+<MAINST description=" Stems ">0.015</MAINST>
+<MAINSO description=" Storage organs (panicles) ">0.003</MAINSO>
+<MAINRT description=" Roots ">0.01</MAINRT>
+<TREF description=" Reference temperature (oC)">25.</TREF>
+<Q10 description=" Factor accounting for increase in maintenance">2.</Q10>
+<!--               ! respiration with a 10 oC rise in temperature (-)
+ 5. Growth respiration parameters 
+ Carbohydrate requirement for dry matter production (kg CH2O kg-1 DM leaf) of:
+-->
+<CRGLV description=" Leaves ">1.326</CRGLV>
+<CRGST description=" Stems">1.326</CRGST>
+<CRGSO description=" Storage organs (panicles)">1.462</CRGSO>
+<CRGRT description=" Roots">1.326</CRGRT>
+<CRGSTR description=" Stem reserves">1.11</CRGSTR>
+<LRSTR description=" Fraction of allocated stem reserves that is">0.947</LRSTR>
+<!--               ! available for growth (-)
+ 6. Growth parameters
+-->
+<FSTR description="0.05      ! Fraction of carbohydrates allocated to stems that">0.098</FSTR>
+<!--                  ! is stored as reserves (-)
+-->
+<TCLSTR description=" Time coefficient for loss of stem reserves (1 d-1)">10.</TCLSTR>
+<SPGF>    35000.</SPGF>
+<!--SPGF   = 64900.    ! Spikelet growth factor (no kg-1)
+-->
+<WGRMX description=" Maximum individual grain weight (kg grain-1)">0.0000249</WGRMX>
+<!-- Partitioning tables
+ Table of fraction total dry matter partitioned to the shoot (-; Y-value) 
+ as a function of development stage (-; X value):
+-->
+<FSHTB description="">0.00 0.65 0.43 0.75 1.00 1.00 2.50 1.00</FSHTB>
+<!-- Table of fraction shoot dry matter partitioned to the leaves (-; Y-value) 
+ as a function of development stage (-; X value):
+-->
+<FLVTB description="">0.000 0.75 0.500 0.75 0.750 0.35 1.000 0.05 1.200 0.00 2.5 0.00</FLVTB>
+<!-- Parameters by miss Xue derived from HD297 Changping2003
+FLVTB  = 0.000, 0.60,
+         0.182, 0.58,
+         0.522, 0.50,
+         0.759, 0.45,
+         0.893, 0.40,
+         1.357, 0.10,
+         2.000, 0.00,
+         2.500, 0.00
+ Table of fraction shoot dry matter partitioned to the stems (-; Y-value) 
+ as a function of development stage (-; X value):
+-->
+<FSTTB description="">0.000 0.25 0.500 0.25 0.750 0.47 1.000 0.40 1.200 0.20 2.500 0.00</FSTTB>
+<!-- Parameters by miss Xue derived from HD297 Changping2003
+FSTTB  = 0.000, 0.40,
+         0.182, 0.42,
+         0.522, 0.45,
+         0.759, 0.35,
+         0.893, 0.25,
+         1.357, 0.20,
+         2.000, 0.00,
+         2.500, 0.00
+ Table of fraction shoot dry matter partitioned to the panicles (-; Y-value) 
+ as a function of development stage (-; X value):
+-->
+<FSOTB description="">0.000 0.000 0.500 0.000 0.750 0.180 1.000 0.550 1.200 0.800 2.5 1.000</FSOTB>
+<!-- Parameters by miss Xue derived from HD297 Changping2003
+FSOTB  = 0.000, 0.00,
+         0.182, 0.00,
+         0.522, 0.05,
+         0.759, 0.20,
+         0.893, 0.35,
+         1.357, 0.70,
+         2.000, 1.00,
+         2.500, 1.00
+ Table of leaf death coefficient (d-1; Y-value) as a function of development 
+ stage (-; X value):
+-->
+<DRLVT description="">0.000 0.000 0.600 0.000 1.000 0.005 1.375 0.018 1.930 0.113 2.000 0.213 2.500 0.513</DRLVT>
+<!-- 7. Carbon balance parameters
+ Mass fraction carbon (kg C kg-1 DM) in the:
+-->
+<FCLV description=" Leaves ">0.419</FCLV>
+<FCST description=" Stems">0.431</FCST>
+<FCSO description=" Storage organs (panicles)">0.487</FCSO>
+<FCRT description=" Roots ">0.431</FCRT>
+<FCSTR description=" Stem reserves ">0.444</FCSTR>
+<!-- 8. Root parameters
+-->
+<GZRT description=" Growth rate of roots (m d-1)">0.01</GZRT>
+<ZRTMCW description=" Maximum depth of roots if no drought stress (m)">0.25</ZRTMCW>
+<ZRTMCD description=" Maximum depth of roots if drought (m)">0.50</ZRTMCD>
+<!--ADD OTHER INFORMATION BY TAOLI, 1 JUNE 2009
+-->
+<SROOTL description="special root length cm/g DM">90.0</SROOTL>
+<RMINT description="minimum temperature for root growth">5.0</RMINT>
+<ROPTT description="optimum temperature of root growth">25.0</ROPTT>
+<RTBS description="minimim temperature for root to survive">2.0</RTBS>
+<RCNL description="lowest root nitrogen content (residue root N content, kg N kg-1 ROOT DM)">0.012</RCNL>
+<MAXD description="MAXIMUM ROOTING DEPTH (CM)">60.0</MAXD>
+<SODT description="THE TOLERANCE INDEX OF OXGENY DEFICIENCY">0.9</SODT>
+<!-- 9. Drought stress parameters
+ Upper and lower limits for drought stress effects
+-->
+<ULLS description=" Upper limit leaf rolling (kPa)">74.13</ULLS>
+<LLLS description=" Lower limit leaf rolling (kPa)">794.33</LLLS>
+<ULDL description=" Upper limit death of leaves (kPa)">630.95</ULDL>
+<LLDL description=" Lower limit death of leaves (kPa)">1584.89</LLDL>
+<ULLE description=" Upper limit leaf expansion (kPa) ">41.45</ULLE>
+<LLLE description=" Lower limit leaf expansion (kPa)">1404.</LLLE>
+<!-- Switch to use ULTR and LLTR as given above or function built in ORYZA 
+ for the reduction in relative transpiration:
+SWIRTR = 1, Use ULRT AND LLRT for transpiration; SWIRTR = 2, Use SWIRTRF for 
+transpiration; SWIRTR = 3, Use FSWTD for transpiration 
+-->
+<SWIRTR description=" Use function ">3</SWIRTR>
+<!--Give value of ULRT and LLRT for SWIRTR = 1
+-->
+<ULRT description=" Upper limit relative transpiration reduction (kPa)">74.13</ULRT>
+<LLRT description=" Lower limit relative transpiration reduction (kPa)">1584.89</LLRT>
+SWIRTRF = 0.020597
+<!--Give value for SWIRTRF if SWIRTR= 2, default value SWIRTRF=0.003297
+Give value for FSWTD if SWIRTR= 3, default value SWIRTRF=0.003297
+The upper limit factor while transpiration declines which is the ratio of remaining
+available water to total water supply capability 
+-->
+<FSWTD description="the fraction of remainding available water to ">0.22</FSWTD>
+<TRANSC>6.</TRANSC>
+<!--               !total avaialble while transpiration decrease
+===================================================================*
+ Drought stress effect parameters for aerobic rice                 *
+ Values are for wheat, taken from SUCROS2 model                    *
+===================================================================*
+ characteristic potential transpiration rate at a soil water
+ content halfway wilting point and field capacity (mm.d-1)
+ Root activity coefficient (-)
+-->
+<EDPTFT description="">0. 0.15</EDPTFT>
+<!--===================================================================*
+ 10. Nitrogen parameters
+-->
+<NMAXUP description=" Maximum daily N uptake (kg N ha-1 d-1)">8.</NMAXUP>
+<RFNLV description=" Residual N fraction of leaves (kg N kg-1 leaves)">0.004</RFNLV>
+<FNTRT description=" Fraction N translocation from roots, as (additonal) ">0.15</FNTRT>
+<!--                 ! fraction of total N translocation from stems and leaves (-)
+-->
+<RFNST description=" Residual N fraction of stems (kg N kg-1 stems)">0.0015</RFNST>
+<TCNTRF description=" Time coefficient for N translocation to grains (d)">10.</TCNTRF>
+<NFLVI description=" Initial leaf N fraction (on area basis: g N m-2 leaf)">0.5</NFLVI>
+<FNLVI description=" Initial leaf N fraction (on weight basis: kg N kg-1 leaf)">0.025</FNLVI>
+<NMAXSO description=" Maximum N concentration in storage organs (kg N kg-1)">0.0175</NMAXSO>
+<!-- Table of minimum N concentration in storage organs (kg N kg-1 DM; Y value) 
+ as a function of the amount of N in the crop till flowering (kg N ha-1; X value):
+-->
+<NMINSOT description="">0. .006 50. .0008 150. .0125 250. .015 400. .017 1000. .017</NMINSOT>
+<!-- Table of maximum leaf N fraction on weight basis (kg N kg-1 leaves; Y value)
+ as a function of development stage (-; X value):
+-->
+<NMAXLT description="">0.0 .053 0.4 .053 0.75 .040 1.0 .028 2.0 .022 2.5 .015</NMAXLT>
+<!-- Table of minimum leaf N fraction on weight basis (kg N kg-1 leaves; Y value)
+ as a function of development stage (-; X value):
+-->
+<NMINLT description="">0.0 0.025 1.0 0.012 2.1 0.007 2.5 0.007</NMINLT>
+<!-- Table of effect of N stress on leaf death rate (-; Y value)
+ as a function of N stress level (-; X value):
+-->
+<NSLLVT description="">0. 1.0 1.1 1.0 1.5 1.4 2.0 1.5 2.5 1.5</NSLLVT>
+      <!-- Default Establishment Parameters -->
+      <transplant>
+         <sbdur>19</sbdur>
+         <nplh>10</nplh>
+         <nh>2</nh>
+         <nplsb>100</nplsb>
+         <nplds>180</nplds>
+         <estab>TRANSPLANT</estab>
+      </transplant>
+      <direct-seed>
+         <sbdur>0</sbdur>
+         <nplh>1</nplh>
+         <nh>1</nh>
+         <nplsb>350</nplsb>
+         <nplds>360</nplds>
+         <estab>DIRECT-SEED</estab>
+      </direct-seed>
+<TMCTB description="">0. 0. 366. 0.</TMCTB>
+<LAPE description=" Initial leaf area per plant (m2 plant-1) (according to wheat)">0.0001</LAPE>
+<DVSI description=" Initial development stage">0.0</DVSI>
+<WLVGI description=" Initial leaf weight">0.0</WLVGI>
+<WSTI description=" Initial stem weight">0.0</WSTI>
+<WRTI description=" Initial stem weight">0.0</WRTI>
+<WSOI description=" Initial weight storage organs">0.0</WSOI>
+<ZRTI description=" Initial root depth (m)">0.0001</ZRTI>
+<ZRTTR description=" Root depth at transplanting (m)">0.05</ZRTTR>
+<ZRTMS description="Maximum root depth">1.0 </ZRTMS>
+<etmethod>INTERNAL PENMAN</etmethod>
+<anga>0.29</anga>
+<angb>0.45</angb>
+      <hd297 cultivar="yes">
+<DVRJ description=" Development rate in juvenile phase (oCd-1)">.000568</DVRJ>
+<DVRI description=" Development rate in photoperiod-sensitive phase (oCd-1)">.000758</DVRI>
+<DVRP description=" Development rate in panicle development (oCd-1)">.000677</DVRP>
+<DVRR description=" Development rate in reproductive phase (oCd-1)">.002037</DVRR>
+         <MOPP description="Maximum optimum photoperiod (h)">11.50</MOPP>
+         <PPSE description="Photoperiod sensitivity (h-1)">0.0</PPSE>
+      </hd297 >
+   </Model>
+</Type>
