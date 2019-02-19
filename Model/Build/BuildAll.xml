@@ -809,6 +809,7 @@
    </Target>
 
    <Target name="Jenkins">
+	  <DependsOn IgnoreErrors="true">Release</DependsOn>
       <Job name="Create Diff Zip">
         <WorkingDirectory>%APSIM%</WorkingDirectory>
         <CommandLine>%APSIM%/Model/CreateDiffZip.exe Directory=%APSIM% PatchFileName=%sha1%</CommandLine>
