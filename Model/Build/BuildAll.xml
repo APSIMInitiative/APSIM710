@@ -808,6 +808,13 @@
 	  </Job>
    </Target>
 
+   <Target name="Jenkins">
+      <Job name="Create Diff Zip">
+        <WorkingDirectory>%APSIM%</WorkingDirectory>
+        <CommandLine>%APSIM%/Model/CreateDiffZip.exe Directory=%APSIM% PatchFileName=%sha1%</CommandLine>
+      </Job>
+   </Target>
+
    <Target name="LinuxX64">
     <DependsOn IgnoreErrors="true">BobBuildAndRun</DependsOn>
     <DependsOn IgnoreErrors="true">Release</DependsOn>
