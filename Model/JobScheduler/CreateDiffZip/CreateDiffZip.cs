@@ -25,7 +25,7 @@ class Program
         }
         catch (Exception err)
         {
-            Console.WriteLine(err.Message);
+            Console.WriteLine(err.ToString());
             return 1;
         }
         return 0;
