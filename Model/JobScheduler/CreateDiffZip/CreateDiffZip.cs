@@ -67,7 +67,7 @@ class Program
         {
             if (Line.Length >= 9)
             {
-                string FileName = Line.Substring(3);
+                string FileName = Line.Substring(3).Trim('"');
                 string Status = Line.Substring(0, 2);
                 if (!Directory.Exists(FileName) && 
                     Path.GetFileName(FileName) != "DotNetProxies.cs" &&
