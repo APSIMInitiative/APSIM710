@@ -16,4 +16,4 @@ mkdir "%2"
 
 %InnoSetup% /Q /O"%2" /F"%1" "%2.iss"
 
-call "C:\CsiroSign.bat" %2\%1.exe
+call "C:\SignCsiro.bat" %2\%1.exe
