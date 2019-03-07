@@ -763,23 +763,23 @@
       <Job name="Create Bootleg MSI">
 	     <DependsOn>Compile InsertFilesIntoSetup</DependsOn>
          <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-         <CommandLine>%APSIM%\Release\CreateInstall.bat %sha1%.Bootleg Bootleg</CommandLine>
+         <CommandLine>%APSIM%\Release\CreateInstall.bat %PatchFileNameShort%.Bootleg Bootleg</CommandLine>
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
       <Job name="Create Release MSI">
 	     <DependsOn>Compile InsertFilesIntoSetup</DependsOn>
          <WorkingDirectory>%APSIM%\Release</WorkingDirectory>
-         <CommandLine>%APSIM%\Release\CreateInstall.bat %sha1%.ApsimSetup ApsimSetup</CommandLine>
+         <CommandLine>%APSIM%\Release\CreateInstall.bat %PatchFileNameShort%.ApsimSetup ApsimSetup</CommandLine>
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
       <Job name="Create SFX Binaries">
        <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-       <CommandLine>%APSIM%/Release/Release.bat %sha1%</CommandLine>
-       <CommandLineUnix>%APSIM%/Release/Release.sh %sha1%</CommandLineUnix>
+       <CommandLine>%APSIM%/Release/Release.bat %PatchFileNameShort%</CommandLine>
+       <CommandLineUnix>%APSIM%/Release/Release.sh %PatchFileNameShort%</CommandLineUnix>
       </Job>
 	  <Job name="Create Diff Zip">
         <WorkingDirectory>%APSIM%</WorkingDirectory>
-        <CommandLine>%APSIM%/Model/CreateDiffZip.exe Directory=%APSIM% PatchFileName=%sha1%</CommandLine>
+        <CommandLine>%APSIM%/Model/CreateDiffZip.exe Directory=%APSIM% PatchFileName=%PatchFileNameShort%</CommandLine>
       </Job>
    </Target>
 
