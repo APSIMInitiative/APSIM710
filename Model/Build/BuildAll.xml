@@ -342,6 +342,20 @@
          <WorkingDirectory>%APSIM%/Model/Report</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
+	  <Job name="Compile ReportDb">
+         <DependsOn>Compile CSGeneral</DependsOn>
+         <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
+         <DependsOn>Compile CMPServices</DependsOn>
+         <DependsOn>Compile DotNetProxies</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/ReportDb</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+      </Job>
+      <Job name="Compile RLink">
+         <DependsOn>Compile ComponentInterface2</DependsOn>
+         <WorkingDirectory>%APSIM%/Model/RLink</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+         <CommandLineUnix>make -f Makefile.linux</CommandLineUnix>
+	</Job>
       <Job name="Compile Root">
          <DependsOn>Compile DotNetProxies</DependsOn>
          <DependsOn>Compile CSGeneral</DependsOn>
