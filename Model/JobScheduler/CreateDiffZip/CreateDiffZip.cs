@@ -68,8 +68,9 @@ class Program
             {
                 string FileName = Line.Substring(3).Trim('"');
                 string Status = Line.Substring(0, 2);
+                string extension = Path.GetExtension(FileName);
                 if (!Directory.Exists(FileName) && 
-                    Path.GetFileName(FileName) != "DotNetProxies.cs" &&
+                    (extension == ".out" || extension == ".sum") &&
                     Status != " D" && Status != "??")
                    ModifiedFiles.Add(FileName);
             }
