@@ -21,17 +21,16 @@ class Program
         try
         {
 
-            Go(args);
+            return Go(args);
         }
         catch (Exception err)
         {
             Console.WriteLine(err.ToString());
             return 1;
         }
-        return 0;
     }
 
-    private static void Go(string[] args)
+    private static int Go(string[] args)
     {
         Dictionary<string, string> Macros = Utility.ParseCommandLine(args);
         if (!Macros.ContainsKey("Directory") || !Macros.ContainsKey("PatchFileName"))
@@ -102,6 +101,9 @@ class Program
                 zipExe = Utility.FindFileOnPath("7za");
             else
                 zipExe = "C:\\Program Files\\7-Zip\\7z.exe";
+
+            Console.WriteLine("Creating diff file: " + outZip);
+
             P = Utility.RunProcess(zipExe, "a -tzip \"" + outZip + "\" \"" + TempDirectory + "\"", Path.GetTempPath());
             Utility.CheckProcessExitedProperly(P);
 
@@ -115,7 +117,7 @@ class Program
         Directory.Delete(TempDirectory, true);
 
         // Now report the number of diffs to the Builds Database.
-        ReportNumDiffs(DirectoryName, ModifiedFiles, PatchFileName, outZip);
+        return ReportNumDiffs(DirectoryName, ModifiedFiles, PatchFileName, outZip);
     }
 
 
@@ -141,7 +143,7 @@ class Program
     /// <summary>
     /// Report the number of diffs to the database.
     /// </summary>
-    private static void ReportNumDiffs(string ApsimDirectoryName, List<string> ModifiedFiles, string PatchFileName, string outZip)
+    private static int ReportNumDiffs(string ApsimDirectoryName, List<string> ModifiedFiles, string PatchFileName, string outZip)
     {
         // Some of the diffs in ModifiedFiles will be from the patch, so to get a count of
         // the number of files that were changed by APSIM running we need to remove those
@@ -190,9 +192,11 @@ class Program
             Console.WriteLine("Files that are different:");
             foreach (string FileName in ModifiedFiles)
                 Console.WriteLine(FileName);
-               
-            throw new Exception("Build is not clean");
+
+            Console.WriteLine("Build is not clean");
+            return 1;
         }
+        return 0;
     }
 
     /// <summary>
