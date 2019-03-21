@@ -196,7 +196,7 @@ void Plant::onSowCrop(SowType &sow)
       else if (sow.Skip == "double")skipRow = 2.0;
       else if (sow.Skip == "solid")skipRow = 1.0;
       else
-        throw std::runtime_error("Unknown skip row configuration '" + temp + "'");
+        throw std::runtime_error("Unknown skip row configuration '" + sow.Skip + "'");
       }             
 
    checkRange(scienceAPI,skipRow, 0.0, 2.0, "skiprow");
