@@ -1,0 +1,58 @@
+######
+# Build apsim revisions
+# To install Mingw 32bit need to use choco directly rather than via Install-Package because some parameters
+#    need to be passed that can't be done with Install-Package. https://github.com/OneGet/oneget/issues/277
+# Microsoft build tools components: https://docs.microsoft.com/en-us/visualstudio/install/workload-component-id-vs-community
+#    Microsoft.VisualStudio.Component.Windows10SDK.16299.Desktop is needed for shlwapi.h, shlobj.h, etc.
+#    Microsoft.Net.Component.4.6.1.SDK is needed for mscoree.h
+# 7zip installs to c:\programdata\chocolatey\tools which isn't on PATH. I can't figure out how to change PATH so I 
+#    copy executable files to c:\programdata\chocolatey\bin which is on path.
+# VS Build tools component IDs can be found here: https://docs.microsoft.com/en-us/visualstudio/install/workload-component-id-vs-build-tools
+######
+
+FROM microsoft/dotnet-framework-build:4.7.1
+SHELL ["powershell", "-Command"]
+
+RUN Install-PackageProvider -Name Chocolatey            -Force -RequiredVersion 2.8.5.130;                                 \
+	Install-Package         -Name 7Zip                  -Force -RequiredVersion 18.1;                                      \
+    Install-PackageProvider -Name ChocolateyGet         -Force;									                           
+	
+RUN Set-ExecutionPolicy Bypass -Scope Process -Force; iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex; 		\
+    choco feature disable –name showDownloadProgress;                                        								\
+	choco feature enable -n allowGlobalConfirmation;                                         								\
+    choco install mingw --x86 --force --params "/exception:sjlj";															\
+	choco install git.portable;																								\
+	choco install curl;                                                                                                     \
+	choco install vcredist2010;                                                                                             \
+	choco install nunit-console-runner;                                                                                     \
+	choco install r.project;
+	
+# Now install some missing build tools
+ADD https://aka.ms/vs/15/release/vs_buildtools.exe C:/vs_buildtools.exe
+
+RUN Start-Process -FilePath 'vs_BuildTools.exe' -Wait -ArgumentList '--quiet', '--wait', '--norestart', '--nocache', '--installPath C:\BuildTools', '--add Microsoft.VisualStudio.Component.Windows10SDK.16299.Desktop', '--add Microsoft.Net.Component.4.6.1.SDK', '--add Microsoft.VisualStudio.Workload.VCTools', '--add Microsoft.VisualStudio.Component.NuGet.BuildTools', '--add Microsoft.Net.Component.4.5.TargetingPack';
+
+# Copy files to PATH and create a make.exe so that build script will find it.   
+RUN cp C:\ProgramData\chocolatey\tools\7z.exe C:\ProgramData\chocolatey\bin\7z.exe;    										\
+    cp C:\ProgramData\chocolatey\tools\7z.dll C:\ProgramData\chocolatey\bin\7z.dll;    										\
+    cp C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw32\bin\mingw32-make.exe C:\ProgramData\chocolatey\bin\make.exe;
+
+# Get the BOB build libraries that contain libxml, cppunit etc. and extract
+ADD http://bob.apsim.info/files/BuildLibraries.7z /BuildLibraries.7z
+RUN 7z x /BuildLibraries.7z -o/
+
+# Add in cotton password file
+ADD http://bob.apsim.info/files/CottonPassword.txt /CottonPassword.txt
+
+RUN rm c:\BuildLibraries.7z; rm vs_buildtools.exe;
+
+# Install InnoSetup
+ADD http://www.jrsoftware.org/download.php/is.exe /is.exe
+RUN cmd /c start /wait is.exe /SUPPRESSMSGBOXES /VERYSILENT /LOG=is.out /NORESTART
+
+ADD https://www.7-zip.org/a/7z1806.msi /7z_install_x86.msi
+RUN cmd /c start /wait 7z_install_x86.msi /quiet /passive /qn
+
+ADD compile.bat .
+
+ENTRYPOINT ["compile.bat"]

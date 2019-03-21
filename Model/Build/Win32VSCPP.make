@@ -26,7 +26,7 @@ LIBS := $(foreach library,$(LIBS),$(library).lib) libxml2.lib
 
 WARNINGS := /wd4996 /wd4068 /wd4290 /wd4251 /wd4244
 
-CFLAGS := $(INCLUDES) $(DEFINES) /EHsc /W3 /nologo /c /TP /Fd"$(APSIM)\Model\$(PROJECT).pdb"  /Zm1000
+CFLAGS := $(INCLUDES) $(DEFINES) /EHsc /W3 /nologo /c /TP /Fd"$(APSIM)\Model\$(PROJECT).pdb"
 
 LFLAGS := /NOLOGO /SUBSYSTEM:CONSOLE /DYNAMICBASE /NXCOMPAT /MACHINE:X86 /LTCG
 
