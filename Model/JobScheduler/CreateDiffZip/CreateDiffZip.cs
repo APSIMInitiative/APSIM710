@@ -183,7 +183,7 @@ class Program
         string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateNumDiffs" +
                              "?JobID=" + JobID +
                              "&NumDiffs=" + ModifiedFiles.Count +
-                             "&DbConnectPassword=" + Utils.REST.GetValidPassword();
+                             "&DbConnectPassword=" + Environment.GetEnvironmentVariable("DB_CONN_PSW");
         Utils.REST.CallService<object>(url);
         if (ModifiedFiles.Count != 0)
         {
