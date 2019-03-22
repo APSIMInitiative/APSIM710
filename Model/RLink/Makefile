@@ -17,19 +17,21 @@ endif
 
 LIBS = General ApsimShared ComponentInterface2
 OBJS = $(APSIM)/Model/ComponentInterface2/CMPComponentEntryPoints.$(OBJEXT)
-SRC = RComponent.cpp RDataTypes.cpp
+SRC = RComponent.cpp RDataTypes_1.cpp RDataTypes_2.cpp
 
 include $(APSIM)/Model/Build/$(PLATFORM)CPP.make
 
 RComponent.$(OBJEXT): RComponent.cpp RComponent.h RDataTypes.h
 
-RDataTypes.$(OBJEXT): RDataTypes.cpp RDataTypes.h
+RDataTypes_1.$(OBJEXT): RDataTypes_1.cpp RDataTypes.h
 
-RComponent.h RDataTypes.cpp RDataTypes.h REmbed.cpp REmbed.h RLink.def: ../DataTypes/Datatypes.xml RDataTypes.macro
+RDataTypes_2.$(OBJEXT): RDataTypes_2.cpp RDataTypes.h
+
+RComponent.h RDataTypes_1.cpp RDataTypes_2.cpp  RDataTypes.h REmbed.cpp REmbed.h RLink.def: ../DataTypes/Datatypes.xml RDataTypes.macro
 	$(APSIM)/Model/ProcessDataTypesInterface.exe ../DataTypes/Datatypes.xml RDataTypes.macro
 
 libRLink.a: RLink.def
 	dlltool -d RLink.def -l libRLink.a
 
 clean:
-	rm -f RComponent.h RDataTypes.cpp RDataTypes.h RDataTypesEmbedded.cpp RDataTypesEmbedded.h RLink.def ../REmbed.so ../RSimulation.so *.o 
+	rm -f RComponent.h RDataTypes*.* RDataTypesEmbedded.cpp RDataTypesEmbedded.h RLink.def ../REmbed.so ../RSimulation.so *.o 

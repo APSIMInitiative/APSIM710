@@ -66,7 +66,7 @@ namespace Utils
         /// <summary>Return the valid password for this web service.</summary>
         public static string GetValidPassword()
         {
-            string pwfile = @"C:\ChangeDBPassword.txt";
+            string pwfile = @"C:\dbConnect.txt";
             if (!File.Exists(pwfile)) { pwfile = "/etc/dbConnect.txt"; }
             string connectionString = File.ReadAllText(pwfile).TrimEnd(new char[] { '\r', '\n' });
             int posPassword = connectionString.IndexOf("Password=");

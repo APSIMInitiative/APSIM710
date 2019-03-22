@@ -21,17 +21,16 @@ class Program
         try
         {
 
-            Go(args);
+            return Go(args);
         }
         catch (Exception err)
         {
-            Console.WriteLine(err.Message);
+            Console.WriteLine(err.ToString());
             return 1;
         }
-        return 0;
     }
 
-    private static void Go(string[] args)
+    private static int Go(string[] args)
     {
         Dictionary<string, string> Macros = Utility.ParseCommandLine(args);
         if (!Macros.ContainsKey("Directory") || !Macros.ContainsKey("PatchFileName"))
@@ -39,30 +38,23 @@ class Program
         
 
         string DirectoryName = Macros["Directory"].Replace('\\', '/');
-        if (!Directory.Exists(DirectoryName)) { throw new Exception("Directory " + DirectoryName + " does not exist"); }
+        Directory.SetCurrentDirectory(DirectoryName);
 
         string PatchFileName = Macros["PatchFileName"];
 
-// if the file doesnt exist, then we are testing against a "passed" revision (ie linux)
-//      if (!File.Exists(PatchFileName)) { throw new Exception("PatchFileName " + PatchFileName + " does not exist"); }
-
         // Find SVN.exe on the path.
         string SVNFileName;
-        if (Path.DirectorySeparatorChar == '/') SVNFileName = Utility.FindFileOnPath("svn");
-        else SVNFileName = Utility.FindFileOnPath("svn.exe");
+        if (Path.DirectorySeparatorChar == '/') SVNFileName = Utility.FindFileOnPath("git");
+        else SVNFileName = Utility.FindFileOnPath("git.exe");
         if (SVNFileName == "")
-            throw new Exception("Cannot find svn on PATH");
+            throw new Exception("Cannot find git on PATH");
 
         // Run an SVN stat command
-        Process P = Utility.RunProcess(SVNFileName, "-q stat", DirectoryName);
+        Process P = Utility.RunProcess(SVNFileName, "status --porcelain", ".");
         string StdOut = Utility.CheckProcessExitedProperly(P);
         string[] Lines = StdOut.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 
-        string TempDirectory = Path.GetTempPath();
-        if (File.Exists(PatchFileName)) 
-           TempDirectory += Path.GetFileNameWithoutExtension(PatchFileName);
-        else             
-           TempDirectory += PatchFileName;
+        string TempDirectory = Path.GetTempPath() + PatchFileName;
 
         TempDirectory = TempDirectory.Replace('\\','/');
         if (Directory.Exists(TempDirectory))
@@ -74,32 +66,20 @@ class Program
         {
             if (Line.Length >= 9)
             {
-                string FileName = Line.Substring(8);
-                string FileExt = Path.GetExtension(FileName);
-                string Status = Line.Substring(0, 1);
-                string FullSourceFileName = Path.Combine(DirectoryName, FileName).Replace('\\', '/'); ;
-                if (Path.DirectorySeparatorChar == '/' &&
-                    !Directory.Exists(FullSourceFileName) &&
-                    Status != "D" &&
-                    FileExt == ".sum")
-                {
-                   Process D = Utility.RunProcess("/bin/sh", "-c \"svn diff --diff-cmd diff -x --ignore-matching-lines=Component\\|INPUT -x -uw \\\"" + FileName +"\\\" | wc -l\"", DirectoryName);
-                   int numlines = Convert.ToInt32(Utility.CheckProcessExitedProperly(D));
-                   if (numlines > 2)
-                     ModifiedFiles.Add(FullSourceFileName);
-
-                } else if (!Directory.Exists(FullSourceFileName) &&
-                           Path.GetFileName(FullSourceFileName) != "DotNetProxies.cs" &&
-                           Status != "D")
-                     ModifiedFiles.Add(FullSourceFileName);
+                string FileName = Line.Substring(3).Trim('"');
+                string Status = Line.Substring(0, 2);
+                string extension = Path.GetExtension(FileName);
+                if (!Directory.Exists(FileName) && 
+                    (extension == ".out" || extension == ".sum") &&
+                    Status != " D" && Status != "??")
+                   ModifiedFiles.Add(FileName);
             }
         }
-
 
         // For each modified file, copy to temp directory
         foreach (string FileName in ModifiedFiles)
         {
-            string FullDestFileName = FileName.Replace(DirectoryName, TempDirectory);
+            string FullDestFileName =  TempDirectory + "/" + FileName;
             CopyFileToSVNTempDirectory( FileName, FullDestFileName);
         }
 
@@ -108,12 +88,6 @@ class Program
         string outZip = "";
         if (Lines.Length > 0)
         {
-            List<string> Entries = new List<string>();
-            Utility.FindFiles(TempDirectory, "entries", ref Entries, true, true);
-            foreach (string FileName in Entries)
-                ModifyEntriesFile(FileName);
-
-
             // Now zip up the whole temporary directory.
             outZip = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar;
             if (File.Exists(PatchFileName)) 
@@ -128,6 +102,9 @@ class Program
                 zipExe = Utility.FindFileOnPath("7za");
             else
                 zipExe = "C:\\Program Files\\7-Zip\\7z.exe";
+
+            Console.WriteLine("Creating diff file: " + outZip);
+
             P = Utility.RunProcess(zipExe, "a -tzip \"" + outZip + "\" \"" + TempDirectory + "\"", Path.GetTempPath());
             Utility.CheckProcessExitedProperly(P);
 
@@ -136,12 +113,12 @@ class Program
                 File.Copy(outZip, "C:\\inetpub\\wwwroot\\Files\\" + Path.GetFileName(outZip), true);
                 File.Delete(outZip);
                 }
-            // Now get rid of our temporary directory.
-            Directory.Delete(TempDirectory, true);
         }
+        // Now get rid of our temporary directory.
+        Directory.Delete(TempDirectory, true);
 
         // Now report the number of diffs to the Builds Database.
-        ReportNumDiffs(DirectoryName, ModifiedFiles, PatchFileName, outZip);
+        return ReportNumDiffs(DirectoryName, ModifiedFiles, PatchFileName, outZip);
     }
 
 
@@ -162,137 +139,12 @@ class Program
             MissingFile.Close();
         }
 
-        // Also copy the SVN files required.
-        string SVNSourceDirectory = Path.Combine(Path.GetDirectoryName(FullSourceFileName), ".svn");
-        string SVNDestDirectory = Path.Combine(Path.GetDirectoryName(FullDestFileName), ".svn");
-        string ShortFileName = Path.GetFileName(FullDestFileName);
-
-        Directory.CreateDirectory(SVNDestDirectory);
-        File.SetAttributes(SVNDestDirectory, FileAttributes.Hidden);
-
-        if (File.Exists(Path.Combine(SVNSourceDirectory, "prop-base", ShortFileName + ".svn-base")))
-        {
-            Directory.CreateDirectory(Path.Combine(SVNDestDirectory, "prop-base"));
-            File.Copy(Path.Combine(SVNSourceDirectory, "prop-base", ShortFileName + ".svn-base"),
-                      Path.Combine(SVNDestDirectory, "prop-base", ShortFileName + ".svn-base"), true);
-            File.SetAttributes(Path.Combine(SVNDestDirectory, "prop-base", ShortFileName + ".svn-base"), FileAttributes.Archive);
-        }
-
-        if (File.Exists(Path.Combine(SVNSourceDirectory, "text-base", ShortFileName + ".svn-base")))
-        {
-            Directory.CreateDirectory(Path.Combine(SVNDestDirectory, "text-base"));
-            File.Copy(Path.Combine(SVNSourceDirectory, "text-base", ShortFileName + ".svn-base"),
-                      Path.Combine(SVNDestDirectory, "text-base", ShortFileName + ".svn-base"), true);
-            File.SetAttributes(Path.Combine(SVNDestDirectory, "text-base", ShortFileName + ".svn-base"), FileAttributes.Archive);
-        }
-        CopySVNFilesForDirectory(SVNSourceDirectory, SVNDestDirectory);
     }
-
-    /// <summary>
-    /// Copy all the required SVN files for the specified source directory and all of it's parent directories.
-    /// </summary>
-    private static void CopySVNFilesForDirectory(string SVNSourceDirectory, string SVNDestDirectory)
-    {
-        if (!File.Exists(Path.Combine(SVNDestDirectory, "all-wcprops")))
-        {
-            Directory.CreateDirectory(SVNDestDirectory);
-            File.SetAttributes(SVNDestDirectory, FileAttributes.Hidden);
-            if (Directory.Exists(SVNSourceDirectory))
-                foreach (string SVNName in Directory.GetFiles(SVNSourceDirectory))
-                {
-                    File.Copy(SVNName, Path.Combine(SVNDestDirectory, Path.GetFileName(SVNName)), true);
-                    File.SetAttributes(Path.Combine(SVNDestDirectory, Path.GetFileName(SVNName)), FileAttributes.Archive);
-                }
-            // Now see if we need to do parent directory as well.
-            SVNSourceDirectory = Path.GetFullPath(Path.Combine(SVNSourceDirectory, "..", ".."));
-            if (Directory.Exists(Path.Combine(SVNSourceDirectory,  ".svn")))
-            {
-                SVNSourceDirectory = Path.Combine(SVNSourceDirectory, ".svn");
-                SVNDestDirectory = Path.GetFullPath(Path.Combine(SVNDestDirectory,  "..", ".svn"));
-                CopySVNFilesForDirectory(SVNSourceDirectory, SVNDestDirectory);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Modify the specified SVN "entries" to remove all unwanted directory and file names.
-    /// </summary>
-    private static void ModifyEntriesFile(string FileName)
-    {
-        StreamReader In = new StreamReader(FileName);
-        string[] Lines = In.ReadToEnd().Split("\n".ToCharArray());
-        In.Close();
-        File.Delete(FileName);
-
-        StreamWriter Out = new StreamWriter(FileName);
-        Out.Write(Lines[0] + "\n");
-        int i = CopyEntryBlockToOut(Lines, 1, Out);
-
-        while (i + 1 < Lines.Length)
-        {
-            if (Lines[i + 1] == "dir")
-            {
-                string SVNFileName = Lines[i];
-                if (Directory.Exists(Path.Combine(Path.GetDirectoryName(FileName), "..", SVNFileName)))
-                    i = CopyEntryBlockToOut(Lines, i, Out);
-                else
-                    i = SkipEntryBlock(Lines, i);
-            }
-            else if (Lines[i + 1] == "file")
-            {
-                string SVNFileName = Path.Combine(Path.GetDirectoryName(FileName), "..", Lines[i]);
-                if (File.Exists(SVNFileName + ".missing"))
-                {
-                    i = CopyEntryBlockToOut(Lines, i, Out);
-                    File.Delete(SVNFileName + ".missing");
-                }
-                else if (File.Exists(SVNFileName))
-                    i = CopyEntryBlockToOut(Lines, i, Out);
-                else
-                    i = SkipEntryBlock(Lines, i);
-            }
-            else
-                throw new Exception("Unknown SVN entities block: " + Lines[i + 1]);
-        }
-
-        Out.Close();
-    }
-
-    /// <summary>
-    /// Copy an "entries" block to the specified out stream.
-    /// </summary>
-    private static int CopyEntryBlockToOut(string[] Lines, int i, StreamWriter Out)
-    {
-        string Delimiter = "\f";
-        do
-        {
-            Out.Write(Lines[i] + "\n");
-            i++;
-        }
-        while (Lines[i] != Delimiter);
-        Out.Write(Delimiter + "\n");
-        return i + 1;
-    }
-
-    /// <summary>
-    /// Skip over this SVN entry block.
-    /// </summary>
-    private static int SkipEntryBlock(string[] Lines, int i)
-    {
-        string Delimiter = "\f";
-        do
-        {
-            i++;
-        }
-        while (Lines[i] != Delimiter);
-        return i + 1;
-    }
-
 
     /// <summary>
     /// Report the number of diffs to the database.
     /// </summary>
-    private static void ReportNumDiffs(string ApsimDirectoryName, List<string> ModifiedFiles, string PatchFileName, string outZip)
+    private static int ReportNumDiffs(string ApsimDirectoryName, List<string> ModifiedFiles, string PatchFileName, string outZip)
     {
         // Some of the diffs in ModifiedFiles will be from the patch, so to get a count of
         // the number of files that were changed by APSIM running we need to remove those
@@ -334,16 +186,18 @@ class Program
         string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateNumDiffs" +
                              "?JobID=" + JobID +
                              "&NumDiffs=" + ModifiedFiles.Count +
-                             "&DbConnectPassword=" + Utils.REST.GetValidPassword();
+                             "&DbConnectPassword=" + Environment.GetEnvironmentVariable("DB_CONN_PSW");
         Utils.REST.CallService<object>(url);
         if (ModifiedFiles.Count != 0)
         {
             Console.WriteLine("Files that are different:");
             foreach (string FileName in ModifiedFiles)
                 Console.WriteLine(FileName);
-               
-            throw new Exception("Build is not clean");
+
+            Console.WriteLine("Build is not clean");
+            return 1;
         }
+        return 0;
     }
 
     /// <summary>
@@ -430,6 +284,4 @@ class Program
         }
         return Ok;
     }
-
-
 }

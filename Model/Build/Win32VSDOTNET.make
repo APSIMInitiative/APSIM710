@@ -12,14 +12,14 @@ else
 endif
 
 $(APSIM)/Model/$(PROJECT).exe: $(PREBUILD)
-	"$(FrameworkDIR32)$(FrameworkVersion32)\msbuild" $(PROJECT).sln /target:Build /p:Configuration=Release
+	MSBuild $(PROJECT).sln /target:Build /p:Configuration=Release
 
 $(APSIM)/Model/$(PROJECT).dll: $(PREBUILD)
-	"$(FrameworkDIR32)$(FrameworkVersion32)\msbuild" $(PROJECT).sln /target:Build /p:Configuration=Release
+	MSBuild $(PROJECT).sln /target:Build /p:Configuration=Release
 
 	
 $(RESOBJ): $(APSIM)/Model/Build/dll.rc
-	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) -fo $@ $<
+	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=0x$(BUILD_NUMBER) -fo $@ $<
 	
 clean:
 	$(RM) $(APSIM)\Model\$(PROJECT).exe $(APSIM)\Model\$(PROJECT).dll
