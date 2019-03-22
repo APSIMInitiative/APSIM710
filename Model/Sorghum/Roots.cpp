@@ -119,23 +119,16 @@ void Roots::readParams (void)
    scienceAPI.read("p_conc_init_root", "", 0, initialPConc);
 
    //Root Angle
-   try
-	   {
-      scienceAPI.get("UseRootAngle", "", 0, useRootAngle);
-      scienceAPI.get("RootAngle", "", 0, rootAngle);
-	   }
-   catch(...)
-	   {
-      useRootAngle = 0;
-      rootAngle = 0;
-	   }
-
+   useRootAngle = 0;
    //Set root angle to use a semicircular pattern if root angle is turned off
+   rootAngle = 45;
+   scienceAPI.get("UseRootAngle", "", 1, useRootAngle);
+   scienceAPI.get("RootAngle", "", 1, rootAngle);
+
    if(!useRootAngle)
       {
       rootAngle = 45;
       }
-
    }
 //------------------------------------------------------------------------------------------------
 void Roots::process(void)
