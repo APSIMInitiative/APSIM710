@@ -16,9 +16,4 @@ mkdir "%2"
 
 %InnoSetup% /Q /O"%2" /F"%1" "%2.iss"
 
-call "C:\CsiroSign.bat" %2\%1.exe
-
-rem Now copy the releases to the right directory - with the revision number.
-copy "%2\%1.exe" "C:\inetpub\wwwroot\Files\%1.exe"
-
-rmdir /S /Q "%2"
+call "C:\SignCsiro.bat" %2\%1.exe

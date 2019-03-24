@@ -13,7 +13,7 @@ include $(APSIM)\Model\Build\VersionInfo.make
 LIBS := $(foreach library,$(LIBS),../$(library).lib)
 STATICLIBS := $(foreach library,$(STATICLIBS),../$(library).a)
 
-F90FLAGS= -cpp -D'ml_external=!' -D'STDCALL(x)=GCC$$ ATTRIBUTES STDCALL :: x' -static -static-libgfortran -fno-underscoring -ffree-line-length-none -finit-integer=0 -finit-real=zero -finit-logical=false -O3 -frounding-math -g -march=pentiumpro -mtune=pentiumpro $(EXTRACOMPILEFLAGS)
+F90FLAGS= -cpp -D'ml_external=!' -D'STDCALL(x)=GCC$$ ATTRIBUTES STDCALL :: x' -static -static-libgfortran -fno-underscoring -ffree-line-length-none -finit-integer=0 -finit-real=zero -finit-logical=false -O3 -frounding-math -g -m32 -march=pentiumpro -mtune=pentiumpro $(EXTRACOMPILEFLAGS)
 CFLAGS= -cpp -D'ml_external=!' -D'STDCALL(x)=GCC$$ ATTRIBUTES STDCALL :: x' -static -static-libgfortran -march=pentiumpro -mtune=pentiumpro $(EXTRACOMPILEFLAGS)
 F90INCLUDES = -I$(APSIM)/Model/FortranInfrastructure
 
@@ -62,7 +62,7 @@ $(APSIM)/Model/$(PROJECT).dll: $(OBJS) $(RESOBJ)
 	$(FC) -shared -o ../$(PROJECT).dll $(F90FLAGS) $(LDFLAGS) $(OBJSNODIR) $(RESOBJ) $(DEF) $(STATICLIBS) $(LIBS) $(EXTRALIBS)
 
 $(RESOBJ): $(APSIM)/Model/Build/dll.rc
-	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) $< $@
+	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=0x$(BUILD_NUMBER) $< $@
 
 else
 
@@ -85,7 +85,7 @@ $(APSIM)/Model/$(PROJECT).exe: $(OBJS) $(RESOBJ)
 	$(FC) -o ../$(PROJECT).exe $(F90FLAGS) $(LDFLAGS) $(OBJSNODIR) $(RESOBJ) $(DEF) $(STATICLIBS) $(LIBS) $(EXTRALIBS)
 
 $(RESOBJ): $(APSIM)/Model/Build/dll.rc
-	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=$(BUILD_NUMBER) $< $@
+	$(RC) -DPROJ=$(PROJECT) -DMAJOR_VERSION=$(MAJOR_VERSION) -DMINOR_VERSION=$(MINOR_VERSION) -DBUILD_NUMBER=0x$(BUILD_NUMBER) $< $@
 
 else
    echo "Error: target type $(PROJECTTYPE) unknown"

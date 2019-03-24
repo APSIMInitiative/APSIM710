@@ -1,14 +1,48 @@
 <Project>
 
-   <!-- ############### The BuildAll target is used in BuildAll.bat ############### -->
+   <!-- ############### A target to compile APSIM ############### -->
    <Target name="BuildAll">
-      <DependsOn>Clean</DependsOn>
       <DependsOn>Pre-Compile</DependsOn>
       <DependsOn>Compile</DependsOn>
       <DependsOn>Post-Compile</DependsOn>
-   </Target>
-
-   <!-- ############### Cleaning target called by BuildAll ############### -->
+   </Target>   
+   
+   <!-- ############### Target that is run from Jenkins ############### -->
+   <Target name="JenkinsRun">
+      <DependsOn>BobBuildAndRun</DependsOn>
+      <Job name="Compile InsertFilesIntoSetup">
+         <WorkingDirectory>%APSIM%/Release/InsertFilesIntoSetup</WorkingDirectory>
+         <CommandLine>make</CommandLine>
+         <CommandLineUnix>/bin/true</CommandLineUnix>
+      </Job>
+      <Job name="Create Bootleg MSI">
+	     <DependsOn>Compile InsertFilesIntoSetup</DependsOn>
+         <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
+         <CommandLine>%APSIM%\Release\CreateInstall.bat %PatchFileNameShort%.Bootleg Bootleg</CommandLine>
+         <CommandLineUnix>/bin/true</CommandLineUnix>
+      </Job>
+      <Job name="Create Release MSI">
+	     <DependsOn>Compile InsertFilesIntoSetup</DependsOn>
+         <WorkingDirectory>%APSIM%\Release</WorkingDirectory>
+         <CommandLine>%APSIM%\Release\CreateInstall.bat %PatchFileNameShort%.ApsimSetup ApsimSetup</CommandLine>
+         <CommandLineUnix>/bin/true</CommandLineUnix>
+      </Job>
+      <Job name="Create SFX Binaries">
+       <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
+       <CommandLine>%APSIM%/Release/Release.bat %PatchFileNameShort%</CommandLine>
+       <CommandLineUnix>%APSIM%/Release/Release.sh %PatchFileNameShort%</CommandLineUnix>
+      </Job>
+	  <Job name="CreateBinariesZip">
+	  	<WorkingDirectory>%APSIM%/Release</WorkingDirectory>
+	  	<CommandLine>7z a -mx=9 -mmt=on %PatchFileNameShort%.binaries.zip %APSIM%\Model\*.exe %APSIM%\Model\*.dll</CommandLine>
+	  </Job>
+	  <Job name="Create Diff Zip">
+        <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
+        <CommandLine>%APSIM%/Model/CreateDiffZip.exe Directory=%APSIM% PatchFileName=%PatchFileNameShort%</CommandLine>
+      </Job>
+   </Target>   
+   
+   <!-- ############### Cleaning target ############### -->
    <Target name="Clean">
       <Job name="Clean model directory">
          <WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
@@ -20,17 +54,15 @@
          <CommandLine>cmd.exe /c if exist "%APPDATA%\APSIM" rd /S /Q "%APPDATA%\APSIM"</CommandLine>
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>      
-      <Job name="Version stamp the build">
-         <DependsOn>Clean model directory</DependsOn>
-         <WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
-         <CommandLine>%APSIM%/Model/cscs.exe VersionStamper.cs Directory=%APSIM% Increment=%INCREMENT%</CommandLine>
-         <CommandLineUnix>mono %APSIM%/Model/cscs.exe VersionStamper.cs Directory=%APSIM% Increment=%INCREMENT%</CommandLineUnix>
-      </Job>
    </Target>
 
    <!-- ############### Compiling targets ############### -->
    <Target name="Pre-Compile">
-      <DependsOn>Clean</DependsOn>
+      <Job name="Version stamp the build">
+         <WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
+         <CommandLine>%APSIM%/Model/cscs.exe VersionStamper.cs Directory=%APSIM% Increment=%INCREMENT%</CommandLine>
+         <CommandLineUnix>mono %APSIM%/Model/cscs.exe VersionStamper.cs Directory=%APSIM% Increment=%INCREMENT%</CommandLineUnix>
+      </Job>	  
       <Job name="Move RunTime files into model directory">
          <WorkingDirectory>%APSIM%/Model/RunTime</WorkingDirectory>
          <CommandLine>make</CommandLine>
@@ -343,7 +375,7 @@
          <WorkingDirectory>%APSIM%/Model/Report</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>
-      <Job name="Compile ReportDb">
+	  <Job name="Compile ReportDb">
          <DependsOn>Compile CSGeneral</DependsOn>
          <DependsOn>Compile CSDotNetComponentInterface</DependsOn>
          <DependsOn>Compile CMPServices</DependsOn>
@@ -356,7 +388,7 @@
          <WorkingDirectory>%APSIM%/Model/RLink</WorkingDirectory>
          <CommandLine>make</CommandLine>
          <CommandLineUnix>make -f Makefile.linux</CommandLineUnix>
-      </Job>
+	</Job>
       <Job name="Compile Root">
          <DependsOn>Compile DotNetProxies</DependsOn>
          <DependsOn>Compile CSGeneral</DependsOn>
@@ -767,76 +799,13 @@
       </Job>
    </Target>
 
-   <!-- ############### Release target ############### -->
-   <Target name="Release">
-      <DependsOn>BobBuildAndRun</DependsOn>
-	  <!--
-      <Job name="Compile InsertFilesIntoSetup">
-         <WorkingDirectory>%APSIM%/Release/InsertFilesIntoSetup</WorkingDirectory>
-         <CommandLine>make</CommandLine>
-         <CommandLineUnix>/bin/true</CommandLineUnix>
-      </Job>
-      <Job name="Create Bootleg MSI">
-         <DependsOn>Compile InsertFilesIntoSetup</DependsOn>
-         <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-         <CommandLine>%APSIM%\Release\CreateMSI.bat %PatchFileNameShort%.Bootleg Bootleg</CommandLine>
-         <CommandLineUnix>/bin/true</CommandLineUnix>
-      </Job>
-      <Job name="Create Release MSI">
-         <DependsOn>Compile InsertFilesIntoSetup</DependsOn>
-         <WorkingDirectory>%APSIM%\Release</WorkingDirectory>
-         <CommandLine>%APSIM%\Release\CreateMSI.bat %PatchFileNameShort%.ApsimSetup ApsimSetup /WithExclusions</CommandLine>
-         <CommandLineUnix>/bin/true</CommandLineUnix>
-      </Job>
-	  -->
-      <Job name="Create Bootleg MSI">
-         <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-         <CommandLine>%APSIM%\Release\CreateInstall.bat %PatchFileNameShort%.Bootleg Bootleg</CommandLine>
-         <CommandLineUnix>/bin/true</CommandLineUnix>
-      </Job>
-      <Job name="Create Release MSI">
-         <WorkingDirectory>%APSIM%\Release</WorkingDirectory>
-         <CommandLine>%APSIM%\Release\CreateInstall.bat %PatchFileNameShort%.ApsimSetup ApsimSetup</CommandLine>
-         <CommandLineUnix>/bin/true</CommandLineUnix>
-      </Job>
-	  
-      <Job name="Create SFX Binaries">
-       <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-       <CommandLine>%APSIM%/Release/Release.bat %PatchFileNameShort%</CommandLine>
-       <CommandLineUnix>%APSIM%/Release/Release.sh %PatchFileNameShort%</CommandLineUnix>
-      </Job>
-   </Target>
-
    <!-- ############### The Bob target is used by Bob ############### -->
    <Target name="BobBuildAndRun">
+      <DependsOn>Clean</DependsOn>
       <DependsOn>Pre-Compile</DependsOn>
       <DependsOn>Compile</DependsOn>
       <DependsOn>Post-Compile</DependsOn>
       <DependsOn>RunAll</DependsOn>
-   </Target>
-
-   <Target name="Bob">
-      <DependsOn IgnoreErrors="true">Release</DependsOn>
-      <Job name="Upload SFX Binaries 1">
-         <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-         <CommandLine>cmd.exe /c copy %PatchFileNameShort%.binaries.WINDOWS.INTEL.exe C:\inetpub\wwwroot\Files</CommandLine>
-      </Job>
-      <Job name="Upload SFX Binaries 2">
-         <WorkingDirectory>%APSIM%/Release</WorkingDirectory>
-         <CommandLine>cmd.exe /c copy %PatchFileNameShort%.binaries.WINDOWS.X86_64.exe C:\inetpub\wwwroot\Files</CommandLine>
-      </Job>
-      <Job name="Create Diff Zip">
-        <WorkingDirectory>%APSIM%</WorkingDirectory>
-        <CommandLine>%APSIM%/Model/CreateDiffZip.exe Directory=%APSIM% PatchFileName=%PatchFileName%</CommandLine>
-      </Job>
-		<Job name="Create Build Tree Zip">
-			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-			<CommandLine>"C:\Program Files\7-Zip\7z.exe" -xr!.svn a -mx=7 -mmt=on C:\inetpub\wwwroot\Files\%PatchFileNameShort%.buildtree.zip %APSIM%</CommandLine>
-		</Job>
-		<Job name="CreateBinariesZip">
-			<WorkingDirectory>%APSIM%/Model</WorkingDirectory>
-			<CommandLine>"C:\Program Files\7-Zip\7z.exe" a -mx=9 -mmt=on C:\inetpub\wwwroot\Files\%PatchFileNameShort%.binaries.zip %APSIM%\Model\*.exe %APSIM%\Model\*.dll</CommandLine>
-		</Job>
    </Target>
 
    <Target name="LinuxX64">
@@ -891,7 +860,12 @@
          <CommandLine>%APSIM%/Model/Build/RunAllUnitTests.bat</CommandLine>
          <CommandLineUnix>/bin/true</CommandLineUnix>
       </Job>
+	  <Job name="RestoreTestPackages">
+		<WorkingDirectory>%APSIM%/Model/Tests</WorkingDirectory>
+		<CommandLine>nuget restore -verbosity quiet</CommandLine>
+	  </Job>
       <Job name="Compile Tests">
+	     <DependsOn>RestoreTestPackages</DependsOn>
          <WorkingDirectory>%APSIM%/Model/Tests</WorkingDirectory>
          <CommandLine>make</CommandLine>
       </Job>

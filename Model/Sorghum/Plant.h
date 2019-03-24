@@ -146,10 +146,10 @@ class Plant
    void onNewProfile(NewProfileType &v) ;
 
    void onSowCrop(SowType &);
-   void onHarvest(HarvestType &) ;
+   void onHarvest(void) ;
    void onEndCrop(void) ;
    void onEndRun(void) ;
-   void onKillCrop(KillCropType &);
+   void onKillCrop(void);
 
    void getOtherVariables(void);
 

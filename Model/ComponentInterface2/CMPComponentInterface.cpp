@@ -420,7 +420,7 @@ void CMPComponentInterface::expose(const std::string& name,
    // in our map so the assumption is that we are now owners.
    // ie. don't delete this data object elsewhere!
    // -----------------------------------------------------------------------
-   RegistrationKind kind = respondToGetReg;
+   volatile RegistrationKind kind = respondToGetReg;
    if (writable)
       kind = respondToGetSetReg;
    RegisterWithPM(name, units, description, kind, variable);
