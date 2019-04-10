@@ -12,14 +12,14 @@ rem ----- Change to model directory
 pushd %APSIM%\Model
 
 rem ----- Set up the Visual Studio compiler tools
-call "C:\BuildTools\Common7\Tools\VsDevCmd.bat"
+call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\Tools\VsDevCmd.bat"
 
 rem ----- Compile the job scheduler.
 echo Compiling the JobScheduler
 msbuild "%APSIM%\Model\JobScheduler\JobScheduler.sln"
 
 rem ----- Run the job scheduler.
-JobScheduler Build\BuildAll.xml Target=Release
+JobScheduler Build\BuildAll.xml Target=BuildAll
 
 rem ----- Change back to Build directory
 popd
