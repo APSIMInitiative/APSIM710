@@ -33,6 +33,7 @@ void Plant::initialize(void)
    dltDeadPlants = 0.0;
    vpd = 0.0;
    radnIntercepted  = 0.0;
+   justSown = false;
    }
 //------------------------------------------------------------------------------------------------
 //------------ read the crop and cultivar parameters
@@ -153,7 +154,6 @@ void Plant::onSowCrop(SowType &sow)
 
    scienceAPI.write("Sowing initiate\n");
 
-   string temp;
    if (sow.crop_class == "")
       cropClass = defaultCropClass;
    else
@@ -247,6 +247,7 @@ void Plant::onSowCrop(SowType &sow)
      PlantComponents[i]->readParams ();
 
    scienceAPI.publish("sowing");
+   justSown = true;
    }
 //------------------------------------------------------------------------------------------------
 //------------------- Field a Prepare event
@@ -285,7 +286,10 @@ void Plant::prepare (void)
 //------------------------------------------------------------------------------------------------
 void Plant::process (void)                 // do crop preparation
    {
-
+	if (justSown) {
+		justSown = false;
+		return;
+	}
    stage = (float)phenology->currentStage();
 
    water->getOtherVariables();
@@ -298,6 +302,12 @@ void Plant::process (void)                 // do crop preparation
    leaf->calcLeafNo();
 
    phenology->development();
+   
+   for (unsigned i = 0; i < PlantParts.size(); i++)
+   {
+	   PlantParts[i]->setStage(phenology->currentStage());
+   }
+
 
    leaf->calcPotentialArea();
 

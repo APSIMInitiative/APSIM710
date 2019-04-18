@@ -145,8 +145,12 @@ void Water::readParams (void)
 //------------------------------------------------------------------------------------------------
 void Water::updateVars(void)
    {
-   if(swDemand < 0.001)sdRatio = 1.0;
-   else sdRatio = Min(divide(totalSupply, swDemand),1.0f);
+	if (swDemand < 0.001) {
+		sdRatio = 1.0;
+	}
+	else {
+		sdRatio = Min(divide(totalSupply, swDemand), 1.0f);
+	}
    rootDepth = plant->roots->getRootDepth();
    currentLayer = findIndex(rootDepth, dLayer);
    setOtherVariables ();
@@ -362,7 +366,8 @@ void Water::calcUptake(void)
          dltSwDep[layer] = -1 * supply[layer];
          }
       }
-   totalUptake += sumVector(dltSwDep) * -1;
+  double dltUptake = sumVector(dltSwDep) * -1;
+   totalUptake += dltUptake;
    }
 //------------------------------------------------------------------------------------------------
 double Water::calcPeswSeed(void)

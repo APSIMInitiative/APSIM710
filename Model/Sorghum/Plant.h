@@ -73,6 +73,7 @@ class Plant
 
    string defaultCropClass;
    string cropType;
+   bool justSown;
 
    double rowSpacingDefault;
    float rowSpacing;
