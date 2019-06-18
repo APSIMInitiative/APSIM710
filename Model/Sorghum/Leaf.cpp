@@ -375,8 +375,9 @@ double Leaf::calcNDemand(void)
 
    double laiToday = calcLAI();
    double nRequired = laiToday * targetSLN;
+   double nToday = nGreen + dltNGreen;
 
-   nDemand = Max(nRequired - nGreen,0.0);
+   nDemand = Max(nRequired - nToday,0.0);
    return nDemand;
    }
 //------------------------------------------------------------------------------------------------
