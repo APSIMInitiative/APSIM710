@@ -10,7 +10,7 @@ cd %~dp0..
 set APSIM=%CD%
 cd %APSIM%\Release
 
-set InnoSetup="C:\Program Files (x86)\Inno Setup 5\ISCC.exe"
+set InnoSetup="C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
 
 mkdir "%2"
 

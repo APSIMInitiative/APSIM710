@@ -39,7 +39,7 @@ class Program
 
         string DirectoryName = Macros["Directory"].Replace('\\', '/');
         Directory.SetCurrentDirectory(DirectoryName);
-
+        Console.WriteLine("Directory = " + DirectoryName);
         string PatchFileName = Macros["PatchFileName"];
 
         // Find SVN.exe on the path.
