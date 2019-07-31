@@ -64,7 +64,7 @@ class Plant
 
    Today  today;                      // holds day,year,rain,temp etc
    int das;
-
+   bool isEmerged(void) { return phenology->currentStage() >= emergence; }
 
    private:
 // Parameters ----------------------------------------------------------
@@ -73,6 +73,7 @@ class Plant
 
    string defaultCropClass;
    string cropType;
+   bool justSown;
 
    double rowSpacingDefault;
    float rowSpacing;
@@ -146,10 +147,10 @@ class Plant
    void onNewProfile(NewProfileType &v) ;
 
    void onSowCrop(SowType &);
-   void onHarvest(void) ;
+   void onHarvest(HarvestType &) ;
    void onEndCrop(void) ;
    void onEndRun(void) ;
-   void onKillCrop(void);
+   void onKillCrop(KillCropType &);
 
    void getOtherVariables(void);
 

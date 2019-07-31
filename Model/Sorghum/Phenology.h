@@ -90,7 +90,7 @@ class Phenology : public PlantProcess
    double sumDaysTotal(int from, int to);
 
    double getDltTTFM(void)const{return dltTTFM;}
-   double getDltTT(void)const{return dltTT;}
+   double getDltTT(void)const { if (stage < flowering) return dltTT; else return dltTTFM; }
    double getDltStage(void)const{return dltStage;}
 
    void  getTTTot(vector<float>&);

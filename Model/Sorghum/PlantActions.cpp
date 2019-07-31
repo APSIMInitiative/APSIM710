@@ -16,9 +16,9 @@ void Plant::doRegistrations(void)
    scienceAPI.subscribe("newmet",      NewMetFunction(&Plant::onNewMet));
    scienceAPI.subscribe("new_profile", NewProfileFunction(&Plant::onNewProfile));
    scienceAPI.subscribe("sow",         SowFunction(&Plant::onSowCrop));
-   scienceAPI.subscribe("harvest",     nullFunction(&Plant::onHarvest));
+   scienceAPI.subscribe("harvest",     HarvestFunction(&Plant::onHarvest));
    scienceAPI.subscribe("end_crop",    nullFunction(&Plant::onEndCrop));
-   scienceAPI.subscribe("kill_crop",   nullFunction(&Plant::onKillCrop));
+   scienceAPI.subscribe("kill_crop",   KillCropFunction(&Plant::onKillCrop));
    scienceAPI.subscribe("end_run",     nullFunction(&Plant::onEndRun));
 
    // --------------------------------------------------------------------------------------------
@@ -82,7 +82,7 @@ void Plant::onTick(TimeType &tick)
 //------------------------------------------------------------------------------------------------
 //-----------------   Field a Kill event
 //------------------------------------------------------------------------------------------------
-void Plant::onKillCrop(void)
+void Plant::onKillCrop(KillCropType&)
    {
    scienceAPI.write("Kill Crop\n");
 
@@ -120,7 +120,7 @@ void Plant::onNewProfile(NewProfileType &v)
 //-----------------   respondToMethodCall
 //-----------------   Harvest
 //------------------------------------------------------------------------------------------------
-void Plant::onHarvest(void)     // Field a Harvest event
+void Plant::onHarvest(HarvestType &)     // Field a Harvest event
    {
    scienceAPI.write("\n");
    scienceAPI.write("Harvest\n");

@@ -118,7 +118,8 @@ void Water::readParams (void)
       llDep.push_back(ll[layer]*dLayer[layer]);
       eswCap.push_back(dulDep[layer] - llDep[layer]);
       }
-
+   rootDepth = plant->roots->getRootDepth();
+   currentLayer = findIndex(rootDepth, dLayer);
     // report
    char msg[100];
    sprintf(msg,"\n");   scienceAPI.write(msg);
@@ -145,8 +146,12 @@ void Water::readParams (void)
 //------------------------------------------------------------------------------------------------
 void Water::updateVars(void)
    {
-   if(swDemand < 0.001)sdRatio = 1.0;
-   else sdRatio = Min(divide(totalSupply, swDemand),1.0f);
+	if (swDemand < 0.001) {
+		sdRatio = 1.0;
+	}
+	else {
+		sdRatio = Min(divide(totalSupply, swDemand), 1.0f);
+	}
    rootDepth = plant->roots->getRootDepth();
    currentLayer = findIndex(rootDepth, dLayer);
    setOtherVariables ();
@@ -277,7 +282,8 @@ void Water::calcAvailable(void)
       {
       available[layer] = Max(swDep[layer] - llDep[layer],0.0);
       }
-   available[currentLayer] *= layerProportion();
+   double currentLayerProportion = layerProportion();
+   available[currentLayer] *= currentLayerProportion;
    totalAvail = sumVector(available);
    }
 //------------------------------------------------------------------------------------------------
@@ -362,6 +368,7 @@ void Water::calcUptake(void)
          dltSwDep[layer] = -1 * supply[layer];
          }
       }
+  double tmpUptake = sumVector(dltSwDep) * -1;
    totalUptake += sumVector(dltSwDep) * -1;
    }
 //------------------------------------------------------------------------------------------------

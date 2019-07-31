@@ -52,6 +52,9 @@
 !   Global variables
       real       precision_sw_dep        ! Precision for sw dep (mm)
       parameter (precision_sw_dep = 1.0e-3)
+	  
+	  real asdf
+	  parameter (asdf = 1.23456789)
 
       integer    max_layer        ! Maximum number of layers
       parameter (max_layer = 100)
@@ -396,6 +399,7 @@
                                        ! that was unable to enter profile
       integer    layer                 ! layer number counter variable
       integer    num_layers            ! number of layers
+	  character  line*200              ! temp output record
 
 *- Implementation Section ----------------------------------
 
@@ -406,11 +410,10 @@
      :                            ,g%sat_dep
      :                            ,p%dlayer)
 
-
+		
             ! water balance
 
       num_layers = count_of_real_vals (p%dlayer, max_layer)
-
          ! runoff
 
       call soilwat2_cover_surface_runoff (g%cover_surface_runoff)
@@ -491,9 +494,12 @@ c dsg 070302 added runon
             ! flux -  flow > dul
       call soilwat2_move_solute_down ()
 
+		write(line, *) 'before soilwat2_evaporation. eos = ', g%eos
+		call write_string(line)
                           ! actual soil evaporation:
       call soilwat2_evaporation (g%es_layers, g%eos)
-
+		write(line, *) 'after soilwat2_evaporation. eos = ', g%eos
+		call write_string(line)
                           ! potential: sevap + transpiration:
       call soilwat2_pot_evapotranspiration_effective (g%eos)
 
@@ -858,8 +864,10 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
       call push_routine (my_name)
 
       if (g%eo_source .eq. blank) then
+		  call write_string('calculating eo from priestly')
           call soilwat2_priestly_taylor (eo) ! eo from priestly taylor
       else
+		  call write_string('eo comes from eo_system')
           eo = g%eo_system                   ! eo is provided by system
       endif
 
@@ -913,6 +921,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
              g%pond_evap = eos
              eos =0.0
           else
+			 call write_string('updating eos')
              eos = eos - g%pond
              g%pond_evap = g%pond
              g%pond = 0.0
@@ -961,6 +970,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
       real       eeq                   ! equilibrium evaporation rate (mm)
       real       wt_ave_temp           ! weighted mean temperature for the
                                        !    day (oC)
+	  character  line*200              ! temp output record
 
 *- Implementation Section ----------------------------------
 
@@ -984,9 +994,46 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
 
                 ! find potential evapotranspiration (eo)
                 ! from equilibrium evap rate
-
+	
+		call write_string('calculating eo from priestly_taylor...')
+		
+		write(line, *) 'cover_green_sum = ', cover_green_sum
+		call write_string(line)
+			
+		write(line, *) 'max_albedo = ', c%max_albedo
+		call write_string(line)
+		
+		write(line, *) 'salb = ', p%salb
+		call write_string(line)
+		
+		write(line, *) 'maxt = ', g%maxt
+		call write_string(line)
+		
+		write(line, *) 'mint= ', g%mint
+		call write_string(line)
+	
+		write(line, *) 'eeq = ', eeq
+		call write_string(line)
+	
+		write(line, *) 'radn = ', g%radn
+		call write_string(line)
+	
+		write(line, *) 'albedo = ', albedo
+		call write_string(line)
+	
+		write(line, *) 'wt_ave_temp = ', wt_ave_temp
+		call write_string(line)
+	
+		write(line, *) 'eeq_fac = ', soilwat2_eeq_fac()
+		call write_string(line)
+		
       eo = eeq*soilwat2_eeq_fac ()
-
+	  
+		write(line, *) 'eo = ', eo
+		call write_string(line)
+		
+	  call write_string('')
+	  
       call pop_routine (my_name)
       return
       end subroutine
@@ -1070,13 +1117,21 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
 *+  Local Variables
       real       asw1                  ! available soil water in top layer for
                                        ! actual soil evaporation (mm)
+	  character  line*200              ! temp output record
 
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
 
       ! 1. get potential soil water evaporation
+	  
+	  write(line, *) 'eos before pot_evap: ', eos
+	  call write_string(line)
+	  
       call soilwat2_pot_soil_evaporation (eos)
+
+	  write(line, *) 'eos after pot_evap: ', eos
+	  call write_string(line)
 
       ! 2. get available soil water for evaporation
          ! NB. ritchie + b&s evaporate from layer 1, but rickert
@@ -1149,7 +1204,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
                                        ! limited by crop canopy (mm)
       real       eos_residue_fract     ! fraction of potential soil evaporation
                                        ! limited by crop residue (mm)
-
+	  character  line*200              ! temp output record
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
@@ -1171,7 +1226,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
 
       cover_tot_sum = sum_cover_array (g%cover_tot, g%num_crops)
       eos_canopy_fract = exp (-c%canopy_eos_coef * cover_tot_sum)
-
+	  
          !-----------------------------------------------+
          ! reduce Eo under canopy to that under mulch            <DMS June 95>
          !-----------------------------------------------+
@@ -1210,6 +1265,26 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
 
       eos  = g%eo * eos_canopy_fract * eos_residue_fract
 
+	  call write_string('\n\nInside pot_soil_evap')
+	  
+	  write (line,*) 'canopy_eos_coef = ', c%canopy_eos_coef
+	  call write_string(line)
+	  	  
+	  write (line,*) 'cover_tot_sum = ', cover_tot_sum
+	  call write_string(line)
+
+	  write (line,*) 'eos_canopy_fract = ', eos_canopy_fract
+	  call write_string(line)
+	  
+	  write (line,*) 'eos_residue_fract = ', eos_residue_fract
+	  call write_string(line)
+	  
+	  write (line,"(A,F14.12)") 'eo = ', g%eo
+	  call write_string(line)
+	  
+	  write (line,*) 'eos = ', eos, '\n\n'
+	  call write_string(line)
+	  
       call pop_routine (my_name)
       return
       end subroutine
@@ -1338,6 +1413,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
 *
       real       sumes1_max            ! upper limit of sumes1
       real       w_inf                 ! infiltration into top layer (mm)
+	  character  line*200              ! temp output record
 
 *- Implementation Section ----------------------------------
 
@@ -1354,13 +1430,19 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
 
       sumes1_max = p%u
       w_inf = g%infiltration
-
+	  write(line,"(A,F14.12)") 'eos = ', eos
+	  call write_string(line)
+	  write (line,"(A,F14.12)") 'sumes1_max = ', sumes1_max
+	  call write_string(line)
+	  write (line,"(A,F14.12)") 'w_inf = ', w_inf
+	  call write_string(line)
          ! if infiltration, reset sumes1
          ! reset sumes2 if infil exceeds sumes1
 
       if (w_inf.gt.0.0) then
-
+		 call write_string("w inf is greater than 0")
          g%sumes2 = max (0.0, g%sumes2 - max (0.0, w_inf-g%sumes1))
+		 call write_string("sumes 2 = max sumes2 0 w inf - sumes1")
          g%sumes1 = max (0.0, g%sumes1 - w_inf)
 
             ! update t (incase sumes2 changed)
@@ -1406,30 +1488,57 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
                !  update 1st and 2nd stage soil evaporation.
 
          g%sumes1 = g%sumes1 + esoil1
+		 call write_string('Adding esoil2 to sumes2')
          g%sumes2 = g%sumes2 + esoil2
          g%t = (divide (g%sumes2, p%cona, 0.0))**2
 
       else
-
+		call write_string('inside else bracket')
             ! no 1st stage drying. calc. 2nd stage
 
          esoil1 = 0.0
-
+		call write_string('esoil1 = 0.0')
+		
+		
          g%t = g%t + 1.0
          esoil2 = min (eos, p%cona*g%t**0.5 - g%sumes2)
-
+	
+		write(line, *) 't = ', g%t
+		call write_string(line)
+		
+		write(line, *) 'esoil2 = ', esoil2
+		call write_string(line)
             ! check with lower limit of evaporative sw.
 
          esoil2 = min (esoil2, eos_max)
-
+		write(line, *) 'eos_max = ', eos_max
+		call write_string(line)
+		
+		write(line, *) 'esoil2 = ', esoil2
+		call write_string(line)
             !   update 2nd stage soil evaporation.
-
+		 call write_string('Adding esoil2 to sumes2 (v2)')
          g%sumes2 = g%sumes2 + esoil2
+		 write(line, *) 'sumes2 = ', g%sumes2
+		 call write_string(line)
+		 
+		 write(line, *) 'sumes1 = ', g%sumes1
+		 call write_string(line)
+		 
+		 
 
       endif
-
+	 call write_string('outside else bracket')
+	 
+	 write(line, *) 'esoil1 = ', esoil1
+	 call write_string(line)
+	 
+	 write(line, *) 'esoil2 = ', esoil2
+	 call write_string(line)
+	 
       es = esoil1 + esoil2
-
+	write(line, *) 'es = ', es
+	call write_string(line)
          ! make sure we are within bounds
       es = bound (es,  0.0, eos)
       es = bound (es, 0.0, eos_max)
@@ -1516,9 +1625,11 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
 
       if (g%sumes.ge. sumes1_max) then
          g%sumes1 = sumes1_max
+		 call write_string('Setting sumes2 to sumes - sumes1')
          g%sumes2 = g%sumes - g%sumes1
       else
          g%sumes1 = g%sumes
+		 call write_string('Setting sumes2 to 0')
          g%sumes2 = 0.0
       endif
 
@@ -1582,7 +1693,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
                                 ! if infiltration, reset sumes1
                                 ! reset sumes2 if infil exceeds sumes1
       if (w_inf .gt. 0.0) then
-
+		 call write_string('sumes2 = max 0, sumes 2, w_inf-sumes1')
          g%sumes2 = max (0.0, g%sumes2 - max (0.0, w_inf
      :        - g%sumes1))
          g%sumes1 = max (0.0, g%sumes1 - w_inf)
@@ -1644,6 +1755,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
 
                                 !  update 1st and 2nd stage soil evaporation.
          g%sumes1 = g%sumes1 + esoil1
+		 call write_string('Adding esoil2 to sumes2 (v3)')
          g%sumes2 = g%sumes2 + esoil2
 
       else
@@ -1658,6 +1770,7 @@ cjh      g%cn2_new = l_bound (g%cn2_new, p%cn2_bare - p%cn_red)
          esoil2 = min (esoil2, eos_max)
 
                                 !   update 2nd stage soil evaporation.
+		 call write_string('Adding esoil2 to sumes2 (v4)')
          g%sumes2 = g%sumes2 + esoil2
       endif
 
@@ -2299,12 +2412,18 @@ c     should suffice.
       real       dul_dep2              ! drained upper limit in next layer (mm)
       real       swg                   ! sw differential due to gravitational
                                        ! pressure head (mm)
+      character  line*200              ! temp output record
 
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
-
+	  call write_string('-------------------------------------------')
+	  call write_string('|           soilwat2_unsat_flow           |')
+	  call write_string('-------------------------------------------')
       num_layers = count_of_real_vals (p%dlayer, max_layer)
+	  
+	  write(line, *) 'num_layers                    ', num_layers
+	  call write_string(line)
 
         ! *** calculate unsaturated flow below drained upper limit (flow)***
 
@@ -2322,11 +2441,32 @@ c     should suffice.
          dlayer2    = p%dlayer(next_layer)
          ave_dlayer = (dlayer1 + dlayer2) *0.5
 
+         write(line, *) 'ave_dlayer                    ', ave_dlayer
+         call write_string(line)
+
+         write(line, *) 'lyr.dlayer                    ', dlayer1
+         call write_string(line)
+
+         write(line, *) 'below.dlayer                  ', dlayer2
+         call write_string(line)
+
          sw_dep1    = g%sw_dep(layer)
          sw_dep2    = g%sw_dep(next_layer)
 
+         write(line, *) 'lyr.sw_dep                    ', sw_dep1
+         call write_string(line)
+
+         write(line, *) 'below.sw_dep                  ', sw_dep2
+         call write_string(line)
+
          ll15_dep1  = g%ll15_dep(layer)
          ll15_dep2  = g%ll15_dep(next_layer)
+
+         write(line, *) 'lyr.ll15_dep1                 ', ll15_dep1
+         call write_string(line)
+
+         write(line, *) 'below.ll15_dep1               ', ll15_dep2
+         call write_string(line)
 
          sat_dep1   = g%sat_dep(layer)
          sat_dep2   = g%sat_dep(next_layer)
@@ -2338,13 +2478,33 @@ c     should suffice.
          esw_dep1   = l_bound ((sw_dep1 - w_out) - ll15_dep1, 0.0)
          esw_dep2   = l_bound (sw_dep2 - ll15_dep2, 0.0)
 
+         write(line, *) 'esw_dep1                      ', esw_dep1
+         call write_string(line)
+
+         write(line, *) 'esw_dep2                      ', esw_dep2
+         call write_string(line)
+
                 ! theta1 is excess of water content above lower limit,
                 ! theta2 is the same but for next layer down.
 
          theta1 = divide (esw_dep1, dlayer1, 0.0)
          theta2 = divide (esw_dep2, dlayer2, 0.0)
 
+         write(line, *) 'theta1                        ', theta1
+         call write_string(line)
+
+         write(line, *) 'theta2                        ', theta2
+         call write_string(line)
+
            ! find diffusivity, a function of mean thet.
+
+         write(line, *) 'diffus_const                  ',
+     :                  p%diffus_const
+         call write_string(line)
+
+         write(line, *) 'diffus_slope                  ',
+     :                  p%diffus_slope
+         call write_string(line)
 
          dbar  = p%diffus_const
      :         * exp (p%diffus_slope * (theta1 + theta2) * 0.5)
@@ -2355,52 +2515,94 @@ c     should suffice.
 
          dbar = bound (dbar, 0.0, 10000.0)
 
+         write(line, *) 'dbar                          ', dbar
+         call write_string(line)
+
          sw1 = divide ((sw_dep1 - w_out), dlayer1, 0.0)
          sw1 = l_bound (sw1, 0.0)
 
          sw2 = divide (sw_dep2, dlayer2, 0.0)
          sw2 = l_bound (sw2, 0.0)
 
+         write(line, *) 'sw1                           ', sw1
+         call write_string(line)
+
+         write(line, *) 'sw2                           ', sw2
+         call write_string(line)
+
             ! gradient is defined in terms of absolute sw content
 
 cjh          subtract gravity gradient to prevent gradient being +ve when
 cjh          flow_max is -ve, resulting in sw > sat.
 
+         write(line, *) 'gravity_gradient              ',
+     :                  c%gravity_gradient
+         call write_string(line)
+
          gradient  = divide ((sw2 - sw1), ave_dlayer, 0.0)
      :             - c%gravity_gradient
+
+         write(line, *) 'gradient                      ', gradient
+         call write_string(line)
 
             !  flow (positive up) = diffusivity * gradient in water content
 
          flow(layer) = dbar * gradient
+
+         write(line, *) 'flow                          ', flow(layer)
+         call write_string(line)
 
             ! flow will cease when the gradient, adjusted for gravitational
             ! effect, becomes zero.
 
          swg = c%gravity_gradient* ave_dlayer
 
+         write(line, *) 'swg                           ', swg
+         call write_string(line)
+
             ! calculate maximum flow
 
          sum_inverse_dlayer = divide (1.0, dlayer1, 0.0)
      :                      + divide (1.0, dlayer2, 0.0)
+
+         write(line, *) 'sum_inverse_dlayer            ',
+     :                  sum_inverse_dlayer
+         call write_string(line)
+
          flow_max = divide ((sw2 - sw1 - swg), sum_inverse_dlayer, 0.0)
+
+         write(line, *) 'flow_max                      ', flow_max
+         call write_string(line)
 
 c dsg 260202
 c dsg    this code will stop a saturated layer difusing water into a partially saturated
 c        layer above for Water_table height calculations
          if (g%sw_dep(layer).ge.g%dul_Dep(layer).and.
      &       g%sw_dep(next_layer).ge.g%dul_Dep(next_layer)) then
+
+            write(line, *) 'inside if statement 1'
+            call write_string(line)
+
             flow(layer) = 0.0
          endif
 
 c dsg 260202
 c dsg    this code will stop unsaturated flow downwards through an impermeable layer, but will allow flow up
          if (p%mwcon(layer).eq.0.and.flow(layer).lt.0.0) then
+
+            write(line, *) 'inside if statement 2'
+            call write_string(line)
+
             flow(layer) = 0.0
          endif
 
 
 
          if (flow(layer) .lt. 0.0) then
+
+            write(line, *) 'inside if statement 3'
+            call write_string(line)
+
             ! flow is down to layer below
             ! check capacity of layer below for holding water from this layer
             ! and the ability of this layer to supply the water
@@ -2408,12 +2610,24 @@ c dsg    this code will stop unsaturated flow downwards through an impermeable l
 !            next_layer_cap = l_bound (sat_dep2 - sw_dep2, 0.0)
 !    dsg 150302   limit unsaturated downflow to a max of dul in next layer
             next_layer_cap = l_bound (dul_dep2 - sw_dep2, 0.0)
+
+            write(line, *) 'next_layer_cap             ',
+     :                     next_layer_cap
+            call write_string(line)
+
             flow_max = l_bound (flow_max, -next_layer_cap)
 cjh
             flow_max = l_bound (flow_max, -esw_dep1)
             flow(layer) = l_bound (flow(layer), flow_max)
 
+            write(line, *) 'flow_max                   ', flow_max
+            call write_string(line)
+
          elseif (flow(layer) .gt. 0.0) then
+
+            write(line, *) 'inside elseif'
+            call write_string(line)
+
             ! flow is up from layer below
             ! check capacity of this layer for holding water from layer below
             ! and the ability of the layer below to supply the water
@@ -2421,12 +2635,28 @@ cjh
 !            this_layer_cap = l_bound (sat_dep1 - (sw_dep1 - w_out), 0.0)
 !    dsg 150302   limit unsaturated upflow to a max of dul in this layer
             this_layer_cap = l_bound (dul_dep1 - (sw_dep1 - w_out), 0.0)
+
+            write(line, *) 'this_layer_cap             ', this_layer_cap
+            call write_string(line)
+
             flow_max = u_bound (flow_max, this_layer_cap)
 cjh
             flow_max = u_bound (flow_max, esw_dep2)
+
+            write(line, *) 'flow_max                   ', flow_max
+            call write_string(line)
+
             flow(layer) = u_bound (flow(layer), flow_max)
+
+            write(line, *) 'lyr.flow                   ', flow(layer)
+            call write_string(line)
+
          else
             ! no flow
+
+		    write(line, *) 'inside else - no flow'
+		    call write_string(line)
+
          endif
 
 
@@ -2435,6 +2665,9 @@ cjh
             ! when calculating theta1 and sw1.
 
           w_out = flow(layer)
+
+          write(line, *) 'w_out                        ', w_out
+          call write_string(line)
 
   500 continue
 
@@ -3695,7 +3928,7 @@ c       be set to '1' in all layers by default
       real       swr_top               ! ratio available sw :
                                        !    potentially available sw
                                        ! in top layer
-
+	  character  line*200              ! temp output record
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
@@ -3712,6 +3945,40 @@ c       be set to '1' in all layers by default
              ! stage 2 evap
          g%sumes2 = c%sumes2_max
      :            - c%sumes2_max * divide (swr_top, c%sw_top_crit, 0.0)
+		 
+	     write(line, *) 'sw_top_crit', c%sw_top_crit
+         call write_string(line)
+	     
+	     write(line, *) 'sw_dep(1)', g%sw_dep(1)
+         call write_string(line)
+	     
+	     write(line, *) 'll15_dep(1)', g%ll15_dep(1)
+         call write_string(line)
+	     
+	     write(line, *) 'dul_dep(1)', g%dul_dep(1)
+         call write_string(line)
+	     
+	     write(line, *) 'numerator', g%sw_dep(1) - g%ll15_dep(1)
+         call write_string(line)
+	     
+	     write(line, *) 'denominator', g%dul_dep(1) - g%ll15_dep(1)
+         call write_string(line)
+	     
+	     write(line, *) 'll15_dep(1)', c%sw_top_crit
+         call write_string(line)
+	     
+	     write(line, *) 'swr_top', swr_top
+         call write_string(line)
+	     
+	     write(line, *) 'sw_top_crit', c%sw_top_crit
+         call write_string(line)
+	     
+	     write(line, *) 'sumes2_max', c%sumes2_max
+         call write_string(line)
+         
+	     write(line, *) 'sumes2 = ', g%sumes2
+         call write_string(line)
+         
          g%sumes1 = p%u
          g%t = (divide (g%sumes2, p%cona, 0.0))**2
       else
@@ -3784,6 +4051,7 @@ c       be set to '1' in all layers by default
 
          g%sumes = sumes_max
          g%sumes1 = p%beta**2
+		 call write_string('Subtracting sumes1 from sumes2...')
          g%sumes2 = g%sumes - g%sumes1
          g%sumeos = divide (g%sumes**2, p%beta**2, 0.0)
 
@@ -3794,6 +4062,7 @@ c       be set to '1' in all layers by default
 *      1st stage evaporation is finished, start in 2nd stage
 
          g%sumes1 = p%beta**2
+		 call write_string('Setting sumes2 to sumes - sumes1')
          g%sumes2 = g%sumes - g%sumes1
          g%sumeos = divide (g%sumes**2, p%beta**2, 0.0)
 
@@ -3803,6 +4072,7 @@ c       be set to '1' in all layers by default
 *      We're in 1st stage evaporation.
 
          g%sumes1 = g%sumes
+		 call write_string('Setting sumes2 to 0')
          g%sumes2 = 0.0
          g%sumeos = g%sumes
 
@@ -3893,17 +4163,20 @@ c     he should have. Any ideas? Perhaps
          else
                                 !
          endif
+		 call write_string('Setting sumes2 to 0')
          g%sumes2 = 0.0
          g%t = 0.0
 
       else
                                 ! In second stage
          g%sumes1 = p%u
+		 call write_string('Updating sumes2 to dul_dep_1 - sw_dep_1 - u')
          g%sumes2 = g%dul_dep(1) - g%sw_dep(1) - p%u
 
          if (g%sumes2 .GT. sumes2_max) then
 
 *     init sw must be .lt. air_dry
+			call write_string('Setting sumes2 to sumes2_max')
             g%sumes2 = sumes2_max
 
          endif
@@ -6051,7 +6324,6 @@ cjh            out_solute = solute_kg_layer*divide (out_w, water, 0.0) *0.5
      :'         Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   '
      ://'Runoff  SWCON'
          call write_string (line)
-
          line =
      :'           mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf'
          call write_string (line)
@@ -7805,6 +8077,9 @@ c
       dummy = add_reg(respondToGetReg,
      .                     'cover_surface_runoff', floatTypeDDML, '',
      .  'Effective cover used in runoff calculation')
+	  dummy = add_reg(respondToGetReg,
+     .                     'asdf', floatTypeDDML, '',
+     .  'asdf')
       dummy = add_reg(respondToGetReg, 'cn2_new',
      .                     floatTypeDDML, '',
      . 'CN2 after modification for crop cover')
