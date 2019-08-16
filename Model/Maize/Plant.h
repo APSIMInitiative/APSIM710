@@ -141,7 +141,7 @@ namespace Maize {
 		void onNewMet(NewMetType &);
 		void onNewProfile(NewProfileType &v);
 
-		void onSowCrop(Variant &);
+		void onSowCrop(SowType& sow);
 		void onHarvest(void);
 		void onEndCrop(void);
 		void onEndRun(void);

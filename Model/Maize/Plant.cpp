@@ -132,88 +132,107 @@ void Plant::setStatus(Status status)
 //------------------------------------------------------------------------------------------------
 //------------------- Field a Sow event
 //------------------------------------------------------------------------------------------------
-void Plant::onSowCrop(Variant &sowLine)
-   {
-   if(plantStatus != out)
-      throw std::runtime_error("Crop is still in the ground -\n unable to sow until it is\n taken out by \"end_crop\" action.");
+void Plant::onSowCrop(SowType& sow)
+{
+	if (plantStatus != out)
+		throw std::runtime_error("Crop is still in the ground -\n unable to sow until it is\n taken out by \"end_crop\" action.");
 
-   scienceAPI.write("Sowing initiate\n");
+	scienceAPI.write("Sowing initiate\n");
 
-   string temp;
-   if (sowLine.get("crop_class", temp) == false)
-      cropClass = defaultCropClass;
-   else
-      cropClass = temp;
+	string temp;
+	if (sow.crop_class == "")
+		cropClass = defaultCropClass;
+	else
+		cropClass = sow.crop_class;
 
-   if (sowLine.get("cultivar", temp) == false)
-      throw std::runtime_error("Cultivar not specified");
-   else
-      cultivar = temp;
+	if (sow.Cultivar == "")
+		throw std::runtime_error("Cultivar not specified");
+	else
+		cultivar = sow.Cultivar;
 
-   if (sowLine.get("plants", plantDensity) == false)
-      throw std::runtime_error("plant density ('plants') not specified");
+	plantDensity = (float)sow.plants;
+	if (plantDensity == 0)
+		throw std::runtime_error("plant density ('plants') not specified");
 
-   checkRange(scienceAPI, plantDensity, 0.0, 1000.0, "plants");
+	checkRange(scienceAPI, plantDensity, 0.0, 1000.0, "plants");
 
-   if (sowLine.get("sowing_depth", sowingDepth) == false)
-      throw std::runtime_error("sowing depth not specified");
+	sowingDepth = (float)sow.sowing_depth;
+	if (sowingDepth == 0)
+		throw std::runtime_error("sowing depth not specified");
 
-   checkRange(scienceAPI,sowingDepth, 0.0, 100.0, "sowing_depth");
+	checkRange(scienceAPI, sowingDepth, 0.0, 100.0, "sowing_depth");
 
-   if (sowLine.get("row_spacing", rowSpacing) == false)
-      rowSpacing = (float)rowSpacingDefault;
-   // row spacing was originally in metres
-   // for compatibility, is now in mm
-   // if < 10, assume metres and convert
-   if(rowSpacing < 10.0)
-      {
-      rowSpacing *= 1000;
-      scienceAPI.write("\n                 Row spacing converted from m to mm\n");
-      }
-   checkRange(scienceAPI, rowSpacing, 100.0, 10000.0, "row_spacing");
+	rowSpacing = (float)sow.row_spacing;
+	if (rowSpacing == 0)
+		rowSpacing = (float)rowSpacingDefault;
+	// row spacing was originally in metres
+	// for compatibility, is now in mm
+	// if < 10, assume metres and convert
+	if (rowSpacing < 10.0)
+	{
+		rowSpacing *= 1000;
+		scienceAPI.write("\n                 Row spacing converted from m to mm\n");
+	}
+	checkRange(scienceAPI, rowSpacing, 100.0, 10000.0, "row_spacing");
 
-   skipRow = 1.0;
-   if (sowLine.get("skip", temp) )
-      {
-      if (temp == "single")skipRow = 1.5;
-      else if (temp == "double")skipRow = 2.0;
-      else if (temp == "solid")skipRow = 1.0;
-      else
-         throw std::runtime_error("Unknown skip row configuration '" + temp + "'");
-      }             
+	skipRow = 1.0;
+	if (sow.Skip != "")
+	{
+		if (sow.Skip == "single")skipRow = 1.5;
+		else if (sow.Skip == "double")skipRow = 2.0;
+		else if (sow.Skip == "solid")skipRow = 1.0;
+		else
+			throw std::runtime_error("Unknown skip row configuration '" + sow.Skip + "'");
+	}
 
-   checkRange(scienceAPI,skipRow, 0.0, 2.0, "skiprow");
+	checkRange(scienceAPI, skipRow, 0.0, 2.0, "skiprow");
 
-   phenology->setStage(sowing);
-   setStatus(alive);
+	if (sow.tiller_no_fertile == "")
+	{
+		scienceAPI.get("latitude", "", 0, latitude, -90.0f, 90.0f);
+	}
+	else
+		ftn = atof(sow.tiller_no_fertile.c_str());
 
-   char msg[120];
-   scienceAPI.write("\n                 Crop Sowing Data\n");
-   scienceAPI.write("    -------------------------------------------------------\n");
-   scienceAPI.write("    Sowing   Depth  Plants Spacing Skiprow Cultivar\n");
-   scienceAPI.write("    Day no     mm     m^2    mm     code     name  \n");
-   scienceAPI.write("    -------------------------------------------------------\n");
 
-   sprintf(msg, "   %7d%8.1f%8.1f%6.0f%7.1f     %s\n",
-      today.doy, sowingDepth, plantDensity, rowSpacing,
-      skipRow, cultivar.c_str());   scienceAPI.write(msg);
+	//   latitude = -29.0
 
-   scienceAPI.write("    -------------------------------------------------------\n");
-   scienceAPI.write("\n");
 
-   // Set up which sections to look for parameters
-   vector<string> sections;
-   sections.push_back(cultivar);
-   scienceAPI.setSearchOrder(sections);
+	checkRange(scienceAPI, ftn, 0.0, 10.0, "tiller_no_fertile");
 
-   // now we have the cultivar, get all 'constants' and cultivar parameters.
-   readParams(); 
 
-   for(unsigned i=0;i < PlantComponents.size();i++) 
-      PlantComponents[i]->readParams ();
+	phenology->setStage(sowing);
+	setStatus(alive);
 
-   scienceAPI.publish("sowing");
-   }
+	char msg[120];
+	scienceAPI.write("\n                 Crop Sowing Data\n");
+	scienceAPI.write("    -------------------------------------------------------\n");
+	scienceAPI.write("    Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN\n");
+	scienceAPI.write("    Day no     mm     m^2    mm     code     name       no\n");
+	scienceAPI.write("    -------------------------------------------------------\n");
+
+	sprintf(msg, "   %7d%8.1f%8.1f%6.0f%7.1f     %s%8.2f\n",
+		today.doy, sowingDepth, plantDensity, rowSpacing,
+		skipRow, cultivar.c_str(), ftn);   scienceAPI.write(msg);
+
+	scienceAPI.write("    -------------------------------------------------------\n");
+	scienceAPI.write("\n");
+
+	// Set up which sections to look for parameters
+	vector<string> sections;
+	sections.push_back(cultivar);
+	scienceAPI.setSearchOrder(sections);
+
+	// now we have the cultivar, get all 'constants' and cultivar parameters.
+	readParams();
+
+	for (unsigned i = 0; i < PlantComponents.size(); i++)
+		PlantComponents[i]->readParams();
+
+	scienceAPI.publish("sowing");
+}
+
+
 //------------------------------------------------------------------------------------------------
 //------------------- Field a Prepare event
 //------------------------------------------------------------------------------------------------
