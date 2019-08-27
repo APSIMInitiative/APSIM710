@@ -207,16 +207,17 @@ void Plant::onSowCrop(SowType& sow)
 	char msg[120];
 	scienceAPI.write("\n                 Crop Sowing Data\n");
 	scienceAPI.write("    -------------------------------------------------------\n");
-	scienceAPI.write("    Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN\n");
-	scienceAPI.write("    Day no     mm     m^2    mm     code     name       no\n");
+	scienceAPI.write("    Sowing   Depth  Plants Spacing Skiprow Cultivar\n");
+	scienceAPI.write("    Day no     mm     m^2    mm     code     name  \n");
 	scienceAPI.write("    -------------------------------------------------------\n");
 
-	sprintf(msg, "   %7d%8.1f%8.1f%6.0f%7.1f     %s%8.2f\n",
+	sprintf(msg, "   %7d%8.1f%8.1f%6.0f%7.1f     %s\n",
 		today.doy, sowingDepth, plantDensity, rowSpacing,
-		skipRow, cultivar.c_str(), ftn);   scienceAPI.write(msg);
+		skipRow, cultivar.c_str());   scienceAPI.write(msg);
 
 	scienceAPI.write("    -------------------------------------------------------\n");
 	scienceAPI.write("\n");
+
 
 	// Set up which sections to look for parameters
 	vector<string> sections;
