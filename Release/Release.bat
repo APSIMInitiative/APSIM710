@@ -20,20 +20,14 @@ copy  %APSIM%\UserInterface\*.xml %dest%\UserInterface
 mkdir %dest%\UserInterface\ToolBoxes
 copy  %APSIM%\UserInterface\ToolBoxes\*.xml %dest%\UserInterface\ToolBoxes
 
-"C:\Program Files\7-Zip\7z.exe" a -mx=7 -mmt=on Temp.7z %dest%
+if [%1] == [] (
+	call %APSIM%\Model\Build\VersionInfo.bat
+	set "filename=Apsim%MAJOR_VERSION%.%MINOR_VERSION%-r%BUILD_NUMBER%.binaries.WINDOWS.INTEL.zip"
+) else (
+	set "filename=%1.binaries.WINDOWS.INTEL.zip"
+)
 
-if [%1] == [] goto noargs
-   copy /b "C:\Program Files (x86)\7-Zip\7zCon.sfx" + 7zWinConfig.txt + Temp.7z %1.binaries.WINDOWS.INTEL.exe
-   copy /b "C:\Program Files\7-Zip\7zCon.sfx" + 7zWinConfig.txt + Temp.7z %1.binaries.WINDOWS.X86_64.exe
-   goto done
+"C:\Program Files\7-Zip\7z.exe" a -mx=7 -mmt=on "%filename%" %dest%
 
-:noargs
-   call %APSIM%\Model\Build\VersionInfo.bat
-   copy /b "C:\Program Files (x86)\7-Zip\7zCon.sfx" + 7zWinConfig.txt + Temp.7z Apsim%MAJOR_VERSION%.%MINOR_VERSION%-r%BUILD_NUMBER%.binaries.WINDOWS.INTEL.exe
-   copy /b "C:\Program Files\7-Zip\7zCon.sfx" + 7zWinConfig.txt + Temp.7z Apsim%MAJOR_VERSION%.%MINOR_VERSION%-r%BUILD_NUMBER%.binaries.WINDOWS.X86_64.exe
-
-:done
-
-del /s /q /f Temp.7z
-del /s /q /f Temp
-rmdir /s /q Temp
+del /s /q /f %dest%
+rmdir /s /q %dest%

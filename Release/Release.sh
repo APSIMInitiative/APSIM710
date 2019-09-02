@@ -21,15 +21,15 @@ if [ -f $dest/Model/APSIM.Tests.dll ]; then /bin/rm -f $dest/Model/APSIM.Tests.d
 if [ "$1" = "" ] ; then
   . $APSIM/Model/Build/VersionInfo.sh
   if [ $(/bin/uname -m) == 'x86_64' ]; then
-     7zr a -sfx Apsim${MAJOR_VERSION}${MINOR_VERSION}-r${BUILD_NUMBER}.binaries.LINUX.X86_64.exe $dest
+     7z a Apsim${MAJOR_VERSION}${MINOR_VERSION}-r${BUILD_NUMBER}.binaries.LINUX.X86_64.zip $dest
   else
-     7zr a -sfx Apsim${MAJOR_VERSION}${MINOR_VERSION}-r${BUILD_NUMBER}.binaries.LINUX.INTEL.exe $dest
+     7z a Apsim${MAJOR_VERSION}${MINOR_VERSION}-r${BUILD_NUMBER}.binaries.LINUX.INTEL.zip $dest
   fi
 else  
   if [ $(/bin/uname -m) == 'x86_64' ]; then
-     7zr a -sfx $1.binaries.LINUX.X86_64.exe Temp
+     7z a $1.binaries.LINUX.X86_64.zip Temp
   else
-     7zr a -sfx $1.binaries.LINUX.INTEL.exe Temp
+     7z a -sfx $1.binaries.LINUX.INTEL.zip Temp
   fi
 fi
 
