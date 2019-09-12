@@ -303,7 +303,7 @@ void Plant::process (void)                 // do crop preparation
    leaf->calcLeafNo();
 
    phenology->development();
-   
+   stage = (float)phenology->currentStage();
    for (unsigned i = 0; i < PlantParts.size(); i++)
    {
 	   PlantParts[i]->setStage(phenology->currentStage());
@@ -322,7 +322,7 @@ void Plant::process (void)                 // do crop preparation
    biomass->calcPartitioning();
 
    // biomass retranslocation
-   if(stage >= startGrainFill && stage <= endGrainFill)
+   if(stage >= startGrainFill && stage < endGrainFill)
       biomass->calcRetranslocation();
 
    // root length
