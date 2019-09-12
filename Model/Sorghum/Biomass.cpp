@@ -186,6 +186,7 @@ void Biomass::calcBiomassPartitioning(void)
    // Root must be satisfied. The roots don't take any of the carbohydrate produced
    //  - that is for tops only.  Here we assume that enough extra was produced to meet demand.
    // Thus the root growth is not removed from the carbo produced by the model.
+	stage = plant->phenology->currentStage();
    double biomPool = dltDM;
 
    int currentPhase = (int)plant->phenology->currentStage();
