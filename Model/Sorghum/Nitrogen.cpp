@@ -41,6 +41,7 @@ void Nitrogen::doRegistrations(void)
    scienceAPI.expose("n_diffusion_uptake",   "g/m^2", "Today's N uptake by diffusion from soil profile", false, actualDiffusion);
    scienceAPI.expose("n_total_uptake",       "g/m^2", "Today's N uptake by mass flow and diffusion",     false, actualTotal);
    scienceAPI.expose("no3_demand",           "g/m^2", "Today's total crop N demand",                     false, plantNDemand);
+   test = &plantNDemand;
    scienceAPI.expose("diffusion_supply_tot", "g/m^2", "Accumulative total of crop N supply by diffusion",false, sumDiffSupply);
    scienceAPI.expose("biomass_n",            "g/m^2", "N above ground biomass including grain",          false, nBiomass);
    scienceAPI.expose("stover_n",             "g/m^2", "N above ground biomass excluding grain",          false, nStover);
@@ -264,7 +265,10 @@ void Nitrogen::calcMassFlow(void)
    massFlowSupply.clear();
    for(int layer = 0;layer <= currentLayer;layer++)
       {
-      double no3ConcLayer = divide(no3[layer],plant->water->swDepLayer(layer));
+	   double swdep = plant->water->swDepLayer(layer);
+	   double dltSwdep = -plant->water->dltSwDepLayer(layer);
+
+	   double no3ConcLayer = divide(no3[layer],plant->water->swDepLayer(layer));
       double no3MassFlow = no3ConcLayer * (-plant->water->dltSwDepLayer(layer));
       massFlowSupply.push_back(Min(no3MassFlow,no3[layer] - no3Min[layer]));
       }
@@ -282,6 +286,7 @@ void Nitrogen::calcDiffusion(void)
       double no3Diffn = bound(swAvailFrac,0,1.0) * no3[layer];
       diffusionSupply.push_back(Min(no3Diffn,no3[layer] - no3Min[layer]));
       }
+   double prop = layerProportion();
    diffusionSupply[currentLayer] *= layerProportion();
    }
 //------------------------------------------------------------------------------------------------
@@ -302,7 +307,8 @@ void Nitrogen::demand(void)
    totalDemand = 0;
    for(unsigned i=0;i < plant->PlantParts.size();i++)
       {
-      totalDemand += plant->PlantParts[i]->calcNDemand();
+	   double dem = plant->PlantParts[i]->calcNDemand();
+	   totalDemand += dem;
       }
    }
 //------------------------------------------------------------------------------------------------
@@ -322,6 +328,8 @@ void Nitrogen::uptake(void)
    // get actual total nitrogen uptake for diffusion and mass flow.
    // If demand is not satisfied by mass flow, then use diffusion.
 
+   double lfDemand = plant->leaf->getNDemand();
+   double sDemand = plant->stem->getNDemand();
 
    plantNDemand = totalDemand - plant->grain->getNDemand();
 
@@ -345,15 +353,16 @@ void Nitrogen::uptake(void)
 
 //      nSupplyFrac (5) to limit n uptake
       double maxUptakeRateFrac = Min(1.0,potentialSupply / nSupplyFrac) * maxUptakeRate;
-
-      actualDiffusion = Min(actualDiffusion,
-            maxUptakeRateFrac * plant->phenology->getDltTT() - actualMassFlow);
+	  double growingTT = plant->phenology->getDltTT();
+	  double maxUptake = maxUptakeRateFrac * plant->phenology->getDltTT() - actualMassFlow;
+      actualDiffusion = Min(actualDiffusion, maxUptake);
+	  int tmp = 0;
       }
 
    vector<double> mff,df;
    //get actual change in N contents
    dltNo3.clear();
-
+   double duptake = 0.0;
    for(int layer = 0;layer <= currentLayer;layer++)
       {
       double massFlowFraction = divide(massFlowSupply[layer],totalMassFlowSupply);
@@ -363,6 +372,7 @@ void Nitrogen::uptake(void)
       double layerUptake = actualMassFlow * massFlowFraction +
                              actualDiffusion  * diffusionFraction;
       dltNo3.push_back(-layerUptake);
+	  duptake += layerUptake;
       }
 
    supplyDemandRatio = 0.0;
@@ -378,9 +388,21 @@ void Nitrogen::uptake(void)
 //     allocate N to each plant part
 void Nitrogen::partition(void)
    {
+
+	double forStem = 0.0;
+	double forRachis = 0.0;
+	double forLeafFromStem = 0.0;
+	double forLeaf = 0.0;
+
+	double stemStructuralDemand = 0.0;
+	double rachisStructuralDemand = 0.0;
+	double leafStructuralDemand = 0.0;
+	const bool FORLEAF = true;
+
    double nAvailable = nSupply;
    // 1. allocate to roots in proportion to demand
-   double nRequired = supplyDemandRatio * plant->roots->calcNDemand();
+   double rootDemand = plant->roots->calcNDemand();
+   double nRequired = supplyDemandRatio * rootDemand;
    plant->roots->partitionN(nRequired);
    nAvailable -= nRequired;
 
@@ -388,6 +410,7 @@ void Nitrogen::partition(void)
    // If not enough N available, senesce leaf
    // stem first
    nRequired = plant->stem->calcStructNDemand();
+   stemStructuralDemand = nRequired;
    if(nRequired > 0)
       {
       if(nRequired <= nAvailable)
@@ -398,12 +421,14 @@ void Nitrogen::partition(void)
       else
          {
          // get from leaf to provide structN deficit
-         plant->stem->partitionN(nAvailable + plant->leaf->provideN(nRequired - nAvailable));
+		  forStem = plant->leaf->provideN(nRequired - nAvailable, !FORLEAF);
+         plant->stem->partitionN(nAvailable + forStem);
          nAvailable =0.0;
          }
       }
    // now rachis
    nRequired = plant->rachis->calcStructNDemand();
+   rachisStructuralDemand = nRequired;
    if(nRequired > 0)
       {
       if(nRequired <= nAvailable)
@@ -414,7 +439,8 @@ void Nitrogen::partition(void)
       else
          {
          // get from leaf to provide structN deficit
-         plant->rachis->partitionN(nAvailable + plant->leaf->provideN(nRequired - nAvailable));
+		  forRachis = plant->leaf->provideN(nRequired - nAvailable, !FORLEAF);
+         plant->rachis->partitionN(nAvailable + forRachis);
          nAvailable =0.0;
          }
       }
@@ -422,6 +448,7 @@ void Nitrogen::partition(void)
    // 3. Now allocate N to new leaf with SLN 1.0
    // If not enough N available, take from stem and canopy
    nRequired = plant->leaf->calcNewLeafNDemand();
+   leafStructuralDemand = nRequired;
    if(nRequired > 0)
       {
       if(nRequired <= nAvailable)
@@ -436,11 +463,13 @@ void Nitrogen::partition(void)
          nAvailable =0.0;
          /* get from stem and canopy to provide new LAI deficit */
          double transN = plant->stem->provideN(nRequired);
+		 forLeafFromStem = transN;
          plant->leaf->partitionN(transN);
          nRequired -= transN;
          if(nRequired > 0)
             {
-            transN = plant->leaf->provideN(nRequired);
+            transN = plant->leaf->provideN(nRequired, FORLEAF);
+			forLeaf = transN;
             plant->leaf->partitionN(transN);
             }
          }
@@ -459,7 +488,8 @@ void Nitrogen::partition(void)
    plant->rachis->partitionN(toRachis);
 
    // rest to stem
-   plant->stem->partitionN(nAvailable - toLeaf - toRachis );
+   double toStem = nAvailable - toLeaf - toRachis;
+   plant->stem->partitionN(toStem );
 
 
    // get the grain N demand
@@ -479,7 +509,7 @@ void Nitrogen::partition(void)
          }
       if(nRequired > 0)
          {
-         nLeaf = plant->leaf->provideN(nRequired);
+         nLeaf = plant->leaf->provideN(nRequired, !FORLEAF);
          plant->grain->RetranslocateN(nLeaf);
          }
       }

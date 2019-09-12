@@ -78,6 +78,7 @@ void Roots::initialize(void)
    rightDist = 0.0;
    rootSpread = 0.0;
    lastLayerPropn = 0.0;
+   lastLayerPropn = 0.0;
 	   dltRootDepth = 0.0;
    dltRootFront = 0.0;
    lastLayerPropn = 0.0;
@@ -119,16 +120,23 @@ void Roots::readParams (void)
    scienceAPI.read("p_conc_init_root", "", 0, initialPConc);
 
    //Root Angle
-   useRootAngle = 0;
-   //Set root angle to use a semicircular pattern if root angle is turned off
-   rootAngle = 45;
-   scienceAPI.get("UseRootAngle", "", 1, useRootAngle);
-   scienceAPI.get("RootAngle", "", 1, rootAngle);
+   try
+	   {
+      scienceAPI.get("UseRootAngle", "", 0, useRootAngle);
+      scienceAPI.get("RootAngle", "", 0, rootAngle);
+	   }
+   catch(...)
+	   {
+      useRootAngle = 0;
+      rootAngle = 0;
+	   }
 
+   //Set root angle to use a semicircular pattern if root angle is turned off
    if(!useRootAngle)
       {
       rootAngle = 45;
       }
+
    }
 //------------------------------------------------------------------------------------------------
 void Roots::process(void)
@@ -215,9 +223,12 @@ double Roots::layerProportion(void)
 //------------------------------------------------------------------------------------------------
 void Roots::calcInitialLength(void)
    {
-   // initial root depth
-   dltRootDepth = initialRootDepth;
-	    dltRootFront = initialRootDepth;
+	// initial root depth
+	//jkb changes made to line up with pmf (should have been a bug)		
+	rootDepth = initialRootDepth;
+	rootFront = initialRootDepth;
+	dltRootDepth = initialRootDepth;
+	dltRootFront = initialRootDepth;
 
    }
 //------------------------------------------------------------------------------------------------
@@ -263,6 +274,9 @@ double Roots::calcDltRootDepth(double stage)
    {
    // sw available factor of root layer
    double swFactor = swAvailFactor(currentLayer);
+   if (swFactor < 1.0) {
+	   int tm = 0;
+   }
 
    //float adjRootDepthRate = calcAdjRootDepthRate(rootDepthRate[int (stage)]);
    //dltRootDepth  = adjRootDepthRate * swFactor * xf[currentLayer];

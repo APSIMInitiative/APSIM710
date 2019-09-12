@@ -31,7 +31,7 @@ class PlantComponent
    virtual void readParams (void) = 0;
    virtual void updateVars(void) = 0;
 
-   };
+};
 //---------------------------------------------------------------------------
 class PlantPart : public PlantComponent
    {
@@ -132,6 +132,9 @@ class PlantPart : public PlantComponent
 
    void partitionN(double N){dltNGreen += N;}
    void partitionP(double P){dltPGreen += P;}
+   void setStage(double newStage){stage = newStage;}
+   //---------------------------------------------------------------------------
+
    void calcDltPSenesced(void);
    void calcDltPDetached(void);
    void updateP(void);
