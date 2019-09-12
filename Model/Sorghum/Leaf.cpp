@@ -666,13 +666,16 @@ void Leaf::calcSenescence(void)
 
    double dmGreenLeafToday = dmGreen + dltDmGreen + dmRetranslocate;   // -ve
    double slaToday = divide(laiToday,dmGreenLeafToday);
+   double nGreenToday = nGreen + dltNGreen + dltNRetranslocate;
+
+   // dh - dltSenescedLai can be greater than slaToday if we senesce most of the leaf.
+   // In this scenario, dltDmSenesced could end up greater than dmGreen(!).
+   // To fix this, we divide by start-of-day (pre-senescence) sla.
 
    dltDmSenesced = divide(dltSlai,slaToday);
 
-
-   double slnToday = divide(nGreen,laiToday);
+   double slnToday = divide(nGreenToday,laiToday);
    dltNSenesced  += dltSlai * Max((slnToday - senescedLeafSLN),0.0);
-
    }
 //------------------------------------------------------------------------------------------------
 double Leaf::partitionDM(double dltDM)
