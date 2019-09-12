@@ -208,14 +208,14 @@ double Grain::calcNDemand(void)
    // filling rate per grain per oCd
    // rest on target N concentration
 
-   double gfFract = divide(plant->phenology->sumTTtotal(startGrainFill, maturity),
+   double gfFract = divide(plant->phenology->sumTTtotalFM(startGrainFill, maturity),
                         plant->phenology->sumTTtarget(startGrainFill, maturity));
 
    if(gfFract < 0.5)
       nDemand = grainNo * plant->phenology->getDltTTFM() * grainFillRate / 1000.0;
    else
-      nDemand = dltDmGreen * targetNConc;
-
+      nDemand = (dltDmGreen + dmRetranslocate) * targetNConc;
+   nDemand = Min(nDemand, (dltDmGreen + dmRetranslocate) * targetNConc);
    nDemand = Max(nDemand,0.0);
    return nDemand;
    }
