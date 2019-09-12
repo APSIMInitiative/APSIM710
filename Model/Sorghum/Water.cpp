@@ -48,6 +48,13 @@ void Water::doRegistrations(void)
    scienceAPI.expose("ll",                "",   "Crop lower limit",                                true,  ll);
    scienceAPI.expose("xf",                "",   "Exploration factor",                              true,  xf);
    scienceAPI.expose("kl",                "",   "kl factor",                                       true,  kl);
+   scienceAPI.expose("avail",             "",	"Available SW by layer",						   false, available);
+   scienceAPI.expose("totalAvail",        "",	"Total available SW",							   false, totalAvail);
+   scienceAPI.expose("availablePot",      "",	"Potential available SW by layer",				   false, availablePot);
+   scienceAPI.expose("totalAvailablePot", "",	"Total potential available SW",					   false, totalAvailPot);
+   scienceAPI.expose("sorgh_esw",		  "",	"ESW as used in sorghum root growth calcs",		   false, sorghEsw);
+   scienceAPI.expose("sorgh_esw_cap",	  "",	"esw_cap as used in sorghum root growth calcs",	   false, sorghEswCap);
+   scienceAPI.expose("sorgh_sw_dep",	  "",	"sw_dep as used in sorghum root growth calcs",	   false, swDep);
 
    scienceAPI.exposeFunction("esw_layer", "mm", "Plant extractable soil water in each layer",
                     FloatArrayFunction(&Water::getEswLayers));
@@ -73,6 +80,8 @@ void Water::initialize(void)
    sdRatio = 1;
    rootDepth = 0;
    totalUptake = 0.0;
+   sorghEsw = 0;
+   sorghEswCap = 0;
    AccTotalSupply = 0.0;
    ep = 0.0;
    swDemand = 0.0;
@@ -242,7 +251,10 @@ void Water::process(void)
 //------------------------------------------------------------------------------------------------
 double Water::swAvailRatio(int currentLayer)
    {
-   return  divide (esw[currentLayer],eswCap[currentLayer], 10.0);
+	sorghEsw = esw[currentLayer];
+	sorghEswCap = eswCap[currentLayer];
+	// dh - in new apsim, uptakes are immediately taken out of the soil.
+   return  divide (esw[currentLayer] + dltSwDep[currentLayer],eswCap[currentLayer], 10.0);
    }
 //------------------------------------------------------------------------------------------------
 //--------------- Plant transpiration and soil water extraction

@@ -39,11 +39,11 @@ void Roots::doRegistrations(void)
    scienceAPI.expose("RootGreenNConc","%"     ,"Live root N concentration",   false, nConc);
    scienceAPI.expose("RootSenescedN" ,"g/m^2" ,"Senesced root dry weight",    false, nSenesced);
    scienceAPI.expose("RootNDemand"   ,"g/m^2" ,"Today's N demand from roots", false, nDemand);
-   scienceAPI.exposeFunction("RootProportion", "0-1", "Root proportion in layers",
-                    FloatArrayFunction(&Roots::getRP));
+   scienceAPI.exposeFunction("RootProportion", "0-1", "Root proportion in layers", FloatArrayFunction(&Roots::getRP));
    scienceAPI.expose("RootGreenP"    ,"g/m^2" ,"P in live root",              false, pGreen);
-   scienceAPI.expose("RootSpread"   ,"mm" ,"Lateral root distance", false, rootSpread);
-	
+   scienceAPI.expose("RootSpread"    ,"mm"    ,"Lateral root distance",       false, rootSpread);
+   scienceAPI.expose("rootSwFactor"  ,""      ,"SW factor",                   false, swFactor);
+   scienceAPI.expose("rootXf"        ,""      ,"xf for the current layer",    false, xfc);
    }
 //------------------------------------------------------------------------------------------------
 //------- React to a newProfile message
@@ -82,7 +82,8 @@ void Roots::initialize(void)
 	   dltRootDepth = 0.0;
    dltRootFront = 0.0;
    lastLayerPropn = 0.0;
-
+   xfc = 0;
+   swFactor = 0;
 
    if(nLayers > 0 && nLayers < 100)
    {
@@ -278,11 +279,11 @@ void Roots::calcRootDistribution(void)
 double Roots::calcDltRootDepth(double stage)
    {
    // sw available factor of root layer
-   double swFactor = swAvailFactor(currentLayer);
+   swFactor = swAvailFactor(currentLayer);
    if (swFactor < 1.0) {
 	   int tm = 0;
    }
-
+   xfc = xf[currentLayer];
    //float adjRootDepthRate = calcAdjRootDepthRate(rootDepthRate[int (stage)]);
    //dltRootDepth  = adjRootDepthRate * swFactor * xf[currentLayer];
    dltRootDepth  = rootDepthRate[int (stage)] * swFactor * xf[currentLayer];
