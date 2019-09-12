@@ -252,9 +252,12 @@ void Nitrogen::phenologyEvent(int iStage)
 //------------------------------------------------------------------------------------------------
 void Nitrogen::supply(void)
    {
-   calcMassFlow();   // N g/m2 from Mass Flow
-   calcDiffusion();  // potential N g/m2 from Diffusion
-   calcFixation();
+	if (plant->isEmerged())
+	{
+		calcMassFlow();   // N g/m2 from Mass Flow
+		calcDiffusion();  // potential N g/m2 from Diffusion
+		calcFixation();
+	}
    }
 //------------------------------------------------------------------------------------------------
 //------- Mass Flow Supply
@@ -317,6 +320,8 @@ void Nitrogen::demand(void)
 //     Return actual plant nitrogen uptake from each soil layer.
 void Nitrogen::uptake(void)
    {
+	if (!plant->isEmerged())
+		return;
    // no3 (g/m2) available from diffusion
    vector<double> diffnAvailable;
    for(int layer = 0;layer <= currentLayer;layer++)
@@ -354,7 +359,7 @@ void Nitrogen::uptake(void)
 //      nSupplyFrac (5) to limit n uptake
       double maxUptakeRateFrac = Min(1.0,potentialSupply / nSupplyFrac) * maxUptakeRate;
 	  double growingTT = plant->phenology->getDltTT();
-	  double maxUptake = maxUptakeRateFrac * plant->phenology->getDltTT() - actualMassFlow;
+	  double maxUptake = Max(0, maxUptakeRateFrac * plant->phenology->getDltTT() - actualMassFlow);
       actualDiffusion = Min(actualDiffusion, maxUptake);
 	  int tmp = 0;
       }
@@ -481,10 +486,10 @@ void Nitrogen::partition(void)
    double rachisDemand = plant->rachis->calcNDemand();
    double totalDemand = leafDemand + stemDemand + rachisDemand;
 
-   double toLeaf = Min(1.0,divide(leafDemand,totalDemand) * nAvailable);
+   double toLeaf = Min(1.0,divide(leafDemand,totalDemand)) * nAvailable;
    plant->leaf->partitionN(toLeaf);
 
-   double toRachis = Min(1.0,divide(rachisDemand,totalDemand) * nAvailable);
+   double toRachis = Min(1.0,divide(rachisDemand,totalDemand)) * nAvailable;
    plant->rachis->partitionN(toRachis);
 
    // rest to stem

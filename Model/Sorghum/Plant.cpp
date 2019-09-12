@@ -287,10 +287,10 @@ void Plant::prepare (void)
 //------------------------------------------------------------------------------------------------
 void Plant::process (void)                 // do crop preparation
    {
-	if (justSown) {
-		justSown = false;
-		return;
-	}
+	//if (justSown) {
+	//	justSown = false;
+	//	return;
+	//}
    stage = (float)phenology->currentStage();
 
    water->getOtherVariables();

@@ -137,6 +137,11 @@ void Roots::readParams (void)
       rootAngle = 45;
       }
 
+   // dh - this happens on sowing in new apsim
+   calcInitialLength();
+   leftDist = plant->getRowSpacing() * (plant->getSkipRow() - 0.5);
+   rightDist = plant->getRowSpacing() * 0.5;
+
    }
 //------------------------------------------------------------------------------------------------
 void Roots::process(void)
@@ -156,9 +161,9 @@ void Roots::phenologyEvent(int stage)
    switch (stage)
       {
    case germination :
-      calcInitialLength();
-      leftDist  = plant->getRowSpacing() * (plant->getSkipRow() - 0.5);
-      rightDist = plant->getRowSpacing() * 0.5;
+      //calcInitialLength();
+      //leftDist  = plant->getRowSpacing() * (plant->getSkipRow() - 0.5);
+      //rightDist = plant->getRowSpacing() * 0.5;
 
          break;
       case emergence :

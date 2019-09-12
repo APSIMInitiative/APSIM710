@@ -130,7 +130,8 @@ double Stem::calcNDemand(void)
 
    double target = targetNFn.value(stage);
    double nRequired = (dmGreen + dltDmGreen) * targetNFn.value(stage);
-   nDemand = Max(nRequired - nGreen,0.0);
+   double nToday = nGreen + dltNGreen;
+   nDemand = Max(nRequired - nToday,0.0);
    return nDemand;
    }
 //------------------------------------------------------------------------------------------------

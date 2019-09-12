@@ -64,7 +64,7 @@ class Plant
 
    Today  today;                      // holds day,year,rain,temp etc
    int das;
-
+   bool isEmerged(void) { return phenology->currentStage() >= emergence; }
 
    private:
 // Parameters ----------------------------------------------------------
