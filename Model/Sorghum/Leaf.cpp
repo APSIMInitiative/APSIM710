@@ -443,7 +443,7 @@ double Leaf::provideN(double requiredN, bool forLeaf)
 	 
          requiredN -= laiN;
          nProvided += laiN;
-		 dltNRetranslocate -= laiN;
+		 //dltNRetranslocate -= laiN;
          }
       // recalc the SLN after this N has been removed
       laiToday = calcLAI();
