@@ -33,6 +33,7 @@ void Plant::initialize(void)
    dltDeadPlants = 0.0;
    vpd = 0.0;
    radnIntercepted  = 0.0;
+   justSown = false;
    }
 //------------------------------------------------------------------------------------------------
 //------------ read the crop and cultivar parameters
@@ -196,7 +197,7 @@ void Plant::onSowCrop(SowType &sow)
       else if (sow.Skip == "double")skipRow = 2.0;
       else if (sow.Skip == "solid")skipRow = 1.0;
       else
-        throw std::runtime_error("Unknown skip row configuration '" + sow.Skip + "'");
+        throw std::runtime_error("Unknown skip row configuration '" + temp + "'");
       }             
 
    checkRange(scienceAPI,skipRow, 0.0, 2.0, "skiprow");
@@ -247,6 +248,7 @@ void Plant::onSowCrop(SowType &sow)
      PlantComponents[i]->readParams ();
 
    scienceAPI.publish("sowing");
+   justSown = true;
    }
 //------------------------------------------------------------------------------------------------
 //------------------- Field a Prepare event
@@ -285,7 +287,10 @@ void Plant::prepare (void)
 //------------------------------------------------------------------------------------------------
 void Plant::process (void)                 // do crop preparation
    {
-
+	//if (justSown) {
+	//	justSown = false;
+	//	return;
+	//}
    stage = (float)phenology->currentStage();
 
    water->getOtherVariables();
@@ -298,6 +303,12 @@ void Plant::process (void)                 // do crop preparation
    leaf->calcLeafNo();
 
    phenology->development();
+   stage = (float)phenology->currentStage();
+   for (unsigned i = 0; i < PlantParts.size(); i++)
+   {
+	   PlantParts[i]->setStage(phenology->currentStage());
+   }
+
 
    leaf->calcPotentialArea();
 
@@ -311,7 +322,7 @@ void Plant::process (void)                 // do crop preparation
    biomass->calcPartitioning();
 
    // biomass retranslocation
-   if(stage >= startGrainFill && stage <= endGrainFill)
+   if(stage >= startGrainFill && stage < endGrainFill)
       biomass->calcRetranslocation();
 
    // root length

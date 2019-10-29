@@ -48,6 +48,13 @@ void Water::doRegistrations(void)
    scienceAPI.expose("ll",                "",   "Crop lower limit",                                true,  ll);
    scienceAPI.expose("xf",                "",   "Exploration factor",                              true,  xf);
    scienceAPI.expose("kl",                "",   "kl factor",                                       true,  kl);
+   scienceAPI.expose("avail",             "",	"Available SW by layer",						   false, available);
+   scienceAPI.expose("totalAvail",        "",	"Total available SW",							   false, totalAvail);
+   scienceAPI.expose("availablePot",      "",	"Potential available SW by layer",				   false, availablePot);
+   scienceAPI.expose("totalAvailablePot", "",	"Total potential available SW",					   false, totalAvailPot);
+   scienceAPI.expose("sorgh_esw",		  "",	"ESW as used in sorghum root growth calcs",		   false, sorghEsw);
+   scienceAPI.expose("sorgh_esw_cap",	  "",	"esw_cap as used in sorghum root growth calcs",	   false, sorghEswCap);
+   scienceAPI.expose("sorgh_sw_dep",	  "",	"sw_dep as used in sorghum root growth calcs",	   false, swDep);
 
    scienceAPI.exposeFunction("esw_layer", "mm", "Plant extractable soil water in each layer",
                     FloatArrayFunction(&Water::getEswLayers));
@@ -73,6 +80,8 @@ void Water::initialize(void)
    sdRatio = 1;
    rootDepth = 0;
    totalUptake = 0.0;
+   sorghEsw = 0;
+   sorghEswCap = 0;
    AccTotalSupply = 0.0;
    ep = 0.0;
    swDemand = 0.0;
@@ -118,7 +127,8 @@ void Water::readParams (void)
       llDep.push_back(ll[layer]*dLayer[layer]);
       eswCap.push_back(dulDep[layer] - llDep[layer]);
       }
-
+   rootDepth = plant->roots->getRootDepth();
+   currentLayer = findIndex(rootDepth, dLayer);
     // report
    char msg[100];
    sprintf(msg,"\n");   scienceAPI.write(msg);
@@ -145,8 +155,12 @@ void Water::readParams (void)
 //------------------------------------------------------------------------------------------------
 void Water::updateVars(void)
    {
-   if(swDemand < 0.001)sdRatio = 1.0;
-   else sdRatio = Min(divide(totalSupply, swDemand),1.0f);
+	if (swDemand < 0.001) {
+		sdRatio = 1.0;
+	}
+	else {
+		sdRatio = Min(divide(totalSupply, swDemand), 1.0f);
+	}
    rootDepth = plant->roots->getRootDepth();
    currentLayer = findIndex(rootDepth, dLayer);
    setOtherVariables ();
@@ -237,7 +251,10 @@ void Water::process(void)
 //------------------------------------------------------------------------------------------------
 double Water::swAvailRatio(int currentLayer)
    {
-   return  divide (esw[currentLayer],eswCap[currentLayer], 10.0);
+	sorghEsw = esw[currentLayer];
+	sorghEswCap = eswCap[currentLayer];
+	// dh - in new apsim, uptakes are immediately taken out of the soil.
+   return  divide (esw[currentLayer] + dltSwDep[currentLayer],eswCap[currentLayer], 10.0);
    }
 //------------------------------------------------------------------------------------------------
 //--------------- Plant transpiration and soil water extraction
@@ -277,7 +294,8 @@ void Water::calcAvailable(void)
       {
       available[layer] = Max(swDep[layer] - llDep[layer],0.0);
       }
-   available[currentLayer] *= layerProportion();
+   double currentLayerProportion = layerProportion();
+   available[currentLayer] *= currentLayerProportion;
    totalAvail = sumVector(available);
    }
 //------------------------------------------------------------------------------------------------
@@ -362,6 +380,7 @@ void Water::calcUptake(void)
          dltSwDep[layer] = -1 * supply[layer];
          }
       }
+  double tmpUptake = sumVector(dltSwDep) * -1;
    totalUptake += sumVector(dltSwDep) * -1;
    }
 //------------------------------------------------------------------------------------------------
