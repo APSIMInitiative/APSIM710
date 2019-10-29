@@ -3722,11 +3722,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize name="maize">
-            <MaizeGenotype name="Barker" shortcut="/Maize/shared/maize/Barker" />
-            <MaizeGenotype name="Pioneer_6875" shortcut="/Maize/shared/maize/Pioneer_6875" />
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-          </Maize>
+          <Maize name="maize" />
         </area>
       </simulation>
       <simulation name="Maize_UQG_UQGBARKR">
@@ -4119,11 +4115,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize name="maize">
-            <MaizeGenotype name="Barker" shortcut="/Maize/shared/maize/Barker" />
-            <MaizeGenotype name="Pioneer_6875" shortcut="/Maize/shared/maize/Pioneer_6875" />
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-          </Maize>
+          <Maize name="maize" />
         </area>
       </simulation>
       <simulation name="Maize_UQG_UQGKCB">
@@ -4516,12 +4508,7 @@ endif
             <cnr type="text" description="C:N ratio of initial residue">80</cnr>
             <standing_fraction type="text" description="Fraction of residue standing">0</standing_fraction>
           </surfaceom>
-          <Maize name="maize">
-            <MaizeGenotype name="Barker" shortcut="/Maize/shared/maize/Barker" />
-            <MaizeGenotype name="Pioneer_6875" shortcut="/Maize/shared/maize/Pioneer_6875" />
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-            <MaizeGenotype name="katumani" shortcut="/Maize/shared/maize/katumani" />
-          </Maize>
+          <Maize name="maize" />
         </area>
       </simulation>
       <simulation name="Maize_UQG_UQGXL82">
@@ -4914,13 +4901,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize name="maize">
-            <MaizeGenotype name="Barker" shortcut="/Maize/shared/maize/Barker" />
-            <MaizeGenotype name="Pioneer_6875" shortcut="/Maize/shared/maize/Pioneer_6875" />
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-            <MaizeGenotype name="katumani" shortcut="/Maize/shared/maize/katumani" />
-            <MaizeGenotype name="dekalb_xl82" shortcut="/Maize/shared/maize/dekalb_xl82" />
-          </Maize>
+          <Maize name="maize" />
         </area>
       </simulation>
       <simulation name="Maize_DRK_DRKA09">
@@ -7580,17 +7561,182 @@ endif
           <outputfile name="Outputfile">
             <filename output="yes">Maize_DRK_DRKF09.out</filename>
             <title>Maize_DRK_DRKF09</title>
-            <variables name="My Variables" shortcut="/Maize/Shared/My Variables" />
-            <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
+            <variables name="My Variables">
+              <variable>dd/mm/yyyy as Date</variable>
+              <variable>DaysAfterSowing</variable>
+              <variable>Stage</variable>
+              <variable>Biomass</variable>
+              <variable>yield</variable>
+              <variable>GreenWt</variable>
+              <variable>Biomass units g/m^2 as BiomassWt</variable>
+              <variable>RootGreenWt</variable>
+              <variable>LeafGreenWt</variable>
+              <variable>StemGreenWt</variable>
+              <variable>RachisGreenWt</variable>
+              <variable>GrainGreenWt</variable>
+              <variable>biomass_n</variable>
+              <variable>RootGreenN</variable>
+              <variable>LeafGreenN</variable>
+              <variable>StemGreenN</variable>
+              <variable>RachisGreenN</variable>
+              <variable>GrainGreenN</variable>
+              <variable>GrainGreenNConc</variable>
+              <variable>GrainNo</variable>
+              <variable>GrainSize</variable>
+              <variable>LeafNo</variable>
+              <variable>LAI</variable>
+              <variable>SLAI</variable>
+              <variable>esw_profile as ESW</variable>
+              <variable>no3() as NO3</variable>
+              <variable>SLN</variable>
+              <variable>WaterSD</variable>
+              <variable>sw()</variable>
+              <variable>HI</variable>
+              <variable>TPLA</variable>
+              <variable>SPLA</variable>
+              <variable>Height</variable>
+            </variables>
           </outputfile>
-          <irrigation name="Irrigation" />
+          <irrigation name="Irrigation">
+            <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+            <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">1800</asw_depth>
+            <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.75</crit_fr_asw>
+            <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+            <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+            <allocation type="text" description="Allocation in mm">0</allocation>
+            <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+            <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+            <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+          </irrigation>
           <Maize name="maize">
-            <MaizeGenotype name="Barker" shortcut="/Maize/shared/maize/Barker" />
-            <MaizeGenotype name="Pioneer_6875" shortcut="/Maize/shared/maize/Pioneer_6875" />
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-            <MaizeGenotype name="katumani" shortcut="/Maize/shared/maize/katumani" />
-            <MaizeGenotype name="dekalb_xl82" shortcut="/Maize/shared/maize/dekalb_xl82" />
-            <MaizeGenotype name="gh_5009" shortcut="/Maize/shared/maize/gh_5009" />
+            <MaizeConstants name="standard">
+              <crop_type>maize</crop_type>
+              <default_crop_class>plant</default_crop_class>
+              <stage_names>sowing germination emergence end_of_juvenile floral_initiation flag_leaf flowering start_grain_fill end_grain_fill maturity harvest_ripe end_crop</stage_names>
+              <pesw_germ units="mm/mm" description="plant extractable soil water in seedling layer inadequate for germination (mm/mm)">0.0</pesw_germ>
+              <shoot_lag units="oCd" description="Time lag before linear coleoptile growth starts (deg days)">15.0</shoot_lag>
+              <shoot_rate units="oCd/mm" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">0.60</shoot_rate>
+              <twilight units="o" description="Twilight is defined as the interval between sunrise or sunset and the time when the true">-6.0</twilight>
+              <x_temp units="oC" description="cardinal temps.">0  18.0 26.0 34.0 44.0</x_temp>
+              <y_tt units="oC" description="thermal time">0  10.0 18.0 26.0  0.0</y_tt>
+              <leaf_no_at_emerg description="(expanded) leaf number at emergence ()">0.5     </leaf_no_at_emerg>
+              <leaf_no_seed description="number of leaf primordia present in seed">6.0     </leaf_no_seed>
+              <leaf_no_min description="minimum leaf number">5.0</leaf_no_min>
+              <leaf_no_max description="maximum leaf number">40.0</leaf_no_max>
+              <leaf_init_rate units="oCd" description="degree days to initiate each leaf primordium until floral init (deg day)">23.2</leaf_init_rate>
+              <leaf_app_rate1 type="text" description="leaf_app_rate1">65.0</leaf_app_rate1>
+              <leaf_app_rate2 type="text" description="leaf_app_rate2">36.0</leaf_app_rate2>
+              <leaf_app_rate3 type="text" description="leaf_app_rate3">36.0</leaf_app_rate3>
+              <leaf_no_rate_change1 type="text" description="leaf_no_rate_change1">8</leaf_no_rate_change1>
+              <leaf_no_rate_change2 type="text" description="leaf_no_rate_change2">3</leaf_no_rate_change2>
+              <rue>1.85</rue>
+              <row_spacing_default>1.0</row_spacing_default>
+              <x_row_spacing units="m" description="Row spacing">0.20   0.50   1.00</x_row_spacing>
+              <y_extinct_coef description="extinction coefficient for green leaf">0.70   0.50   0.50</y_extinct_coef>
+              <x_ave_temp units="oC" description="mean daily temperature">8 15 35 50</x_ave_temp>
+              <y_stress_photo description="multiplier on RUE">0  1  1  0</y_stress_photo>
+              <dm_leaf_init units="g/plant" description="leaf weight at emergence (g/plant)">0.01</dm_leaf_init>
+              <dm_root_init units="g/plant" description="root weight at emergence (g/plant)">0.01</dm_root_init>
+              <dm_stem_init units="g/plant" description="stem weight at emergence (g/plant)">0.01</dm_stem_init>
+              <stem_trans_frac description="fraction of stem used in translocation to grain - not used for i_wheat option">0.20</stem_trans_frac>
+              <leaf_trans_frac description="fraction of leaf used in translocation to grain">0.15</leaf_trans_frac>
+              <retransRate>0.15</retransRate>
+              <ratio_root_shoot>0   0   1    1     0.33  0.33  0.087 0    0     0    0    0</ratio_root_shoot>
+              <partition_rate_leaf description="coefficient of sigmoidal function between leaf partition fraction and internode no**2 (0-1)">0.0182</partition_rate_leaf>
+              <frac_stem2flower description="fraction of dm allocated to stem that goes to developing head">0.17</frac_stem2flower>
+              <PGRt0>130</PGRt0>
+              <PGRt1>260</PGRt1>
+              <PGRbase>1.2</PGRbase>
+              <GNk>0.83</GNk>
+              <GrainTempWindow>-150 50</GrainTempWindow>
+              <grn_water_cont units="g/g" description="water content of grain g/g">0.155</grn_water_cont>
+              <aX0 type="text" description="Largest leaf position multiplier">0.67</aX0>
+              <largestLeafParams type="text" description="Largest Leaf Area Params">1000  -1.17 0.047 </largestLeafParams>
+              <bellCurveParams type="text" description="Leaf Curve Params">-0.009 -0.2 0.0006 -0.43</bellCurveParams>
+              <leaf_no_correction description="Correction for other growing leaves">2.0</leaf_no_correction>
+              <x_lai>0.1    4</x_lai>
+              <y_lai_sla_max description="maximum specific leaf area for delta LAI">50000 25000          </y_lai_sla_max>
+              <lai_sla_min description="minimum specific leaf area for delta LAI">8000  8000           </lai_sla_min>
+              <initial_tpla units="mm^2/plant">380</initial_tpla>
+              <root_depth_rate>0 33    33    33     33    33    33   0      0       0    0    0</root_depth_rate>
+              <x_sw_ratio description="water availability for effects on root depth growth">0.1 0.5</x_sw_ratio>
+              <y_sw_fac_root description="stress factor for root depth growth, This may be probably the same for all crops">0   1</y_sw_fac_root>
+              <specific_root_length units="mm/g">100000</specific_root_length>
+              <x_plant_rld units="mm/mm3/plant" description="root branching">0   0.0001  0.0003</x_plant_rld>
+              <y_rel_root_rate units="0-1">0.02  0.10  1.0</y_rel_root_rate>
+              <transp_eff_cf units="kpa">0.009</transp_eff_cf>
+              <svp_fract description="(0-1)">0.75  </svp_fract>
+              <x_sw_demand_ratio description="water availability">0.5 1.1</x_sw_demand_ratio>
+              <y_swdef_leaf description="stress indices">0   1</y_swdef_leaf>
+              <x_sw_avail_ratio description="water availability">0 0.16</x_sw_avail_ratio>
+              <y_swdef_pheno description="stress index for phenology">0 1</y_swdef_pheno>
+              <no3_diffn_const units="days">2.0</no3_diffn_const>
+              <maxUptakeRate>0.029</maxUptakeRate>
+              <initialRootNConc>0.020</initialRootNConc>
+              <targetRootNConc>0.002</targetRootNConc>
+              <initialLeafSLN>1.7</initialLeafSLN>
+              <targetLeafSLN>1.7</targetLeafSLN>
+              <newLeafSLN>1.1</newLeafSLN>
+              <senescedLeafSLN>0.3</senescedLeafSLN>
+              <leafDilnNSlope>0.0037</leafDilnNSlope>
+              <leafDilnNInt>-0.0015</leafDilnNInt>
+              <initialStemNConc>0.01</initialStemNConc>
+              <x_stem_n>3         5       7         10</x_stem_n>
+              <targetStemNConc>0.04   0.04   0.01      0.005</targetStemNConc>
+              <structStemNConc>0.0045  0.0045   0.0021   0.0021</structStemNConc>
+              <stemDilnNSlope>0.005</stemDilnNSlope>
+              <stemDilnNInt>-0.00052</stemDilnNInt>
+              <initialRachisNConc>0.000</initialRachisNConc>
+              <targetRachisNConc>0.01</targetRachisNConc>
+              <structRachisNConc>0.0021</structRachisNConc>
+              <rachisDilnNSlope>0.005</rachisDilnNSlope>
+              <rachisDilnNInt>-0.00052</rachisDilnNInt>
+              <grainNFillRate units="mg/grain/dd">0.01</grainNFillRate>
+              <targetGrainNConc>0.0143</targetGrainNConc>
+              <nUptakeCease>523</nUptakeCease>
+              <nSupplyFrac>5</nSupplyFrac>
+              <dm_root_sen_frac description="fraction of root dry matter senesced each day">0.002</dm_root_sen_frac>
+              <leaf_no_dead_const description="coefficients for rate of leaf number senescence following flowering">-0.025</leaf_no_dead_const>
+              <leaf_no_dead_slope>0.00035</leaf_no_dead_slope>
+              <sen_light_time_const units="days" description="delay factor for light senescence">10.0</sen_light_time_const>
+              <sen_radn_crit units="Mj/m^2" description="radiation level for onset of light senescence">2</sen_radn_crit>
+              <frost_kill units="oC" description="temperature threshold for leaf death">-3.0</frost_kill>
+              <sen_water_time_const units="days" description="delay factor for water senescence">10.0</sen_water_time_const>
+              <sen_threshold description="supply:demand ratio for onset of water senescence">0.25</sen_threshold>
+              <tt_emerg_limit units="oCd" description="maximum degree days allowed for emergence to take place">150.0</tt_emerg_limit>
+              <pfact_photo_slope description="2.0 !1.0">2.5 </pfact_photo_slope>
+              <pfact_expansion_slope>2.5</pfact_expansion_slope>
+              <pfact_pheno_slope description="10 !20">6 </pfact_pheno_slope>
+              <pfact_grain_slope>20</pfact_grain_slope>
+              <p_uptake_factor description="factor to calc total P uptake from demand for today's growth">1.5   </p_uptake_factor>
+              <x_p_stage_code>3       4      5      6      7      8      10</x_p_stage_code>
+              <y_p_conc_max_leaf>0.0045  0.0045 0.004  0.0025 0.0025 0.0024 0.0024</y_p_conc_max_leaf>
+              <y_p_conc_min_leaf>0.003   0.003  0.0029 0.0011 0.0011 0.0008 0.0006</y_p_conc_min_leaf>
+              <y_p_conc_sen_leaf>0.0005  0.0005 0.0005 0.0005 0.0005 0.0005 0.0005</y_p_conc_sen_leaf>
+              <y_p_conc_max_stem>0.0045   0.0045 0.003  0.0011  0.001  0.0007 0.0007</y_p_conc_max_stem>
+              <y_p_conc_min_stem>0.003    0.003  0.002  0.0006 0.0006 0.0002 0.0002</y_p_conc_min_stem>
+              <y_p_conc_sen_stem>0.0002  0.0002 0.0002 0.0002 0.0002 0.0002 0.0002</y_p_conc_sen_stem>
+              <y_p_conc_max_root description="assume P conc in roots non-varying">0.0010  0.0010 0.0010 0.0010 0.0010 0.0010 0.0010</y_p_conc_max_root>
+              <y_p_conc_min_root>0.0010  0.0010 0.0010 0.0010 0.0010 0.0010 0.0010</y_p_conc_min_root>
+              <y_p_conc_sen_root>0.0010  0.0010 0.0010 0.0010 0.0010 0.0010 0.0010</y_p_conc_sen_root>
+              <y_p_conc_max_flower description="assumed same as stem">0.0045  0.0045  0.003  0.0011  0.001  0.0007 0.0007</y_p_conc_max_flower>
+              <y_p_conc_min_flower>0.003   0.003   0.002  0.0006 0.0006 0.0002 0.0002</y_p_conc_min_flower>
+              <y_p_conc_sen_flower>0.0002  0.0002 0.0002 0.0002 0.0002 0.0002 0.0002</y_p_conc_sen_flower>
+              <y_p_conc_max_grain description="based on Mallarino (1996)">0.001   0.001  0.001  0.001  0.001  0.0030  0.0030</y_p_conc_max_grain>
+              <y_p_conc_min_grain description="based on Kenya data">0.001   0.001  0.001  0.001  0.001  0.0015  0.0015</y_p_conc_min_grain>
+              <y_p_conc_sen_grain>0.001   0.001  0.001  0.001  0.001  0.0015  0.0015</y_p_conc_sen_grain>
+              <p_conc_init_leaf>0.0045</p_conc_init_leaf>
+              <p_conc_init_stem>0.0045</p_conc_init_stem>
+              <p_conc_init_root description="0.0014">0.0010 </p_conc_init_root>
+              <p_conc_init_flower>0.0045</p_conc_init_flower>
+              <p_conc_init_grain>0.0030</p_conc_init_grain>
+              <minsw description="lowest acceptable value for ll">0.00001</minsw>
+              <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+              <y_height units="mm" description="plant canopy height">0  2000</y_height>
+              <x_co2_te_modifier units="ppm co2">0  350  700   1000</x_co2_te_modifier>
+              <y_co2_te_modifier>0  1.0  1.37  1.69</y_co2_te_modifier>
+              <GNmaxCoef>170</GNmaxCoef>
+            </MaizeConstants>
           </Maize>
         </area>
       </simulation>
@@ -7962,18 +8108,182 @@ endif
           <outputfile name="Outputfile">
             <filename output="yes">Maize_DRK_DRKFH40.out</filename>
             <title>Maize_DRK_DRKFH40</title>
-            <variables name="My Variables" shortcut="/Maize/Shared/My Variables" />
-            <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
+            <variables name="My Variables">
+              <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
+              <variable>DaysAfterSowing</variable>
+              <variable>Stage</variable>
+              <variable>Biomass</variable>
+              <variable>GrainYield</variable>
+              <variable>GreenWt</variable>
+              <variable>Biomass units g/m^2 as BiomassWt</variable>
+              <variable>RootGreenWt</variable>
+              <variable>LeafGreenWt</variable>
+              <variable>StemGreenWt</variable>
+              <variable>RachisGreenWt</variable>
+              <variable>GrainGreenWt</variable>
+              <variable>biomass_n</variable>
+              <variable>RootGreenN</variable>
+              <variable>LeafGreenN</variable>
+              <variable>StemGreenN</variable>
+              <variable>RachisGreenN</variable>
+              <variable>GrainGreenN</variable>
+              <variable>GrainGreenNConc</variable>
+              <variable>GrainNo</variable>
+              <variable>GrainSize</variable>
+              <variable>LeafNo</variable>
+              <variable>LAI</variable>
+              <variable>SLAI</variable>
+              <variable>esw_profile as ESW</variable>
+              <variable>no3() as NO3</variable>
+              <variable>SLN</variable>
+              <variable>WaterSD</variable>
+              <variable>sw()</variable>
+              <variable>HI</variable>
+              <variable>TPLA</variable>
+              <variable>SPLA</variable>
+              <variable>Height</variable>
+            </variables>
           </outputfile>
-          <irrigation name="Irrigation" />
+          <irrigation name="Irrigation">
+            <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+            <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">1800</asw_depth>
+            <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.75</crit_fr_asw>
+            <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+            <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+            <allocation type="text" description="Allocation in mm">0</allocation>
+            <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+            <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+            <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+          </irrigation>
           <Maize name="maize">
-            <MaizeGenotype name="Barker" shortcut="/Maize/shared/maize/Barker" />
-            <MaizeGenotype name="Pioneer_6875" shortcut="/Maize/shared/maize/Pioneer_6875" />
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-            <MaizeGenotype name="katumani" shortcut="/Maize/shared/maize/katumani" />
-            <MaizeGenotype name="dekalb_xl82" shortcut="/Maize/shared/maize/dekalb_xl82" />
-            <MaizeGenotype name="gh_5009" shortcut="/Maize/shared/maize/gh_5009" />
-            <MaizeGenotype name="hycorn_40" shortcut="/Maize/shared/maize/hycorn_40" />
+            <MaizeConstants name="standard">
+              <crop_type>maize</crop_type>
+              <default_crop_class>plant</default_crop_class>
+              <stage_names>sowing germination emergence end_of_juvenile floral_initiation flag_leaf flowering start_grain_fill end_grain_fill maturity harvest_ripe end_crop</stage_names>
+              <pesw_germ units="mm/mm" description="plant extractable soil water in seedling layer inadequate for germination (mm/mm)">0.0</pesw_germ>
+              <shoot_lag units="oCd" description="Time lag before linear coleoptile growth starts (deg days)">15.0</shoot_lag>
+              <shoot_rate units="oCd/mm" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">0.60</shoot_rate>
+              <twilight units="o" description="Twilight is defined as the interval between sunrise or sunset and the time when the true">-6.0</twilight>
+              <x_temp units="oC" description="cardinal temps.">0  18.0 26.0 34.0 44.0</x_temp>
+              <y_tt units="oC" description="thermal time">0  10.0 18.0 26.0  0.0</y_tt>
+              <leaf_no_at_emerg description="(expanded) leaf number at emergence ()">0.5     </leaf_no_at_emerg>
+              <leaf_no_seed description="number of leaf primordia present in seed">6.0     </leaf_no_seed>
+              <leaf_no_min description="minimum leaf number">5.0</leaf_no_min>
+              <leaf_no_max description="maximum leaf number">40.0</leaf_no_max>
+              <leaf_init_rate units="oCd" description="degree days to initiate each leaf primordium until floral init (deg day)">23.2</leaf_init_rate>
+              <leaf_app_rate1 type="text" description="leaf_app_rate1">65.0</leaf_app_rate1>
+              <leaf_app_rate2 type="text" description="leaf_app_rate2">36.0</leaf_app_rate2>
+              <leaf_app_rate3 type="text" description="leaf_app_rate3">36.0</leaf_app_rate3>
+              <leaf_no_rate_change1 type="text" description="leaf_no_rate_change1">8</leaf_no_rate_change1>
+              <leaf_no_rate_change2 type="text" description="leaf_no_rate_change2">3</leaf_no_rate_change2>
+              <rue>1.85</rue>
+              <row_spacing_default>1.0</row_spacing_default>
+              <x_row_spacing units="m" description="Row spacing">0.20   0.50   1.00</x_row_spacing>
+              <y_extinct_coef description="extinction coefficient for green leaf">0.70   0.50   0.50</y_extinct_coef>
+              <x_ave_temp units="oC" description="mean daily temperature">8 15 35 50</x_ave_temp>
+              <y_stress_photo description="multiplier on RUE">0  1  1  0</y_stress_photo>
+              <dm_leaf_init units="g/plant" description="leaf weight at emergence (g/plant)">0.01</dm_leaf_init>
+              <dm_root_init units="g/plant" description="root weight at emergence (g/plant)">0.01</dm_root_init>
+              <dm_stem_init units="g/plant" description="stem weight at emergence (g/plant)">0.01</dm_stem_init>
+              <stem_trans_frac description="fraction of stem used in translocation to grain - not used for i_wheat option">0.20</stem_trans_frac>
+              <leaf_trans_frac description="fraction of leaf used in translocation to grain">0.15</leaf_trans_frac>
+              <retransRate>0.15</retransRate>
+              <ratio_root_shoot>0   0   1    1     0.33  0.33  0.087 0    0     0    0    0</ratio_root_shoot>
+              <partition_rate_leaf description="coefficient of sigmoidal function between leaf partition fraction and internode no**2 (0-1)">0.0182</partition_rate_leaf>
+              <frac_stem2flower description="fraction of dm allocated to stem that goes to developing head">0.17</frac_stem2flower>
+              <PGRt0>130</PGRt0>
+              <PGRt1>260</PGRt1>
+              <PGRbase>1.2</PGRbase>
+              <GNk>0.83</GNk>
+              <GrainTempWindow>-150 50</GrainTempWindow>
+              <grn_water_cont units="g/g" description="water content of grain g/g">0.155</grn_water_cont>
+              <aX0 type="text" description="Largest leaf position multiplier">0.67</aX0>
+              <largestLeafParams type="text" description="Largest Leaf Area Params">1000  -1.17 0.047 </largestLeafParams>
+              <bellCurveParams type="text" description="Leaf Curve Params">-0.009 -0.2 0.0006 -0.43</bellCurveParams>
+              <leaf_no_correction description="Correction for other growing leaves">2.0</leaf_no_correction>
+              <x_lai>0.1    4</x_lai>
+              <y_lai_sla_max description="maximum specific leaf area for delta LAI">50000 25000          </y_lai_sla_max>
+              <lai_sla_min description="minimum specific leaf area for delta LAI">8000  8000           </lai_sla_min>
+              <initial_tpla units="mm^2/plant">380</initial_tpla>
+              <root_depth_rate>0 33    33    33     33    33    33   0      0       0    0    0</root_depth_rate>
+              <x_sw_ratio description="water availability for effects on root depth growth">0.1 0.5</x_sw_ratio>
+              <y_sw_fac_root description="stress factor for root depth growth, This may be probably the same for all crops">0   1</y_sw_fac_root>
+              <specific_root_length units="mm/g">100000</specific_root_length>
+              <x_plant_rld units="mm/mm3/plant" description="root branching">0   0.0001  0.0003</x_plant_rld>
+              <y_rel_root_rate units="0-1">0.02  0.10  1.0</y_rel_root_rate>
+              <transp_eff_cf units="kpa">0.009</transp_eff_cf>
+              <svp_fract description="(0-1)">0.75  </svp_fract>
+              <x_sw_demand_ratio description="water availability">0.5 1.1</x_sw_demand_ratio>
+              <y_swdef_leaf description="stress indices">0   1</y_swdef_leaf>
+              <x_sw_avail_ratio description="water availability">0 0.16</x_sw_avail_ratio>
+              <y_swdef_pheno description="stress index for phenology">0 1</y_swdef_pheno>
+              <no3_diffn_const units="days">2.0</no3_diffn_const>
+              <maxUptakeRate>0.029</maxUptakeRate>
+              <initialRootNConc>0.020</initialRootNConc>
+              <targetRootNConc>0.002</targetRootNConc>
+              <initialLeafSLN>1.7</initialLeafSLN>
+              <targetLeafSLN>1.7</targetLeafSLN>
+              <newLeafSLN>1.1</newLeafSLN>
+              <senescedLeafSLN>0.3</senescedLeafSLN>
+              <leafDilnNSlope>0.0037</leafDilnNSlope>
+              <leafDilnNInt>-0.0015</leafDilnNInt>
+              <initialStemNConc>0.01</initialStemNConc>
+              <x_stem_n>3         5       7         10</x_stem_n>
+              <targetStemNConc>0.04   0.04   0.01      0.005</targetStemNConc>
+              <structStemNConc>0.0045  0.0045   0.0021   0.0021</structStemNConc>
+              <stemDilnNSlope>0.005</stemDilnNSlope>
+              <stemDilnNInt>-0.00052</stemDilnNInt>
+              <initialRachisNConc>0.000</initialRachisNConc>
+              <targetRachisNConc>0.01</targetRachisNConc>
+              <structRachisNConc>0.0021</structRachisNConc>
+              <rachisDilnNSlope>0.005</rachisDilnNSlope>
+              <rachisDilnNInt>-0.00052</rachisDilnNInt>
+              <grainNFillRate units="mg/grain/dd">0.01</grainNFillRate>
+              <targetGrainNConc>0.0143</targetGrainNConc>
+              <nUptakeCease>523</nUptakeCease>
+              <nSupplyFrac>5</nSupplyFrac>
+              <dm_root_sen_frac description="fraction of root dry matter senesced each day">0.002</dm_root_sen_frac>
+              <leaf_no_dead_const description="coefficients for rate of leaf number senescence following flowering">-0.025</leaf_no_dead_const>
+              <leaf_no_dead_slope>0.00035</leaf_no_dead_slope>
+              <sen_light_time_const units="days" description="delay factor for light senescence">10.0</sen_light_time_const>
+              <sen_radn_crit units="Mj/m^2" description="radiation level for onset of light senescence">2</sen_radn_crit>
+              <frost_kill units="oC" description="temperature threshold for leaf death">-3.0</frost_kill>
+              <sen_water_time_const units="days" description="delay factor for water senescence">10.0</sen_water_time_const>
+              <sen_threshold description="supply:demand ratio for onset of water senescence">0.25</sen_threshold>
+              <tt_emerg_limit units="oCd" description="maximum degree days allowed for emergence to take place">150.0</tt_emerg_limit>
+              <pfact_photo_slope description="2.0 !1.0">2.5 </pfact_photo_slope>
+              <pfact_expansion_slope>2.5</pfact_expansion_slope>
+              <pfact_pheno_slope description="10 !20">6 </pfact_pheno_slope>
+              <pfact_grain_slope>20</pfact_grain_slope>
+              <p_uptake_factor description="factor to calc total P uptake from demand for today's growth">1.5   </p_uptake_factor>
+              <x_p_stage_code>3       4      5      6      7      8      10</x_p_stage_code>
+              <y_p_conc_max_leaf>0.0045  0.0045 0.004  0.0025 0.0025 0.0024 0.0024</y_p_conc_max_leaf>
+              <y_p_conc_min_leaf>0.003   0.003  0.0029 0.0011 0.0011 0.0008 0.0006</y_p_conc_min_leaf>
+              <y_p_conc_sen_leaf>0.0005  0.0005 0.0005 0.0005 0.0005 0.0005 0.0005</y_p_conc_sen_leaf>
+              <y_p_conc_max_stem>0.0045   0.0045 0.003  0.0011  0.001  0.0007 0.0007</y_p_conc_max_stem>
+              <y_p_conc_min_stem>0.003    0.003  0.002  0.0006 0.0006 0.0002 0.0002</y_p_conc_min_stem>
+              <y_p_conc_sen_stem>0.0002  0.0002 0.0002 0.0002 0.0002 0.0002 0.0002</y_p_conc_sen_stem>
+              <y_p_conc_max_root description="assume P conc in roots non-varying">0.0010  0.0010 0.0010 0.0010 0.0010 0.0010 0.0010</y_p_conc_max_root>
+              <y_p_conc_min_root>0.0010  0.0010 0.0010 0.0010 0.0010 0.0010 0.0010</y_p_conc_min_root>
+              <y_p_conc_sen_root>0.0010  0.0010 0.0010 0.0010 0.0010 0.0010 0.0010</y_p_conc_sen_root>
+              <y_p_conc_max_flower description="assumed same as stem">0.0045  0.0045  0.003  0.0011  0.001  0.0007 0.0007</y_p_conc_max_flower>
+              <y_p_conc_min_flower>0.003   0.003   0.002  0.0006 0.0006 0.0002 0.0002</y_p_conc_min_flower>
+              <y_p_conc_sen_flower>0.0002  0.0002 0.0002 0.0002 0.0002 0.0002 0.0002</y_p_conc_sen_flower>
+              <y_p_conc_max_grain description="based on Mallarino (1996)">0.001   0.001  0.001  0.001  0.001  0.0030  0.0030</y_p_conc_max_grain>
+              <y_p_conc_min_grain description="based on Kenya data">0.001   0.001  0.001  0.001  0.001  0.0015  0.0015</y_p_conc_min_grain>
+              <y_p_conc_sen_grain>0.001   0.001  0.001  0.001  0.001  0.0015  0.0015</y_p_conc_sen_grain>
+              <p_conc_init_leaf>0.0045</p_conc_init_leaf>
+              <p_conc_init_stem>0.0045</p_conc_init_stem>
+              <p_conc_init_root description="0.0014">0.0010 </p_conc_init_root>
+              <p_conc_init_flower>0.0045</p_conc_init_flower>
+              <p_conc_init_grain>0.0030</p_conc_init_grain>
+              <minsw description="lowest acceptable value for ll">0.00001</minsw>
+              <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+              <y_height units="mm" description="plant canopy height">0  2000</y_height>
+              <x_co2_te_modifier units="ppm co2">0  350  700   1000</x_co2_te_modifier>
+              <y_co2_te_modifier>0  1.0  1.37  1.69</y_co2_te_modifier>
+              <GNmaxCoef>170</GNmaxCoef>
+            </MaizeConstants>
           </Maize>
         </area>
       </simulation>
@@ -8324,19 +8634,182 @@ endif
           <outputfile name="Outputfile">
             <filename output="yes">Maize_DRK_DRKFH50.out</filename>
             <title>Maize_DRK_DRKFH50</title>
-            <variables name="My Variables" shortcut="/Maize/Shared/My Variables" />
-            <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
+            <variables name="My Variables">
+              <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
+              <variable>DaysAfterSowing</variable>
+              <variable>Stage</variable>
+              <variable>Biomass</variable>
+              <variable>GrainYield</variable>
+              <variable>GreenWt</variable>
+              <variable>Biomass units g/m^2 as BiomassWt</variable>
+              <variable>RootGreenWt</variable>
+              <variable>LeafGreenWt</variable>
+              <variable>StemGreenWt</variable>
+              <variable>RachisGreenWt</variable>
+              <variable>GrainGreenWt</variable>
+              <variable>biomass_n</variable>
+              <variable>RootGreenN</variable>
+              <variable>LeafGreenN</variable>
+              <variable>StemGreenN</variable>
+              <variable>RachisGreenN</variable>
+              <variable>GrainGreenN</variable>
+              <variable>GrainGreenNConc</variable>
+              <variable>GrainNo</variable>
+              <variable>GrainSize</variable>
+              <variable>LeafNo</variable>
+              <variable>LAI</variable>
+              <variable>SLAI</variable>
+              <variable>esw_profile as ESW</variable>
+              <variable>no3() as NO3</variable>
+              <variable>SLN</variable>
+              <variable>WaterSD</variable>
+              <variable>sw()</variable>
+              <variable>HI</variable>
+              <variable>TPLA</variable>
+              <variable>SPLA</variable>
+              <variable>Height</variable>
+            </variables>
           </outputfile>
-          <irrigation name="Irrigation" />
+          <irrigation name="Irrigation">
+            <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+            <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">1800</asw_depth>
+            <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.75</crit_fr_asw>
+            <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+            <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+            <allocation type="text" description="Allocation in mm">0</allocation>
+            <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0</default_no3_conc>
+            <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
+            <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
+          </irrigation>
           <Maize name="maize">
-            <MaizeGenotype name="Barker" shortcut="/Maize/shared/maize/Barker" />
-            <MaizeGenotype name="Pioneer_6875" shortcut="/Maize/shared/maize/Pioneer_6875" />
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-            <MaizeGenotype name="katumani" shortcut="/Maize/shared/maize/katumani" />
-            <MaizeGenotype name="dekalb_xl82" shortcut="/Maize/shared/maize/dekalb_xl82" />
-            <MaizeGenotype name="gh_5009" shortcut="/Maize/shared/maize/gh_5009" />
-            <MaizeGenotype name="hycorn_40" shortcut="/Maize/shared/maize/hycorn_40" />
-            <MaizeGenotype name="hycorn_50" shortcut="/Maize/shared/maize/hycorn_50" />
+            <MaizeConstants name="standard">
+              <crop_type>maize</crop_type>
+              <default_crop_class>plant</default_crop_class>
+              <stage_names>sowing germination emergence end_of_juvenile floral_initiation flag_leaf flowering start_grain_fill end_grain_fill maturity harvest_ripe end_crop</stage_names>
+              <pesw_germ units="mm/mm" description="plant extractable soil water in seedling layer inadequate for germination (mm/mm)">0.0</pesw_germ>
+              <shoot_lag units="oCd" description="Time lag before linear coleoptile growth starts (deg days)">15.0</shoot_lag>
+              <shoot_rate units="oCd/mm" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">0.60</shoot_rate>
+              <twilight units="o" description="Twilight is defined as the interval between sunrise or sunset and the time when the true">-6.0</twilight>
+              <x_temp units="oC" description="cardinal temps.">0  18.0 26.0 34.0 44.0</x_temp>
+              <y_tt units="oC" description="thermal time">0  10.0 18.0 26.0  0.0</y_tt>
+              <leaf_no_at_emerg description="(expanded) leaf number at emergence ()">0.5     </leaf_no_at_emerg>
+              <leaf_no_seed description="number of leaf primordia present in seed">6.0     </leaf_no_seed>
+              <leaf_no_min description="minimum leaf number">5.0</leaf_no_min>
+              <leaf_no_max description="maximum leaf number">40.0</leaf_no_max>
+              <leaf_init_rate units="oCd" description="degree days to initiate each leaf primordium until floral init (deg day)">23.2</leaf_init_rate>
+              <leaf_app_rate1 type="text" description="leaf_app_rate1">65.0</leaf_app_rate1>
+              <leaf_app_rate2 type="text" description="leaf_app_rate2">36.0</leaf_app_rate2>
+              <leaf_app_rate3 type="text" description="leaf_app_rate3">36.0</leaf_app_rate3>
+              <leaf_no_rate_change1 type="text" description="leaf_no_rate_change1">8</leaf_no_rate_change1>
+              <leaf_no_rate_change2 type="text" description="leaf_no_rate_change2">3</leaf_no_rate_change2>
+              <rue>1.85</rue>
+              <row_spacing_default>1.0</row_spacing_default>
+              <x_row_spacing units="m" description="Row spacing">0.20   0.50   1.00</x_row_spacing>
+              <y_extinct_coef description="extinction coefficient for green leaf">0.70   0.50   0.50</y_extinct_coef>
+              <x_ave_temp units="oC" description="mean daily temperature">8 15 35 50</x_ave_temp>
+              <y_stress_photo description="multiplier on RUE">0  1  1  0</y_stress_photo>
+              <dm_leaf_init units="g/plant" description="leaf weight at emergence (g/plant)">0.01</dm_leaf_init>
+              <dm_root_init units="g/plant" description="root weight at emergence (g/plant)">0.01</dm_root_init>
+              <dm_stem_init units="g/plant" description="stem weight at emergence (g/plant)">0.01</dm_stem_init>
+              <stem_trans_frac description="fraction of stem used in translocation to grain - not used for i_wheat option">0.20</stem_trans_frac>
+              <leaf_trans_frac description="fraction of leaf used in translocation to grain">0.15</leaf_trans_frac>
+              <retransRate>0.15</retransRate>
+              <ratio_root_shoot>0   0   1    1     0.33  0.33  0.087 0    0     0    0    0</ratio_root_shoot>
+              <partition_rate_leaf description="coefficient of sigmoidal function between leaf partition fraction and internode no**2 (0-1)">0.0182</partition_rate_leaf>
+              <frac_stem2flower description="fraction of dm allocated to stem that goes to developing head">0.17</frac_stem2flower>
+              <PGRt0>130</PGRt0>
+              <PGRt1>260</PGRt1>
+              <PGRbase>1.2</PGRbase>
+              <GNk>0.83</GNk>
+              <GrainTempWindow>-150 50</GrainTempWindow>
+              <grn_water_cont units="g/g" description="water content of grain g/g">0.155</grn_water_cont>
+              <aX0 type="text" description="Largest leaf position multiplier">0.67</aX0>
+              <largestLeafParams type="text" description="Largest Leaf Area Params">1000  -1.17 0.047 </largestLeafParams>
+              <bellCurveParams type="text" description="Leaf Curve Params">-0.009 -0.2 0.0006 -0.43</bellCurveParams>
+              <leaf_no_correction description="Correction for other growing leaves">2.0</leaf_no_correction>
+              <x_lai>0.1    4</x_lai>
+              <y_lai_sla_max description="maximum specific leaf area for delta LAI">50000 25000          </y_lai_sla_max>
+              <lai_sla_min description="minimum specific leaf area for delta LAI">8000  8000           </lai_sla_min>
+              <initial_tpla units="mm^2/plant">380</initial_tpla>
+              <root_depth_rate>0 33    33    33     33    33    33   0      0       0    0    0</root_depth_rate>
+              <x_sw_ratio description="water availability for effects on root depth growth">0.1 0.5</x_sw_ratio>
+              <y_sw_fac_root description="stress factor for root depth growth, This may be probably the same for all crops">0   1</y_sw_fac_root>
+              <specific_root_length units="mm/g">100000</specific_root_length>
+              <x_plant_rld units="mm/mm3/plant" description="root branching">0   0.0001  0.0003</x_plant_rld>
+              <y_rel_root_rate units="0-1">0.02  0.10  1.0</y_rel_root_rate>
+              <transp_eff_cf units="kpa">0.009</transp_eff_cf>
+              <svp_fract description="(0-1)">0.75  </svp_fract>
+              <x_sw_demand_ratio description="water availability">0.5 1.1</x_sw_demand_ratio>
+              <y_swdef_leaf description="stress indices">0   1</y_swdef_leaf>
+              <x_sw_avail_ratio description="water availability">0 0.16</x_sw_avail_ratio>
+              <y_swdef_pheno description="stress index for phenology">0 1</y_swdef_pheno>
+              <no3_diffn_const units="days">2.0</no3_diffn_const>
+              <maxUptakeRate>0.029</maxUptakeRate>
+              <initialRootNConc>0.020</initialRootNConc>
+              <targetRootNConc>0.002</targetRootNConc>
+              <initialLeafSLN>1.7</initialLeafSLN>
+              <targetLeafSLN>1.7</targetLeafSLN>
+              <newLeafSLN>1.1</newLeafSLN>
+              <senescedLeafSLN>0.3</senescedLeafSLN>
+              <leafDilnNSlope>0.0037</leafDilnNSlope>
+              <leafDilnNInt>-0.0015</leafDilnNInt>
+              <initialStemNConc>0.01</initialStemNConc>
+              <x_stem_n>3         5       7         10</x_stem_n>
+              <targetStemNConc>0.04   0.04   0.01      0.005</targetStemNConc>
+              <structStemNConc>0.0045  0.0045   0.0021   0.0021</structStemNConc>
+              <stemDilnNSlope>0.005</stemDilnNSlope>
+              <stemDilnNInt>-0.00052</stemDilnNInt>
+              <initialRachisNConc>0.000</initialRachisNConc>
+              <targetRachisNConc>0.01</targetRachisNConc>
+              <structRachisNConc>0.0021</structRachisNConc>
+              <rachisDilnNSlope>0.005</rachisDilnNSlope>
+              <rachisDilnNInt>-0.00052</rachisDilnNInt>
+              <grainNFillRate units="mg/grain/dd">0.01</grainNFillRate>
+              <targetGrainNConc>0.0143</targetGrainNConc>
+              <nUptakeCease>523</nUptakeCease>
+              <nSupplyFrac>5</nSupplyFrac>
+              <dm_root_sen_frac description="fraction of root dry matter senesced each day">0.002</dm_root_sen_frac>
+              <leaf_no_dead_const description="coefficients for rate of leaf number senescence following flowering">-0.025</leaf_no_dead_const>
+              <leaf_no_dead_slope>0.00035</leaf_no_dead_slope>
+              <sen_light_time_const units="days" description="delay factor for light senescence">10.0</sen_light_time_const>
+              <sen_radn_crit units="Mj/m^2" description="radiation level for onset of light senescence">2</sen_radn_crit>
+              <frost_kill units="oC" description="temperature threshold for leaf death">-3.0</frost_kill>
+              <sen_water_time_const units="days" description="delay factor for water senescence">10.0</sen_water_time_const>
+              <sen_threshold description="supply:demand ratio for onset of water senescence">0.25</sen_threshold>
+              <tt_emerg_limit units="oCd" description="maximum degree days allowed for emergence to take place">150.0</tt_emerg_limit>
+              <pfact_photo_slope description="2.0 !1.0">2.5 </pfact_photo_slope>
+              <pfact_expansion_slope>2.5</pfact_expansion_slope>
+              <pfact_pheno_slope description="10 !20">6 </pfact_pheno_slope>
+              <pfact_grain_slope>20</pfact_grain_slope>
+              <p_uptake_factor description="factor to calc total P uptake from demand for today's growth">1.5   </p_uptake_factor>
+              <x_p_stage_code>3       4      5      6      7      8      10</x_p_stage_code>
+              <y_p_conc_max_leaf>0.0045  0.0045 0.004  0.0025 0.0025 0.0024 0.0024</y_p_conc_max_leaf>
+              <y_p_conc_min_leaf>0.003   0.003  0.0029 0.0011 0.0011 0.0008 0.0006</y_p_conc_min_leaf>
+              <y_p_conc_sen_leaf>0.0005  0.0005 0.0005 0.0005 0.0005 0.0005 0.0005</y_p_conc_sen_leaf>
+              <y_p_conc_max_stem>0.0045   0.0045 0.003  0.0011  0.001  0.0007 0.0007</y_p_conc_max_stem>
+              <y_p_conc_min_stem>0.003    0.003  0.002  0.0006 0.0006 0.0002 0.0002</y_p_conc_min_stem>
+              <y_p_conc_sen_stem>0.0002  0.0002 0.0002 0.0002 0.0002 0.0002 0.0002</y_p_conc_sen_stem>
+              <y_p_conc_max_root description="assume P conc in roots non-varying">0.0010  0.0010 0.0010 0.0010 0.0010 0.0010 0.0010</y_p_conc_max_root>
+              <y_p_conc_min_root>0.0010  0.0010 0.0010 0.0010 0.0010 0.0010 0.0010</y_p_conc_min_root>
+              <y_p_conc_sen_root>0.0010  0.0010 0.0010 0.0010 0.0010 0.0010 0.0010</y_p_conc_sen_root>
+              <y_p_conc_max_flower description="assumed same as stem">0.0045  0.0045  0.003  0.0011  0.001  0.0007 0.0007</y_p_conc_max_flower>
+              <y_p_conc_min_flower>0.003   0.003   0.002  0.0006 0.0006 0.0002 0.0002</y_p_conc_min_flower>
+              <y_p_conc_sen_flower>0.0002  0.0002 0.0002 0.0002 0.0002 0.0002 0.0002</y_p_conc_sen_flower>
+              <y_p_conc_max_grain description="based on Mallarino (1996)">0.001   0.001  0.001  0.001  0.001  0.0030  0.0030</y_p_conc_max_grain>
+              <y_p_conc_min_grain description="based on Kenya data">0.001   0.001  0.001  0.001  0.001  0.0015  0.0015</y_p_conc_min_grain>
+              <y_p_conc_sen_grain>0.001   0.001  0.001  0.001  0.001  0.0015  0.0015</y_p_conc_sen_grain>
+              <p_conc_init_leaf>0.0045</p_conc_init_leaf>
+              <p_conc_init_stem>0.0045</p_conc_init_stem>
+              <p_conc_init_root description="0.0014">0.0010 </p_conc_init_root>
+              <p_conc_init_flower>0.0045</p_conc_init_flower>
+              <p_conc_init_grain>0.0030</p_conc_init_grain>
+              <minsw description="lowest acceptable value for ll">0.00001</minsw>
+              <x_stem_wt units="g/stem" description="look up table for canopy height">0    80</x_stem_wt>
+              <y_height units="mm" description="plant canopy height">0  2000</y_height>
+              <x_co2_te_modifier units="ppm co2">0  350  700   1000</x_co2_te_modifier>
+              <y_co2_te_modifier>0  1.0  1.37  1.69</y_co2_te_modifier>
+              <GNmaxCoef>170</GNmaxCoef>
+            </MaizeConstants>
           </Maize>
         </area>
       </simulation>
@@ -8701,17 +9174,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize name="maize">
-            <MaizeGenotype name="Barker" shortcut="/Maize/shared/maize/Barker" />
-            <MaizeGenotype name="Pioneer_6875" shortcut="/Maize/shared/maize/Pioneer_6875" />
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-            <MaizeGenotype name="katumani" shortcut="/Maize/shared/maize/katumani" />
-            <MaizeGenotype name="dekalb_xl82" shortcut="/Maize/shared/maize/dekalb_xl82" />
-            <MaizeGenotype name="gh_5009" shortcut="/Maize/shared/maize/gh_5009" />
-            <MaizeGenotype name="hycorn_40" shortcut="/Maize/shared/maize/hycorn_40" />
-            <MaizeGenotype name="hycorn_50" shortcut="/Maize/shared/maize/hycorn_50" />
-            <MaizeGenotype name="gh_5019wx" shortcut="/Maize/shared/maize/gh_5019wx" />
-          </Maize>
+          <Maize name="maize" />
         </area>
       </simulation>
       <simulation name="Maize_DRK_DRKJ09">
@@ -9096,23 +9559,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize>
-            <MaizeGenotype name="gh_5009">
-              <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
-              <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">165</tt_endjuv_to_init>
-              <photoperiod_crit1 type="text" description="photoperiod_crit1">12.5</photoperiod_crit1>
-              <photoperiod_crit2 type="text" description="photoperiod_crit2">20.0</photoperiod_crit2>
-              <photoperiod_slope type="text" description="photoperiod_slope">0.0</photoperiod_slope>
-              <tt_flag_to_flower type="text" description="tt_flag_to_flower">50</tt_flag_to_flower>
-              <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">170 </tt_flower_to_start_grain>
-              <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">950</tt_flower_to_maturity>
-              <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
-              <GNmax type="text" description="GNmax">580</GNmax>
-              <potKernelWt type="text" description="potKernelWt">300</potKernelWt>
-              <rue type="text" description="rue">1.60</rue>
-            </MaizeGenotype>
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-          </Maize>
+          <Maize />
         </area>
       </simulation>
       <simulation name="Maize_DRK_DRKJH40">
@@ -9497,25 +9944,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize>
-            <MaizeGenotype name="hycorn_40">
-              <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
-              <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">150</tt_endjuv_to_init>
-              <photoperiod_crit1 type="text" description="photoperiod_crit1">12.5</photoperiod_crit1>
-              <photoperiod_crit2 type="text" description="photoperiod_crit2">20.0</photoperiod_crit2>
-              <photoperiod_slope type="text" description="photoperiod_slope">0.0</photoperiod_slope>
-              <tt_flag_to_flower type="text" description="tt_flag_to_flower">50</tt_flag_to_flower>
-              <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">170 </tt_flower_to_start_grain>
-              <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">835</tt_flower_to_maturity>
-              <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
-              <GNmax type="text" description="GNmax">500</GNmax>
-              <potKernelWt type="text" description="potKernelWt">300</potKernelWt>
-              <rue type="text" description="rue">1.60</rue>
-              <leaf_no_dead_const type="text" description="leaf_no_dead_const">-0.025</leaf_no_dead_const>
-              <leaf_no_dead_slope type="text" description="leaf_no_dead_slope">0.00042</leaf_no_dead_slope>
-            </MaizeGenotype>
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-          </Maize>
+          <Maize />
         </area>
       </simulation>
       <simulation name="Maize_DRK_DRKJH50">
@@ -9900,23 +10329,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize>
-            <MaizeGenotype name="hycorn_50">
-              <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
-              <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">130</tt_endjuv_to_init>
-              <photoperiod_crit1 type="text" description="photoperiod_crit1">12.5</photoperiod_crit1>
-              <photoperiod_crit2 type="text" description="photoperiod_crit2">20.0</photoperiod_crit2>
-              <photoperiod_slope type="text" description="photoperiod_slope">0.0</photoperiod_slope>
-              <tt_flag_to_flower type="text" description="tt_flag_to_flower">50</tt_flag_to_flower>
-              <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">170 </tt_flower_to_start_grain>
-              <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">1040</tt_flower_to_maturity>
-              <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
-              <GNmax type="text" description="GNmax">580</GNmax>
-              <potKernelWt type="text" description="potKernelWt">260</potKernelWt>
-              <rue type="text" description="rue">1.60</rue>
-            </MaizeGenotype>
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-          </Maize>
+          <Maize />
         </area>
       </simulation>
       <simulation name="Maize_DRK_DRKJWX">
@@ -10301,23 +10714,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize>
-            <MaizeGenotype name="gh_5019wx">
-              <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
-              <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">165</tt_endjuv_to_init>
-              <photoperiod_crit1 type="text" description="photoperiod_crit1">12.5</photoperiod_crit1>
-              <photoperiod_crit2 type="text" description="photoperiod_crit2">20.0</photoperiod_crit2>
-              <photoperiod_slope type="text" description="photoperiod_slope">5.0</photoperiod_slope>
-              <tt_flag_to_flower type="text" description="tt_flag_to_flower">50</tt_flag_to_flower>
-              <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">170 </tt_flower_to_start_grain>
-              <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">1020</tt_flower_to_maturity>
-              <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
-              <GNmax type="text" description="GNmax">500</GNmax>
-              <potKernelWt type="text" description="potKernelWt">280</potKernelWt>
-              <rue type="text" description="rue">1.60</rue>
-            </MaizeGenotype>
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-          </Maize>
+          <Maize />
         </area>
       </simulation>
       <simulation name="Maize_DRK_DRKM09">
@@ -10681,17 +11078,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize name="maize">
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-            <MaizeGenotype name="Barker" shortcut="/Maize/shared/maize/Barker" />
-            <MaizeGenotype name="Pioneer_6875" shortcut="/Maize/shared/maize/Pioneer_6875" />
-            <MaizeGenotype name="katumani" shortcut="/Maize/shared/maize/katumani" />
-            <MaizeGenotype name="dekalb_xl82" shortcut="/Maize/shared/maize/dekalb_xl82" />
-            <MaizeGenotype name="gh_5009" shortcut="/Maize/shared/maize/gh_5009" />
-            <MaizeGenotype name="hycorn_40" shortcut="/Maize/shared/maize/hycorn_40" />
-            <MaizeGenotype name="hycorn_50" shortcut="/Maize/shared/maize/hycorn_50" />
-            <MaizeGenotype name="gh_5019wx" shortcut="/Maize/shared/maize/gh_5019wx" />
-          </Maize>
+          <Maize name="maize" />
         </area>
       </simulation>
       <simulation name="Maize_DRK_DRKMH40">
@@ -11055,25 +11442,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize>
-            <MaizeGenotype name="hycorn_40">
-              <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
-              <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">150</tt_endjuv_to_init>
-              <photoperiod_crit1 type="text" description="photoperiod_crit1">12.5</photoperiod_crit1>
-              <photoperiod_crit2 type="text" description="photoperiod_crit2">20.0</photoperiod_crit2>
-              <photoperiod_slope type="text" description="photoperiod_slope">0.0</photoperiod_slope>
-              <tt_flag_to_flower type="text" description="tt_flag_to_flower">50</tt_flag_to_flower>
-              <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">170 </tt_flower_to_start_grain>
-              <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">790</tt_flower_to_maturity>
-              <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
-              <GNmax type="text" description="GNmax">500</GNmax>
-              <potKernelWt type="text" description="potKernelWt">300</potKernelWt>
-              <rue type="text" description="rue">1.60</rue>
-              <leaf_no_dead_const type="text" description="leaf_no_dead_const">-0.025</leaf_no_dead_const>
-              <leaf_no_dead_slope type="text" description="leaf_no_dead_slope">0.00042</leaf_no_dead_slope>
-            </MaizeGenotype>
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-          </Maize>
+          <Maize />
         </area>
       </simulation>
       <simulation name="Maize_DRK_DRKMH50">
@@ -11437,23 +11806,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize>
-            <MaizeGenotype name="hycorn_50">
-              <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
-              <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">130</tt_endjuv_to_init>
-              <photoperiod_crit1 type="text" description="photoperiod_crit1">12.5</photoperiod_crit1>
-              <photoperiod_crit2 type="text" description="photoperiod_crit2">20.0</photoperiod_crit2>
-              <photoperiod_slope type="text" description="photoperiod_slope">0.0</photoperiod_slope>
-              <tt_flag_to_flower type="text" description="tt_flag_to_flower">50</tt_flag_to_flower>
-              <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">170 </tt_flower_to_start_grain>
-              <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">850</tt_flower_to_maturity>
-              <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
-              <GNmax type="text" description="GNmax">580</GNmax>
-              <potKernelWt type="text" description="potKernelWt">260</potKernelWt>
-              <rue type="text" description="rue">1.60</rue>
-            </MaizeGenotype>
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-          </Maize>
+          <Maize />
         </area>
       </simulation>
       <simulation name="Maize_DRK_DRKMWX">
@@ -11821,23 +12174,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize>
-            <MaizeGenotype name="gh_5019wx">
-              <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
-              <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">165</tt_endjuv_to_init>
-              <photoperiod_crit1 type="text" description="photoperiod_crit1">12.5</photoperiod_crit1>
-              <photoperiod_crit2 type="text" description="photoperiod_crit2">20.0</photoperiod_crit2>
-              <photoperiod_slope type="text" description="photoperiod_slope">5.0</photoperiod_slope>
-              <tt_flag_to_flower type="text" description="tt_flag_to_flower">50</tt_flag_to_flower>
-              <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">170 </tt_flower_to_start_grain>
-              <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">920</tt_flower_to_maturity>
-              <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
-              <GNmax type="text" description="GNmax">500</GNmax>
-              <potKernelWt type="text" description="potKernelWt">280</potKernelWt>
-              <rue type="text" description="rue">1.60</rue>
-            </MaizeGenotype>
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-          </Maize>
+          <Maize />
         </area>
       </simulation>
       <simulation name="Maize_DRK_DRKN09">
@@ -12263,17 +12600,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize name="maize">
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-            <MaizeGenotype name="Barker" shortcut="/Maize/shared/maize/Barker" />
-            <MaizeGenotype name="Pioneer_6875" shortcut="/Maize/shared/maize/Pioneer_6875" />
-            <MaizeGenotype name="katumani" shortcut="/Maize/shared/maize/katumani" />
-            <MaizeGenotype name="dekalb_xl82" shortcut="/Maize/shared/maize/dekalb_xl82" />
-            <MaizeGenotype name="gh_5009" shortcut="/Maize/shared/maize/gh_5009" />
-            <MaizeGenotype name="hycorn_40" shortcut="/Maize/shared/maize/hycorn_40" />
-            <MaizeGenotype name="hycorn_50" shortcut="/Maize/shared/maize/hycorn_50" />
-            <MaizeGenotype name="gh_5019wx" shortcut="/Maize/shared/maize/gh_5019wx" />
-          </Maize>
+          <Maize name="maize" />
         </area>
       </simulation>
       <simulation name="Maize_DRK_DRKNH40">
@@ -12699,17 +13026,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize name="maize">
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-            <MaizeGenotype name="Barker" shortcut="/Maize/shared/maize/Barker" />
-            <MaizeGenotype name="Pioneer_6875" shortcut="/Maize/shared/maize/Pioneer_6875" />
-            <MaizeGenotype name="katumani" shortcut="/Maize/shared/maize/katumani" />
-            <MaizeGenotype name="dekalb_xl82" shortcut="/Maize/shared/maize/dekalb_xl82" />
-            <MaizeGenotype name="gh_5009" shortcut="/Maize/shared/maize/gh_5009" />
-            <MaizeGenotype name="hycorn_40" shortcut="/Maize/shared/maize/hycorn_40" />
-            <MaizeGenotype name="hycorn_50" shortcut="/Maize/shared/maize/hycorn_50" />
-            <MaizeGenotype name="gh_5019wx" shortcut="/Maize/shared/maize/gh_5019wx" />
-          </Maize>
+          <Maize name="maize" />
         </area>
       </simulation>
       <simulation name="Maize_DRK_DRKNWX">
@@ -13135,17 +13452,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize name="maize">
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-            <MaizeGenotype name="Barker" shortcut="/Maize/shared/maize/Barker" />
-            <MaizeGenotype name="Pioneer_6875" shortcut="/Maize/shared/maize/Pioneer_6875" />
-            <MaizeGenotype name="katumani" shortcut="/Maize/shared/maize/katumani" />
-            <MaizeGenotype name="dekalb_xl82" shortcut="/Maize/shared/maize/dekalb_xl82" />
-            <MaizeGenotype name="gh_5009" shortcut="/Maize/shared/maize/gh_5009" />
-            <MaizeGenotype name="hycorn_40" shortcut="/Maize/shared/maize/hycorn_40" />
-            <MaizeGenotype name="hycorn_50" shortcut="/Maize/shared/maize/hycorn_50" />
-            <MaizeGenotype name="gh_5019wx" shortcut="/Maize/shared/maize/gh_5019wx" />
-          </Maize>
+          <Maize name="maize" />
         </area>
       </simulation>
       <simulation name="Maize_DRK_DRKO09">
@@ -13530,23 +13837,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize>
-            <MaizeGenotype name="gh_5009">
-              <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
-              <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">165</tt_endjuv_to_init>
-              <photoperiod_crit1 type="text" description="photoperiod_crit1">12.5</photoperiod_crit1>
-              <photoperiod_crit2 type="text" description="photoperiod_crit2">20.0</photoperiod_crit2>
-              <photoperiod_slope type="text" description="photoperiod_slope">0.0</photoperiod_slope>
-              <tt_flag_to_flower type="text" description="tt_flag_to_flower">50</tt_flag_to_flower>
-              <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">170 </tt_flower_to_start_grain>
-              <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">890</tt_flower_to_maturity>
-              <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
-              <GNmax type="text" description="GNmax">580</GNmax>
-              <potKernelWt type="text" description="potKernelWt">300</potKernelWt>
-              <rue type="text" description="rue">1.60</rue>
-            </MaizeGenotype>
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-          </Maize>
+          <Maize />
         </area>
       </simulation>
       <simulation name="Maize_DRK_DRKOH40">
@@ -13931,17 +14222,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize name="maize">
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-            <MaizeGenotype name="Barker" shortcut="/Maize/shared/maize/Barker" />
-            <MaizeGenotype name="Pioneer_6875" shortcut="/Maize/shared/maize/Pioneer_6875" />
-            <MaizeGenotype name="katumani" shortcut="/Maize/shared/maize/katumani" />
-            <MaizeGenotype name="dekalb_xl82" shortcut="/Maize/shared/maize/dekalb_xl82" />
-            <MaizeGenotype name="gh_5009" shortcut="/Maize/shared/maize/gh_5009" />
-            <MaizeGenotype name="hycorn_40" shortcut="/Maize/shared/maize/hycorn_40" />
-            <MaizeGenotype name="hycorn_50" shortcut="/Maize/shared/maize/hycorn_50" />
-            <MaizeGenotype name="gh_5019wx" shortcut="/Maize/shared/maize/gh_5019wx" />
-          </Maize>
+          <Maize name="maize" />
         </area>
       </simulation>
       <simulation name="Maize_DRK_DRKOWX">
@@ -14326,17 +14607,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize name="maize">
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-            <MaizeGenotype name="Barker" shortcut="/Maize/shared/maize/Barker" />
-            <MaizeGenotype name="Pioneer_6875" shortcut="/Maize/shared/maize/Pioneer_6875" />
-            <MaizeGenotype name="katumani" shortcut="/Maize/shared/maize/katumani" />
-            <MaizeGenotype name="dekalb_xl82" shortcut="/Maize/shared/maize/dekalb_xl82" />
-            <MaizeGenotype name="gh_5009" shortcut="/Maize/shared/maize/gh_5009" />
-            <MaizeGenotype name="hycorn_40" shortcut="/Maize/shared/maize/hycorn_40" />
-            <MaizeGenotype name="hycorn_50" shortcut="/Maize/shared/maize/hycorn_50" />
-            <MaizeGenotype name="gh_5019wx" shortcut="/Maize/shared/maize/gh_5019wx" />
-          </Maize>
+          <Maize name="maize" />
         </area>
       </simulation>
       <simulation name="Maize_DRK_DRKS09">
@@ -14721,23 +14992,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize>
-            <MaizeGenotype name="gh_5009">
-              <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
-              <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">165</tt_endjuv_to_init>
-              <photoperiod_crit1 type="text" description="photoperiod_crit1">12.5</photoperiod_crit1>
-              <photoperiod_crit2 type="text" description="photoperiod_crit2">20.0</photoperiod_crit2>
-              <photoperiod_slope type="text" description="photoperiod_slope">0.0</photoperiod_slope>
-              <tt_flag_to_flower type="text" description="tt_flag_to_flower">50</tt_flag_to_flower>
-              <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">170 </tt_flower_to_start_grain>
-              <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">890</tt_flower_to_maturity>
-              <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
-              <GNmax type="text" description="GNmax">580</GNmax>
-              <potKernelWt type="text" description="potKernelWt">300</potKernelWt>
-              <rue type="text" description="rue">1.60</rue>
-            </MaizeGenotype>
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-          </Maize>
+          <Maize />
         </area>
       </simulation>
       <simulation name="Maize_DRK_DRKSH40">
@@ -15122,17 +15377,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize name="maize">
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-            <MaizeGenotype name="Barker" shortcut="/Maize/shared/maize/Barker" />
-            <MaizeGenotype name="Pioneer_6875" shortcut="/Maize/shared/maize/Pioneer_6875" />
-            <MaizeGenotype name="katumani" shortcut="/Maize/shared/maize/katumani" />
-            <MaizeGenotype name="dekalb_xl82" shortcut="/Maize/shared/maize/dekalb_xl82" />
-            <MaizeGenotype name="gh_5009" shortcut="/Maize/shared/maize/gh_5009" />
-            <MaizeGenotype name="hycorn_40" shortcut="/Maize/shared/maize/hycorn_40" />
-            <MaizeGenotype name="hycorn_50" shortcut="/Maize/shared/maize/hycorn_50" />
-            <MaizeGenotype name="gh_5019wx" shortcut="/Maize/shared/maize/gh_5019wx" />
-          </Maize>
+          <Maize name="maize" />
         </area>
       </simulation>
       <simulation name="Maize_DRK_DRKSWX">
@@ -15517,17 +15762,7 @@ endif
             <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
-          <Maize name="maize">
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-            <MaizeGenotype name="Barker" shortcut="/Maize/shared/maize/Barker" />
-            <MaizeGenotype name="Pioneer_6875" shortcut="/Maize/shared/maize/Pioneer_6875" />
-            <MaizeGenotype name="katumani" shortcut="/Maize/shared/maize/katumani" />
-            <MaizeGenotype name="dekalb_xl82" shortcut="/Maize/shared/maize/dekalb_xl82" />
-            <MaizeGenotype name="gh_5009" shortcut="/Maize/shared/maize/gh_5009" />
-            <MaizeGenotype name="hycorn_40" shortcut="/Maize/shared/maize/hycorn_40" />
-            <MaizeGenotype name="hycorn_50" shortcut="/Maize/shared/maize/hycorn_50" />
-            <MaizeGenotype name="gh_5019wx" shortcut="/Maize/shared/maize/gh_5019wx" />
-          </Maize>
+          <Maize name="maize" />
         </area>
       </simulation>
     </folder>
@@ -31807,7 +32042,7 @@ endif
           <outputfile name="Outputfile">
             <filename output="yes">Maize_MSN_M2S3.out</filename>
             <title>Maize_MSN_M2S3</title>
-            <variables name="My Variables" shortcut="/Maize/Shared/My Variables">
+            <variables name="My Variables">
               <variable>dd/mm/yyyy as Date</variable>
               <variable>DaysAfterSowing</variable>
               <variable>Stage</variable>
@@ -31848,7 +32083,6 @@ endif
               <variable>esw_profile</variable>
               <variable>irrigation</variable>
             </variables>
-            <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
           </outputfile>
           <operations>
             <operation condition="start_of_day">
@@ -31940,14 +32174,314 @@ endif
             <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
           </irrigation>
           <Soil name="Field 10">
+            <RecordNumber>0</RecordNumber>
+            <SoilType>s3</SoilType>
+            <LocalName>Katherine</LocalName>
+            <Site>Katherine</Site>
+            <NearestTown>Unknown</NearestTown>
+            <Region>Katherine</Region>
+            <NaturalVegetation>Unknown</NaturalVegetation>
+            <Latitude>0</Latitude>
+            <Longitude>0</Longitude>
+            <YearOfSampling>0</YearOfSampling>
             <Water>
-              <SoilCrop name="Maize" shortcut="/Maize/Maize_MSN_M1S3/paddock/Field 10/Water/Maize" />
+              <SoilCrop name="Maize">
+                <Thickness>
+                  <double>150</double>
+                  <double>150</double>
+                  <double>150</double>
+                  <double>150</double>
+                  <double>150</double>
+                  <double>150</double>
+                  <double>300</double>
+                  <double>300</double>
+                  <double>300</double>
+                  <double>200</double>
+                </Thickness>
+                <LL>
+                  <double>0.19</double>
+                  <double>0.21</double>
+                  <double>0.21</double>
+                  <double>0.23</double>
+                  <double>0.23</double>
+                  <double>0.24</double>
+                  <double>0.25</double>
+                  <double>0.28</double>
+                  <double>0.28</double>
+                  <double>0.28</double>
+                </LL>
+                <KL>
+                  <double>0.12</double>
+                  <double>0.12</double>
+                  <double>0.1</double>
+                  <double>0.08</double>
+                  <double>0.08</double>
+                  <double>0.08</double>
+                  <double>0.08</double>
+                  <double>0.08</double>
+                  <double>0.08</double>
+                  <double>0.08</double>
+                </KL>
+                <XF>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>1</double>
+                </XF>
+              </SoilCrop>
+              <Thickness>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>300</double>
+                <double>300</double>
+                <double>300</double>
+                <double>200</double>
+              </Thickness>
+              <BD>
+                <double>1.56</double>
+                <double>1.52</double>
+                <double>1.46</double>
+                <double>1.46</double>
+                <double>1.42</double>
+                <double>1.42</double>
+                <double>1.46</double>
+                <double>1.5</double>
+                <double>1.53</double>
+                <double>1.53</double>
+              </BD>
+              <AirDry>
+                <double>0.05</double>
+                <double>0.08</double>
+                <double>0.21</double>
+                <double>0.22</double>
+                <double>0.22</double>
+                <double>0.22</double>
+                <double>0.22</double>
+                <double>0.23</double>
+                <double>0.24</double>
+                <double>0.24</double>
+              </AirDry>
+              <LL15>
+                <double>0.19</double>
+                <double>0.21</double>
+                <double>0.21</double>
+                <double>0.22</double>
+                <double>0.22</double>
+                <double>0.22</double>
+                <double>0.22</double>
+                <double>0.23</double>
+                <double>0.24</double>
+                <double>0.24</double>
+              </LL15>
+              <DUL>
+                <double>0.3</double>
+                <double>0.31</double>
+                <double>0.31</double>
+                <double>0.32</double>
+                <double>0.33</double>
+                <double>0.33</double>
+                <double>0.32</double>
+                <double>0.34</double>
+                <double>0.35</double>
+                <double>0.35</double>
+              </DUL>
+              <SAT>
+                <double>0.31</double>
+                <double>0.33</double>
+                <double>0.34</double>
+                <double>0.34</double>
+                <double>0.34</double>
+                <double>0.34</double>
+                <double>0.34</double>
+                <double>0.35</double>
+                <double>0.37</double>
+                <double>0.37</double>
+              </SAT>
             </Water>
-            <SoilWater />
-            <SoilOrganicMatter />
-            <Analysis />
-            <Sample name="Initial nitrogen" />
-            <Sample name="Initial water" />
+            <SoilWater>
+              <SummerCona>6.6</SummerCona>
+              <SummerU>1.5</SummerU>
+              <SummerDate>1-Nov</SummerDate>
+              <WinterCona>6.6</WinterCona>
+              <WinterU>1.5</WinterU>
+              <WinterDate>1-Apr</WinterDate>
+              <DiffusConst>88</DiffusConst>
+              <DiffusSlope>35.4</DiffusSlope>
+              <Salb>0.2</Salb>
+              <CN2Bare>85</CN2Bare>
+              <CNRed>20</CNRed>
+              <CNCov>0.8</CNCov>
+              <Thickness>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>300</double>
+                <double>300</double>
+                <double>300</double>
+              </Thickness>
+              <SWCON>
+                <double>0.7</double>
+                <double>0.7</double>
+                <double>0.7</double>
+                <double>0.7</double>
+                <double>0.7</double>
+                <double>0.7</double>
+                <double>0.7</double>
+                <double>0.7</double>
+                <double>0.7</double>
+              </SWCON>
+            </SoilWater>
+            <SoilOrganicMatter>
+              <RootCN>36</RootCN>
+              <RootWt>2000</RootWt>
+              <SoilCN>14.5</SoilCN>
+              <EnrACoeff>7.4</EnrACoeff>
+              <EnrBCoeff>0.2</EnrBCoeff>
+              <Thickness>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>300</double>
+                <double>300</double>
+                <double>300</double>
+              </Thickness>
+              <OC>
+                <double>1.27</double>
+                <double>0.59</double>
+                <double>0.34</double>
+                <double>0.34</double>
+                <double>0.26</double>
+                <double>0.26</double>
+                <double>0.25</double>
+                <double>0.19</double>
+                <double>0.21</double>
+              </OC>
+              <FBiom>
+                <double>0.04</double>
+                <double>0.02</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+              </FBiom>
+              <FInert>
+                <double>0.39</double>
+                <double>0.47</double>
+                <double>0.52</double>
+                <double>0.62</double>
+                <double>0.74</double>
+                <double>0.83</double>
+                <double>0.93</double>
+                <double>0.93</double>
+                <double>0.93</double>
+              </FInert>
+            </SoilOrganicMatter>
+            <Analysis>
+              <Thickness>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>300</double>
+                <double>300</double>
+                <double>300</double>
+              </Thickness>
+              <PH>
+                <double>6.5</double>
+                <double>6.2</double>
+                <double>6.3</double>
+                <double>6.4</double>
+                <double>6.5</double>
+                <double>6.6</double>
+                <double>6.6</double>
+                <double>6.5</double>
+                <double>6.5</double>
+              </PH>
+            </Analysis>
+            <Sample name="Initial nitrogen">
+              <Date type="date" description="Sample date:" />
+              <Thickness>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>300</double>
+                <double>300</double>
+                <double>300</double>
+              </Thickness>
+              <NO3>
+                <double>2.4</double>
+                <double>0.4</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+              </NO3>
+              <NH4>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+              </NH4>
+            </Sample>
+            <Sample name="Initial water">
+              <Date type="date" description="Sample date:" />
+              <Thickness>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>150</double>
+                <double>300</double>
+                <double>300</double>
+                <double>300</double>
+                <double>200</double>
+              </Thickness>
+              <SW>
+                <double>0.304</double>
+                <double>0.31</double>
+                <double>0.31</double>
+                <double>0.324</double>
+                <double>0.328</double>
+                <double>0.328</double>
+                <double>0.325</double>
+                <double>0.337</double>
+                <double>0.35</double>
+                <double>0.35</double>
+              </SW>
+            </Sample>
           </Soil>
           <Maize />
         </area>
@@ -34557,28 +35091,7 @@ endif
               <action>fertiliser apply amount = 27, depth = 1, type = urea_n</action>
             </operation>
           </operations>
-          <Maize>
-            <MaizeGenotype name="katumani">
-              <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
-              <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">150</tt_endjuv_to_init>
-              <photoperiod_crit1 type="text" description="photoperiod_crit1">12.5</photoperiod_crit1>
-              <photoperiod_crit2 type="text" description="photoperiod_crit2">24.0</photoperiod_crit2>
-              <photoperiod_slope type="text" description="photoperiod_slope">15.0</photoperiod_slope>
-              <tt_flag_to_flower type="text" description="tt_flag_to_flower">10</tt_flag_to_flower>
-              <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">120 </tt_flower_to_start_grain>
-              <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">890</tt_flower_to_maturity>
-              <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
-              <GNmax type="text" description="GNmax">420</GNmax>
-              <potKernelWt type="text" description="potKernelWt">300</potKernelWt>
-              <rue type="text" description="rue">1.60</rue>
-              <aX0 type="text" description="Largest leaf multiplier">0.72</aX0>
-              <largestLeafParams type="text" description="Largest Leaf Area Params">1200  -1.17 0.047 </largestLeafParams>
-              <bellCurveParams type="text" description="Leaf Curve Params">-0.0126 -0.2071 0.000365 -0.4381 </bellCurveParams>
-              <GNmaxCoef type="text" description="GNmaxCoef">120</GNmaxCoef>
-              <PGRbase type="text" description="PGRbase">1.8</PGRbase>
-            </MaizeGenotype>
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-          </Maize>
+          <Maize />
         </area>
       </simulation>
       <simulation name="Maize_K88_K88P6875">
@@ -56271,18 +56784,333 @@ endif
           </area>
         </simulation>
         <simulation name="j2ka05">
-          <clock />
+          <clock>
+            <start_date type="date" description="Enter the start date of the simulation">01/01/1988</start_date>
+            <end_date type="date" description="Enter the end date of the simulation">18/09/1988</end_date>
+          </clock>
           <summaryfile />
-          <metfile name="met" />
+          <metfile name="met">
+            <filename name="filename" input="yes">KATUMANI.MET</filename>
+          </metfile>
           <area name="paddock">
             <Soil name="j2ka__">
-              <Water />
-              <SoilWater />
-              <SoilOrganicMatter />
-              <Analysis />
-              <Sample name="Initial soil" />
+              <RecordNumber>0</RecordNumber>
+              <Latitude>0</Latitude>
+              <Longitude>0</Longitude>
+              <YearOfSampling>0</YearOfSampling>
+              <Water>
+                <Thickness>
+                  <double>100</double>
+                  <double>100</double>
+                  <double>100</double>
+                  <double>200</double>
+                  <double>200</double>
+                  <double>200</double>
+                  <double>200</double>
+                  <double>200</double>
+                  <double>400</double>
+                </Thickness>
+                <BD>
+                  <double>1.35</double>
+                  <double>1.35</double>
+                  <double>1.35</double>
+                  <double>1.4</double>
+                  <double>1.4</double>
+                  <double>1.4</double>
+                  <double>1.4</double>
+                  <double>1.4</double>
+                  <double>1.4</double>
+                </BD>
+                <AirDry>
+                  <double>0.04</double>
+                  <double>0.14</double>
+                  <double>0.14</double>
+                  <double>0.15</double>
+                  <double>0.16</double>
+                  <double>0.16</double>
+                  <double>0.16</double>
+                  <double>0.16</double>
+                  <double>0.16</double>
+                </AirDry>
+                <LL15>
+                  <double>0.14</double>
+                  <double>0.14</double>
+                  <double>0.14</double>
+                  <double>0.15</double>
+                  <double>0.16</double>
+                  <double>0.16</double>
+                  <double>0.16</double>
+                  <double>0.16</double>
+                  <double>0.16</double>
+                </LL15>
+                <DUL>
+                  <double>0.25</double>
+                  <double>0.25</double>
+                  <double>0.29</double>
+                  <double>0.29</double>
+                  <double>0.29</double>
+                  <double>0.29</double>
+                  <double>0.29</double>
+                  <double>0.29</double>
+                  <double>0.29</double>
+                </DUL>
+                <SAT>
+                  <double>0.35</double>
+                  <double>0.35</double>
+                  <double>0.37</double>
+                  <double>0.37</double>
+                  <double>0.38</double>
+                  <double>0.38</double>
+                  <double>0.38</double>
+                  <double>0.38</double>
+                  <double>0.38</double>
+                </SAT>
+                <SoilCrop name="Maize">
+                  <Thickness>
+                    <double>100</double>
+                    <double>100</double>
+                    <double>100</double>
+                    <double>200</double>
+                    <double>200</double>
+                    <double>200</double>
+                    <double>200</double>
+                    <double>200</double>
+                    <double>400</double>
+                  </Thickness>
+                  <LL>
+                    <double>0.14</double>
+                    <double>0.14</double>
+                    <double>0.14</double>
+                    <double>0.15</double>
+                    <double>0.16</double>
+                    <double>0.16</double>
+                    <double>0.16</double>
+                    <double>0.16</double>
+                    <double>0.16</double>
+                  </LL>
+                  <KL>
+                    <double>0.08</double>
+                    <double>0.08</double>
+                    <double>0.08</double>
+                    <double>0.08</double>
+                    <double>0.06</double>
+                    <double>0.04</double>
+                    <double>0.03</double>
+                    <double>0.02</double>
+                    <double>0.01</double>
+                  </KL>
+                  <XF>
+                    <double>1</double>
+                    <double>1</double>
+                    <double>1</double>
+                    <double>1</double>
+                    <double>1</double>
+                    <double>1</double>
+                    <double>1</double>
+                    <double>1</double>
+                    <double>1</double>
+                  </XF>
+                </SoilCrop>
+              </Water>
+              <SoilWater>
+                <SummerCona>3</SummerCona>
+                <SummerU>9</SummerU>
+                <SummerDate>1-Nov</SummerDate>
+                <WinterCona>3</WinterCona>
+                <WinterU>9</WinterU>
+                <WinterDate>1-Apr</WinterDate>
+                <DiffusConst>88</DiffusConst>
+                <DiffusSlope>35.4</DiffusSlope>
+                <Salb>0.13</Salb>
+                <CN2Bare>50</CN2Bare>
+                <CNRed>20</CNRed>
+                <CNCov>0.8</CNCov>
+                <Slope>NaN</Slope>
+                <DischargeWidth>NaN</DischargeWidth>
+                <CatchmentArea>NaN</CatchmentArea>
+                <MaxPond>NaN</MaxPond>
+                <Thickness>
+                  <double>100</double>
+                  <double>100</double>
+                  <double>100</double>
+                  <double>200</double>
+                  <double>200</double>
+                  <double>200</double>
+                  <double>200</double>
+                  <double>200</double>
+                  <double>400</double>
+                </Thickness>
+                <SWCON>
+                  <double>0.5</double>
+                  <double>0.5</double>
+                  <double>0.5</double>
+                  <double>0.5</double>
+                  <double>0.5</double>
+                  <double>0.5</double>
+                  <double>0.5</double>
+                  <double>0.5</double>
+                  <double>0.5</double>
+                </SWCON>
+              </SoilWater>
+              <SoilOrganicMatter>
+                <RootCN>45</RootCN>
+                <RootWt>1000</RootWt>
+                <SoilCN>14.5</SoilCN>
+                <EnrACoeff>7.4</EnrACoeff>
+                <EnrBCoeff>0.2</EnrBCoeff>
+                <Thickness>
+                  <double>100</double>
+                  <double>100</double>
+                  <double>100</double>
+                  <double>200</double>
+                  <double>200</double>
+                  <double>200</double>
+                  <double>200</double>
+                  <double>200</double>
+                  <double>400</double>
+                </Thickness>
+                <OC>
+                  <double>1.2</double>
+                  <double>1</double>
+                  <double>0.86</double>
+                  <double>0.83</double>
+                  <double>0.58</double>
+                  <double>0.54</double>
+                  <double>0.47</double>
+                  <double>0.5</double>
+                  <double>0.5</double>
+                </OC>
+                <FBiom>
+                  <double>0.02</double>
+                  <double>0.01</double>
+                  <double>0.01</double>
+                  <double>0.01</double>
+                  <double>0.01</double>
+                  <double>0.01</double>
+                  <double>0.01</double>
+                  <double>0.01</double>
+                  <double>0.01</double>
+                </FBiom>
+                <FInert>
+                  <double>0.9</double>
+                  <double>0.9</double>
+                  <double>0.9</double>
+                  <double>0.9</double>
+                  <double>0.9</double>
+                  <double>0.9</double>
+                  <double>0.93</double>
+                  <double>0.93</double>
+                  <double>0.93</double>
+                </FInert>
+                <OCUnits>Total</OCUnits>
+              </SoilOrganicMatter>
+              <Analysis>
+                <Thickness>
+                  <double>100</double>
+                  <double>100</double>
+                  <double>100</double>
+                  <double>200</double>
+                  <double>200</double>
+                  <double>200</double>
+                  <double>200</double>
+                  <double>200</double>
+                  <double>400</double>
+                </Thickness>
+                <Texture>
+                  <string />
+                  <string />
+                  <string />
+                  <string />
+                  <string />
+                  <string />
+                  <string />
+                  <string />
+                  <string />
+                </Texture>
+                <MunsellColour>
+                  <string />
+                  <string />
+                  <string />
+                  <string />
+                  <string />
+                  <string />
+                  <string />
+                  <string />
+                  <string />
+                </MunsellColour>
+                <PH>
+                  <double>6</double>
+                  <double>6</double>
+                  <double>6</double>
+                  <double>6.2</double>
+                  <double>6.5</double>
+                  <double>6.7</double>
+                  <double>6.8</double>
+                  <double>6.8</double>
+                  <double>6.8</double>
+                </PH>
+                <PHUnits>Water</PHUnits>
+                <BoronUnits>HotWater</BoronUnits>
+              </Analysis>
+              <Sample name="Initial soil">
+                <Thickness>
+                  <double>100</double>
+                  <double>100</double>
+                  <double>100</double>
+                  <double>200</double>
+                  <double>200</double>
+                  <double>200</double>
+                  <double>200</double>
+                  <double>200</double>
+                  <double>400</double>
+                </Thickness>
+                <NO3>
+                  <double>5</double>
+                  <double>7</double>
+                  <double>2</double>
+                  <double>1</double>
+                  <double>1</double>
+                  <double>0.8</double>
+                  <double>0.8</double>
+                  <double>0.9</double>
+                  <double>0.5</double>
+                </NO3>
+                <NH4>
+                  <double>0.1</double>
+                  <double>0.1</double>
+                  <double>0.1</double>
+                  <double>0.1</double>
+                  <double>0.1</double>
+                  <double>0.1</double>
+                  <double>0.1</double>
+                  <double>0.1</double>
+                  <double>0.1</double>
+                </NH4>
+                <SW>
+                  <double>0.162</double>
+                  <double>0.162</double>
+                  <double>0.17</double>
+                  <double>0.178</double>
+                  <double>0.186</double>
+                  <double>0.186</double>
+                  <double>0.186</double>
+                  <double>0.186</double>
+                  <double>0.222</double>
+                </SW>
+                <NO3Units>ppm</NO3Units>
+                <NH4Units>ppm</NH4Units>
+                <SWUnits>Volumetric</SWUnits>
+                <OCUnits>Total</OCUnits>
+                <PHUnits>Water</PHUnits>
+              </Sample>
             </Soil>
-            <surfaceom name="surface organic matter" />
+            <surfaceom name="surface organic matter">
+              <PoolName type="text" description="Organic Matter pool name">Maize</PoolName>
+              <type type="text" description="Organic Matter type">Maize</type>
+              <mass type="text" description="Initial surface residue (kg/ha)">500</mass>
+              <cnr type="text" description="C:N ratio of initial residue">65</cnr>
+              <standing_fraction type="text" description="Fraction of residue standing">0.0</standing_fraction>
+            </surfaceom>
             <fertiliser />
             <folder name="Manager folder">
               <manager name="Sow on a fixed date">
@@ -56306,7 +57134,32 @@ endif
                   <event>start_of_day</event>
                 </script>
               </manager>
-              <manager name="Harvesting rule" />
+              <manager name="Harvesting rule">
+                <ui>
+                  <category type="category" description="Harvesting criteria" />
+                  <crop type="crop" description="Enter name of crop to harvest when ripe : ">Maize</crop>
+                </ui>
+                <script>
+                  <text>
+if (paddock_is_fallow() = 0) then
+   stover = biomass - yield
+   AccTT = AccTT + DeltaTT   
+   outputfile do_output
+else
+   AccTT = 0
+endif
+           if ('[crop]' = 'cotton') then
+              if ([crop].ozcot_status &gt; 0) then
+                  [crop] harvest
+              endif
+           elseif ([crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead') then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+</text>
+                  <event>end_of_day</event>
+                </script>
+              </manager>
             </folder>
             <operations name="Operations Schedule">
               <operation condition="start_of_day">
@@ -56421,8 +57274,40 @@ endif
             <outputfile name="Outputfile">
               <filename output="yes">j2ka05.out</filename>
               <title>j2ka05</title>
-              <variables name="My Variables" shortcut="/Maize/Shared/My Variables" />
-              <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
+              <variables name="My Variables">
+                <variable>dd/mm/yyyy as Date</variable>
+                <variable>DaysAfterSowing</variable>
+                <variable>Stage</variable>
+                <variable>Biomass</variable>
+                <variable>GreenWt</variable>
+                <variable>Biomass units g/m^2 as BiomassWt</variable>
+                <variable>RootGreenWt</variable>
+                <variable>LeafGreenWt</variable>
+                <variable>StemGreenWt</variable>
+                <variable>RachisGreenWt</variable>
+                <variable>GrainGreenWt</variable>
+                <variable>biomass_n</variable>
+                <variable>RootGreenN</variable>
+                <variable>LeafGreenN</variable>
+                <variable>StemGreenN</variable>
+                <variable>RachisGreenN</variable>
+                <variable>GrainGreenN</variable>
+                <variable>GrainGreenNConc</variable>
+                <variable>GrainNo</variable>
+                <variable>GrainSize</variable>
+                <variable>LeafNo</variable>
+                <variable>LAI</variable>
+                <variable>SLAI</variable>
+                <variable>esw_profile as ESW</variable>
+                <variable>no3() as NO3</variable>
+                <variable>SLN</variable>
+                <variable>WaterSD</variable>
+                <variable>sw()</variable>
+                <variable>HI</variable>
+                <variable>TPLA</variable>
+                <variable>SPLA</variable>
+                <variable>Height</variable>
+              </variables>
             </outputfile>
           </area>
         </simulation>
@@ -64339,25 +65224,7 @@ AccTT = AccTT + DeltaTT</text>
               <event>end_of_day</event>
             </script>
           </manager>
-          <Maize>
-            <MaizeGenotype name="dekalb_xl82">
-              <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
-              <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">100</tt_endjuv_to_init>
-              <photoperiod_crit1 type="text" description="photoperiod_crit1">12.5</photoperiod_crit1>
-              <photoperiod_crit2 type="text" description="photoperiod_crit2">20.0</photoperiod_crit2>
-              <photoperiod_slope type="text" description="photoperiod_slope">41.0</photoperiod_slope>
-              <tt_flag_to_flower type="text" description="tt_flag_to_flower">101 </tt_flag_to_flower>
-              <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">170 </tt_flower_to_start_grain>
-              <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">810</tt_flower_to_maturity>
-              <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
-              <GNmax type="text" description="GNmax">600</GNmax>
-              <potKernelWt type="text" description="potKernelWt">300</potKernelWt>
-              <rue type="text" description="rue">1.60</rue>
-              <largestLeafParams type="text" description="Largest Leaf Area Params">1000  -1.17 0.047</largestLeafParams>
-              <bellCurveParams type="text" description="Leaf Curve Params">-0.006 -0.2 0.0014 -0.43</bellCurveParams>
-            </MaizeGenotype>
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-          </Maize>
+          <Maize />
         </area>
       </simulation>
       <simulation name="Maize_Gatton-90-Early_m1g6n2">
@@ -64870,25 +65737,7 @@ endif
             <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
           </outputfile>
           <manager name="Calculator" />
-          <Maize>
-            <MaizeGenotype name="dekalb_xl82">
-              <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
-              <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">150</tt_endjuv_to_init>
-              <photoperiod_crit1 type="text" description="photoperiod_crit1">12.5</photoperiod_crit1>
-              <photoperiod_crit2 type="text" description="photoperiod_crit2">20.0</photoperiod_crit2>
-              <photoperiod_slope type="text" description="photoperiod_slope">41.0</photoperiod_slope>
-              <tt_flag_to_flower type="text" description="tt_flag_to_flower">101 </tt_flag_to_flower>
-              <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">170 </tt_flower_to_start_grain>
-              <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">900</tt_flower_to_maturity>
-              <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
-              <GNmax type="text" description="GNmax">600</GNmax>
-              <potKernelWt type="text" description="potKernelWt">300</potKernelWt>
-              <rue type="text" description="rue">1.60</rue>
-              <largestLeafParams type="text" description="Largest Leaf Area Params">1000  -1.17 0.047</largestLeafParams>
-              <bellCurveParams type="text" description="Leaf Curve Params">-0.006 -0.2 0.0014 -0.43</bellCurveParams>
-            </MaizeGenotype>
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-          </Maize>
+          <Maize />
         </area>
       </simulation>
       <simulation name="Maize_Gatton-90-Late_m1g7n2">
@@ -65450,25 +66299,7 @@ n_grain = GrainGreenN * 10</text>
               <event>end_of_day</event>
             </script>
           </manager>
-          <Maize>
-            <MaizeGenotype name="dekalb_xl82">
-              <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
-              <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">100</tt_endjuv_to_init>
-              <photoperiod_crit1 type="text" description="photoperiod_crit1">12.5</photoperiod_crit1>
-              <photoperiod_crit2 type="text" description="photoperiod_crit2">20.0</photoperiod_crit2>
-              <photoperiod_slope type="text" description="photoperiod_slope">41.0</photoperiod_slope>
-              <tt_flag_to_flower type="text" description="tt_flag_to_flower">101 </tt_flag_to_flower>
-              <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">170 </tt_flower_to_start_grain>
-              <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">950</tt_flower_to_maturity>
-              <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
-              <GNmax type="text" description="GNmax">600</GNmax>
-              <potKernelWt type="text" description="potKernelWt">300</potKernelWt>
-              <rue type="text" description="rue">1.60</rue>
-              <largestLeafParams type="text" description="Largest Leaf Area Params">1000  -1.17 0.047</largestLeafParams>
-              <bellCurveParams type="text" description="Leaf Curve Params">-0.006 -0.2 0.0014 -0.43</bellCurveParams>
-            </MaizeGenotype>
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-          </Maize>
+          <Maize />
         </area>
       </simulation>
       <simulation name="Maize_Gatton-91_m1g8n2">
@@ -66026,25 +66857,7 @@ n_grain = GrainGreenN * 10</text>
               <event>end_of_day</event>
             </script>
           </manager>
-          <Maize>
-            <MaizeGenotype name="dekalb_xl82">
-              <tt_emerg_to_endjuv type="text" description="tt_emerg_to_endjuv">100</tt_emerg_to_endjuv>
-              <tt_endjuv_to_init type="text" description="tt_endjuv_to_init">100</tt_endjuv_to_init>
-              <photoperiod_crit1 type="text" description="photoperiod_crit1">12.5</photoperiod_crit1>
-              <photoperiod_crit2 type="text" description="photoperiod_crit2">20.0</photoperiod_crit2>
-              <photoperiod_slope type="text" description="photoperiod_slope">41.0</photoperiod_slope>
-              <tt_flag_to_flower type="text" description="tt_flag_to_flower">101 </tt_flag_to_flower>
-              <tt_flower_to_start_grain type="text" description="tt_flower_to_start_grain">170 </tt_flower_to_start_grain>
-              <tt_flower_to_maturity type="text" description="tt_flower_to_maturity">770</tt_flower_to_maturity>
-              <tt_maturity_to_ripe type="text" description="tt_maturity_to_ripe">1</tt_maturity_to_ripe>
-              <GNmax type="text" description="GNmax">600</GNmax>
-              <potKernelWt type="text" description="potKernelWt">300</potKernelWt>
-              <rue type="text" description="rue">1.60</rue>
-              <largestLeafParams type="text" description="Largest Leaf Area Params">1000  -1.17 0.047</largestLeafParams>
-              <bellCurveParams type="text" description="Leaf Curve Params">-0.006 -0.2 0.0014 -0.43</bellCurveParams>
-            </MaizeGenotype>
-            <MaizeConstants name="standard" shortcut="/Maize/shared/maize/standard" />
-          </Maize>
+          <Maize />
         </area>
       </simulation>
     </folder>
@@ -70695,7 +71508,13 @@ n_grain = GrainGreenN * 10</text>
               </SW>
             </Sample>
           </Soil>
-          <surfaceom name="SurfaceOrganicMatter" />
+          <surfaceom name="SurfaceOrganicMatter">
+            <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
+            <type type="text" description="Organic Matter type">wheat</type>
+            <mass type="text" description="Initial surface residue (kg/ha)">4000</mass>
+            <cnr type="text" description="C:N ratio of initial residue">33</cnr>
+            <standing_fraction type="text" description="Fraction of residue standing">0.0</standing_fraction>
+          </surfaceom>
           <fertiliser />
           <Maize />
           <folder name="Manager folder">
@@ -70722,13 +71541,43 @@ n_grain = GrainGreenN * 10</text>
                 <event>start_of_day</event>
               </script>
             </manager>
-            <manager name="Fertilise at sowing" />
-            <manager name="Harvesting rule" />
+            <manager name="Fertilise at sowing">
+              <ui>
+                <category type="category" description="When should fertiliser be applied" />
+                <modulename type="modulename" description="On which module should the event come from : ">Maize</modulename>
+                <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+                <category type="category" description="Fertiliser application details" />
+                <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+                <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">300</fert_amount_sow>
+                <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
+              </ui>
+              <script>
+                <text>
+        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+                <event>[modulename].[eventname]</event>
+              </script>
+            </manager>
+            <manager name="Harvesting rule">
+              <ui>
+                <category type="category" description="Harvesting criteria" />
+                <crop type="crop" description="Enter name of crop to harvest when ripe : ">Maize</crop>
+              </ui>
+              <script>
+                <text>
+          if ([crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead') then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+</text>
+                <event>end_of_day</event>
+              </script>
+            </manager>
           </folder>
           <outputfile>
             <filename output="yes">Gjunct86.out</filename>
             <title>Gjunct86</title>
-            <variables name="My Variables" shortcut="/Maize/Shared/My Variables">
+            <variables name="My Variables">
               <variable>dd/mm/yyyy as Date</variable>
               <variable>DaysAfterSowing</variable>
               <variable>Stage</variable>
@@ -70764,8 +71613,25 @@ n_grain = GrainGreenN * 10</text>
               <variable>Height</variable>
             </variables>
           </outputfile>
-          <operations name="Operations Schedule" />
-          <irrigation name="Irrigation" />
+          <operations name="Operations Schedule">
+            <operation condition="start_of_day">
+              <date>
+              </date>
+              <action>
+              </action>
+            </operation>
+          </operations>
+          <irrigation name="Irrigation">
+            <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+            <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">1000</asw_depth>
+            <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.8</crit_fr_asw>
+            <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+            <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+            <allocation type="text" description="Allocation in mm">0</allocation>
+            <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+            <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+            <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+          </irrigation>
         </area>
       </simulation>
     </folder>
