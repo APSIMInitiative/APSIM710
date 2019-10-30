@@ -25,14 +25,29 @@
       <variable>LAI</variable>
       <variable>SLAI</variable>
       <variable>esw_profile as ESW</variable>
-      <variable>no3() as NO3</variable>
       <variable>SLN</variable>
       <variable>WaterSD</variable>
-      <variable>sw()</variable>
       <variable>HI</variable>
       <variable>TPLA</variable>
       <variable>SPLA</variable>
       <variable>Height</variable>
+      <variable>DeltaTT</variable>
+      <variable>nfact_pheno</variable>
+      <variable>swdef_pheno</variable>
+      <variable>cover_green</variable>
+      <variable>cover_tot</variable>
+      <variable>sw_supply</variable>
+      <variable>sw_uptake</variable>
+      <variable>sum(sw_uptake)</variable>
+      <variable>RootDepth</variable>
+      <variable>n_total_uptake</variable>
+      <variable>n_massflow_uptake</variable>
+      <variable>n_diffusion_uptake</variable>
+      <variable>n_sd_ratio</variable>
+      <variable>sw</variable>
+      <variable>no3</variable>
+      <variable>no3_demand</variable>
+      <variable>n_supply_soil</variable>
       <constants>
         <constant name="format">csv</constant>
         <constant name="precision">8</constant>
@@ -47558,6 +47573,10 @@ endif
           </metfile>
           <area name="paddock">
             <Soil name="bmw209">
+              <RecordNumber>0</RecordNumber>
+              <Latitude>0</Latitude>
+              <Longitude>0</Longitude>
+              <YearOfSampling>0</YearOfSampling>
               <Water>
                 <Thickness>
                   <double>100</double>
@@ -47955,36 +47974,6 @@ endif
           <area name="paddock">
             <Soil name="bmw210">
               <Water>
-                <SoilCrop name="Maize">
-                  <Thickness>
-                    <double>100</double>
-                    <double>100</double>
-                    <double>100</double>
-                    <double>200</double>
-                    <double>200</double>
-                  </Thickness>
-                  <LL>
-                    <double>0.14</double>
-                    <double>0.14</double>
-                    <double>0.15</double>
-                    <double>0.16</double>
-                    <double>0.18</double>
-                  </LL>
-                  <KL>
-                    <double>0.08</double>
-                    <double>0.08</double>
-                    <double>0.08</double>
-                    <double>0.08</double>
-                    <double>0.06</double>
-                  </KL>
-                  <XF>
-                    <double>1</double>
-                    <double>1</double>
-                    <double>1</double>
-                    <double>1</double>
-                    <double>1</double>
-                  </XF>
-                </SoilCrop>
                 <Thickness>
                   <double>100</double>
                   <double>100</double>
@@ -48027,6 +48016,36 @@ endif
                   <double>0.33</double>
                   <double>0.34</double>
                 </SAT>
+                <SoilCrop name="Maize">
+                  <Thickness>
+                    <double>100</double>
+                    <double>100</double>
+                    <double>100</double>
+                    <double>200</double>
+                    <double>200</double>
+                  </Thickness>
+                  <LL>
+                    <double>0.14</double>
+                    <double>0.14</double>
+                    <double>0.15</double>
+                    <double>0.16</double>
+                    <double>0.18</double>
+                  </LL>
+                  <KL>
+                    <double>0.08</double>
+                    <double>0.08</double>
+                    <double>0.08</double>
+                    <double>0.08</double>
+                    <double>0.06</double>
+                  </KL>
+                  <XF>
+                    <double>1</double>
+                    <double>1</double>
+                    <double>1</double>
+                    <double>1</double>
+                    <double>1</double>
+                  </XF>
+                </SoilCrop>
               </Water>
               <SoilWater>
                 <SummerCona>3</SummerCona>
@@ -71411,41 +71430,8 @@ n_grain = GrainGreenN * 10</text>
           <outputfile>
             <filename output="yes">Gjunct86.out</filename>
             <title>Gjunct86</title>
-            <variables name="My Variables">
-              <variable>dd/mm/yyyy as Date</variable>
-              <variable>DaysAfterSowing</variable>
-              <variable>Stage</variable>
-              <variable>Biomass</variable>
-              <variable>GreenWt</variable>
-              <variable>Biomass units g/m^2 as BiomassWt</variable>
-              <variable>RootGreenWt</variable>
-              <variable>LeafGreenWt</variable>
-              <variable>StemGreenWt</variable>
-              <variable>RachisGreenWt</variable>
-              <variable>GrainGreenWt</variable>
-              <variable>biomass_n</variable>
-              <variable>RootGreenN</variable>
-              <variable>LeafGreenN</variable>
-              <variable>StemGreenN</variable>
-              <variable>RachisGreenN</variable>
-              <variable>GrainGreenN</variable>
-              <variable>GrainGreenNConc</variable>
-              <variable>GrainNo</variable>
-              <variable>GrainSize</variable>
-              <variable>LeafNo</variable>
-              <variable>LAI</variable>
-              <variable>SLAI</variable>
-              <variable>esw_profile as ESW</variable>
-              <variable>no3() as NO3</variable>
-              <variable>SLN</variable>
-              <variable>WaterSD</variable>
-              <variable>sw</variable>
-              <variable>HI</variable>
-              <variable>TPLA</variable>
-              <variable>SPLA</variable>
-              <variable>accTT</variable>
-              <variable>Height</variable>
-            </variables>
+            <variables name="My Variables" shortcut="/Maize/Shared/My Variables" />
+            <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
           </outputfile>
           <operations name="Operations Schedule">
             <operation condition="start_of_day">
