@@ -348,7 +348,6 @@ void CohortingLeaf::zeroAllGlobals(void)
    coverLeaf.sen = 0.0;
 
    ExternalSWDemand = false;
-
 }
 
 void CohortingLeaf::onEmergence(void)

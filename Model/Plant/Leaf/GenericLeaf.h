@@ -52,6 +52,11 @@ class GenericLeaf : public Leaf {
 
    void removeBiomass(void);
 
+   // DCaPST: START
+   float getSLN(void);
+   float sln;
+   // DCaPST: END
+
   private:
    void get_tlai(protocol::Component *system, protocol::QueryValueData &qd);
    void get_lai_sum(protocol::Component *system, protocol::QueryValueData &qd);
@@ -59,6 +64,10 @@ class GenericLeaf : public Leaf {
    void get_leaf_no_sen(protocol::Component *system, protocol::QueryValueData &qd);
    void get_leaf_area(protocol::Component *system, protocol::QueryValueData &qd);
    void get_leaf_area_tot(protocol::Component *system, protocol::QueryValueData &qd);
+
+   // DCaPST: START
+   void get_sln(protocol::Component* system, protocol::QueryValueData& qd);
+   // DCaPST: END
 
    void leaf_no_pot (int option, float, float);
    void leaf_area_potential(void);
@@ -129,6 +138,9 @@ class GenericLeaf : public Leaf {
    float dltLeafNoPot;                            // potential fraction of oldest leaf expanding ()
    float dltNodeNoPot;                            // potential fraction of oldest leaf expanding ()
 
+   // DCaPST: START
+   void calcSLN();
+   // DCaPST: END
 };
 
 #endif

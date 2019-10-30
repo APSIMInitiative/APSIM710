@@ -25,6 +25,7 @@ class CohortingLeaf : public Leaf {
    void onKillStem(void);
    float getNodeNo(void) {return gNodeNo;};
    float getDltNodeNo(void){return dltNodeNo;};
+   float getSLN(void) { return 0; }
 
    float getLAI(void)
      { return sum(gLeafArea) * plant->population().Density() * smm2sm; };
@@ -129,8 +130,6 @@ class CohortingLeaf : public Leaf {
    float dltLeafNo;                                // actual fraction of oldest leaf expanding ()
    float dltNodeNo;                                // actual fraction of oldest node expanding ()
    float dltLeafNoPot;                            // potential fraction of oldest leaf expanding ()
-
-
 };
 
 
