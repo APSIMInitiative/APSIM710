@@ -35,7 +35,7 @@ float RUEModel::PotentialDM(float radiationInterceptedGreen)   // (PFR)
 
 float RUEModel::getRUE(void) // (PFR)
 {
-	printf("     RUE%6.4f\n", plant.phenology().doInterpolation(RUE));
+	//printf("     RUE%6.4f\n", plant.phenology().doInterpolation(RUE));
 	return plant.phenology().doInterpolation(RUE);
 }
 
