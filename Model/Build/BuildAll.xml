@@ -46,8 +46,7 @@
    <Target name="Clean">
       <Job name="Clean model directory">
          <WorkingDirectory>%APSIM%/Model/Build</WorkingDirectory>
-         <CommandLine>%APSIM%/Model/cscs.exe RemoveUnwantedFiles.cs Directory=%APSIM%/Model</CommandLine>
-         <CommandLineUnix>mono %APSIM%/Model/cscs.exe RemoveUnwantedFiles.cs Directory=%APSIM%/Model</CommandLineUnix>
+		 <CommandLine>git clean -xfdq *.map *.obj *.o *.lib *.mod *.bak *.dsk *.res *.pch *.dll *.exe *.so *.tds *.a *.pdb *.imp *.map *.r</CommandLine>
       </Job>
       <Job name="Remove the %APPDATA%\APSIM">
          <WorkingDirectory>%APSIM%</WorkingDirectory>
