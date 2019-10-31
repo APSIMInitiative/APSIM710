@@ -8,177 +8,290 @@ using namespace Sorghum;
 //------ Biomass Constructor
 //------------------------------------------------------------------------------------------------
 Biomass::Biomass(ScienceAPI2 &api, Plant *p) : PlantProcess(api)
-   {
-   plant = p;
-   initialize();
-   doRegistrations();
-   }
+{
+	plant = p;
+	initialize();
+	doRegistrations();
+
+	//Variables for DCAPS
+	useDetailedPSModel = false;
+	DCaPSModelInitialised = false;
+	DCAPSTriggered = false;
+	laiTrigger = -1;
+}
 //------------------------------------------------------------------------------------------------
 //------ Biomass Destructor
 //------------------------------------------------------------------------------------------------
 Biomass::~Biomass()
-   {
-   }
+{
+}
 //--------------------------------------------------------------------------------------------------
 // Register variables for other modules
 //--------------------------------------------------------------------------------------------------
 void Biomass::doRegistrations(void)
-   {
-   scienceAPI.expose("DeltaGreenWt", "g/m^2", "Daily biomass production",  false, dltDM);
-   scienceAPI.expose("Biomass",      "kg/ha", "Total above-ground biomass",false, aboveGroundBiomass);
-   scienceAPI.expose("HI",           "()",    "Harvest index",             false, hi);
-   scienceAPI.expose("GreenWt",      "g/m^2", "Live plant dry weight",     false, greenBiomass);
+{
+	scienceAPI.expose("DeltaGreenWt", "g/m^2", "Daily biomass production", false, dltDM);
+	scienceAPI.expose("Biomass", "kg/ha", "Total above-ground biomass", false, aboveGroundBiomass);
+	scienceAPI.expose("HI", "()", "Harvest index", false, hi);
+	scienceAPI.expose("GreenWt", "g/m^2", "Live plant dry weight", false, greenBiomass);
 
 
-   scienceAPI.exposeFunction("SenescedWt", "g/m^2", "Senesced plant dry weight",
-                    FloatFunction(&Biomass::getDMSenesced));
-   scienceAPI.exposeFunction("dlt_dm_green", "g/m^2", "Plant biomass growth in each part",
-                    FloatFunction(&Biomass::getDltDMGreen));
-   scienceAPI.exposeFunction("dlt_dm_detached", "g/m^2", "Plant biomass detached from each part",
-                    FloatArrayFunction(&Biomass::getDltDMDetached));
-   scienceAPI.exposeFunction("dlt_dm_green_retrans", "g/m^2", "Plant biomass retranslocated from each part",
-                    FloatArrayFunction(&Biomass::getDltDMGreenRetrans));
+	scienceAPI.exposeFunction("SenescedWt", "g/m^2", "Senesced plant dry weight",
+		FloatFunction(&Biomass::getDMSenesced));
+	scienceAPI.exposeFunction("dlt_dm_green", "g/m^2", "Plant biomass growth in each part",
+		FloatFunction(&Biomass::getDltDMGreen));
+	scienceAPI.exposeFunction("dlt_dm_detached", "g/m^2", "Plant biomass detached from each part",
+		FloatArrayFunction(&Biomass::getDltDMDetached));
+	scienceAPI.exposeFunction("dlt_dm_green_retrans", "g/m^2", "Plant biomass retranslocated from each part",
+		FloatArrayFunction(&Biomass::getDltDMGreenRetrans));
 
-   scienceAPI.exposeFunction("biomass_wt", "g/m2", "Total above-ground biomass",
-                    FloatFunction(&Biomass::getBiomass));
+	scienceAPI.exposeFunction("biomass_wt", "g/m2", "Total above-ground biomass",
+		FloatFunction(&Biomass::getBiomass));
 
-   }
+	scienceAPI.expose("laiTrigger", "", "", true, laiTrigger);
+	scienceAPI.expose("DOY", "", "", true, DOY);
+	scienceAPI.expose("RootShootRatio", "", "", true, RootShootRatio);
+
+	scienceAPI.expose("SLN", "", "", true, SLN);
+	scienceAPI.expose("SWAvailable", "", "", true, SWAvailable);
+
+}
 //------------------------------------------------------------------------------------------------
 //------- Initialize variables
 //------------------------------------------------------------------------------------------------
 void Biomass::initialize(void)
-   {
-   hi =    0.0;
-   stage = 0;
-   dltDM = 0.0;
-   dltDMPotTE =  0.0;
-   dltDMPotRUE = 0.0;
-   aboveGroundBiomass = 0.0;
-   greenBiomass = 0.0;
+{
+	hi = 0.0;
+	stage = 0;
+	dltDM = 0.0;
+	dltDMPotTE = 0.0;
+	dltDMPotRUE = 0.0;
+	aboveGroundBiomass = 0.0;
+	greenBiomass = 0.0;
 	totalBiomass = 0.0;
 	aboveGroundGreenBiomass = 0.0;
-   //Setup report vectors
+	//Setup report vectors
 
-   int nParts = plant->PlantParts.size();
-   greenDM.assign   (nParts,0.0);
-   senescedDM.assign(nParts,0.0);
-   dltDMGreen.assign(nParts,0.0);
-   dltDMDetachedSen.assign  (nParts,0.0);
-   dltDMRetranslocate.assign(nParts,0.0);
+	int nParts = plant->PlantParts.size();
+	greenDM.assign(nParts, 0.0);
+	senescedDM.assign(nParts, 0.0);
+	dltDMGreen.assign(nParts, 0.0);
+	dltDMDetachedSen.assign(nParts, 0.0);
+	dltDMRetranslocate.assign(nParts, 0.0);
 
-   }
+	DCAPSTriggered = false;
+
+}
 //------------------------------------------------------------------------------------------------
 //------ read Biomass parameters
 //------------------------------------------------------------------------------------------------
-void Biomass::readParams (void)
-   {
-   scienceAPI.read("ratio_root_shoot","", 0, ratioRootShoot);
-   ratioRootShoot.insert(ratioRootShoot.begin(),0);  // for compatibility with fortran
+void Biomass::readParams(void)
+{
+	scienceAPI.read("ratio_root_shoot", "", 0, ratioRootShoot);
+	ratioRootShoot.insert(ratioRootShoot.begin(), 0);  // for compatibility with fortran
 
-   scienceAPI.read("frac_stem2flower", "", 0, stem2FlowerFrac);
-   }
+	scienceAPI.read("frac_stem2flower", "", 0, stem2FlowerFrac);
+}
 
 
 //------------------------------------------------------------------------------------------------
 void Biomass::process(void)
-   {
-/*   calcBiomassTE();
-   calcDltBiomass();
+{
+	/*   calcBiomassTE();
+	   calcDltBiomass();
 
-   // calculate grain biomass demand
-   if(stage >= startGrainFill && stage <= endGrainFill)
-      {
-      plant->grain->calcDemandStress();
-      plant->grain->calcBiomassDemand();
-      }
+	   // calculate grain biomass demand
+	   if(stage >= startGrainFill && stage <= endGrainFill)
+		  {
+		  plant->grain->calcDemandStress();
+		  plant->grain->calcBiomassDemand();
+		  }
 
-   // biomass partitioning
-   calcPartitioning();
-   // biomass retranslocation
-   if(stage >= startGrainFill && stage <= endGrainFill)
-      calcRetranslocation();
+	   // biomass partitioning
+	   calcPartitioning();
+	   // biomass retranslocation
+	   if(stage >= startGrainFill && stage <= endGrainFill)
+		  calcRetranslocation();
 
-   dmScenescence();  */
-   }
+	   dmScenescence();  */
+}
 //------------------------------------------------------------------------------------------------
 //------ read Biomass parameters
 //------------------------------------------------------------------------------------------------
 void Biomass::updateVars(void)
-   {
-   for(unsigned i = 0; i < plant->PlantParts.size(); i++)
-      {
-      greenDM[i] = plant->PlantParts[i]->getDmGreen();
-      senescedDM[i] = plant->PlantParts[i]->getDmSenesced();
-      dltDMGreen[i] = plant->PlantParts[i]->getDltDmGreen();
-      dltDMDetachedSen[i] = plant->PlantParts[i]->getDltDetDmSenesced();
-      dltDMRetranslocate[i] = plant->PlantParts[i]->getDltDmRetranslocate();
-      }
-   greenBiomass = sumVector(greenDM);
-   totalBiomass = greenBiomass + sumVector(senescedDM);
+{
+	for (unsigned i = 0; i < plant->PlantParts.size(); i++)
+	{
+		greenDM[i] = plant->PlantParts[i]->getDmGreen();
+		senescedDM[i] = plant->PlantParts[i]->getDmSenesced();
+		dltDMGreen[i] = plant->PlantParts[i]->getDltDmGreen();
+		dltDMDetachedSen[i] = plant->PlantParts[i]->getDltDetDmSenesced();
+		dltDMRetranslocate[i] = plant->PlantParts[i]->getDltDmRetranslocate();
+	}
+	greenBiomass = sumVector(greenDM);
+	totalBiomass = greenBiomass + sumVector(senescedDM);
 
-   aboveGroundGreenBiomass = greenBiomass - plant->roots->getDmGreen();
-   double aboveGroundSenescedBiomass = sumVector(senescedDM) - plant->roots->getDmSenesced();
-   aboveGroundBiomass = (aboveGroundGreenBiomass + aboveGroundSenescedBiomass) * 10.0;  // in kg/ha
+	aboveGroundGreenBiomass = greenBiomass - plant->roots->getDmGreen();
+	double aboveGroundSenescedBiomass = sumVector(senescedDM) - plant->roots->getDmSenesced();
+	aboveGroundBiomass = (aboveGroundGreenBiomass + aboveGroundSenescedBiomass) * 10.0;  // in kg/ha
 
-   //Calculate harvest index
+	//Calculate harvest index
 
-   hi = divide(plant->grain->getDmGreen() * 10.0,aboveGroundBiomass, 0.0);
+	hi = divide(plant->grain->getDmGreen() * 10.0, aboveGroundBiomass, 0.0);
 
-   stage = plant->phenology->currentStage();
+	stage = plant->phenology->currentStage();
 
-   }
+}
+//------------------------------------------------------------------------------------------------
+//------------------- Returns true if dcaps is to be used
+//------------------------------------------------------------------------------------------------
+bool Biomass::useDCAPS()
+{
+	double lai = plant->leaf->getLAI();
+
+	//Setup fpr DCaPs
+	if (laiTrigger > -1)
+	{
+		useDetailedPSModel = true;
+	}
+
+	return DCAPSTriggered == true || (useDetailedPSModel == true && lai >= laiTrigger);
+}
 //------------------------------------------------------------------------------------------------
 //------------------- calculate biomass production due to water (transpiration)
 //------------------------------------------------------------------------------------------------
 void Biomass::calcBiomassTE(void)
-   {
-   dltDMPotTE = calcDltDMPotTE();
-   }
+{
+	dltDMPotTE = calcDltDMPotTE();
+
+	//Override for use in the biochem photosynthesis model
+	if (useDCAPS() == true)
+	{
+		dltDMPotTE = dltDMPotRUE;
+	}
+}
 //------------------------------------------------------------------------------------------------
 //------------------- calculate biomass production due to light (limited by water and n)
 //------------------------------------------------------------------------------------------------
 void Biomass::calcBiomassRUE(double rue, double radnIntercepted)
-   {
-	double tempStress = plant->getTempStress();
-	double nitrogenStress = plant->nitrogen->getPhotoStress();
-	effectiveRue = rue * Min(Min(tempStress,nitrogenStress),plant->phosphorus->getPhotoStress());
-   dltDMPotRUE =  effectiveRue * radnIntercepted;
-   }
+{
+	effectiveRue = rue * Min(Min(plant->getTempStress(), plant->nitrogen->getPhotoStress()), plant->phosphorus->getPhotoStress());
+	dltDMPotRUE = effectiveRue * radnIntercepted;
+}
+//------------------------------------------------------------------------------------------------
+//------------------- calculate biomass production from DCAPS
+//------------------------------------------------------------------------------------------------
+
+void Biomass::calcBiomassDCAPS()
+{
+
+	double lai = plant->leaf->getLAI();
+
+	if (useDCAPS())
+	{
+		DCAPSTriggered = true;
+
+		DOY = plant->today.doy;
+		double latitude = plant->phenology->getLatitude();
+		double maxT = plant->today.maxT;
+		double minT = plant->today.minT;
+		double radn = plant->today.radn;
+
+		int currentPhase = (int)stage;
+		RootShootRatio = ratioRootShoot[currentPhase];
+
+		SLN = plant->leaf->getSLN();
+		SWAvailable = plant->water->getTotalSupply();
+
+		/*if (Ci > 0)
+		{
+		CiCaRatio = Ci / Ca;			// DEBUG: TODO: must move to model
+		}*/
+
+		//double ddoy = (double) doy;
+
+		//SAFEARRAY *lResult;
+
+		//double temp = 0;
+
+		//Write the inputs
+		string s;
+		//scienceAPI.write("   DCaPS In:");
+		/*s = "DCaPS Input Plant----------: \n";
+		s += ftoa(DOY, 4); s += "\n";
+		s += ftoa(latitude, 4); s += "\n";
+		s += ftoa(maxT, 4); s += "\n";
+		s += ftoa(minT, 4); s += "\n";
+		s += ftoa(radn, 4); s += "\n";
+		s += ftoa(lai, 4); s += "\n";
+		s += ftoa(SLN, 4); s += "\n";
+		s += ftoa(SWAvailable, 4); s += "\n";
+		s += "DCaPS Input Plant----------:";
+		scienceAPI.write(s);*/
+
+		scienceAPI.publish("dodcaps");
+
+		std::vector<float> DCaPSOut;
+
+		if (!scienceAPI.get("dcaps", "", false, DCaPSOut, -1000.0, 1000.0)) {
+			throw std::runtime_error("nothing returned from dcap");
+		}
+
+		double swDemand, swUptake, radInt;
+		long index = 0;
+
+		dltDMPotRUE = DCaPSOut[0];
+		swDemand = DCaPSOut[1];
+		swUptake = DCaPSOut[2];
+		radInt = DCaPSOut[3];
+
+		/*s = "DCaPS In Plant -------: \n";
+		s += ftoa(swDemand, 4); s += "\n";
+		s += ftoa(swUptake, 4); s += "\n";
+		s += ftoa(radInt, 4); s += "\n";
+		s += ftoa(dltDMPotRUE, 4); s += "\n";
+		s += "DCaPS In Plant -------: ";
+		scienceAPI.write(s);*/
+
+		plant->setRadInt(radInt);
+		plant->water->setSWDemand(swDemand);
+	}
+}
 //------------------------------------------------------------------------------------------------
 //-------------------
 //------------------------------------------------------------------------------------------------
 void Biomass::calcDltBiomass(void)
-   {
-   dltDM = Min(dltDMPotRUE, dltDMPotTE);
-   }
+{
+	dltDM = Min(dltDMPotRUE, dltDMPotTE);
+}
 //------------------------------------------------------------------------------------------------
 //-------------------  Partitioning
 //------------------------------------------------------------------------------------------------
 void Biomass::calcPartitioning(void)
-   {
-   calcBiomassPartitioning();
-   }
+{
+	calcBiomassPartitioning();
+}
 //------------------------------------------------------------------------------------------------
 //-------------------  Partitioning
 //------------------------------------------------------------------------------------------------
 void Biomass::calcRetranslocation(void)
-   {
-   calcBiomassRetranslocation();
-   }
+{
+	calcBiomassRetranslocation();
+}
 //------------------------------------------------------------------------------------------------
 //-------------------  Scenescence
 //------------------------------------------------------------------------------------------------
 void Biomass::dmScenescence(void)
-   {
-   plant->roots->calcSenescence();
-   plant->leaf->calcSenescence();
-   }
+{
+	plant->roots->calcSenescence();
+	plant->leaf->calcSenescence();
+}
 
 //------------------------------------------------------------------------------------------------
 double Biomass::calcDltDMPotTE(void)
-   {
-   return plant->water->getTotalSupply() * plant->getTranspEff();
-   }
+{
+	return plant->water->getTotalSupply() * plant->getTranspEff();
+}
 //------------------------------------------------------------------------------------------------
 void Biomass::calcBiomassPartitioning(void)
    {
@@ -228,72 +341,72 @@ void Biomass::calcBiomassPartitioning(void)
 //------------------------------------------------------------------------------------------------
 // Calculate plant dry matter delta's due to retranslocation to grain (g/m^2)
 void Biomass::calcBiomassRetranslocation(void)
-   {
-   double grainDifferential = plant->grain->grainDMDifferential();
-   if(grainDifferential > 0)
-      {
-      // we can translocate stem and leaf carbohydrate to grain if needed
+{
+	double grainDifferential = plant->grain->grainDMDifferential();
+	if (grainDifferential > 0)
+	{
+		// we can translocate stem and leaf carbohydrate to grain if needed
 
-      double stemWtAvail = plant->stem->dmRetransAvailable();
-      double stemRetrans = Min(grainDifferential,stemWtAvail);
-      grainDifferential -= stemRetrans;
-      plant->stem->dmRetrans(-1 * stemRetrans);
+		double stemWtAvail = plant->stem->dmRetransAvailable();
+		double stemRetrans = Min(grainDifferential, stemWtAvail);
+		grainDifferential -= stemRetrans;
+		plant->stem->dmRetrans(-1 * stemRetrans);
 
-      double leafWtAvail = plant->leaf->dmRetransAvailable();
-      double leafRetrans = Min(grainDifferential,leafWtAvail);
+		double leafWtAvail = plant->leaf->dmRetransAvailable();
+		double leafRetrans = Min(grainDifferential, leafWtAvail);
 
-      plant->leaf->dmRetrans(-1 * leafRetrans);
-      plant->grain->dmRetrans(stemRetrans + leafRetrans);
-      }
-   }
+		plant->leaf->dmRetrans(-1 * leafRetrans);
+		plant->grain->dmRetrans(stemRetrans + leafRetrans);
+	}
+}
 //------------------------------------------------------------------------------------------------
 //------- Calculate Dry Matter detachment
 //------------------------------------------------------------------------------------------------
 void Biomass::detachment(vector<double> senDetachFrac)
-   {
-   for(unsigned i = 0; i < plant->PlantParts.size(); i++)
-      {
-      plant->PlantParts[i]->dmDetachment(senDetachFrac);
-      }
-   }
+{
+	for (unsigned i = 0; i < plant->PlantParts.size(); i++)
+	{
+		plant->PlantParts[i]->dmDetachment(senDetachFrac);
+	}
+}
 //------------------------------------------------------------------------------------------------
 void Biomass::getDMGreen(float &result)
-   {
-   result = (float)sumVector(greenDM);
-   }
+{
+	result = (float)sumVector(greenDM);
+}
 //------------------------------------------------------------------------------------------------
 void Biomass::getDMSenesced(float &result)
-   {
-   result = (float)sumVector(senescedDM);
-   }
+{
+	result = (float)sumVector(senescedDM);
+}
 //------------------------------------------------------------------------------------------------
 void Biomass::getDltDMGreen(float &result)
-   {
-   result = (float)sumVector(dltDMGreen);
-   }
+{
+	result = (float)sumVector(dltDMGreen);
+}
 //------------------------------------------------------------------------------------------------
 void Biomass::getDltDMDetached(vector<float> &result)
-   {
-   DVecToFVec(result, dltDMDetachedSen);
-   }
+{
+	DVecToFVec(result, dltDMDetachedSen);
+}
 //------------------------------------------------------------------------------------------------
 void Biomass::getDltDMGreenRetrans(vector<float> &result)
-   {
-   DVecToFVec(result, dltDMRetranslocate);
-   }
+{
+	DVecToFVec(result, dltDMRetranslocate);
+}
 //------------------------------------------------------------------------------------------------
 void Biomass::getBiomass(float &result)
-   {
-   result = (float)(aboveGroundBiomass / 10.0);
-   }
+{
+	result = (float)(aboveGroundBiomass / 10); //jkb testing output
+}
 //------------------------------------------------------------------------------------------------
 void Biomass::Summary(void)
-   {
-   char msg[80];
-   sprintf(msg,"Total above ground biomass    (kg/ha) = %.1f\n",aboveGroundBiomass); scienceAPI.write(msg);
-   sprintf(msg,"Green above ground biomass    (kg/ha) = %.1f\n",aboveGroundGreenBiomass * 10); scienceAPI.write(msg);
-   sprintf(msg,"Senesced above ground biomass (kg/ha) = %.1f\n",aboveGroundBiomass - aboveGroundGreenBiomass*10); scienceAPI.write(msg);
-   }
+{
+	char msg[80];
+	sprintf(msg, "Total above ground biomass    (kg/ha) = %.1f\n", aboveGroundBiomass); scienceAPI.write(msg);
+	sprintf(msg, "Green above ground biomass    (kg/ha) = %.1f\n", aboveGroundGreenBiomass * 10); scienceAPI.write(msg);
+	sprintf(msg, "Senesced above ground biomass (kg/ha) = %.1f\n", aboveGroundBiomass - aboveGroundGreenBiomass * 10); scienceAPI.write(msg);
+}
 //------------------------------------------------------------------------------------------------
 void Biomass::incorporateResidue(void)
    {

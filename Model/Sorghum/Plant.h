@@ -83,13 +83,13 @@ class Plant
    double ftn;                   // fertile tiller number
    double vpd;
 
-   double rue;
+   vector<double> rue;
    double radnIntercepted;
    double transpEff;
 
    double tempStress;
 
-   double transpEffCf;
+   vector<double> transpEffCf;
    double svpFract;
 
 
@@ -105,6 +105,7 @@ class Plant
 //  Variables  -----------------------------------------------------
    Status plantStatus;               // plant status - out, dead, alive
    string statusString;
+   string vpSource;                  // if "apsim", use external vp value to calculate vpd 
 //   int das;
    double dltPlants;
    double frIntcRadn;
@@ -177,14 +178,13 @@ class Plant
    void  killCrop(void);
 
    void getPlantStatus(string &);
-   void get_crop_type(string &);
    void get_cover_green(float &);
    void get_cover_tot(float &);
    void get_height(float &);
 
    void   phenologyEvent(int stage);
 
-	void manageLeafCalcType(void);
+	void setRadInt(double radInt) { radnIntercepted = radInt; }
 
    };  // Plant
 

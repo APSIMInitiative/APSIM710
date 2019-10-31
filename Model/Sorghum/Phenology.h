@@ -93,6 +93,8 @@ class Phenology : public PlantProcess
    double getDltTT(void)const{return dltTT;}
    double getDltStage(void)const{return dltStage;}
 
+   double getLatitude() { return latitude; }
+
    void  getTTTot(vector<float>&);
    void  getPhaseTT(vector<float>&);
 
