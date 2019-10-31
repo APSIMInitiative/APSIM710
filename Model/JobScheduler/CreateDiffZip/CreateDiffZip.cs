@@ -183,7 +183,7 @@ class Program
 
         // Now we should have a list of the "real" diffs.
         int JobID = Convert.ToInt32(System.Environment.GetEnvironmentVariable("JobID"));
-        string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateNumDiffs" +
+        string url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateNumDiffs" +
                              "?JobID=" + JobID +
                              "&NumDiffs=" + ModifiedFiles.Count +
                              "&DbConnectPassword=" + Environment.GetEnvironmentVariable("DB_CONN_PSW");

@@ -40,24 +40,24 @@ class JobSchedulerIfCleanDoCommit
         if (SVNFileName == "")
             throw new Exception("Cannot find svn.exe on PATH");
 
-        string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetDoCommit" +
+        string url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetDoCommit" +
                             "?JobID=" + JobID;
         int doCommit = Utils.REST.CallService<int>(url);
         if (doCommit == 0)
             Console.WriteLine("The commit option was unchecked on the upload patch form");
         else
         {
-            url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetBugID" +
+            url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetBugID" +
                                  "?JobID=" + JobID;
             string BugID = Utils.REST.CallService<string>(url);
-            url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetDescription" +
+            url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetDescription" +
                                  "?JobID=" + JobID;
             string Description = Utils.REST.CallService<string>(url);
             Description += "\r\nbugid: " + BugID;
-            url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetUserName" +
+            url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetUserName" +
                          "?JobID=" + JobID;
             string UserName = Utils.REST.CallService<string>(url);
-            url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetPassword" +
+            url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetPassword" +
                                  "?JobID=" + JobID +
                                  "&DbConnectPassword=" + Utils.REST.GetValidPassword();
             string Password = Utils.REST.CallService<string>(url);

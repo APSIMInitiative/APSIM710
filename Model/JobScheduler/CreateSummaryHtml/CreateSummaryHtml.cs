@@ -71,31 +71,31 @@ class Program
         // Create our list items for the HTML row.
         string ListItemsHTML = "";
 
-        string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetPatchFileName" +
+        string url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetPatchFileName" +
                              "?JobID=" + JobID;
         string patchFileName = Utils.REST.CallService<string>(url);
 
-        string detailsURL = "http://bob.apsim.info/files/" + Path.GetFileNameWithoutExtension(patchFileName) + ".txt";
+        string detailsURL = "https://apsimdev.apsim.info/APSIM/APSIMClassicFiles/" + Path.GetFileNameWithoutExtension(patchFileName) + ".txt";
 
-        url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetRevisionNumber" +
+        url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetRevisionNumber" +
                      "?JobID=" + JobID;
         string revisionNumber = Utils.REST.CallService<string>(url);
-        url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetUserName" +
+        url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetUserName" +
              "?JobID=" + JobID;
         string userName = Utils.REST.CallService<string>(url);
-        url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetDescription" +
+        url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetDescription" +
              "?JobID=" + JobID;
         string description = Utils.REST.CallService<string>(url);
-        url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetBugID" +
+        url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetBugID" +
              "?JobID=" + JobID;
         string bugID = Utils.REST.CallService<string>(url);
 
         // Write out our table row.
         int ModifiedFilesCount = -1;
-        url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetNumDiffs" +
+        url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetNumDiffs" +
                      "?JobID=" + JobID;
         ModifiedFilesCount = Utils.REST.CallService<int>(url);
-        url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetStatus" +
+        url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetStatus" +
                     "?JobID=" + JobID;
         string Status = Utils.REST.CallService<string>(url);
         string CommitCell;
@@ -109,7 +109,7 @@ class Program
 
         string TableRow = "   <tr>" +
                             "<td><a href=\"http://apsrunet.apsim.info/websvn/revision.php?repname=apsim&path=%2Ftrunk%2F&rev=%REVISIONNUMBER%&\" alt=\"Verbose details\">%REVISIONNUMBER%</a></td>" +
-                            "<td><a href=\"http://www.apsim.info/BugTracker/edit_bug.aspx?id=%BugID%\" alt=\"Bug ID\">%BugID%</a></td>" +
+                            "<td><a href=\"https://apsimdev.apsim.info/BugTracker/edit_bug.aspx?id=%BugID%\" alt=\"Bug ID\">%BugID%</a></td>" +
                             "<td>%AUTHOR%</td>" +
                             CommitCell +
                               
