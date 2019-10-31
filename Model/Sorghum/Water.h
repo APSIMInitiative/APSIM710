@@ -140,6 +140,9 @@ class Water : public PlantProcess
    double sumPhotoStressTotal(int from, int to);
    double sumExpanStressTotal(int from, int to);
 
+   double getTotalSupply() { return totalSupply; };
+   void setSWDemand(double demand) { swDemand = demand; };
+
    // phenology
    void  phenologyEvent(int){};
    };
