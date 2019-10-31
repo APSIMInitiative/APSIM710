@@ -83,13 +83,13 @@ class Plant
    double ftn;                   // fertile tiller number
    double vpd;
 
-   vector<double> rue;
+   double rue;
    double radnIntercepted;
    double transpEff;
 
    double tempStress;
 
-   vector<double> transpEffCf;
+   double transpEffCf;
    double svpFract;
 
 

@@ -35,24 +35,20 @@ void Plant::initialize(void)
    vpd = 0.0;
    radnIntercepted  = 0.0;
    ftn = 0.0;
-}
    justSown = false;
-   }
+}
 //------------------------------------------------------------------------------------------------
 //------------ read the crop and cultivar parameters
 //------------------------------------------------------------------------------------------------
 void Plant::readParams(void)
    {
-   scienceAPI.write(string(" - reading constants for " +
-                           cropClass + "(" + cropType +") - " + cultivar + "\n"));
+	scienceAPI.write(string(" - reading constants for " +
+							cropClass + "(" + cropType +") - " + cultivar + "\n"));
 
-   tempStressTable.read(scienceAPI, "x_ave_temp","y_stress_photo");
+	tempStressTable.read(scienceAPI, "x_ave_temp","y_stress_photo");
 
 	scienceAPI.read("rue", "", 0, rue, 0.0f, 10.0f);
-	rue.insert(rue.begin(), 0);                  // for compatibility with fortran
 	scienceAPI.read("transp_eff_cf", "", 0, transpEffCf, 0.0f, 0.1f);
-	transpEffCf.insert(transpEffCf.begin(), 0);  // for compatibility with fortran
-
 	scienceAPI.read("svp_fract", "", 0, svpFract, 0.0f, 1.0f);
 	scienceAPI.read("tt_emerg_limit", "", 0, ttEmergeLimit);
 
@@ -102,14 +98,14 @@ void Plant::plantInit1(void)
    scienceAPI.read("row_spacing_default", "", false, rowSpacingDefault);
    scienceAPI.read("leaf_area_calc_type", "", true, leafAreaCalcType);
 
-   roots     = new Roots(scienceAPI, this);   PlantComponents.push_back(roots); PlantParts.push_back(roots);
+   roots = new Roots(scienceAPI, this);   PlantComponents.push_back(roots); PlantParts.push_back(roots);
 	if (leafAreaCalcType == "bellcurve")
 	{
-		leaf      = new LeafCulms(scienceAPI, this); 
+		leaf = new LeafCulms(scienceAPI, this); 
 	}
 	else 
 	{
-		leaf      = new LeafCulms_Fixed(scienceAPI, this);    
+		leaf = new LeafCulms_Fixed(scienceAPI, this);    
 	}
    
    PlantComponents.push_back(leaf);  
@@ -207,7 +203,7 @@ void Plant::onSowCrop(SowType &sow)
       else if (sow.Skip == "double")skipRow = 2.0;
       else if (sow.Skip == "solid")skipRow = 1.0;
       else
-        throw std::runtime_error("Unknown skip row configuration '" + temp + "'");
+        throw std::runtime_error("Unknown skip row configuration '" + sow.Skip + "'");
       }             
 
    checkRange(scienceAPI,skipRow, 0.0, 2.0, "skiprow");
@@ -274,7 +270,7 @@ void Plant::prepare(void)
 
 	radnIntercepted = radnInt();
 
-	float rueToday = (float)(rue[(int)stage] * rue_co2_modifier());
+	float rueToday = (float)(rue * rue_co2_modifier());
 
 	biomass->calcBiomassRUE(rueToday, radnIntercepted);
 	transpEff = transpEfficiency();
@@ -466,7 +462,7 @@ double Plant::transpEfficiency(void)
 	else
 		vpd = std::max(svpFract * (svp(today.maxT) - svp(today.minT)), 0.01);
 
-	return divide(transpEffCf[int(stage)], vpd, 0.0) / g2mm;
+	return divide(transpEffCf, vpd, 0.0) / g2mm;
 }
 //------------------------------------------------------------------------------------------------
 //-------- function to get saturation vapour pressure for a given temperature in oC (kpa)
