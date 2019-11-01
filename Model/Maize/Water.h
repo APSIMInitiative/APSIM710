@@ -141,6 +141,9 @@ namespace Maize {
          double sumPhotoStressTotal(int, int);
          double sumExpanStressTotal(int, int);
 
+		 double getTotalSupply() { return totalSupply; };
+		 void setSWDemand(double demand) { swDemand = demand; };
+
          // phenology
          void  phenologyEvent(int){};
          double getDemand(void)const{return swDemand;}

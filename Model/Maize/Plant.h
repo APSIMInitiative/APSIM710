@@ -175,6 +175,8 @@ namespace Maize {
 		void get_height(float &);
 
 		void   phenologyEvent(int stage);
+
+		void setRadInt(double radInt) { radnIntercepted = radInt; }
 	};  // Plant
 }
 #endif //PLANT_H_

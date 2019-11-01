@@ -91,6 +91,21 @@ namespace Maize {
 
          // phenology
          void  phenologyEvent(int){};
+
+		 bool useDCAPS();
+		 void calcBiomassDCAPS();
+
+		 bool useDetailedPSModel;
+		  bool DCaPSModelInitialised;
+
+		  double laiTrigger;
+		  bool DCAPSTriggered;
+
+		  int DOY;
+		  double RootShootRatio;
+		  double SLN;
+		  double SWAvailable;
+		  double DCAPSPotBiom;
       };
    }
 #endif
