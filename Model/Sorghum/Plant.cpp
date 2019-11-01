@@ -36,7 +36,6 @@ void Plant::initialize(void)
    vpd = 0.0;
    radnIntercepted  = 0.0;
    ftn = 0.0;
-   justSown = false;
 }
 //------------------------------------------------------------------------------------------------
 //------------ read the crop and cultivar parameters
