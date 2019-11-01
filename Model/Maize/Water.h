@@ -27,6 +27,8 @@ namespace Maize {
          vector<double> kl;
          vector<double> xf;
          vector<double> llDep;
+		 double sorghEsw;
+		 double sorghEswCap;
 
          double profileDepth;
          int    nLayers;

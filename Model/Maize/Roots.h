@@ -36,6 +36,11 @@ namespace Maize {
          double initialNConc;
          double targetNConc;
 
+		 // Root Angle
+		 int useRootAngle;
+		 double rootAngle;
+		 double rootSpread;
+
          //  Variables  -----------------------------------------------------
          double rootDepth;
          double rootFront;
@@ -51,10 +56,10 @@ namespace Maize {
          vector<double> dltRootLength;
          vector<double> dltScenescedRootLength;
          vector<double> rlvFactor;
+		 vector<double> rootProportion;
 
          // Private Methods -------------------------------------------------------
          void  doRegistrations(void);
-         void  doLayerRegistrations(void);
          void  initialize(void);
          void  calcInitialLength(void);
          double calcDltRootDepth(double stage);
@@ -68,8 +73,7 @@ namespace Maize {
          double totalN(void)const{return nGreen + nSenesced;}
          double totalP(void)const{return pGreen + pSenesced;}
 
-         void   calcSenLength(void);
-         void   calcRootDistribution(void);
+		 void calcRootProportions(void);
 
          // public Methods -------------------------------------------------------
       public:
@@ -79,8 +83,9 @@ namespace Maize {
 
          void  readParams (void);
          void  updateVars(void);
-         void  process(void);
-         void  onNewProfile(NewProfileType &);
+		 void  calcSenLength(void);
+		 void  calcRootDistribution(void);
+		 void  onNewProfile(NewProfileType &);
 
          // biomass
          void  calcSenescence(void);

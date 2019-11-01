@@ -11,7 +11,14 @@ using namespace Maize;
 //------------------------------------------------------------------------------------------------
 Water::Water(ScienceAPI2 &api, Plant *p) : PlantProcess(api)
    {
-   plant = p;
+	nLayers = 0;
+	totalAvail = 0.0;
+	totalAvailPot = 0.0;
+	totalSupply = 0.0;
+	dltUptake = 0.0;
+	eswTot = 0.0;
+
+	plant = p;
    doRegistrations();
    initialize();
    }
@@ -39,6 +46,15 @@ void Water::doRegistrations(void)
    scienceAPI.expose("esw_profile",       "",   "Plant extractable water over the whole profile",  false, eswTot);
    scienceAPI.expose("ep",                "",   "Water uptake from the whole profile",             false, ep);
    scienceAPI.expose("ll",                "",   "Crop lower limit",                                false, ll);
+   scienceAPI.expose("xf", "", "Exploration factor", true, xf);
+   scienceAPI.expose("kl", "", "kl factor", true, kl);
+   scienceAPI.expose("avail", "", "Available SW by layer", false, available);
+   scienceAPI.expose("totalAvail", "", "Total available SW", false, totalAvail);
+   scienceAPI.expose("availablePot", "", "Potential available SW by layer", false, availablePot);
+   scienceAPI.expose("totalAvailablePot", "", "Total potential available SW", false, totalAvailPot);
+   scienceAPI.expose("sorgh_esw", "", "ESW as used in sorghum root growth calcs", false, sorghEsw);
+   scienceAPI.expose("sorgh_esw_cap", "", "esw_cap as used in sorghum root growth calcs", false, sorghEswCap);
+   scienceAPI.expose("sorgh_sw_dep", "", "sw_dep as used in sorghum root growth calcs", false, swDep);
 
    scienceAPI.exposeFunction("esw_layer", "mm", "Plant extractable soil water in each layer",
       FloatArrayFunction(&Water::getEswLayers));
@@ -64,9 +80,11 @@ void Water::initialize(void)
    sdRatio = 1;
    rootDepth = 0;
    totalUptake = 0.0;
+
    AccTotalSupply = 0.0;
    ep = 0.0;
    swDemand = 0.0;
+   
    totalSupply = 0.0;      
    dltUptake = 0.0;
 //   supplyType = "";
@@ -113,6 +131,9 @@ void Water::readParams (void)
       eswCap.push_back(dulDep[layer] - llDep[layer]);
       }
 
+   rootDepth = plant->roots->getRootDepth();
+   currentLayer = findIndex(rootDepth, dLayer);
+
    // report
    char msg[100];
    sprintf(msg,"\n");   scienceAPI.write(msg);
@@ -154,8 +175,12 @@ void Water::readParams (void)
 //------------------------------------------------------------------------------------------------
 void Water::updateVars(void)
    {
-   if(swDemand < 0.001)sdRatio = 1.0;
-   else sdRatio = Min(divide(totalSupply, swDemand),1.0f);
+	if (swDemand < 0.001) {
+		sdRatio = 1.0;
+	}
+	else {
+		sdRatio = Min(divide(totalSupply, swDemand), 1.0f);
+	}
    rootDepth = plant->roots->getRootDepth();
    currentLayer = findIndex(rootDepth, dLayer);
    setOtherVariables ();
@@ -237,7 +262,6 @@ void Water::onNewProfile(NewProfileType &v /* message */)
 //------------------------------------------------------------------------------------------------
 void Water::process(void)
    {
-	calcDemand();
    getOtherVariables ();
    calcDailySupply();
    calcStresses();
@@ -246,7 +270,9 @@ void Water::process(void)
 //------------------------------------------------------------------------------------------------
 double Water::swAvailRatio(int currentLayer)
    {
-   return  divide (esw[currentLayer],eswCap[currentLayer], 10.0);
+	sorghEsw = esw[currentLayer];
+	sorghEswCap = eswCap[currentLayer];
+	return  divide(esw[currentLayer] + dltSwDep[currentLayer], eswCap[currentLayer], 10.0);
    }
 double Water::swAFPSRatio(int currentLayer)
    {
@@ -459,7 +485,7 @@ void Water::calcStressTrace(void)
 		// calculate the stresses up to flowering going back in 100oCdd
 		double accTT = 0;
 		double accStress = 0;
-		int period = 5;int days = 0;
+		int period = 5;int days = 0;  //period in sorghum is set to 4
 		for(int das = daysToFlower;das;das--)
 			{
 			accTT += dailyTT[das];

@@ -133,7 +133,8 @@ double Stem::calcNDemand(void)
    nDemand = 0.0;
    // STEM demand (g/m2) to keep stem [N] at levels from  targetStemNConc
    double nRequired = (dmGreen + dltDmGreen) * targetNFn.value(stage);
-   nDemand = Max(nRequired - nGreen,0.0);
+   double nToday = nGreen + dltNGreen;
+   nDemand = Max(nRequired - nToday,0.0);
    return nDemand;
    }
 //------------------------------------------------------------------------------------------------
@@ -158,7 +159,11 @@ double Stem::provideN(double requiredN)
    // dltStemNconc per dd  = 0.0062 * stemNconcPct - 0.001
    // cannot take below Structural stem [N]% 0.5
 
-   double nProvided;
+	double stemNConcPct = divide((nGreen), (dmGreen + dltDmGreen)) * 100;
+	if (stemNConcPct < structNFn.value(stage) * 100)
+		return 0;
+	
+	double nProvided;
 
    if(dltNGreen > requiredN)
       {
@@ -171,10 +176,6 @@ double Stem::provideN(double requiredN)
       nProvided = dltNGreen;
       requiredN -= nProvided;
       }
-
-   double stemNConcPct = divide((nGreen),(dmGreen + dltDmGreen)) * 100;
-   if(stemNConcPct < structNFn.value(stage) * 100)
-      return 0;
 
    double dltStemNconc = (dilnNSlope * (stemNConcPct) + dilnNInt)
       * plant->phenology->getDltTT();

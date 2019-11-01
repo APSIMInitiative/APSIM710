@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <ComponentInterface2/Variant.h>
-
 #include "Plant.h"
 #include "Biomass.h"
 
@@ -56,6 +55,9 @@ void Biomass::initialize(void)
 	dltDMPotRUE = 0.0;
 	aboveGroundBiomass = 0.0;
 	greenBiomass = 0.0;
+	totalBiomass = 0.0;
+	aboveGroundGreenBiomass = 0.0;
+
 	stover = 0.0;
 	//Setup report vectors
 
@@ -77,18 +79,6 @@ void Biomass::readParams (void)
 	scienceAPI.read("frac_stem2flower", "", 0, stem2FlowerFrac);
 	}
 //------------------------------------------------------------------------------------------------
-void Biomass::process(void)
-	{
-	calcBiomassTE();
-	calcDltBiomass();
-	// biomass partitioning
-	calcPartitioning();
-	// biomass retranslocation
-	if(stage >= startGrainFill && stage <= endGrainFill)
-		calcRetranslocation();
-
-	}
-//------------------------------------------------------------------------------------------------
 //------ read Biomass parameters
 //------------------------------------------------------------------------------------------------
 void Biomass::updateVars(void)
@@ -107,6 +97,7 @@ void Biomass::updateVars(void)
 	aboveGroundGreenBiomass = greenBiomass - plant->roots->getDmGreen();
 	double aboveGroundSenescedBiomass = sumVector(senescedDM) - plant->roots->getDmSenesced();
 	aboveGroundBiomass = (aboveGroundGreenBiomass + aboveGroundSenescedBiomass) * 10.0;  // in kg/ha
+	
 	stover = aboveGroundBiomass - plant->grain->getDmGreen() * 10.0;
 
 	//Calculate harvest index
@@ -127,7 +118,9 @@ void Biomass::calcBiomassTE(void)
 //------------------------------------------------------------------------------------------------
 void Biomass::calcBiomassRUE(double rue, double radnIntercepted)
 	{
-	effectiveRue = rue * Min(plant->getTempStress(),plant->nitrogen->getPhotoStress());
+	double tempStress = plant->getTempStress();
+	double nitrogenStress = plant->nitrogen->getPhotoStress();
+	effectiveRue = rue * Min(tempStress,nitrogenStress);
 	dltDMPotRUE =  effectiveRue * radnIntercepted;
 	}
 //------------------------------------------------------------------------------------------------
@@ -156,8 +149,6 @@ void Biomass::dmScenescence(void)
 //------------------------------------------------------------------------------------------------
 double Biomass::calcDltDMPotTE(void)
 	{
-	double ts = plant->water->getTotalSupply();
-	double te = plant->getTranspEff();
 	return plant->water->getTotalSupply() * plant->getTranspEff();
 	}
 //------------------------------------------------------------------------------------------------
@@ -169,6 +160,7 @@ void Biomass::calcPartitioning(void)
 	// Root must be satisfied. The roots don't take any of the carbohydrate produced
 	//  - that is for tops only.  Here we assume that enough extra was produced to meet demand.
 	// Thus the root growth is not removed from the carbo produced by the model.
+	stage = plant->phenology->currentStage();
 	double biomPool = dltDM;
 
 	int currentPhase = (int) stage;
@@ -198,12 +190,12 @@ void Biomass::calcPartitioning(void)
 		{
 		//grain filling starts - stem continues when it can
 		biomPool -= plant->grain->partitionDM(biomPool);
-		biomPool -= plant->stem->partitionDM(biomPool);
-		plant->roots->partitionDM(biomPool);
+		plant->stem->partitionDM(biomPool);
+		//plant->roots->partitionDM(biomPool);
 		}
 	else
 		{
-		plant->roots->partitionDM(biomPool);
+		plant->stem->partitionDM(biomPool);
 		}
 	}
 //------------------------------------------------------------------------------------------------
