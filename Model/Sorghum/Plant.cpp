@@ -32,6 +32,7 @@ void Plant::initialize(void)
    dltPlants =  0.0;
    frIntcRadn = 0.0;
    dltDeadPlants = 0.0;
+
    vpd = 0.0;
    radnIntercepted  = 0.0;
    ftn = 0.0;
@@ -254,7 +255,6 @@ void Plant::onSowCrop(SowType &sow)
      PlantComponents[i]->readParams ();
 
    scienceAPI.publish("sowing");
-   justSown = true;
    }
 //------------------------------------------------------------------------------------------------
 //------------------- Field a Prepare event
@@ -292,10 +292,6 @@ void Plant::prepare(void)
 //------------------------------------------------------------------------------------------------
 void Plant::process (void)                 // do crop preparation
    {
-	//if (justSown) {
-	//	justSown = false;
-	//	return;
-	//}
    stage = (float)phenology->currentStage();
 
    water->getOtherVariables();
@@ -316,17 +312,15 @@ void Plant::process (void)                 // do crop preparation
    leaf->calcLeafNo();
 
    phenology->development();
-   stage = (float)phenology->currentStage();
+
    for (unsigned i = 0; i < PlantParts.size(); i++)
    {
 	   PlantParts[i]->setStage(phenology->currentStage());
    }
 
-
    leaf->calcPotentialArea();
 
    biomass->calcBiomassTE();
-
    biomass->calcDltBiomass();
 
    grain->process();
@@ -365,9 +359,6 @@ void Plant::process (void)                 // do crop preparation
 
    //Calculate detachment
    detachment();
-   //Cleanup plant process
-   cleanup();
-
 
    // at end of day, update class state variables
    for(unsigned i=0;i < PlantComponents.size();i++)
@@ -480,17 +471,10 @@ void Plant::detachment(void)
    leaf->laiDetachment(senDetachFrac);
    nitrogen->detachment(senDetachFrac);
    }
-//------------------------------------------------------------------------------------------------
-//-------- Cleanup Plant process
-//------------------------------------------------------------------------------------------------
-void Plant::cleanup(void)
-   {
-   //Could not find a definition
-   }
+
 //------------------------------------------------------------------------------------------------
 //-------- Kill the crop
 //------------------------------------------------------------------------------------------------
-
 void Plant::killCrop(void)
    {
    if (plantStatus == alive)

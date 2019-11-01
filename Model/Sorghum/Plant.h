@@ -73,7 +73,6 @@ class Plant
 
    string defaultCropClass;
    string cropType;
-   bool justSown;
 
    double rowSpacingDefault;
    float rowSpacing;
@@ -119,7 +118,6 @@ class Plant
    double radnInt(void);
 
    void  initialize(void);
-   void  endPlant (void);
    double rue_co2_modifier(void);
    TableFn co2_te_modifier;
 
@@ -158,8 +156,7 @@ class Plant
    void updateVars(void);
    void death(void);
    void detachment(void);
-   void cleanup(void);
-
+   
    double transpEfficiency(void);
    double svp(double temp);
 

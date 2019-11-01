@@ -93,28 +93,6 @@ void Biomass::readParams(void)
 	scienceAPI.read("frac_stem2flower", "", 0, stem2FlowerFrac);
 }
 
-
-//------------------------------------------------------------------------------------------------
-void Biomass::process(void)
-{
-	/*   calcBiomassTE();
-	   calcDltBiomass();
-
-	   // calculate grain biomass demand
-	   if(stage >= startGrainFill && stage <= endGrainFill)
-		  {
-		  plant->grain->calcDemandStress();
-		  plant->grain->calcBiomassDemand();
-		  }
-
-	   // biomass partitioning
-	   calcPartitioning();
-	   // biomass retranslocation
-	   if(stage >= startGrainFill && stage <= endGrainFill)
-		  calcRetranslocation();
-
-	   dmScenescence();  */
-}
 //------------------------------------------------------------------------------------------------
 //------ read Biomass parameters
 //------------------------------------------------------------------------------------------------
@@ -304,9 +282,7 @@ void Biomass::calcBiomassPartitioning(void)
 
    int currentPhase = (int)plant->phenology->currentStage();
    plant->roots->partitionDM(ratioRootShoot[currentPhase] * biomPool);
-   double dmroot = plant->roots->getDltDmGreen();
-   double total = dmroot + biomPool;
-   double ftp = total;
+
    //  leaf and stem to fi then rachis as well to flag
    if(stage >= emergence && stage < flag)
       {

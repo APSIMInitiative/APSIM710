@@ -80,6 +80,7 @@ void Water::initialize(void)
    sdRatio = 1;
    rootDepth = 0;
    totalUptake = 0.0;
+
    sorghEsw = 0;
    sorghEswCap = 0;
    AccTotalSupply = 0.0;
@@ -302,8 +303,7 @@ void Water::calcAvailable(void)
       {
       available[layer] = Max(swDep[layer] - llDep[layer],0.0);
       }
-   double currentLayerProportion = layerProportion();
-   available[currentLayer] *= currentLayerProportion;
+   available[currentLayer] *= layerProportion();
    totalAvail = sumVector(available);
    }
 //------------------------------------------------------------------------------------------------

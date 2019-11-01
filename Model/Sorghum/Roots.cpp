@@ -72,14 +72,15 @@ void Roots::onNewProfile(NewProfileType &v /* message */)
 void Roots::initialize(void)
    {
    rootDepth = 0.0;
-	   rootFront    = 0.0;
+   rootFront    = 0.0;
    currentLayer = 0;
    leftDist = 0.0;
    rightDist = 0.0;
+
    rootSpread = 0.0;
    lastLayerPropn = 0.0;
    lastLayerPropn = 0.0;
-	   dltRootDepth = 0.0;
+   dltRootDepth = 0.0;
    dltRootFront = 0.0;
    lastLayerPropn = 0.0;
    xfc = 0;
@@ -280,9 +281,7 @@ double Roots::calcDltRootDepth(double stage)
    {
    // sw available factor of root layer
    swFactor = swAvailFactor(currentLayer);
-   if (swFactor < 1.0) {
-	   int tm = 0;
-   }
+
    xfc = xf[currentLayer];
    //float adjRootDepthRate = calcAdjRootDepthRate(rootDepthRate[int (stage)]);
    //dltRootDepth  = adjRootDepthRate * swFactor * xf[currentLayer];

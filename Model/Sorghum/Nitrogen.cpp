@@ -361,7 +361,6 @@ void Nitrogen::uptake(void)
 	  double growingTT = plant->phenology->getDltTT();
 	  double maxUptake = Max(0, maxUptakeRateFrac * plant->phenology->getDltTT() - actualMassFlow);
       actualDiffusion = Min(actualDiffusion, maxUptake);
-	  int tmp = 0;
       }
 
    vector<double> mff,df;
