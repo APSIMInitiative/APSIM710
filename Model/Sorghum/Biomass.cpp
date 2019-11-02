@@ -52,7 +52,6 @@ void Biomass::doRegistrations(void)
 	scienceAPI.expose("DOY", "", "", true, DOY);
 	scienceAPI.expose("RootShootRatio", "", "", true, RootShootRatio);
 
-	scienceAPI.expose("SLN", "", "", true, SLN);
 	scienceAPI.expose("SWAvailable", "", "", true, SWAvailable);
 
 }
