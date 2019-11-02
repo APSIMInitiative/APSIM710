@@ -38,9 +38,9 @@ float DCaPST::PotentialDM(float radiationInterceptedGreen)   // (PFR)
 	SWAvailable = plant.root().swSupply();
 
 	// Ask DCaPST manager to run DCaPST
-	scienceAPI.publish("dodcaps");
+	scienceAPI.publish("dodcapst");
 	std::vector<float> DCaPSOut;
-	if (!scienceAPI.get("dcaps", "", DCaPSOut, -1000.0, 1000.0)) {
+	if (!scienceAPI.get("dcapst", "", DCaPSOut, -1000.0, 1000.0)) {
 		throw std::runtime_error("nothing returned from dcaps");
 	}
 
