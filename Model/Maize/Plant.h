@@ -66,6 +66,7 @@ namespace Maize {
 
 		Today  today;                      // holds day,year,rain,temp etc
 		int das;
+		bool isEmerged(void) { return phenology->currentStage() >= emergence; }
 		string uptake_source;
 
 	private:
@@ -118,7 +119,6 @@ namespace Maize {
 		double radnInt(void);
 
 		void  initialize(void);
-		void  endPlant(void);
 		double rue_co2_modifier(void);
 		TableFn co2_te_modifier;
 
@@ -141,7 +141,7 @@ namespace Maize {
 		void onNewMet(NewMetType &);
 		void onNewProfile(NewProfileType &v);
 
-		void onSowCrop(Variant &);
+		void onSowCrop(SowType &);
 		void onHarvest(void);
 		void onEndCrop(void);
 		void onEndRun(void);
@@ -157,7 +157,7 @@ namespace Maize {
 		double svp(double temp);
 
 		double getTempStress(void)const { return tempStress; }
-		double getTranspEff(void)const { return (transpEff * co2_te_modifier.value(co2)); }
+		double getTranspEff(void)const;
 		double getSowingDepth(void)const { return sowingDepth; }
 		string getCropType(void)const { return cropType; }
 
@@ -170,12 +170,13 @@ namespace Maize {
 		void  killCrop(void);
 
 		void getPlantStatus(string &);
-		void get_crop_type(string &);
 		void get_cover_green(float &);
 		void get_cover_tot(float &);
 		void get_height(float &);
 
 		void   phenologyEvent(int stage);
+
+		void setRadInt(double radInt) { radnIntercepted = radInt; }
 	};  // Plant
 }
 #endif //PLANT_H_

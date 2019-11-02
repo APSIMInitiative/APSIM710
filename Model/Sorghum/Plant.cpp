@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <General/date_class.h>
+#include <General/string_functions.h>
 #include <ComponentInterface2/ScienceAPI2.h>
 
 #include "Plant.h"
@@ -31,33 +32,38 @@ void Plant::initialize(void)
    dltPlants =  0.0;
    frIntcRadn = 0.0;
    dltDeadPlants = 0.0;
+
    vpd = 0.0;
    radnIntercepted  = 0.0;
-   justSown = false;
-   }
+   ftn = 0.0;
+}
 //------------------------------------------------------------------------------------------------
 //------------ read the crop and cultivar parameters
 //------------------------------------------------------------------------------------------------
 void Plant::readParams(void)
    {
-   scienceAPI.write(string(" - reading constants for " +
-                           cropClass + "(" + cropType +") - " + cultivar + "\n"));
+	scienceAPI.write(string(" - reading constants for " +
+							cropClass + "(" + cropType +") - " + cultivar + "\n"));
 
-   tempStressTable.read(scienceAPI, "x_ave_temp","y_stress_photo");
+	tempStressTable.read(scienceAPI, "x_ave_temp","y_stress_photo");
 
-   scienceAPI.read("rue",   "",   0, rue,  0.0f,   10.0f);
-   scienceAPI.read("transp_eff_cf", "", 0, transpEffCf, 0.0f, 0.1f);
-   scienceAPI.read("svp_fract","",       0, svpFract, 0.0f, 1.0f);
-   scienceAPI.read("tt_emerg_limit", "", 0, ttEmergeLimit);
+	scienceAPI.read("rue", "", 0, rue, 0.0f, 10.0f);
+	scienceAPI.read("transp_eff_cf", "", 0, transpEffCf, 0.0f, 0.1f);
+	scienceAPI.read("svp_fract", "", 0, svpFract, 0.0f, 1.0f);
+	scienceAPI.read("tt_emerg_limit", "", 0, ttEmergeLimit);
 
-   //Read arrays for detachment
-   if(!scienceAPI.read("sen_detach_frac", "", true, senDetachFrac))
-      senDetachFrac.assign(5,0.0);
+	//Read arrays for detachment
+	if (!scienceAPI.read("sen_detach_frac", "", true, senDetachFrac))
+		senDetachFrac.assign(5, 0.0);
 
-   // CO2 stuff
-   co2_te_modifier.read(scienceAPI, "x_co2_te_modifier", "y_co2_te_modifier");
+	// CO2 stuff
+	co2_te_modifier.read(scienceAPI, "x_co2_te_modifier", "y_co2_te_modifier");
 
-   }
+	if (!scienceAPI.read("vp_source", "", true, vpSource))
+		vpSource = "internal";
+	To_lower(vpSource);
+
+}
 
 //------------------------------------------------------------------------------------------------
 //------------- Plant Destructor
@@ -92,15 +98,15 @@ void Plant::plantInit1(void)
    scienceAPI.read("row_spacing_default", "", false, rowSpacingDefault);
    scienceAPI.read("leaf_area_calc_type", "", true, leafAreaCalcType);
 
-   roots     = new Roots(scienceAPI, this);   PlantComponents.push_back(roots); PlantParts.push_back(roots);
+   roots = new Roots(scienceAPI, this);   PlantComponents.push_back(roots); PlantParts.push_back(roots);
 	if (leafAreaCalcType == "bellcurve")
 	{
-      leaf      = new LeafCulms(scienceAPI, this); 
+		leaf = new LeafCulms(scienceAPI, this); 
 	}
-   else 
-   {
-	   leaf      = new LeafCulms_Fixed(scienceAPI, this);    
-   }
+	else 
+	{
+		leaf = new LeafCulms_Fixed(scienceAPI, this);    
+	}
    
    PlantComponents.push_back(leaf);  
    PlantParts.push_back(leaf);
@@ -197,7 +203,7 @@ void Plant::onSowCrop(SowType &sow)
       else if (sow.Skip == "double")skipRow = 2.0;
       else if (sow.Skip == "solid")skipRow = 1.0;
       else
-        throw std::runtime_error("Unknown skip row configuration '" + temp + "'");
+        throw std::runtime_error("Unknown skip row configuration '" + sow.Skip + "'");
       }             
 
    checkRange(scienceAPI,skipRow, 0.0, 2.0, "skiprow");
@@ -253,50 +259,53 @@ void Plant::onSowCrop(SowType &sow)
 //------------------------------------------------------------------------------------------------
 //------------------- Field a Prepare event
 //------------------------------------------------------------------------------------------------
-void Plant::prepare (void)
-   {
-   if (!scienceAPI.get("co2", "mg/kg", true, co2, 300.0f, 1000.0f))
-       co2 = 350.0;
-   else 
-       if (fabs(co2 - 350.0) > 0.1 && co2_te_modifier.x.size() == 0) 
-	       throw std::runtime_error("CO2 is not 350ppm and there is no CO2xTE parameterisation");
-		   
-   tempStress = tempStressTable.value(today.avgT);
+void Plant::prepare(void)
+{
+	scienceAPI.get("co2", "mg/kg", true, co2, 300.0f, 1000.0f);
 
-   radnIntercepted = radnInt();
+	if (fabs(co2 - 350.0) > 0.1 && co2_te_modifier.x.size() == 0)
+		throw std::runtime_error("CO2 is not 350ppm and there is no CO2xTE parameterisation");
 
-   float rueToday = (float)(rue * rue_co2_modifier());
+	tempStress = tempStressTable.value(today.avgT);
 
-   biomass->calcBiomassRUE(rueToday,radnIntercepted);
-   transpEff = transpEfficiency();
-   water->calcDemand();
+	radnIntercepted = radnInt();
 
-      // at beginning of day, reset the daily dlt variables
-   for(unsigned i=0;i < PlantParts.size();i++)
-      {
-      PlantParts[i]->resetDailyVars();
-      }
+	float rueToday = (float)(rue * rue_co2_modifier());
 
-   if(phosphorus->Active())
-       phosphorus->prepare();
+	biomass->calcBiomassRUE(rueToday, radnIntercepted);
+	transpEff = transpEfficiency();
+	water->calcDemand();
+
+	// at beginning of day, reset the daily dlt variables
+	for (unsigned i = 0; i < PlantParts.size(); i++)
+	{
+		PlantParts[i]->resetDailyVars();
+	}
+
+	if (phosphorus->Active())
+		phosphorus->prepare();
 
 
-   }
+}
 //------------------------------------------------------------------------------------------------
 //------------------- Field a process event
 //------------------------------------------------------------------------------------------------
 void Plant::process (void)                 // do crop preparation
    {
-	//if (justSown) {
-	//	justSown = false;
-	//	return;
-	//}
    stage = (float)phenology->currentStage();
 
    water->getOtherVariables();
    water->calcDailySupply();
-   water->calcStresses();
-   water->calcUptake();
+	
+	if (biomass->useDCAPS())
+	{
+		biomass->calcBiomassDCAPS();
+		//DCAPS give sw demand
+	}
+	
+	
+	water->calcStresses();
+	water->calcUptake();
 
    stem->calcCanopyHeight();
 
@@ -310,10 +319,14 @@ void Plant::process (void)                 // do crop preparation
    }
 
 
+   for (unsigned i = 0; i < PlantParts.size(); i++)
+   {
+	   PlantParts[i]->setStage(phenology->currentStage());
+   }
+
    leaf->calcPotentialArea();
 
    biomass->calcBiomassTE();
-
    biomass->calcDltBiomass();
 
    grain->process();
@@ -352,9 +365,6 @@ void Plant::process (void)                 // do crop preparation
 
    //Calculate detachment
    detachment();
-   //Cleanup plant process
-   cleanup();
-
 
    // at end of day, update class state variables
    for(unsigned i=0;i < PlantComponents.size();i++)
@@ -441,12 +451,16 @@ double Plant::radnInt(void)
 //---   and vapour pressure deficit, which is calculated from min and max temperatures.
 //------------------------------------------------------------------------------------------------
 double Plant::transpEfficiency(void)
-   {
-   // get vapour pressure deficit when net radiation is positive.
-   vpd = Max(svpFract * (svp(today.maxT) - svp(today.minT)), 0.01);
+{
+	// get vapour pressure deficit when net radiation is positive.
 
-   return divide (transpEffCf, vpd, 0.0) / g2mm;
-   }
+	if (vpSource == "apsim" && today.vp > 0.0)
+		vpd = std::max(0.01, svpFract * svp(today.maxT) + (1.0 - svpFract) * svp(today.minT) - today.vp * mb2kpa);
+	else
+		vpd = std::max(svpFract * (svp(today.maxT) - svp(today.minT)), 0.01);
+
+	return divide(transpEffCf, vpd, 0.0) / g2mm;
+}
 //------------------------------------------------------------------------------------------------
 //-------- function to get saturation vapour pressure for a given temperature in oC (kpa)
 //------------------------------------------------------------------------------------------------
@@ -463,17 +477,10 @@ void Plant::detachment(void)
    leaf->laiDetachment(senDetachFrac);
    nitrogen->detachment(senDetachFrac);
    }
-//------------------------------------------------------------------------------------------------
-//-------- Cleanup Plant process
-//------------------------------------------------------------------------------------------------
-void Plant::cleanup(void)
-   {
-   //Could not find a definition
-   }
+
 //------------------------------------------------------------------------------------------------
 //-------- Kill the crop
 //------------------------------------------------------------------------------------------------
-
 void Plant::killCrop(void)
    {
    if (plantStatus == alive)

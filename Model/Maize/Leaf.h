@@ -155,14 +155,6 @@ namespace Maize {
          void calcLeafSize(void);
          double calcIndividualLeafSize(double leafNo);
 
-			// potential leaf growth
-			void calcLeafNo(void);           // plant
-         void calcPotentialArea(void);    // plant
-
-			// actual growth
-			void areaActual(void);          
-         void senesceArea(void);          
-
          // public Methods -------------------------------------------------------
       public:
          Leaf(ScienceAPI2 &, Plant *p);
@@ -172,18 +164,25 @@ namespace Maize {
          double dltNSenesced;
 
          //////////////////////////
-         void readParams (void);
-         void updateVars(void);
+		void readParams (void);
+		void updateVars(void);
 
-         void potentialGrowth(void);      // plant
-			void actualGrowth(void);			// plant
+		void potentialGrowth(void);      // plant
+		void actualGrowth(void);			// plant
+		// potential leaf growth
+		void calcLeafNo(void);           // plant
+		void calcPotentialArea(void);    // plant
+
+		// actual growth
+		void areaActual(void);
+		void senesceArea(void);
 
          double calcEmergFlagTT(void);                     // phenology
 
          // nitrogen
          double calcNDemand(void);                         // nitrogen
          double calcNewLeafNDemand(void);                  // nitrogen
-         double provideN(double requiredN);
+         double provideN(double requiredN, bool fromLeaf);
          double getSLN(void)const{return SLN;}             // nitrogen
          double laiToday(void)const;                       // nitrogen
 

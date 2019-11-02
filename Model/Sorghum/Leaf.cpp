@@ -313,10 +313,8 @@ void Leaf::senesceArea(void)
 
    // senesced leaf area due to N
    dltSlai = Max(dltSlai,dltSlaiN);
-   if (dltSlai > 0) {
-	   int tmp = 0;
-   }
-   }
+
+}
 //------------------------------------------------------------------------------------------------
 double Leaf::calcLaiSenescenceFrost(void)
    {
@@ -369,9 +367,7 @@ double Leaf::calcLaiSenescenceWater(void)
       dltSlaiWater = Max(0.0,divide((lai - avLaiEquilibWater) , senWaterTimeConst,0.0));
 
    dltSlaiWater = Min(lai,dltSlaiWater);
-   if (dltSlaiWater > 0) {
-	   int tnmp = 0;
-   }
+   
 
    return dltSlaiWater;
    }
@@ -489,8 +485,7 @@ double Leaf::provideN(double requiredN, bool forLeaf)
          nProvided += newN;
          dltSlaiN += senescenceLAI;
          dltSlai = Max(dltSlai,dltSlaiN);
-		 if (dltSlai > 0.0000001)
-			 int tmp = 0;
+		 
 
          dltNSenesced += senescenceLAI * senescedLeafSLN;
 

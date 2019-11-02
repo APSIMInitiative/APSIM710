@@ -27,6 +27,8 @@ namespace Maize {
          vector<double> kl;
          vector<double> xf;
          vector<double> llDep;
+		 double sorghEsw;
+		 double sorghEswCap;
 
          double profileDepth;
          int    nLayers;
@@ -138,6 +140,9 @@ namespace Maize {
          double getESWAvail(void)const{return totalAvail;}
          double sumPhotoStressTotal(int, int);
          double sumExpanStressTotal(int, int);
+
+		 double getTotalSupply() { return totalSupply; };
+		 void setSWDemand(double demand) { swDemand = demand; };
 
          // phenology
          void  phenologyEvent(int){};

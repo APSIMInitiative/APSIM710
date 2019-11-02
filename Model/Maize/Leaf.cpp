@@ -42,6 +42,8 @@ void Leaf::doRegistrations(void)
    scienceAPI.expose("LeafGreenN",     "g/m^2", "N in green leaf",                 false, nGreen);
    scienceAPI.expose("LeafSenescedN",  "g/m^2", "N in senesced leaf",              false, nSenesced);
    scienceAPI.expose("SLN",            "g(N)/m2","Specific Leaf Nitrogen",         false, SLN);
+   //scienceAPI.expose("SLA", "cm2/g", "Specific Leaf Area", false, SLA);
+   //scienceAPI.expose("maxSLA", "cm2/g", "Maximum Specific Leaf Area", false, maxSLA);
    scienceAPI.expose("LeafGreenNConc", "%",     "Live leaf N concentration",       false, nConc);
    scienceAPI.expose("LeafNDemand",    "g/m^2", "Today's N demand from leaves",    false, nDemand);
    scienceAPI.expose("DeltaLeafGreenN","g/m^2", "Daily N increase in leaves",      false, dltNGreen);
@@ -84,11 +86,8 @@ void Leaf::initialize(void)
    nDeadLeaves = 0.0;
    dltDeadLeaves = 0.0;
 
-   for(int i=0;i < nStages;i++)
-      {
-      leafNo.push_back(0.0);
-      nodeNo.push_back(0.0);
-      }
+   leafNo.assign(nStages, 0.0);
+   nodeNo.assign(nStages, 0.0);
 
    // nitrogen
    SLN = 0.0;
@@ -206,6 +205,7 @@ void Leaf::updateVars(void)
    dltNSenesced = 0.0;
 
    // leaf area
+   if (lai < 0.001)lai = 0.0;
    lai += dltLAI;
 
    sLai += dltSlai;
@@ -233,7 +233,6 @@ void Leaf::updateVars(void)
 void Leaf::potentialGrowth(void)
    {
 	calcLeafNo();
-   calcPotentialArea();
    }
 //------------------------------------------------------------------------------------------------
 void Leaf::actualGrowth(void)
@@ -267,6 +266,9 @@ void Leaf::phenologyEvent(int iStage)
       EMF.SW = 0.0;
       scienceAPI.publish("ExternalMassFlow", EMF);
       break;
+   //case flag:                   //jkb limit target sln to sln at flag
+	  // targetSLN = SLN;
+	  // break;
    case flowering :
       //set the minimum weight of leaf; used for translocation to grain and stem
       double dmPlantLeaf = divide (dmGreen, density);
@@ -321,6 +323,8 @@ void Leaf::areaActual(void)
 //------------------------------------------------------------------------------------------------
 void Leaf::senesceArea(void)
    {
+	dltSlaiN = 0.0;
+	dltSlai = 0.0;
 
    maxLaiPossible = lai + sLai;
    if(stage >= fi && stage < flag)
@@ -381,8 +385,8 @@ double Leaf::calcLaiSenescenceWater(void)
       laiEquilibWaterToday = lai;
 
    laiEquilibWater.push_back(laiEquilibWaterToday);
-
    double avLaiEquilibWater = 0.0;int nRecs = laiEquilibWater.size();
+
    // average of the last 10 days of laiEquilibWater
    int start = ( nRecs > 10 ? nRecs - 9 : 1);
    for(int i = start;i <= nRecs;i++)
@@ -413,7 +417,8 @@ double Leaf::calcNDemand(void)
    else
       nRequired = laiToday * Min(SLN0,targetSLN);
 
-   nDemand = Max(nRequired - nGreen,0.0);
+   double nToday = nGreen + dltNGreen;
+   nDemand = Max(nRequired - nToday,0.0);
    return nDemand;
    }
 //------------------------------------------------------------------------------------------------
@@ -432,12 +437,12 @@ double Leaf::calcLAI(void)
 double Leaf::calcSLN(void)
    {
    double laiToday = calcLAI();
-   double nGreenToday = nGreen + dltNGreen - dltNRetranslocate;
+   double nGreenToday = nGreen + dltNGreen + dltNRetranslocate;
    double slnToday = divide(nGreenToday,laiToday);
    return slnToday;
    }
 //------------------------------------------------------------------------------------------------
-double Leaf::provideN(double requiredN)
+double Leaf::provideN(double requiredN, bool forLeaf)
    {
    // calculate the N available for translocation to other plant parts
    // N could be required for structural Stem/Rachis N, new leaf N or grain N
@@ -462,7 +467,7 @@ double Leaf::provideN(double requiredN)
          return nProvided;
 
       // not sufficient N from dilution - take from decreasing dltLai and senescence
-      if(dltLAI > 0)
+      if(!forLeaf && dltLAI > 0)
          {
          double n = dltLAI * newLeafSLN;
          double laiN = Min(n,requiredN/2);
@@ -475,7 +480,8 @@ double Leaf::provideN(double requiredN)
       slnToday = calcSLN();
       double maxN = plant->phenology->getDltTT()
          * (dilnNSlope * slnToday + dilnNInt) * laiToday;
-      requiredN = Min(requiredN,maxN);
+	  maxN = Max(maxN, 0);
+	  requiredN = Min(requiredN,maxN);
 
       double senescenceLAI = Max(divide(requiredN,(slnToday-senescedLeafSLN)),0.0);
 
