@@ -275,6 +275,13 @@ void Plant::process (void)                 // do crop growth and development
 	stage = (float)phenology->currentStage();
 
 	water->process();
+
+	if (biomass->useDCAPS())
+	{
+		biomass->calcBiomassDCAPS();
+		//DCAPS give sw demand
+	}
+
 	stem->calcCanopyHeight();
 	leaf->potentialGrowth();
 

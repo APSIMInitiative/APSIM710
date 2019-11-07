@@ -2,6 +2,7 @@
 #include <ComponentInterface2/Variant.h> 
 #include "Plant.h"
 #include "Biomass.h"
+#include <General\string_functions.h>
 
 using namespace Sorghum;
 //---------------------------------------------------------------------------
@@ -180,32 +181,6 @@ void Biomass::calcBiomassDCAPS()
 		SLN = plant->leaf->getSLN();
 		SWAvailable = plant->water->getTotalSupply();
 
-		/*if (Ci > 0)
-		{
-		CiCaRatio = Ci / Ca;			// DEBUG: TODO: must move to model
-		}*/
-
-		//double ddoy = (double) doy;
-
-		//SAFEARRAY *lResult;
-
-		//double temp = 0;
-
-		//Write the inputs
-		string s;
-		//scienceAPI.write("   DCaPS In:");
-		/*s = "DCaPS Input Plant----------: \n";
-		s += ftoa(DOY, 4); s += "\n";
-		s += ftoa(latitude, 4); s += "\n";
-		s += ftoa(maxT, 4); s += "\n";
-		s += ftoa(minT, 4); s += "\n";
-		s += ftoa(radn, 4); s += "\n";
-		s += ftoa(lai, 4); s += "\n";
-		s += ftoa(SLN, 4); s += "\n";
-		s += ftoa(SWAvailable, 4); s += "\n";
-		s += "DCaPS Input Plant----------:";
-		scienceAPI.write(s);*/
-
 		scienceAPI.publish("dodcaps");
 
 		std::vector<float> DCaPSOut;
@@ -221,14 +196,6 @@ void Biomass::calcBiomassDCAPS()
 		swDemand = DCaPSOut[1];
 		swUptake = DCaPSOut[2];
 		radInt = DCaPSOut[3];
-
-		/*s = "DCaPS In Plant -------: \n";
-		s += ftoa(swDemand, 4); s += "\n";
-		s += ftoa(swUptake, 4); s += "\n";
-		s += ftoa(radInt, 4); s += "\n";
-		s += ftoa(dltDMPotRUE, 4); s += "\n";
-		s += "DCaPS In Plant -------: ";
-		scienceAPI.write(s);*/
 
 		plant->setRadInt(radInt);
 		plant->water->setSWDemand(swDemand);
