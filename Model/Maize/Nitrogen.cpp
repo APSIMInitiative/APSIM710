@@ -190,12 +190,18 @@ void Nitrogen::process(void)
 void Nitrogen::updateVars(void)
    {
    // calc stress factors
-   double SLN = plant->leaf->getSLN();
+	double stage = plant->phenology->currentStage();
+	double SLN = plant->leaf->getSLN();
+	phenoStress = 1.0;
+	photoStress = 1.0;
+
 	if(SLN > 0)
 		{
-		phenoStress = (1.0/0.7) * SLN * 1.25 - (3.0/7.0);
-		phenoStress = bound(phenoStress,0.0,1.0);
-
+		if (stage >= sowing && stage < flowering)
+		{
+			phenoStress = (1.0 / 0.7) * SLN * 1.25 - (3.0 / 7.0);
+			phenoStress = bound(phenoStress, 0.0, 1.0);
+		}
 		//   photoStress = (2.0/(1.0 + exp(-2.89*(SLN-0.34)))-1.0);
 		photoStress = (2.0/(1.0 + exp(-3.34*(SLN-0.37)))-1.0);
 		photoStress = Max(photoStress,0.0);
