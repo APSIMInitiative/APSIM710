@@ -195,8 +195,11 @@ void Nitrogen::updateVars(void)
    // calc stress factors
    double SLN = plant->leaf->getSLN();
 
-   phenoStress = (1.0/0.7) * SLN * 1.25 - (3.0/7.0);
-   phenoStress = bound(phenoStress,0.0,1.0);
+   double stage = plant->phenology->currentStage();
+   if (stage >= emergence && stage < flowering) {
+	   phenoStress = (1.0/0.7) * SLN * 1.25 - (3.0/7.0);
+	   phenoStress = bound(phenoStress,0.0,1.0);
+   }
 
    photoStress = (2.0/(1.0 + exp(-6.05*(SLN-0.41)))-1.0);
    photoStress = Max(photoStress,0.0);
