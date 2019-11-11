@@ -315,7 +315,8 @@ namespace ApsimFile
                         Linux2ExeWriter.WriteLine("singularity exec  -B /30days/$USER:/30days -B /90days/$USER:/90days -B $TMPDIR:/TMPDIR --pwd /TMPDIR " + SelfExtractingExecutableLocation + " Apsim.exe @" + simsFile);
                     Linux2ExeWriter.Close();
                 }
-                SimsWriter.WriteLine("\"" + apsimFile + "\" Simulation=" + XmlHelper.Attribute(simNode, "name"));
+                SimsWriter.WriteLine(StringManip.DQuote(apsimFile) + 
+				                     " Simulation=" + StringManip.DQuote(XmlHelper.Attribute(simNode, "name")));
                 if (!inputfiles.Contains(apsimFile)) { inputfiles.Add(apsimFile); }
                 foreach (XmlNode inputNode in simNode.SelectNodes(".//input"))
 					if (!inputfiles.Contains (XmlHelper.Attribute (inputNode, "name")))
