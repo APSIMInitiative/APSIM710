@@ -35,7 +35,7 @@ public class ApsimBuildsDB
                 Thread.Sleep(3 * 60 * 1000); // 3 minutes
             }
         }
-        throw new Exception("Cannot open connection to SQL server: www.apsim.info");
+        throw new Exception("Cannot open connection to SQL server: apsimdev.apsim.info");
     }
 
     /// <summary>   
@@ -59,7 +59,7 @@ public class ApsimBuildsDB
                     Thread.Sleep(3 * 60 * 1000); // 3 minutes
                 }
             }
-            throw new Exception("Cannot close connection to SQL server: www.apsim.info");
+            throw new Exception("Cannot close connection to SQL server: apsimdev.apsim.info");
         }
     }
 
@@ -78,7 +78,7 @@ public class ApsimBuildsDB
                 Thread.Sleep(3 * 60 * 1000); // 3 minutes
             }
         }
-        throw new Exception("Cannot execute query to SQL server: www.apsim.info");
+        throw new Exception("Cannot execute query to SQL server: apsimdev.apsim.info");
     }
     private SqlDataReader ExecuteReader(SqlCommand Cmd)
     {
@@ -94,7 +94,7 @@ public class ApsimBuildsDB
                 Thread.Sleep(3 * 60 * 1000); // 3 minutes
             }
         }
-        throw new Exception("Cannot execute reader query to SQL server: www.apsim.info");
+        throw new Exception("Cannot execute reader query to SQL server: apsimdev.apsim.info");
     }
 
     /// <summary>
