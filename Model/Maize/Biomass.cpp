@@ -171,7 +171,7 @@ void Biomass::calcPartitioning(void)
 	//  - that is for tops only.  Here we assume that enough extra was produced to meet demand.
 	// Thus the root growth is not removed from the carbo produced by the model.
 	double biomPool = dltDM;
-
+	stage = plant->phenology->currentStage();
 	int currentPhase = (int) stage;
 	plant->roots->partitionDM(ratioRootShoot[currentPhase] * biomPool);
 
