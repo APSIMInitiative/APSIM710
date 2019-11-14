@@ -440,9 +440,11 @@ void Nitrogen::partition(void)
    double totalDemand = leafDemand + stemDemand + rachisDemand;
 
    double toLeaf = Min(1.0,divide(leafDemand,totalDemand) * nAvailable);
+   toLeaf = Min(toLeaf, leafDemand);
    plant->leaf->partitionN(toLeaf);
 
    double toRachis = Min(1.0,divide(rachisDemand,totalDemand) * nAvailable);
+   toRachis = Min(toRachis, rachisDemand);
    plant->rachis->partitionN(toRachis);
 
    // rest to stem
