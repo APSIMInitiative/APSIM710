@@ -240,9 +240,12 @@ void Nitrogen::phenologyEvent(int iStage)
 //------------------------------------------------------------------------------------------------
 void Nitrogen::supply(void)
    {
-   calcMassFlow();   // N g/m2 from Mass Flow
-   calcDiffusion();  // potential N g/m2 from Diffusion
-   calcFixation();
+	  if (plant->isEmerged())
+	  {
+	     calcMassFlow();   // N g/m2 from Mass Flow
+	     calcDiffusion();  // potential N g/m2 from Diffusion
+	     calcFixation();
+	  }
    }
 //------------------------------------------------------------------------------------------------
 //------- Mass Flow Supply
@@ -298,6 +301,8 @@ void Nitrogen::demand(void)
 //     Return actual plant nitrogen uptake from each soil layer.
 void Nitrogen::uptake(void)
    {
+	if (!plant->isEmerged())
+		return;
    // no3 (g/m2) available from diffusion
    vector<double> diffnAvailable;
    for(int layer = 0;layer <= currentLayer;layer++)
@@ -332,9 +337,8 @@ void Nitrogen::uptake(void)
 
       //      nSupplyFrac (5) to limit n uptake
       double maxUptakeRateFrac = Min(1.0,potentialSupply / nSupplyFrac) * maxUptakeRate;
-
-      actualDiffusion = Min(actualDiffusion,
-         maxUptakeRateFrac * plant->phenology->getDltTT() - actualMassFlow);
+	  double maxUptake = Max(0, maxUptakeRateFrac * plant->phenology->getDltTT() - actualMassFlow);
+      actualDiffusion = Min(actualDiffusion, maxUptake);
       }
 
    vector<double> mff,df;
