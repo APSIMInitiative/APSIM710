@@ -183,7 +183,7 @@ namespace Maize {
          // nitrogen
          double calcNDemand(void);                         // nitrogen
          double calcNewLeafNDemand(void);                  // nitrogen
-         double provideN(double requiredN);
+         double provideN(double requiredN, bool forLeaf);
          double getSLN(void)const{return SLN;}             // nitrogen
          double laiToday(void)const;                       // nitrogen
 

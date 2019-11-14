@@ -384,7 +384,7 @@ void Nitrogen::partition(void)
       else
          {
          // get from leaf to provide structN deficit
-         plant->stem->partitionN(nAvailable + plant->leaf->provideN(nRequired - nAvailable));
+         plant->stem->partitionN(nAvailable + plant->leaf->provideN(nRequired - nAvailable, false));
          nAvailable =0.0;
          }
       }
@@ -400,7 +400,7 @@ void Nitrogen::partition(void)
       else
          {
          // get from leaf to provide structN deficit
-         plant->rachis->partitionN(nAvailable + plant->leaf->provideN(nRequired - nAvailable));
+         plant->rachis->partitionN(nAvailable + plant->leaf->provideN(nRequired - nAvailable, false));
          nAvailable =0.0;
          }
       }
@@ -426,7 +426,7 @@ void Nitrogen::partition(void)
          nRequired -= transN;
          if(nRequired > 0)
             {
-            transN = plant->leaf->provideN(nRequired);
+            transN = plant->leaf->provideN(nRequired, true);
             plant->leaf->partitionN(transN);
             }
          }
@@ -464,7 +464,7 @@ void Nitrogen::partition(void)
          }
       if(nRequired > 0)
          {
-         nLeaf = plant->leaf->provideN(nRequired);
+         nLeaf = plant->leaf->provideN(nRequired, false);
          plant->grain->RetranslocateN(nLeaf);
          }
       }

@@ -432,12 +432,12 @@ double Leaf::calcLAI(void)
 double Leaf::calcSLN(void)
    {
    double laiToday = calcLAI();
-   double nGreenToday = nGreen + dltNGreen - dltNRetranslocate;
+   double nGreenToday = nGreen + dltNGreen + dltNRetranslocate; //-ve
    double slnToday = divide(nGreenToday,laiToday);
    return slnToday;
    }
 //------------------------------------------------------------------------------------------------
-double Leaf::provideN(double requiredN)
+double Leaf::provideN(double requiredN, bool forLeaf)
    {
    // calculate the N available for translocation to other plant parts
    // N could be required for structural Stem/Rachis N, new leaf N or grain N
@@ -462,7 +462,7 @@ double Leaf::provideN(double requiredN)
          return nProvided;
 
       // not sufficient N from dilution - take from decreasing dltLai and senescence
-      if(dltLAI > 0)
+      if(!forLeaf && dltLAI > 0)
          {
          double n = dltLAI * newLeafSLN;
          double laiN = Min(n,requiredN/2);
