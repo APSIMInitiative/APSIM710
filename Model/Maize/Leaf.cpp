@@ -475,6 +475,7 @@ double Leaf::provideN(double requiredN, bool forLeaf)
       slnToday = calcSLN();
       double maxN = plant->phenology->getDltTT()
          * (dilnNSlope * slnToday + dilnNInt) * laiToday;
+	  maxN = Max(maxN, 0);
       requiredN = Min(requiredN,maxN);
 
       double senescenceLAI = Max(divide(requiredN,(slnToday-senescedLeafSLN)),0.0);
@@ -506,6 +507,7 @@ double Leaf::provideN(double requiredN, bool forLeaf)
          slnToday = calcSLN();
          double maxN = plant->phenology->getDltTT()
             * (dilnNSlope * slnToday + dilnNInt) * laiToday;
+		 maxN = Max(maxN, 0);
          requiredN = Min(requiredN,maxN);
 
          double senescenceLAI = Max(divide(requiredN,(slnToday-senescedLeafSLN)),0.0);
@@ -534,6 +536,7 @@ double Leaf::provideN(double requiredN, bool forLeaf)
          slnToday = calcSLN();
          double maxN = plant->phenology->getDltTT()
             * (dilnNSlope * slnToday + dilnNInt) * laiToday;
+		 maxN = Max(maxN, 0);
          requiredN = Min(requiredN,maxN);
 
          double senescenceLAI = Max(divide(requiredN,(slnToday-senescedLeafSLN)),0.0);
