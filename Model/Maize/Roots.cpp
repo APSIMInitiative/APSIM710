@@ -102,6 +102,11 @@ void Roots::readParams (void)
    pMinTable.read(scienceAPI, "x_p_stage_code","y_p_conc_min_root");
    pSenTable.read(scienceAPI, "x_p_stage_code","y_p_conc_sen_root");
    scienceAPI.read("p_conc_init_root", "", 0, initialPConc);
+
+   // This happens on sowing in new apsim.
+   calcInitialLength();
+   leftDist = plant->getRowSpacing() * (plant->getSkipRow() - 0.5);
+   rightDist = plant->getRowSpacing() * 0.5;
    }
 //------------------------------------------------------------------------------------------------
 void Roots::process(void)
@@ -120,12 +125,6 @@ void Roots::phenologyEvent(int stage)
    {
    switch (stage)
       {
-   case germination :
-      calcInitialLength();
-      leftDist  = plant->getRowSpacing() * (plant->getSkipRow() - 0.5);
-      rightDist = plant->getRowSpacing() * 0.5;
-
-      break;
    case emergence :
       dmGreen = initialDM * plant->getPlantDensity();
       nGreen = initialNConc * dmGreen;

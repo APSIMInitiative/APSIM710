@@ -113,6 +113,9 @@ void Water::readParams (void)
       eswCap.push_back(dulDep[layer] - llDep[layer]);
       }
 
+   rootDepth = plant->roots->getRootDepth();
+   currentLayer = findIndex(rootDepth, dLayer);
+
    // report
    char msg[100];
    sprintf(msg,"\n");   scienceAPI.write(msg);
