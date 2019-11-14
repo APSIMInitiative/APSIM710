@@ -160,6 +160,10 @@ double Stem::provideN(double requiredN)
 
    double nProvided;
 
+   double stemNConcPct = divide((nGreen), (dmGreen + dltDmGreen)) * 100;
+   if (stemNConcPct < structNFn.value(stage) * 100)
+	   return 0;
+
    if(dltNGreen > requiredN)
       {
       nProvided = requiredN;
@@ -171,10 +175,6 @@ double Stem::provideN(double requiredN)
       nProvided = dltNGreen;
       requiredN -= nProvided;
       }
-
-   double stemNConcPct = divide((nGreen),(dmGreen + dltDmGreen)) * 100;
-   if(stemNConcPct < structNFn.value(stage) * 100)
-      return 0;
 
    double dltStemNconc = (dilnNSlope * (stemNConcPct) + dilnNInt)
       * plant->phenology->getDltTT();

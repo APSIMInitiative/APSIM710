@@ -288,7 +288,8 @@ void Nitrogen::demand(void)
    totalDemand = 0;
    for(unsigned i=0;i < plant->PlantParts.size();i++)
       {
-      totalDemand += plant->PlantParts[i]->calcNDemand();
+	   double dem = plant->PlantParts[i]->calcNDemand();
+      totalDemand += dem;
       }
    }
 //------------------------------------------------------------------------------------------------
