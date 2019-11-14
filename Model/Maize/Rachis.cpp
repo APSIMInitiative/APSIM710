@@ -90,7 +90,10 @@ double Rachis::calcNDemand(void)
 
    // RACHIS N demand (g/m2) to keep rachis [N] at targetRachisNConc
    double nRequired = (dmGreen + dltDmGreen) * targetNConc;
-   nDemand = Max(nRequired - nGreen,0.0);
+
+   double nToday = nGreen + dltNGreen;
+
+   nDemand = Max(nRequired - nToday,0.0);
    return nDemand;
    }
 //------------------------------------------------------------------------------------------------
