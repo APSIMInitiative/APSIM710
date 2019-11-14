@@ -84,7 +84,8 @@ void Biomass::process(void)
 	// biomass partitioning
 	calcPartitioning();
 	// biomass retranslocation
-	if(stage >= startGrainFill && stage <= endGrainFill)
+	stage = plant->phenology->currentStage();
+	if(stage >= startGrainFill && stage < endGrainFill)
 		calcRetranslocation();
 
 	}

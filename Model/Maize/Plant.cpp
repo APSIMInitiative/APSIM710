@@ -249,6 +249,9 @@ void Plant::process (void)                 // do crop growth and development
 	stem->calcCanopyHeight();
 	leaf->potentialGrowth();
 	phenology->development();
+
+	stage = phenology->currentStage();
+
    grain->process();
 	biomass->process();
 	roots->process();
