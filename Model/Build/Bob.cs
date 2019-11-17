@@ -64,7 +64,7 @@ class Bob
 private static void doWindows () 
 {
    string CWD = Directory.GetCurrentDirectory();
-   string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/FindNextJob";
+   string url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/FindNextJob";
    int JobID = CallRESTService<int>(url);
    
    if (JobID != -1)
@@ -117,12 +117,12 @@ private static void doLINUX ()
 {
    svnExe = "/usr/bin/svn"; 
 
-   int JobID = CallRESTService<int>("http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/FindNextLinuxJob");
+   int JobID = CallRESTService<int>("https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/FindNextLinuxJob");
    
    if (JobID != -1)
    {
       // Linux builds only check "passed" patches - ie revisions
-      string revision = CallRESTService<string>("http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetRevisionNumber?JobID=" + JobID);
+      string revision = CallRESTService<string>("https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetRevisionNumber?JobID=" + JobID);
       
       if (revision == "") 
       { 
@@ -178,7 +178,7 @@ private static void doLINUX ()
     /// <returns></returns>
     private static string GetPatchFileName(int JobID)
     {
-        string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetPatchFileName?JobID=" + JobID;
+        string url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetPatchFileName?JobID=" + JobID;
 
         string downloadURL = CallRESTService<string>(url);
         string destination = @"C:\inetpub\wwwroot\Files\Upload\" + Path.GetFileName(downloadURL);
@@ -241,7 +241,7 @@ private static void doLINUX ()
     /// </summary>
     static void DBUpdateStatus(string status, int JobID)
     {
-        string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateStatus" +
+        string url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateStatus" +
             "?JobID=" + JobID +
             "&NewStatus=" + status +
             "&DbConnectPassword=" + DbConnectPassword;
@@ -253,7 +253,7 @@ private static void doLINUX ()
     /// </summary>
     static void DBUpdateLinuxStatus(string status, int JobID)
     {
-        string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateLinuxStatus" +
+        string url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateLinuxStatus" +
             "?JobID=" + JobID +
             "&NewStatus=" + status +
             "&DbConnectPassword=" + DbConnectPassword;
