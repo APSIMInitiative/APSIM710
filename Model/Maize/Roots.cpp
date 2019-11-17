@@ -107,6 +107,19 @@ void Roots::readParams (void)
    calcInitialLength();
    leftDist = plant->getRowSpacing() * (plant->getSkipRow() - 0.5);
    rightDist = plant->getRowSpacing() * 0.5;
+
+   dmGreen = initialDM * plant->getPlantDensity();
+   nGreen = initialNConc * dmGreen;
+   pGreen = initialPConc * dmGreen;
+   ExternalMassFlowType EMF;
+   EMF.PoolClass = "crop";
+   EMF.FlowType = "gain";
+   EMF.DM = 0.0;
+   EMF.N = (float)(nGreen * gm2kg / sm2ha);
+   EMF.P = (float)(pGreen * gm2kg / sm2ha);
+   EMF.C = 0.0; // ?????
+   EMF.SW = 0.0;
+   scienceAPI.publish("ExternalMassFlow", EMF);
    }
 //------------------------------------------------------------------------------------------------
 void Roots::process(void)
@@ -123,23 +136,7 @@ void Roots::process(void)
 //------------------------------------------------------------------------------------------------
 void Roots::phenologyEvent(int stage)
    {
-   switch (stage)
-      {
-   case emergence :
-      dmGreen = initialDM * plant->getPlantDensity();
-      nGreen = initialNConc * dmGreen;
-      pGreen = initialPConc * dmGreen;
-      ExternalMassFlowType EMF;
-      EMF.PoolClass = "crop";
-      EMF.FlowType = "gain";
-      EMF.DM = 0.0;
-      EMF.N  = (float)(nGreen * gm2kg/sm2ha);
-      EMF.P  = (float)(pGreen * gm2kg/sm2ha);
-      EMF.C = 0.0; // ?????
-      EMF.SW = 0.0;
-      scienceAPI.publish("ExternalMassFlow", EMF);
-      break;
-      }
+	// noop
    }
 //------------------------------------------------------------------------------------------------
 //------- at the end of the day, update state variables   -  called from plant->process
