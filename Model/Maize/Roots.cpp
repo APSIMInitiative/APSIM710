@@ -273,7 +273,7 @@ double Roots::swAFPSFactor(int layer)
 //------------------------------------------------------------------------------------------------
 void Roots::partitionDM(double dltDM)
    {
-   dltDmGreen = dltDM;
+   dltDmGreen += dltDM;
    }
 //------------------------------------------------------------------------------------------------
 void Roots::calcSenescence(void)
