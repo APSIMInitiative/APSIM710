@@ -408,6 +408,7 @@ double Leaf::calcNDemand(void)
    //   double laiToday = Max(0.0, lai + dltLAI - dltSlai);
    double laiToday = calcLAI();
    double nRequired;
+   stage = plant->phenology->currentStage();
    if(stage < flag)
       nRequired = laiToday * targetSLN;
    else

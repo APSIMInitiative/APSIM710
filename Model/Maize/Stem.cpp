@@ -131,6 +131,7 @@ void Stem::calcCanopyHeight(void)
 double Stem::calcNDemand(void)
    {
    nDemand = 0.0;
+   stage = plant->phenology->currentStage();
    // STEM demand (g/m2) to keep stem [N] at levels from  targetStemNConc
    double nRequired = (dmGreen + dltDmGreen) * targetNFn.value(stage);
 
