@@ -86,6 +86,7 @@ void Rachis::phenologyEvent(int iStage)
 double Rachis::calcNDemand(void)
    {
    nDemand = 0.0;
+   stage = plant->phenology->currentStage();
    if(stage >= startGrainFill)return nDemand;
 
    // RACHIS N demand (g/m2) to keep rachis [N] at targetRachisNConc
