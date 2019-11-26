@@ -29,7 +29,9 @@ void Biomass::doRegistrations(void)
 	scienceAPI.expose("Biomass",      "kg/ha", "Total above-ground biomass",false, aboveGroundBiomass);
 	scienceAPI.expose("HI",           "()",    "Harvest index",             false, hi); 
 	scienceAPI.expose("GreenWt",      "g/m^2", "Live plant dry weight",     false, greenBiomass);
-	scienceAPI.expose("Stover",       "kg/ha", "Stover dry weight",        false, stover);
+	scienceAPI.expose("Stover",       "kg/ha", "Stover dry weight",         false, stover);
+	scienceAPI.expose("RUE",          "",      "DltDmPotRUE",			    false, dltDMPotRUE);
+	scienceAPI.expose("TE",           "",      "DltDmPotTE",			    false, dltDMPotTE);
 
 
 	scienceAPI.exposeFunction("SenescedWt", "g/m^2", "Senesced plant dry weight",
