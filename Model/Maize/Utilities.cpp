@@ -358,7 +358,7 @@ void accumulate (double value,       //  (INPUT) value to add to array
 //------------------------------------------------------------------------------------------------
 double dayLength (int doy, double latitude, double twilight)
    {
-   const double  aeqnox = 82.25 ;//  average day number of autumnal equinox
+   const double  aeqnox = 79.25;//  average day number of autumnal equinox
    const double  pi = 3.14159265359 ;
    const double  dg2rdn =  (2.0*pi) /360.0 ; // convert degrees to radians
    const double  decsol = 23.45116 * dg2rdn ; // amplitude of declination of sun
