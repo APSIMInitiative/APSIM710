@@ -100,6 +100,8 @@ Paddock:
         n_supply_soil
         RUE
         TE
+        nfact_photo
+        temp_stress
 
      Output file = Maize_Exp1 3N Yr1_2.out
      Format = csv
@@ -313,7 +315,7 @@ Paddock:
          tt_endjuv_to_init        =  140.00
          tt_init_to_flower        =   50.00
          tt_flower_to_maturity    =  700.00
-         tt_flag_to_flower        =   10.00
+         tt_flag_to_flower        =   60.00
          tt_flower_to_start_grain =  170.00
          tt_maturity_to_ripe      =    1.00
          ------------------------------------------------------
@@ -817,10 +819,6 @@ Paddock:
      sw_dep( 5)  110.38416290
      sw_dep( 6)  118.63906860
      sw_dep( 7)  113.72127533
-16 April 1999(Day of year=106), maize: 
-     Stage 7 Flowering  DAS = 56
-     		Biomass       = 537.26 		 LAI            =   3.47
-     		Stover N Conc =   7.83 		 Extractable SW = 214.33
 17 April 1999(Day of year=107), paddock.GattonField Nitrogen: 
      sw_dep( 1)   56.02162552
      sw_dep( 2)   62.32439423
@@ -853,6 +851,10 @@ Paddock:
      sw_dep( 5)  108.52288818
      sw_dep( 6)  117.22373962
      sw_dep( 7)  113.37635803
+20 April 1999(Day of year=110), maize: 
+     Stage 7 Flowering  DAS = 60
+     		Biomass       = 624.29 		 LAI            =   3.45
+     		Stover N Conc =   8.18 		 Extractable SW = 202.55
 21 April 1999(Day of year=111), paddock.GattonField Nitrogen: 
      sw_dep( 1)   56.88523865
      sw_dep( 2)   59.96483612
@@ -941,10 +943,6 @@ Paddock:
      sw_dep( 5)  102.33338165
      sw_dep( 6)  112.59868622
      sw_dep( 7)  112.06156158
-1 May 1999(Day of year=121), maize: 
-     Stage 8 StartGrainFill  DAS = 71
-     		Biomass       = 895.86 		 LAI            =   3.39
-     		Stover N Conc =   8.54 		 Extractable SW = 202.74
 2 May 1999(Day of year=122), paddock.GattonField Nitrogen: 
      sw_dep( 1)   67.12496185
      sw_dep( 2)   69.60647583
@@ -985,6 +983,10 @@ Paddock:
      sw_dep( 5)  100.84873962
      sw_dep( 6)  111.39173126
      sw_dep( 7)  111.70187378
+6 May 1999(Day of year=126), maize: 
+     Stage 8 StartGrainFill  DAS = 76
+     		Biomass       = 998.54 		 LAI            =   3.35
+     		Stover N Conc =   8.77 		 Extractable SW = 193.95
 7 May 1999(Day of year=127), paddock.GattonField Nitrogen: 
      sw_dep( 1)   66.21499634
      sw_dep( 2)   66.24565125
@@ -1010,418 +1012,466 @@ Paddock:
      sw_dep( 6)  111.06151581
      sw_dep( 7)  111.61335754
 10 May 1999(Day of year=130), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   63.33059692
-     sw_dep( 2)   66.40837097
-     sw_dep( 3)  130.54199219
-     sw_dep( 4)  100.91195679
-     sw_dep( 5)  100.37748718
-     sw_dep( 6)  110.93190765
-     sw_dep( 7)  111.57653046
+     sw_dep( 1)   63.33047867
+     sw_dep( 2)   66.40820313
+     sw_dep( 3)  130.54158020
+     sw_dep( 4)  100.91183472
+     sw_dep( 5)  100.37738800
+     sw_dep( 6)  110.93183899
+     sw_dep( 7)  111.57650757
 11 May 1999(Day of year=131), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   63.25944901
-     sw_dep( 2)   66.39835358
-     sw_dep( 3)  131.19801331
-     sw_dep( 4)  100.98493195
-     sw_dep( 5)  100.37024689
-     sw_dep( 6)  110.89553070
-     sw_dep( 7)  111.57166290
+     sw_dep( 1)   63.25926590
+     sw_dep( 2)   66.39806366
+     sw_dep( 3)  131.19718933
+     sw_dep( 4)  100.98468781
+     sw_dep( 5)  100.37005615
+     sw_dep( 6)  110.89540100
+     sw_dep( 7)  111.57161713
 12 May 1999(Day of year=132), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   62.16015244
-     sw_dep( 2)   66.05951691
-     sw_dep( 3)  131.52279663
-     sw_dep( 4)  101.00209808
-     sw_dep( 5)  100.31531525
-     sw_dep( 6)  110.82560730
-     sw_dep( 7)  111.55506897
+     sw_dep( 1)   62.15928650
+     sw_dep( 2)   66.05821228
+     sw_dep( 3)  131.51914978
+     sw_dep( 4)  101.00102997
+     sw_dep( 5)  100.31446075
+     sw_dep( 6)  110.82501221
+     sw_dep( 7)  111.55485535
 13 May 1999(Day of year=133), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   62.25264359
-     sw_dep( 2)   65.73321533
-     sw_dep( 3)  131.24938965
-     sw_dep( 4)  100.86206818
-     sw_dep( 5)  100.13219452
-     sw_dep( 6)  110.66548157
-     sw_dep( 7)  111.50697327
+     sw_dep( 1)   62.24793243
+     sw_dep( 2)   65.72605133
+     sw_dep( 3)  131.22933960
+     sw_dep( 4)  100.85621643
+     sw_dep( 5)  100.12749481
+     sw_dep( 6)  110.66216278
+     sw_dep( 7)  111.50580597
 14 May 1999(Day of year=134), paddock.GattonField Nitrogen: 
      sw_dep( 1)   61.50000000
-     sw_dep( 2)   65.24224091
-     sw_dep( 3)  130.91615295
-     sw_dep( 4)  100.76644135
-     sw_dep( 5)   99.98761749
-     sw_dep( 6)  110.53269958
-     sw_dep( 7)  111.46797180
+     sw_dep( 2)   65.21856689
+     sw_dep( 3)  130.87039185
+     sw_dep( 4)  100.75354767
+     sw_dep( 5)   99.97731018
+     sw_dep( 6)  110.52542114
+     sw_dep( 7)  111.46541595
 15 May 1999(Day of year=135), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   60.74559402
-     sw_dep( 2)   64.70827484
-     sw_dep( 3)  130.29254150
-     sw_dep( 4)  100.64251709
-     sw_dep( 5)   99.82308197
-     sw_dep( 6)  110.38600159
-     sw_dep( 7)  111.42375946
+     sw_dep( 1)   60.72978973
+     sw_dep( 2)   64.67890930
+     sw_dep( 3)  130.19763184
+     sw_dep( 4)  100.61613464
+     sw_dep( 5)   99.80207825
+     sw_dep( 6)  110.37116241
+     sw_dep( 7)  111.41854095
 16 May 1999(Day of year=136), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   59.66298676
-     sw_dep( 2)   64.05592346
-     sw_dep( 3)  129.04815674
-     sw_dep( 4)  100.33641052
-     sw_dep( 5)   99.51463318
-     sw_dep( 6)  110.13769531
-     sw_dep( 7)  111.34354401
+     sw_dep( 1)   59.60737991
+     sw_dep( 2)   63.97945404
+     sw_dep( 3)  128.85813904
+     sw_dep( 4)  100.27530670
+     sw_dep( 5)   99.46577454
+     sw_dep( 6)  110.10311890
+     sw_dep( 7)  111.33135986
 17 May 1999(Day of year=137), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   58.59392548
-     sw_dep( 2)   63.41311264
-     sw_dep( 3)  127.82718658
-     sw_dep( 4)  100.02562714
-     sw_dep( 5)   99.20720673
-     sw_dep( 6)  109.88991547
-     sw_dep( 7)  111.26271820
+     sw_dep( 1)   58.48424530
+     sw_dep( 2)   63.27130508
+     sw_dep( 3)  127.50391388
+     sw_dep( 4)   99.91511536
+     sw_dep( 5)   99.11866760
+     sw_dep( 6)  109.82708740
+     sw_dep( 7)  111.24047089
 18 May 1999(Day of year=138), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   57.88573456
-     sw_dep( 2)   62.92436218
-     sw_dep( 3)  126.91847229
-     sw_dep( 4)   99.81507111
-     sw_dep( 5)   98.98566437
-     sw_dep( 6)  109.70304108
-     sw_dep( 7)  111.20267487
+     sw_dep( 1)   57.72304916
+     sw_dep( 2)   62.71858215
+     sw_dep( 3)  126.46356964
+     sw_dep( 4)   99.65441895
+     sw_dep( 5)   98.85710144
+     sw_dep( 6)  109.61161804
+     sw_dep( 7)  111.17012024
 19 May 1999(Day of year=139), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   57.47268295
-     sw_dep( 2)   62.59772491
-     sw_dep( 3)  126.33713531
-     sw_dep( 4)   99.71492767
-     sw_dep( 5)   98.85744476
-     sw_dep( 6)  109.58275604
-     sw_dep( 7)  111.16577148
+     sw_dep( 1)   57.26985550
+     sw_dep( 2)   62.34477615
+     sw_dep( 3)  125.78407288
+     sw_dep( 4)   99.51522827
+     sw_dep( 5)   98.69829559
+     sw_dep( 6)  109.46948242
+     sw_dep( 7)  111.12524414
 20 May 1999(Day of year=140), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   57.04306030
-     sw_dep( 2)   62.43627548
-     sw_dep( 3)  126.09644318
-     sw_dep( 4)   99.73437500
-     sw_dep( 5)   98.82895660
-     sw_dep( 6)  109.53381348
-     sw_dep( 7)  111.15400696
+     sw_dep( 1)   56.82574081
+     sw_dep( 2)   62.16713715
+     sw_dep( 3)  125.50807953
+     sw_dep( 4)   99.51802063
+     sw_dep( 5)   98.65798950
+     sw_dep( 6)  109.41224670
+     sw_dep( 7)  111.11033630
 21 May 1999(Day of year=141), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   56.54048920
-     sw_dep( 2)   62.22198105
-     sw_dep( 3)  125.74978638
-     sw_dep( 4)   99.71300507
-     sw_dep( 5)   98.76844025
-     sw_dep( 6)  109.46217346
-     sw_dep( 7)  111.13402557
+     sw_dep( 1)   56.29514313
+     sw_dep( 2)   61.91880417
+     sw_dep( 3)  125.08918762
+     sw_dep( 4)   99.46605682
+     sw_dep( 5)   98.57427216
+     sw_dep( 6)  109.32414246
+     sw_dep( 7)  111.08425140
 22 May 1999(Day of year=142), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   58.87772369
-     sw_dep( 2)   62.00630951
-     sw_dep( 3)  125.32798767
-     sw_dep( 4)   99.66088867
-     sw_dep( 5)   98.68446350
-     sw_dep( 6)  109.37400055
-     sw_dep( 7)  111.10797119
+     sw_dep( 1)   58.59157562
+     sw_dep( 2)   61.65111923
+     sw_dep( 3)  124.55967712
+     sw_dep( 4)   99.36960602
+     sw_dep( 5)   98.45598602
+     sw_dep( 6)  109.21151733
+     sw_dep( 7)  111.04918671
 23 May 1999(Day of year=143), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   59.05682755
-     sw_dep( 2)   61.85982513
-     sw_dep( 3)  125.03776550
-     sw_dep( 4)   99.65416718
-     sw_dep( 5)   98.63901520
-     sw_dep( 6)  109.31346893
-     sw_dep( 7)  111.09162140
+     sw_dep( 1)   58.74021530
+     sw_dep( 2)   61.47006607
+     sw_dep( 3)  124.19771576
+     sw_dep( 4)   99.33123016
+     sw_dep( 5)   98.38694000
+     sw_dep( 6)  109.13429260
+     sw_dep( 7)  111.02657318
 24 May 1999(Day of year=144), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   58.39653397
-     sw_dep( 2)   61.59889221
-     sw_dep( 3)  124.52410126
-     sw_dep( 4)   99.56144714
-     sw_dep( 5)   98.52513885
-     sw_dep( 6)  109.20434570
-     sw_dep( 7)  111.05770874
+     sw_dep( 1)   58.00922394
+     sw_dep( 2)   61.13126755
+     sw_dep( 3)  123.52291107
+     sw_dep( 4)   99.17262268
+     sw_dep( 5)   98.22143555
+     sw_dep( 6)  108.98827362
+     sw_dep( 7)  110.97903442
 25 May 1999(Day of year=145), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   57.70424271
-     sw_dep( 2)   61.34933472
-     sw_dep( 3)  124.04544067
-     sw_dep( 4)   99.47768402
-     sw_dep( 5)   98.42037201
-     sw_dep( 6)  109.10191345
-     sw_dep( 7)  111.02594757
+     sw_dep( 1)   57.24926376
+     sw_dep( 2)   60.80632782
+     sw_dep( 3)  122.88742065
+     sw_dep( 4)   99.02336121
+     sw_dep( 5)   98.06564331
+     sw_dep( 6)  108.84934998
+     sw_dep( 7)  110.93368530
 26 May 1999(Day of year=146), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   57.14790344
-     sw_dep( 2)   61.09476471
-     sw_dep( 3)  123.56285095
-     sw_dep( 4)   99.38859558
-     sw_dep( 5)   98.31300354
-     sw_dep( 6)  108.99781036
-     sw_dep( 7)  110.99335480
+     sw_dep( 1)   56.62133026
+     sw_dep( 2)   60.47201920
+     sw_dep( 3)  122.23834229
+     sw_dep( 4)   98.86393738
+     sw_dep( 5)   97.90347290
+     sw_dep( 6)  108.70600891
+     sw_dep( 7)  110.88639832
 27 May 1999(Day of year=147), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   56.43340683
-     sw_dep( 2)   60.93045044
-     sw_dep( 3)  123.27806854
-     sw_dep( 4)   99.37113190
-     sw_dep( 5)   98.26527405
-     sw_dep( 6)  108.93643951
-     sw_dep( 7)  110.97595978
+     sw_dep( 1)   55.86934280
+     sw_dep( 2)   60.26676178
+     sw_dep( 3)  121.86593628
+     sw_dep( 4)   98.80534363
+     sw_dep( 5)   97.82542419
+     sw_dep( 6)  108.62318420
+     sw_dep( 7)  110.86074066
 28 May 1999(Day of year=148), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   55.72726822
-     sw_dep( 2)   60.63493729
-     sw_dep( 3)  122.72908020
-     sw_dep( 4)   99.25036621
-     sw_dep( 5)   98.13507080
-     sw_dep( 6)  108.81641388
-     sw_dep( 7)  110.93721771
+     sw_dep( 1)   55.07833862
+     sw_dep( 2)   59.87157059
+     sw_dep( 3)  121.10739136
+     sw_dep( 4)   98.59563446
+     sw_dep( 5)   97.62531281
+     sw_dep( 6)  108.45292664
+     sw_dep( 7)  110.80308533
 29 May 1999(Day of year=149), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   55.00223160
-     sw_dep( 2)   60.42448044
-     sw_dep( 3)  122.36363220
-     sw_dep( 4)   99.19615173
-     sw_dep( 5)   98.06041718
-     sw_dep( 6)  108.73621368
-     sw_dep( 7)  110.91263580
+     sw_dep( 1)   54.30008316
+     sw_dep( 2)   59.60005188
+     sw_dep( 3)  120.61087036
+     sw_dep( 4)   98.48164368
+     sw_dep( 5)   97.50521851
+     sw_dep( 6)  108.34027100
+     sw_dep( 7)  110.76602173
 30 May 1999(Day of year=150), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   54.33334351
-     sw_dep( 2)   60.19956970
-     sw_dep( 3)  121.97355652
-     sw_dep( 4)   99.12977600
-     sw_dep( 5)   97.97714996
-     sw_dep( 6)  108.65005493
-     sw_dep( 7)  110.88571930
+     sw_dep( 1)   53.55135345
+     sw_dep( 2)   59.30715942
+     sw_dep( 3)  120.07485199
+     sw_dep( 4)   98.34883881
+     sw_dep( 5)   97.37108612
+     sw_dep( 6)  108.21768951
+     sw_dep( 7)  110.72506714
 31 May 1999(Day of year=151), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   53.59046555
-     sw_dep( 2)   59.97414780
-     sw_dep( 3)  121.58797455
-     sw_dep( 4)   99.06239319
-     sw_dep( 5)   97.89432526
-     sw_dep( 6)  108.56438446
-     sw_dep( 7)  110.85878754
+     sw_dep( 1)   52.75278091
+     sw_dep( 2)   59.01410675
+     sw_dep( 3)  119.54294586
+     sw_dep( 4)   98.21396637
+     sw_dep( 5)   97.23661041
+     sw_dep( 6)  108.09501648
+     sw_dep( 7)  110.68379974
 1 June 1999(Day of year=152), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   52.82448959
-     sw_dep( 2)   59.69776154
-     sw_dep( 3)  121.10021210
-     sw_dep( 4)   98.95232391
-     sw_dep( 5)   97.77817535
-     sw_dep( 6)  108.45510864
-     sw_dep( 7)  110.82307434
+     sw_dep( 1)   51.91590118
+     sw_dep( 2)   58.64601517
+     sw_dep( 3)  118.85772705
+     sw_dep( 4)   98.01515961
+     sw_dep( 5)   97.05104065
+     sw_dep( 6)  107.93565369
+     sw_dep( 7)  110.62873840
 2 June 1999(Day of year=153), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   52.24641418
-     sw_dep( 2)   59.50024796
-     sw_dep( 3)  120.77832031
-     sw_dep( 4)   98.90415192
-     sw_dep( 5)   97.71345520
-     sw_dep( 6)  108.38275146
-     sw_dep( 7)  110.80060577
+     sw_dep( 1)   51.29316330
+     sw_dep( 2)   58.39543915
+     sw_dep( 3)  118.41771698
+     sw_dep( 4)   97.90882874
+     sw_dep( 5)   96.94270325
+     sw_dep( 6)  107.83215332
+     sw_dep( 7)  110.59390259
 3 June 1999(Day of year=154), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   51.78322601
-     sw_dep( 2)   59.32736588
-     sw_dep( 3)  120.50830078
-     sw_dep( 4)   98.87440491
-     sw_dep( 5)   97.66461945
-     sw_dep( 6)  108.32191467
-     sw_dep( 7)  110.78220367
+     sw_dep( 1)   50.79324722
+     sw_dep( 2)   58.18169403
+     sw_dep( 3)  118.05448914
+     sw_dep( 4)   97.83034515
+     sw_dep( 5)   96.85826111
+     sw_dep( 6)  107.74608612
+     sw_dep( 7)  110.56530762
 4 June 1999(Day of year=155), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   51.29339600
-     sw_dep( 2)   59.19656372
-     sw_dep( 3)  120.32775116
-     sw_dep( 4)   98.87853241
-     sw_dep( 5)   97.64400482
-     sw_dep( 6)  108.28139496
-     sw_dep( 7)  110.77113342
+     sw_dep( 1)   50.28019333
+     sw_dep( 2)   58.03114319
+     sw_dep( 3)  117.82444763
+     sw_dep( 4)   97.80300903
+     sw_dep( 5)   96.81669617
+     sw_dep( 6)  107.69118500
+     sw_dep( 7)  110.54810333
 5 June 1999(Day of year=156), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   51.04792786
-     sw_dep( 2)   59.04703522
-     sw_dep( 3)  120.10601807
-     sw_dep( 4)   98.86513519
-     sw_dep( 5)   97.60985565
-     sw_dep( 6)  108.23133850
-     sw_dep( 7)  110.75647736
+     sw_dep( 1)   50.00509644
+     sw_dep( 2)   57.85224533
+     sw_dep( 3)  117.53320313
+     sw_dep( 4)   97.74979401
+     sw_dep( 5)   96.75450134
+     sw_dep( 6)  107.62153625
+     sw_dep( 7)  110.52530670
 6 June 1999(Day of year=157), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   51.96216965
-     sw_dep( 2)   58.96740723
-     sw_dep( 3)  120.01551819
-     sw_dep( 4)   98.90301514
-     sw_dep( 5)   97.61777496
-     sw_dep( 6)  108.21142578
-     sw_dep( 7)  110.75280762
+     sw_dep( 1)   50.90930176
+     sw_dep( 2)   57.77306747
+     sw_dep( 3)  117.43721008
+     sw_dep( 4)   97.77375031
+     sw_dep( 5)   96.75638580
+     sw_dep( 6)  107.59835052
+     sw_dep( 7)  110.51966095
 7 June 1999(Day of year=158), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   51.53530884
-     sw_dep( 2)   58.86237335
-     sw_dep( 3)  119.87384796
-     sw_dep( 4)   98.91978455
-     sw_dep( 5)   97.60904694
-     sw_dep( 6)  108.17974091
-     sw_dep( 7)  110.74475861
+     sw_dep( 1)   50.46423721
+     sw_dep( 2)   57.65682602
+     sw_dep( 3)  117.26553345
+     sw_dep( 4)   97.76655579
+     sw_dep( 5)   96.73303986
+     sw_dep( 6)  107.55703735
+     sw_dep( 7)  110.50721741
 8 June 1999(Day of year=159), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   51.45869064
-     sw_dep( 2)   58.74564362
-     sw_dep( 3)  119.70471954
-     sw_dep( 4)   98.92460632
-     sw_dep( 5)   97.59120178
-     sw_dep( 6)  108.14167786
-     sw_dep( 7)  110.73429871
+     sw_dep( 1)   50.36544037
+     sw_dep( 2)   57.52266312
+     sw_dep( 3)  117.05365753
+     sw_dep( 4)   97.74208069
+     sw_dep( 5)   96.69600677
+     sw_dep( 6)  107.50598145
+     sw_dep( 7)  110.49105835
 9 June 1999(Day of year=160), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   51.29663467
-     sw_dep( 2)   58.66613770
-     sw_dep( 3)  119.61322021
-     sw_dep( 4)   98.95995331
-     sw_dep( 5)   97.59844971
-     sw_dep( 6)  108.12158203
-     sw_dep( 7)  110.73037720
+     sw_dep( 1)   50.19105148
+     sw_dep( 2)   57.44326782
+     sw_dep( 3)  116.95654297
+     sw_dep( 4)   97.76332855
+     sw_dep( 5)   96.69698334
+     sw_dep( 6)  107.48246765
+     sw_dep( 7)  110.48509216
 10 June 1999(Day of year=161), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   51.64881897
-     sw_dep( 2)   58.59708786
-     sw_dep( 3)  119.53645325
-     sw_dep( 4)   99.00078583
-     sw_dep( 5)   97.61045837
-     sw_dep( 6)  108.10494232
-     sw_dep( 7)  110.72767639
+     sw_dep( 1)   50.53372192
+     sw_dep( 2)   57.37718201
+     sw_dep( 3)  116.88119507
+     sw_dep( 4)   97.79300690
+     sw_dep( 5)   96.70516205
+     sw_dep( 6)  107.46424103
+     sw_dep( 7)  110.48104858
 11 June 1999(Day of year=162), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   51.32790375
-     sw_dep( 2)   58.52204895
-     sw_dep( 3)  119.44862366
-     sw_dep( 4)   99.03667450
-     sw_dep( 5)   97.61881256
-     sw_dep( 6)  108.08577728
-     sw_dep( 7)  110.72400665
+     sw_dep( 1)   50.20302582
+     sw_dep( 2)   57.30274963
+     sw_dep( 3)  116.78985596
+     sw_dep( 4)   97.81574249
+     sw_dep( 5)   96.70792389
+     sw_dep( 6)  107.44219208
+     sw_dep( 7)  110.47552490
 12 June 1999(Day of year=163), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   50.77108383
-     sw_dep( 2)   58.42382813
-     sw_dep( 3)  119.31555176
-     sw_dep( 4)   99.05349731
-     sw_dep( 5)   97.61223602
-     sw_dep( 6)  108.05610657
-     sw_dep( 7)  110.71641541
+     sw_dep( 1)   49.63092804
+     sw_dep( 2)   57.19580078
+     sw_dep( 3)  116.63321686
+     sw_dep( 4)   97.81108093
+     sw_dep( 5)   96.68859100
+     sw_dep( 6)  107.40434265
+     sw_dep( 7)  110.46405792
 13 June 1999(Day of year=164), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   50.32025528
-     sw_dep( 2)   58.30983353
-     sw_dep( 3)  119.15081787
-     sw_dep( 4)   99.05650330
-     sw_dep( 5)   97.59504700
-     sw_dep( 6)  108.01902771
-     sw_dep( 7)  110.70602417
+     sw_dep( 1)   49.16114426
+     sw_dep( 2)   57.06677246
+     sw_dep( 3)  116.43135834
+     sw_dep( 4)   97.78686523
+     sw_dep( 5)   96.65371704
+     sw_dep( 6)  107.35546112
+     sw_dep( 7)  110.44838715
 14 June 1999(Day of year=165), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   49.77409363
-     sw_dep( 2)   58.19793320
-     sw_dep( 3)  118.99314880
-     sw_dep( 4)   99.06147003
-     sw_dep( 5)   97.57994080
-     sw_dep( 6)  107.98354340
-     sw_dep( 7)  110.69614410
+     sw_dep( 1)   48.59769821
+     sw_dep( 2)   56.94176483
+     sw_dep( 3)  116.24032593
+     sw_dep( 4)   97.76607513
+     sw_dep( 5)   96.62213898
+     sw_dep( 6)  107.30908203
+     sw_dep( 7)  110.43356323
 15 June 1999(Day of year=166), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   49.24713516
-     sw_dep( 2)   58.10125351
-     sw_dep( 3)  118.87022400
-     sw_dep( 4)   99.07996368
-     sw_dep( 5)   97.57614136
-     sw_dep( 6)  107.95616913
-     sw_dep( 7)  110.68920135
+     sw_dep( 1)   48.05734253
+     sw_dep( 2)   56.83935165
+     sw_dep( 3)  116.09945679
+     sw_dep( 4)   97.76522827
+     sw_dep( 5)   96.60729980
+     sw_dep( 6)  107.27484894
+     sw_dep( 7)  110.42321014
 16 June 1999(Day of year=167), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   48.69654083
-     sw_dep( 2)   58.00932312
-     sw_dep( 3)  118.75965881
-     sw_dep( 4)   99.10293579
-     sw_dep( 5)   97.57632446
-     sw_dep( 6)  107.93170166
-     sw_dep( 7)  110.68327332
+     sw_dep( 1)   47.49488831
+     sw_dep( 2)   56.74442673
+     sw_dep( 3)  115.97659302
+     sw_dep( 4)   97.77123260
+     sw_dep( 5)   96.59841919
+     sw_dep( 6)  107.24500275
+     sw_dep( 7)  110.41443634
 17 June 1999(Day of year=168), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   48.10147476
-     sw_dep( 2)   57.91380310
-     sw_dep( 3)  118.64355469
-     sw_dep( 4)   99.12299347
-     sw_dep( 5)   97.57455444
-     sw_dep( 6)  107.90595245
-     sw_dep( 7)  110.67681885
+     sw_dep( 1)   46.88793564
+     sw_dep( 2)   56.64507675
+     sw_dep( 3)  115.84623718
+     sw_dep( 4)   97.77349854
+     sw_dep( 5)   96.58681488
+     sw_dep( 6)  107.21331024
+     sw_dep( 7)  110.40491486
 18 June 1999(Day of year=169), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   47.51926041
-     sw_dep( 2)   57.80759430
-     sw_dep( 3)  118.50595093
-     sw_dep( 4)   99.13339233
-     sw_dep( 5)   97.56547546
-     sw_dep( 6)  107.87514496
-     sw_dep( 7)  110.66842651
+     sw_dep( 1)   46.29257584
+     sw_dep( 2)   56.53117371
+     sw_dep( 3)  115.68598175
+     sw_dep( 4)   97.76251984
+     sw_dep( 5)   96.56477356
+     sw_dep( 6)  107.17425537
+     sw_dep( 7)  110.39256287
 19 June 1999(Day of year=170), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   46.94954300
-     sw_dep( 2)   57.68844604
-     sw_dep( 3)  118.34128571
-     sw_dep( 4)   99.13161469
-     sw_dep( 5)   97.54713440
-     sw_dep( 6)  107.83792114
-     sw_dep( 7)  110.65760040
+     sw_dep( 1)   45.70849609
+     sw_dep( 2)   56.39959717
+     sw_dep( 3)  115.48837280
+     sw_dep( 4)   97.73493958
+     sw_dep( 5)   96.52959442
+     sw_dep( 6)  107.12592316
+     sw_dep( 7)  110.37664795
 20 June 1999(Day of year=171), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   46.37481689
-     sw_dep( 2)   57.57468033
-     sw_dep( 3)  118.18876648
-     sw_dep( 4)   99.13405609
-     sw_dep( 5)   97.53263092
-     sw_dep( 6)  107.80352783
-     sw_dep( 7)  110.64774323
-20 June 1999(Day of year=171), maize: 
-     Stage 9 EndGrainFill  DAS = 121
-     		Biomass       = 1303.01 		 LAI            =   1.35
-     		Stover N Conc =   3.37 		 Extractable SW = 151.26
+     sw_dep( 1)   45.12077332
+     sw_dep( 2)   56.27601624
+     sw_dep( 3)  115.30838776
+     sw_dep( 4)   97.71384430
+     sw_dep( 5)   96.50014496
+     sw_dep( 6)  107.08182526
+     sw_dep( 7)  110.36224365
 21 June 1999(Day of year=172), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   45.80745316
-     sw_dep( 2)   57.45271683
-     sw_dep( 3)  118.01865387
-     sw_dep( 4)   99.12818146
-     sw_dep( 5)   97.51196289
-     sw_dep( 6)  107.76490021
-     sw_dep( 7)  110.63624573
+     sw_dep( 1)   44.54022598
+     sw_dep( 2)   56.14144135
+     sw_dep( 3)  115.10467529
+     sw_dep( 4)   97.68173981
+     sw_dep( 5)   96.46214294
+     sw_dep( 6)  107.03175354
+     sw_dep( 7)  110.34550476
 22 June 1999(Day of year=173), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   45.26528549
-     sw_dep( 2)   57.33398819
-     sw_dep( 3)  117.85530853
-     sw_dep( 4)   99.12424469
-     sw_dep( 5)   97.49330902
-     sw_dep( 6)  107.72782135
-     sw_dep( 7)  110.62525177
+     sw_dep( 1)   43.98580933
+     sw_dep( 2)   56.01171112
+     sw_dep( 3)  114.91111755
+     sw_dep( 4)   97.65295410
+     sw_dep( 5)   96.42728424
+     sw_dep( 6)  106.98406219
+     sw_dep( 7)  110.32957458
 23 June 1999(Day of year=174), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   45.04901886
-     sw_dep( 2)   57.22486115
-     sw_dep( 3)  117.71086884
-     sw_dep( 4)   99.12750244
-     sw_dep( 5)   97.48081970
-     sw_dep( 6)  107.69519043
-     sw_dep( 7)  110.61584473
+     sw_dep( 1)   43.75759125
+     sw_dep( 2)   55.89509964
+     sw_dep( 3)  114.74423981
+     sw_dep( 4)   97.63467407
+     sw_dep( 5)   96.40139008
+     sw_dep( 6)  106.94290161
+     sw_dep( 7)  110.31602478
 24 June 1999(Day of year=175), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   47.18688202
-     sw_dep( 2)   57.15060425
-     sw_dep( 3)  117.62618256
-     sw_dep( 4)   99.15564728
-     sw_dep( 5)   97.48849487
-     sw_dep( 6)  107.67681122
-     sw_dep( 7)  110.61168671
+     sw_dep( 1)   45.88682175
+     sw_dep( 2)   55.82271957
+     sw_dep( 3)  114.65941620
+     sw_dep( 4)   97.65096283
+     sw_dep( 5)   96.40397644
+     sw_dep( 6)  106.92218781
+     sw_dep( 7)  110.31014252
 25 June 1999(Day of year=176), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   46.81361389
-     sw_dep( 2)   57.06981277
-     sw_dep( 3)  117.52770996
-     sw_dep( 4)   99.17740631
-     sw_dep( 5)   97.49137878
-     sw_dep( 6)  107.65515137
-     sw_dep( 7)  110.60626221
-25 June 1999(Day of year=176), maize: 
-     Stage 10 Maturity  DAS = 126
-     		Biomass       = 1310.45 		 LAI            =   1.31
-     		Stover N Conc =   3.28 		 Extractable SW = 150.34
+     sw_dep( 1)   45.50388718
+     sw_dep( 2)   55.74246216
+     sw_dep( 3)  114.55792236
+     sw_dep( 4)   97.65966034
+     sw_dep( 5)   96.40061951
+     sw_dep( 6)  106.89732361
+     sw_dep( 7)  110.30264282
 26 June 1999(Day of year=177), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   46.40059662
-     sw_dep( 2)   56.97227478
-     sw_dep( 3)  117.39302063
-     sw_dep( 4)   99.18296051
-     sw_dep( 5)   97.48174286
-     sw_dep( 6)  107.62481689
-     sw_dep( 7)  110.59754944
-26 June 1999(Day of year=177), maize: 
-     Stage 11 HarvestRipe  DAS = 127
-     		Biomass       = 1310.45 		 LAI            =   1.31
-     		Stover N Conc =   3.28 		 Extractable SW = 149.65
-26 June 1999(Day of year=177), paddock.Harvesting rule: 
+     sw_dep( 1)   45.08016968
+     sw_dep( 2)   55.64216232
+     sw_dep( 3)  114.41306305
+     sw_dep( 4)   97.64907074
+     sw_dep( 5)   96.38185120
+     sw_dep( 6)  106.86157227
+     sw_dep( 7)  110.29096985
+27 June 1999(Day of year=178), paddock.GattonField Nitrogen: 
+     sw_dep( 1)   46.12829971
+     sw_dep( 2)   55.56106949
+     sw_dep( 3)  114.30135345
+     sw_dep( 4)   97.65220642
+     sw_dep( 5)   96.37454987
+     sw_dep( 6)  106.83409119
+     sw_dep( 7)  110.28237152
+27 June 1999(Day of year=178), maize: 
+     Stage 9 EndGrainFill  DAS = 128
+     		Biomass       = 1385.56 		 LAI            =   1.35
+     		Stover N Conc =   3.51 		 Extractable SW = 141.13
+28 June 1999(Day of year=179), paddock.GattonField Nitrogen: 
+     sw_dep( 1)   48.54996490
+     sw_dep( 2)   55.51585007
+     sw_dep( 3)  114.24602509
+     sw_dep( 4)   97.67942047
+     sw_dep( 5)   96.38706207
+     sw_dep( 6)  106.82080078
+     sw_dep( 7)  110.27910614
+29 June 1999(Day of year=180), paddock.GattonField Nitrogen: 
+     sw_dep( 1)   48.20129776
+     sw_dep( 2)   55.47009277
+     sw_dep( 3)  114.19185638
+     sw_dep( 4)   97.70687103
+     sw_dep( 5)   96.39993286
+     sw_dep( 6)  106.80782318
+     sw_dep( 7)  110.27592468
+30 June 1999(Day of year=181), paddock.GattonField Nitrogen: 
+     sw_dep( 1)   49.11670303
+     sw_dep( 2)   55.42073441
+     sw_dep( 3)  114.11912537
+     sw_dep( 4)   97.72589874
+     sw_dep( 5)   96.40613556
+     sw_dep( 6)  106.79017639
+     sw_dep( 7)  110.27094269
+1 July 1999(Day of year=182), paddock.GattonField Nitrogen: 
+     sw_dep( 1)   64.41062927
+     sw_dep( 2)   56.99293137
+     sw_dep( 3)  114.06137085
+     sw_dep( 4)   97.74568939
+     sw_dep( 5)   96.41311646
+     sw_dep( 6)  106.77315521
+     sw_dep( 7)  110.26615906
+1 July 1999(Day of year=182), maize: 
+     Stage 10 Maturity  DAS = 132
+     		Biomass       = 1388.81 		 LAI            =   1.35
+     		Stover N Conc =   3.46 		 Extractable SW = 160.66
+2 July 1999(Day of year=183), paddock.GattonField Nitrogen: 
+     sw_dep( 1)   67.07620239
+     sw_dep( 2)   61.32016373
+     sw_dep( 3)  114.07493591
+     sw_dep( 4)   97.77642822
+     sw_dep( 5)   96.42901611
+     sw_dep( 6)  106.76251984
+     sw_dep( 7)  110.26377106
+2 July 1999(Day of year=183), maize: 
+     Stage 11 HarvestRipe  DAS = 133
+     		Biomass       = 1388.81 		 LAI            =   1.35
+     		Stover N Conc =   3.46 		 Extractable SW = 167.70
+2 July 1999(Day of year=183), paddock.Harvesting rule: 
      Manager sending message :- maize harvest
      
      Harvest
-     Flowering (DAS)       = 56 		 Maturity (DAS)          = 126
-     Flowering day         = 106 		 Maturity day            = 176
+     Flowering (DAS)       = 60 		 Maturity (DAS)          = 132
+     Flowering day         = 110 		 Maturity day            = 182
      Maximum LAI           = 3.5 		 Number of leaves        = 16.3
-     Total above ground biomass    (kg/ha) = 13104.5
-     Green above ground biomass    (kg/ha) = 11847.3
-     Senesced above ground biomass (kg/ha) = 1257.2
-     Stover (kg/ha)        = 5157.6 	 Grain yield (kg/ha)     = 7946.8
-     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 9404.5
-     Weight 1000 grains(g) = 228.2 		 Grains/m^2              = 3482.0
-     Grains/head           = 519.7
-     Grain N percent    (%)     =      0.74 	 Grain N            (kg/ha) =    59.17
-     Total N content    (kg/ha) =     91.98 	 Senesced N content (kg/ha) =    21.35
-     Green N content    (kg/ha) =     28.06
+     Total above ground biomass    (kg/ha) = 13888.1
+     Green above ground biomass    (kg/ha) = 12655.1
+     Senesced above ground biomass (kg/ha) = 1233.0
+     Stover (kg/ha)        = 6252.9 	 Grain yield (kg/ha)     = 7635.3
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 9035.8
+     Weight 1000 grains(g) = 230.0 		 Grains/m^2              = 3320.1
+     Grains/head           = 495.5
+     Grain N percent    (%)     =      0.76 	 Grain N            (kg/ha) =    57.94
+     Total N content    (kg/ha) =     92.54 	 Senesced N content (kg/ha) =    21.31
+     Green N content    (kg/ha) =     29.74
      
      Average Stress Indices:                          Water Photo  Water Expan  N Photo
         Emergence           to End of juvenile           1.0          1.0        1.0
@@ -1429,234 +1479,186 @@ Paddock:
         Floral initiation   to Flag leaf                 1.0          1.0        1.0
         Flag leaf           to Flowering                 1.0          1.0        1.0
         Flowering           to Start grain fill          1.0          1.0        0.9
-        Start grain fill    to End grain fill            1.0          1.0        0.6
+        Start grain fill    to End grain fill            1.0          1.0        0.5
      
      Crop harvested.
         Organic matter removed from system:-      From Tops		From Roots
-                         DM (kg/ha) =               7946.84		    0.00
-                         N  (kg/ha) =                 59.17		    0.00
+                         DM (kg/ha) =               7635.26		    0.00
+                         N  (kg/ha) =                 57.94		    0.00
      Manager sending message :- maize end_crop
      Crop ended.
      Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
-                         DM (kg/ha) =               5157.64		 2197.68
-                         N  (kg/ha) =                 32.82		   16.59
+                         DM (kg/ha) =               6252.86		 2495.97
+                         N  (kg/ha) =                 34.60		   16.46
                          P  (kg/ha) =                  0.00		    0.00
-27 June 1999(Day of year=178), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   47.30775452
-     sw_dep( 2)   56.88972855
-     sw_dep( 3)  117.28212738
-     sw_dep( 4)   99.19810486
-     sw_dep( 5)   97.48007965
-     sw_dep( 6)  107.60016632
-     sw_dep( 7)  110.59089661
-28 June 1999(Day of year=179), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   49.56856537
-     sw_dep( 2)   56.84361649
-     sw_dep( 3)  117.22792053
-     sw_dep( 4)   99.23732758
-     sw_dep( 5)   97.49778748
-     sw_dep( 6)  107.58914185
-     sw_dep( 7)  110.58929443
-29 June 1999(Day of year=180), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   48.92819214
-     sw_dep( 2)   56.79502106
-     sw_dep( 3)  117.17378998
-     sw_dep( 4)   99.27628326
-     sw_dep( 5)   97.51549530
-     sw_dep( 6)  107.57817078
-     sw_dep( 7)  110.58767700
-30 June 1999(Day of year=181), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   49.61424255
-     sw_dep( 2)   56.75045776
-     sw_dep( 3)  117.11977386
-     sw_dep( 4)   99.31497955
-     sw_dep( 5)   97.53319550
-     sw_dep( 6)  107.56725311
-     sw_dep( 7)  110.58605194
-1 July 1999(Day of year=182), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   64.53898621
-     sw_dep( 2)   58.47202301
-     sw_dep( 3)  117.08172607
-     sw_dep( 4)   99.35346222
-     sw_dep( 5)   97.55089569
-     sw_dep( 6)  107.55638885
-     sw_dep( 7)  110.58441162
-2 July 1999(Day of year=183), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   66.69365692
-     sw_dep( 2)   62.87433243
-     sw_dep( 3)  117.09909058
-     sw_dep( 4)   99.39192963
-     sw_dep( 5)   97.56858826
-     sw_dep( 6)  107.54557800
-     sw_dep( 7)  110.58276367
 3 July 1999(Day of year=184), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   64.25309753
-     sw_dep( 2)   64.41143799
-     sw_dep( 3)  117.14204407
-     sw_dep( 4)   99.43046570
-     sw_dep( 5)   97.58628082
-     sw_dep( 6)  107.53482056
-     sw_dep( 7)  110.58110046
+     sw_dep( 1)   64.63977814
+     sw_dep( 2)   63.00565720
+     sw_dep( 3)  114.08479309
+     sw_dep( 4)   97.79496765
+     sw_dep( 5)   96.43498993
+     sw_dep( 6)  106.74491882
+     sw_dep( 7)  110.25870514
 4 July 1999(Day of year=185), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   62.50889587
-     sw_dep( 2)   64.92111206
-     sw_dep( 3)  117.41360474
-     sw_dep( 4)   99.46984863
-     sw_dep( 5)   97.60397339
-     sw_dep( 6)  107.52410889
-     sw_dep( 7)  110.57942963
+     sw_dep( 1)   62.94205856
+     sw_dep( 2)   63.85862350
+     sw_dep( 3)  114.13781738
+     sw_dep( 4)   97.82663727
+     sw_dep( 5)   96.45153809
+     sw_dep( 6)  106.73486328
+     sw_dep( 7)  110.25647736
 5 July 1999(Day of year=186), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   61.50000000
-     sw_dep( 2)   64.84406281
-     sw_dep( 3)  117.67758942
-     sw_dep( 4)   99.51007080
-     sw_dep( 5)   97.62166595
-     sw_dep( 6)  107.51345062
-     sw_dep( 7)  110.57774353
+     sw_dep( 1)   61.86989975
+     sw_dep( 2)   64.19670868
+     sw_dep( 3)  114.19627380
+     sw_dep( 4)   97.85842133
+     sw_dep( 5)   96.46807861
+     sw_dep( 6)  106.72485352
+     sw_dep( 7)  110.25424194
 6 July 1999(Day of year=187), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   60.50098038
-     sw_dep( 2)   64.56902313
-     sw_dep( 3)  117.82139587
-     sw_dep( 4)   99.55071259
-     sw_dep( 5)   97.63935852
-     sw_dep( 6)  107.50284576
-     sw_dep( 7)  110.57604980
+     sw_dep( 1)   60.93161392
+     sw_dep( 2)   64.14834595
+     sw_dep( 3)  114.25354767
+     sw_dep( 4)   97.89031982
+     sw_dep( 5)   96.48461151
+     sw_dep( 6)  106.71488953
+     sw_dep( 7)  110.25199127
 7 July 1999(Day of year=188), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   59.37609482
-     sw_dep( 2)   64.36692810
-     sw_dep( 3)  117.87857056
-     sw_dep( 4)   99.59146881
-     sw_dep( 5)   97.65705109
-     sw_dep( 6)  107.49229431
-     sw_dep( 7)  110.57434082
+     sw_dep( 1)   60.00196838
+     sw_dep( 2)   63.97961807
+     sw_dep( 3)  114.30760956
+     sw_dep( 4)   97.92231750
+     sw_dep( 5)   96.50112915
+     sw_dep( 6)  106.70497131
+     sw_dep( 7)  110.24973297
 8 July 1999(Day of year=189), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   58.83951187
-     sw_dep( 2)   64.18560791
-     sw_dep( 3)  117.91156006
-     sw_dep( 4)   99.63226318
-     sw_dep( 5)   97.67474365
-     sw_dep( 6)  107.48179626
-     sw_dep( 7)  110.57262421
+     sw_dep( 1)   59.31950378
+     sw_dep( 2)   63.80717468
+     sw_dep( 3)  114.35845184
+     sw_dep( 4)   97.95440674
+     sw_dep( 5)   96.51763916
+     sw_dep( 6)  106.69509888
+     sw_dep( 7)  110.24746704
 9 July 1999(Day of year=190), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   58.58222198
-     sw_dep( 2)   64.00846863
-     sw_dep( 3)  117.94121552
-     sw_dep( 4)   99.67307281
-     sw_dep( 5)   97.69243622
-     sw_dep( 6)  107.47134399
-     sw_dep( 7)  110.57089233
+     sw_dep( 1)   59.14311600
+     sw_dep( 2)   63.63921356
+     sw_dep( 3)  114.40621948
+     sw_dep( 4)   97.98657990
+     sw_dep( 5)   96.53414154
+     sw_dep( 6)  106.68527222
+     sw_dep( 7)  110.24519348
 10 July 1999(Day of year=191), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   58.55169678
-     sw_dep( 2)   63.83836746
-     sw_dep( 3)  117.96774292
-     sw_dep( 4)   99.71389008
-     sw_dep( 5)   97.71013641
-     sw_dep( 6)  107.46094513
-     sw_dep( 7)  110.56915283
+     sw_dep( 1)   59.22203827
+     sw_dep( 2)   63.47929764
+     sw_dep( 3)  114.45109558
+     sw_dep( 4)   98.01882172
+     sw_dep( 5)   96.55063629
+     sw_dep( 6)  106.67549133
+     sw_dep( 7)  110.24291229
 11 July 1999(Day of year=192), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   57.86580276
-     sw_dep( 2)   63.66620636
-     sw_dep( 3)  117.99118042
-     sw_dep( 4)   99.75470734
-     sw_dep( 5)   97.72783661
-     sw_dep( 6)  107.45059967
-     sw_dep( 7)  110.56739807
+     sw_dep( 1)   58.71907043
+     sw_dep( 2)   63.31838989
+     sw_dep( 3)  114.49312592
+     sw_dep( 4)   98.05113220
+     sw_dep( 5)   96.56711578
+     sw_dep( 6)  106.66575623
+     sw_dep( 7)  110.24062347
 12 July 1999(Day of year=193), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   56.91848755
-     sw_dep( 2)   63.48967361
-     sw_dep( 3)  118.01152039
-     sw_dep( 4)   99.79550934
-     sw_dep( 5)   97.74553680
-     sw_dep( 6)  107.44030762
-     sw_dep( 7)  110.56563568
+     sw_dep( 1)   57.93759537
+     sw_dep( 2)   63.15315628
+     sw_dep( 3)  114.53230286
+     sw_dep( 4)   98.08349609
+     sw_dep( 5)   96.58358765
+     sw_dep( 6)  106.65606689
+     sw_dep( 7)  110.23831940
 13 July 1999(Day of year=194), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   56.20227051
-     sw_dep( 2)   63.31240082
-     sw_dep( 3)  118.02883148
-     sw_dep( 4)   99.83628845
-     sw_dep( 5)   97.76323700
-     sw_dep( 6)  107.43006134
-     sw_dep( 7)  110.56386566
+     sw_dep( 1)   57.34717560
+     sw_dep( 2)   62.98688126
+     sw_dep( 3)  114.56866455
+     sw_dep( 4)   98.11591339
+     sw_dep( 5)   96.60005188
+     sw_dep( 6)  106.64642334
+     sw_dep( 7)  110.23600769
 14 July 1999(Day of year=195), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   55.40043640
-     sw_dep( 2)   63.13415146
-     sw_dep( 3)  118.04317474
-     sw_dep( 4)   99.87702942
-     sw_dep( 5)   97.78094482
-     sw_dep( 6)  107.41986847
-     sw_dep( 7)  110.56208038
+     sw_dep( 1)   56.68710709
+     sw_dep( 2)   62.81921768
+     sw_dep( 3)  114.60224152
+     sw_dep( 4)   98.14836884
+     sw_dep( 5)   96.61650848
+     sw_dep( 6)  106.63681793
+     sw_dep( 7)  110.23368835
 15 July 1999(Day of year=196), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   54.64821625
-     sw_dep( 2)   62.95599747
-     sw_dep( 3)  118.05462646
-     sw_dep( 4)   99.91772461
-     sw_dep( 5)   97.79865265
-     sw_dep( 6)  107.40972900
-     sw_dep( 7)  110.56028748
+     sw_dep( 1)   56.06871414
+     sw_dep( 2)   62.65111923
+     sw_dep( 3)  114.63309479
+     sw_dep( 4)   98.18085480
+     sw_dep( 5)   96.63295746
+     sw_dep( 6)  106.62725830
+     sw_dep( 7)  110.23136139
 16 July 1999(Day of year=197), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   54.22144699
-     sw_dep( 2)   62.78089905
-     sw_dep( 3)  118.06330109
-     sw_dep( 4)   99.95836639
-     sw_dep( 5)   97.81636047
-     sw_dep( 6)  107.39963531
-     sw_dep( 7)  110.55847931
+     sw_dep( 1)   55.75357819
+     sw_dep( 2)   62.48590469
+     sw_dep( 3)  114.66132355
+     sw_dep( 4)   98.21336365
+     sw_dep( 5)   96.64939880
+     sw_dep( 6)  106.61774445
+     sw_dep( 7)  110.22902679
 17 July 1999(Day of year=198), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   56.82473373
-     sw_dep( 2)   62.63694000
-     sw_dep( 3)  118.06974792
-     sw_dep( 4)   99.99893951
-     sw_dep( 5)   97.83407593
-     sw_dep( 6)  107.38959503
-     sw_dep( 7)  110.55666351
+     sw_dep( 1)   58.52051544
+     sw_dep( 2)   62.35969543
+     sw_dep( 3)  114.68754578
+     sw_dep( 4)   98.24589539
+     sw_dep( 5)   96.66583252
+     sw_dep( 6)  106.60827637
+     sw_dep( 7)  110.22668457
 18 July 1999(Day of year=199), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   56.00990295
-     sw_dep( 2)   62.48935318
-     sw_dep( 3)  118.07395935
-     sw_dep( 4)  100.03944397
-     sw_dep( 5)   97.85179138
-     sw_dep( 6)  107.37960052
-     sw_dep( 7)  110.55484009
+     sw_dep( 1)   57.87401199
+     sw_dep( 2)   62.22916412
+     sw_dep( 3)  114.71173859
+     sw_dep( 4)   98.27843475
+     sw_dep( 5)   96.68225861
+     sw_dep( 6)  106.59884644
+     sw_dep( 7)  110.22433472
 19 July 1999(Day of year=200), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   54.84612656
-     sw_dep( 2)   62.33590698
-     sw_dep( 3)  118.07589722
-     sw_dep( 4)  100.07986450
-     sw_dep( 5)   97.86951447
-     sw_dep( 6)  107.36965942
-     sw_dep( 7)  110.55300140
+     sw_dep( 1)   56.90759659
+     sw_dep( 2)   62.09123993
+     sw_dep( 3)  114.73382568
+     sw_dep( 4)   98.31098175
+     sw_dep( 5)   96.69867706
+     sw_dep( 6)  106.58946228
+     sw_dep( 7)  110.22197723
 20 July 1999(Day of year=201), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   53.68007278
-     sw_dep( 2)   62.17828369
-     sw_dep( 3)  118.07555389
-     sw_dep( 4)  100.12020111
-     sw_dep( 5)   97.88723755
-     sw_dep( 6)  107.35977173
-     sw_dep( 7)  110.55115509
+     sw_dep( 1)   55.94195938
+     sw_dep( 2)   61.94744492
+     sw_dep( 3)  114.75377655
+     sw_dep( 4)   98.34352875
+     sw_dep( 5)   96.71508789
+     sw_dep( 6)  106.58012390
+     sw_dep( 7)  110.21960449
 21 July 1999(Day of year=202), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   52.95537186
-     sw_dep( 2)   62.02079391
-     sw_dep( 3)  118.07299042
-     sw_dep( 4)  100.16043854
-     sw_dep( 5)   97.90496063
-     sw_dep( 6)  107.34992981
-     sw_dep( 7)  110.54930115
+     sw_dep( 1)   55.19030380
+     sw_dep( 2)   61.80108643
+     sw_dep( 3)  114.77159119
+     sw_dep( 4)   98.37606049
+     sw_dep( 5)   96.73149109
+     sw_dep( 6)  106.57082367
+     sw_dep( 7)  110.21722412
 22 July 1999(Day of year=203), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   52.31437683
-     sw_dep( 2)   61.86431885
-     sw_dep( 3)  118.06827545
-     sw_dep( 4)  100.20057678
-     sw_dep( 5)   97.92269135
-     sw_dep( 6)  107.34014130
-     sw_dep( 7)  110.54743195
+     sw_dep( 1)   54.29461288
+     sw_dep( 2)   61.65162659
+     sw_dep( 3)  114.78726959
+     sw_dep( 4)   98.40858459
+     sw_dep( 5)   96.74789429
+     sw_dep( 6)  106.56156921
+     sw_dep( 7)  110.21483612
 23 July 1999(Day of year=204), paddock.GattonField Nitrogen: 
-     sw_dep( 1)   51.73602676
-     sw_dep( 2)   61.70943069
-     sw_dep( 3)  118.06148529
-     sw_dep( 4)  100.24060059
-     sw_dep( 5)   97.94042206
-     sw_dep( 6)  107.33039856
-     sw_dep( 7)  110.54555511
+     sw_dep( 1)   53.76567078
+     sw_dep( 2)   61.50271988
+     sw_dep( 3)  114.80086517
+     sw_dep( 4)   98.44108582
+     sw_dep( 5)   96.76428986
+     sw_dep( 6)  106.55236053
+     sw_dep( 7)  110.21244049
 23 July 1999(Day of year=204), clock: 
      Simulation is terminating due to end criteria being met.
 
