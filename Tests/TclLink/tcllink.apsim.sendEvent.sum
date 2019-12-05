@@ -178,6 +178,7 @@ TclLink:
      --->Section: init
 
             source $apsuite/Model/TclLink/CIDataTypes.tcl
+            set incomingVariant {}
             proc sendEventHandler {args} {
                 apsimWriteToSummaryFile "got event"
                 apsimWriteToSummaryFile "args = $args"
@@ -212,7 +213,7 @@ TclLink:
                # Send a "kill crop" message (ie a non-variant argument)
                apsimSendRawMessage sorghum kill_crop [pack_KillCrop KillFraction 0.5]
                # These are "null argument" messages
-               apsimSendMessage sorghum harvest
+               apsimSendRawMessage sorghum harvest [pack_Harvest Remove 1.0]
                apsimSendMessage sorghum end_crop
                # By default, tcl messages are Apsim Variants - no fixed structure 
                # I'm gonna sit right down and write myself a message...
@@ -301,25 +302,49 @@ TclLink:
      		Stover N Conc =   3.07 		 Extractable SW = 216.25
 16 February 1990(Day of year=47), Sorghum: 
      Stage 11 HarvestRipe  DAS = 106
-     		Biomass       = 1224.57 		 LAI            =   1.21
-     		Stover N Conc =   3.07 		 Extractable SW = 216.73
-16 February 1990(Day of year=47): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     MessageData buffer has overflowed
-     Component name: ..Sorghum
+     		Biomass       = 1217.58 		 LAI            =   1.20
+     		Stover N Conc =   3.15 		 Extractable SW = 218.41
+     Kill Crop
+     Crop kill. Standing above-ground dm = 12195.3 kg/ha
      
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     Harvest
+     Flowering (DAS)       = 62 		 Maturity (DAS)          = 105
+     Flowering day         = 3 		 Maturity day            = 46
+     Maximum LAI           = 2.7 		 Number of leaves        = 15.0
+     Total above ground biomass    (kg/ha) = 12195.3
+     Green above ground biomass    (kg/ha) = 11242.0
+     Senesced above ground biomass (kg/ha) = 953.4
+     Stover (kg/ha)        = 6185.0 	 Grain yield (kg/ha)     = 6010.3
+     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 6908.4
+     Weight 1000 grains(g) = 30.3 		 Grains/m^2              = 19835.8
+     Grains/head           = 1983.6
+     Grain N percent    (%)     =      1.41 	 Grain N            (kg/ha) =    84.62
+     Total N content    (kg/ha) =    116.10 	 Senesced N content (kg/ha) =    13.79
+     Green N content    (kg/ha) =     21.85
      
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        0.9
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        1.0
+        Flag leaf           to Flowering                 1.0          1.0        1.0
+        Flowering           to Start grain fill          1.0          1.0        1.0
+        Start grain fill    to End grain fill            1.0          1.0        0.9
      
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     fatal
-     Component name: ..TclLink
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =               6010.31		    0.00
+                         N  (kg/ha) =                 84.62		    0.00
+16 February 1990(Day of year=47), TclLink: 
+     got event
+     args = harvesting
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =               6185.01		 2083.49
+                         N  (kg/ha) =                 31.48		    4.17
+                         P  (kg/ha) =                  0.00		    0.00
+     got event
+     args = 
+incomingVariant:length=0 bytes
+28 February 1990(Day of year=59), Clock: 
+     Simulation is terminating due to end criteria being met.
 
