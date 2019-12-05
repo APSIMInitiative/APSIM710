@@ -49,7 +49,7 @@ namespace Actions
 
 		public static void HelpDocumentation(BaseController Controller)
 		{
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://www.apsim.info");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://apsimdev.apsim.info");
             HttpWebResponse response = null;
 			string offline = Configuration.Instance.Setting("docfile");
             string website = Configuration.Instance.Setting("ApsimWebSite");
