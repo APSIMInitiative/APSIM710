@@ -178,6 +178,7 @@ TclLink:
      --->Section: init
 
             source $apsuite/Model/TclLink/CIDataTypes.tcl
+            set incomingVariant {}
             proc sendEventHandler {args} {
                 apsimWriteToSummaryFile "got event"
                 apsimWriteToSummaryFile "args = $args"
@@ -212,7 +213,7 @@ TclLink:
                # Send a "kill crop" message (ie a non-variant argument)
                apsimSendRawMessage sorghum kill_crop [pack_KillCrop KillFraction 0.5]
                # These are "null argument" messages
-               apsimSendMessage sorghum harvest
+               apsimSendRawMessage sorghum harvest [pack_Harvest Remove 1.0]
                apsimSendMessage sorghum end_crop
                # By default, tcl messages are Apsim Variants - no fixed structure 
                # I'm gonna sit right down and write myself a message...
@@ -343,23 +344,7 @@ TclLink:
                          P  (kg/ha) =                  0.00		    0.00
      got event
      args = 
-16 February 1990(Day of year=47): 
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     can't read "incomingVariant": no such variable
-     Component name: ..TclLink
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                      APSIM  Fatal  Error
-                      -------------------
-     fatal
-     Component name: ..TclLink
-     
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     
-     
+incomingVariant:length=0 bytes
+28 February 1990(Day of year=59), Clock: 
+     Simulation is terminating due to end criteria being met.
 
