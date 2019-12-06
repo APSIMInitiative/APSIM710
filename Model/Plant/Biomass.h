@@ -1,4 +1,4 @@
-#ifndef BiomassH
+#ifndef BiomassH 
 #define BiomassH
 class Biomass
    {
