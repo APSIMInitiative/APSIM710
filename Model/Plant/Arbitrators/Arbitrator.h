@@ -17,7 +17,6 @@ class Arbitrator : public plantThing
       vector <string> PartitionRules;
       virtual float ratioRootPlant(void){return 0.0;}   // (PFR)
 
-      virtual float ratioRootShoot(){return 0.0;}
       virtual float fracDMRemainingInPart(int partNumber) = 0;
 
    public:
@@ -33,7 +32,9 @@ class Arbitrator : public plantThing
 
       void doNSenescedRetrans(plantPart* leafPart);
 
-
+	  // DCaPST: START
+	  virtual float ratioRootShoot() { return 0.0; }
+	  // DCaPST: END
 
       float DMSupply() {return _DMSupply;}
       float RelativeGrowthRate(void);
