@@ -27,10 +27,10 @@ float RUEModel::PotentialDM(float radiationInterceptedGreen)   // (PFR)
 {
 	float RUE = getRUE();
 	float Diffuse_factor = plant.environment().DiffuseLightFactor();
-	float stress_factor = min(min(min(min(plant.getTempStressPhoto(), plant.getNfactPhoto()), plant.getOxdefPhoto()), plant.getPfactPhoto()), RUEFactor);
+	double stress_factor = min(min(min(min(plant.getTempStressPhoto(), plant.getNfactPhoto()), plant.getOxdefPhoto()), plant.getPfactPhoto()), RUEFactor);
 	float result = radiationInterceptedGreen * RUE * Diffuse_factor * stress_factor * plant.getCo2Modifier()->rue();
 
-	return (float)result;
+	return result;
 }
 
 float RUEModel::getRUE(void) // (PFR)
