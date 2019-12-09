@@ -49,6 +49,8 @@ Paddock:
      INPUT File name: met\Champ83IB.met
 
 ------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
      Output variables:
         dd/mm/yyyy as Date
         DaysAfterSowing
@@ -128,9 +130,6 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-              if (paddock_is_fallow() = 0) then
-     outputfile do_output
-              endif
              if (today = date('12-may') then
        maize sow plants =8.9, sowing_depth = 50, cultivar = usa_18leaf, row_spacing = 1000, crop_class = plant
               endif
