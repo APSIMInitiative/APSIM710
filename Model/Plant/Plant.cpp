@@ -421,9 +421,10 @@ void Plant::onProcess()
 
 			// Calculate Potential Photosynthesis
 			// Ben Ababaei (2019.10.14): It's not needed if photosynthesis module calculates water demand internally.
-			if (!leaf().ExternalSWDemand) {
-				plant.doDmPotRUE();               // NIH - WHY IS THIS HERE!!!!?????  Not needed I hope.
-			}
+			//if (!leaf().ExternalSWDemand) {
+			//	plant.doDmPotRUE();               // NIH - WHY IS THIS HERE!!!!?????  Not needed I hope.
+			//}
+			plant.doDmPotRUE();               // NIH - WHY IS THIS HERE!!!!?????  Not needed I hope.
 
 			arbitrator().partitionDM();
 			arbitrator().doDmRetranslocate(&stem(), &leaf(), &fruit());
