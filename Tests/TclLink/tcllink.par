@@ -110,11 +110,11 @@ if {[apsimGet day] == 305 && [apsimGet year] == 1989 } {
 
 if {[apsimGet sorghum.StageName] == "harvest_ripe" || [apsimGet sorghum.plant_status] == "dead" } {
 
-   # Send a "kill crop" message (ie a non-variant argument)
-   apsimSendRawMessage sorghum kill_crop [pack_KillCrop KillFraction 0.5]
+   # Send a "kill crop" message 
+   apsimSendMessage sorghum kill_crop {KillFraction 0.5}
+   apsimSendMessage sorghum harvest {Remove 1.0}
 
-   # These are "null argument" messages
-   apsimSendRawMessage sorghum harvest [pack_Harvest Remove 1.0]
+   # "null argument" messages
    apsimSendMessage sorghum end_crop
    
    # By default, tcl messages are Apsim Variants - no fixed structure 
