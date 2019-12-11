@@ -6,7 +6,6 @@
 #include "RUEWholePlantModel.h"  // (PFR)
 #include "../Photosynthesis/RUEModel.h"
 #include "../Photosynthesis/DCaPST.h"
-#include "../Photosynthesis/DCaPSTOld.h"
 
 using namespace std;
 
@@ -17,7 +16,6 @@ std::vector<PhotosynthesisModel*> constructPhotosynthesisModel(ScienceAPI& scien
 
 	Models.push_back(new RUEModel(scienceAPI, p));
 	Models.push_back(new DCaPST(scienceAPI, p));
-	Models.push_back(new DCaPSTOld(scienceAPI, p));
 	Models.push_back(new SUCROSModel(scienceAPI, p));
 	Models.push_back(new RUEWholePlantModel(scienceAPI, p));
 

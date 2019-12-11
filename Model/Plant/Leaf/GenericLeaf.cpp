@@ -190,7 +190,7 @@ void GenericLeaf::calcSLN()
 	float lai = gLAI;
 
 	// Check whether LAI is too low for calculating SLN
-	if ((PsModelName == "dcapst") || (PsModelName == "dcapstold")) {
+	if (PsModelName == "dcapst") {
 		if (!DCaPSTLowLAI) DCaPSTLowLAI = (gLAI > 1.0);
 		if (DCaPSTLowLAI) lai = (float)max(gLAI, 1.0);
 	}

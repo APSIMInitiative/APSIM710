@@ -4,7 +4,6 @@
 #include "../Co2Modifier.h"
 #include "../Photosynthesis/PhotosynthesisModel.h"
 #include "../Photosynthesis/DCaPST.h"
-#include "../Photosynthesis/DCaPSTOld.h"
 
 // Abstract class for leaf objects
 class Leaf : public SimplePart

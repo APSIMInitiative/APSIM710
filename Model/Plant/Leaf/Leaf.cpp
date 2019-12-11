@@ -7,7 +7,6 @@
 #include "../Photosynthesis/PhotosynthesisModel.h"
 #include "../Photosynthesis/RUEModel.h"
 #include "../Photosynthesis/DCaPST.h"
-#include "../Photosynthesis/DCaPSTOld.h"
 #include "../Phenology/Phenology.h"
 #include "../Environment.h"
 
@@ -62,14 +61,11 @@ void Leaf::ChoosePsModel(string Factor) {
 	else if (PsModelName == "dcapst") {
 		Photosynthesis = PsModels[1];
 	}
-	else if (PsModelName == "dcapstold") {
+	else if (PsModelName == "sucros") {
 		Photosynthesis = PsModels[2];
 	}
-	else if (PsModelName == "sucros") {
-		Photosynthesis = PsModels[3];
-	}
 	else if (PsModelName == "rue_whole_plant_model") {
-		Photosynthesis = PsModels[4];
+		Photosynthesis = PsModels[3];
 	}
 	else
 		throw std::invalid_argument("Unknown photosynthesis model: '" + PsModelName + "'");
@@ -176,7 +172,7 @@ float Leaf::DMSupply(void)
 //===========================================================================
 {
 	// Ben Ababaei (2019.10.14): If the Ps model calculates biomass production limited by radiation and water supply, the next section is not needed.
-	if ((PsModelName == "dcapst" || PsModelName == "dcapstold")) {
+	if (PsModelName == "dcapst") {
 		return dlt.dm_pot_rue;
 	}
 	else {
