@@ -50,6 +50,8 @@
       <variable>n_supply_soil</variable>
       <variable>RUE</variable>
       <variable>TE</variable>
+      <variable>nfact_photo</variable>
+      <variable>temp_stress</variable>
       <constants>
         <constant name="format">csv</constant>
         <constant name="precision">8</constant>
@@ -66689,6 +66691,10 @@ n_grain = GrainGreenN * 10</text>
         </metfile>
         <area name="paddock">
           <Soil name="Field01">
+            <RecordNumber>0</RecordNumber>
+            <Latitude>0</Latitude>
+            <Longitude>0</Longitude>
+            <YearOfSampling>0</YearOfSampling>
             <Water>
               <SoilCrop name="Maize">
                 <Thickness>
@@ -66804,18 +66810,22 @@ n_grain = GrainGreenN * 10</text>
               </SAT>
             </Water>
             <SoilWater>
-              <SummerCona type="text" description="SummerCona">3.5</SummerCona>
-              <SummerU type="text" description="SummerU">6</SummerU>
-              <SummerDate type="text" description="SummerDate">1-Apr</SummerDate>
-              <WinterCona type="text" description="WinterCona">3.5</WinterCona>
-              <WinterU type="text" description="WinterU">6</WinterU>
-              <WinterDate type="text" description="WinterDate">1-Nov</WinterDate>
-              <DiffusConst type="text" description="DiffusConst">88</DiffusConst>
-              <DiffusSlope type="text" description="DiffusSlope">35.4</DiffusSlope>
-              <Salb type="text" description="Salb">0.13</Salb>
-              <CN2Bare type="text" description="Cn2Bare">75</CN2Bare>
-              <CNRed type="text" description="CnRed">20</CNRed>
-              <CNCov type="text" description="CnCov">0.8</CNCov>
+              <SummerCona>3.5</SummerCona>
+              <SummerU>6</SummerU>
+              <SummerDate>1-Apr</SummerDate>
+              <WinterCona>3.5</WinterCona>
+              <WinterU>6</WinterU>
+              <WinterDate>1-Nov</WinterDate>
+              <DiffusConst>88</DiffusConst>
+              <DiffusSlope>35.4</DiffusSlope>
+              <Salb>0.13</Salb>
+              <CN2Bare>75</CN2Bare>
+              <CNRed>20</CNRed>
+              <CNCov>0.8</CNCov>
+              <Slope>NaN</Slope>
+              <DischargeWidth>NaN</DischargeWidth>
+              <CatchmentArea>NaN</CatchmentArea>
+              <MaxPond>NaN</MaxPond>
               <Thickness>
                 <double>150</double>
                 <double>150</double>
@@ -66915,7 +66925,6 @@ n_grain = GrainGreenN * 10</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>150</double>
                 <double>150</double>
@@ -66960,6 +66969,11 @@ n_grain = GrainGreenN * 10</text>
                 <double>0.419</double>
                 <double>0.419</double>
               </SW>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <surfaceom name="SurfaceOrganicMatter">
@@ -66985,10 +66999,7 @@ n_grain = GrainGreenN * 10</text>
                 <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
               </ui>
               <script>
-                <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif        
-        if (today = date('[date]') then
+                <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
 </text>
@@ -67066,6 +67077,7 @@ n_grain = GrainGreenN * 10</text>
               <variable>accTT</variable>
               <variable>Height</variable>
             </variables>
+            <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
           </outputfile>
           <irrigation name="Irrigation">
             <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
@@ -67387,10 +67399,7 @@ n_grain = GrainGreenN * 10</text>
                 <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
               </ui>
               <script>
-                <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif     
-        if (today = date('[date]') then
+                <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
    </text>
@@ -67468,6 +67477,7 @@ n_grain = GrainGreenN * 10</text>
               <variable>accTT</variable>
               <variable>Height</variable>
             </variables>
+            <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
           </outputfile>
           <operations name="Operations Schedule">
             <operation condition="start_of_day">
@@ -67797,10 +67807,7 @@ n_grain = GrainGreenN * 10</text>
                 <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
               </ui>
               <script>
-                <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif        
-        if (today = date('[date]') then
+                <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
 </text>
@@ -67878,6 +67885,7 @@ n_grain = GrainGreenN * 10</text>
               <variable>accTT</variable>
               <variable>Height</variable>
             </variables>
+            <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
           </outputfile>
           <operations name="Operations Schedule">
             <operation condition="start_of_day">
@@ -68207,10 +68215,7 @@ n_grain = GrainGreenN * 10</text>
                 <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
               </ui>
               <script>
-                <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif        
-        if (today = date('[date]') then
+                <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
 </text>
@@ -68288,6 +68293,7 @@ n_grain = GrainGreenN * 10</text>
               <variable>accTT</variable>
               <variable>Height</variable>
             </variables>
+            <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
           </outputfile>
           <operations name="Operations Schedule">
             <operation condition="start_of_day">
@@ -68577,10 +68583,7 @@ n_grain = GrainGreenN * 10</text>
                 <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
               </ui>
               <script>
-                <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif        
-        if (today = date('[date]') then
+                <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
 </text>
@@ -68658,6 +68661,7 @@ n_grain = GrainGreenN * 10</text>
               <variable>accTT</variable>
               <variable>Height</variable>
             </variables>
+            <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
           </outputfile>
           <operations name="Operations Schedule">
             <operation condition="start_of_day">
@@ -68947,10 +68951,7 @@ n_grain = GrainGreenN * 10</text>
                 <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
               </ui>
               <script>
-                <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif        
-        if (today = date('[date]') then
+                <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
 </text>
@@ -69028,6 +69029,7 @@ n_grain = GrainGreenN * 10</text>
               <variable>accTT</variable>
               <variable>Height</variable>
             </variables>
+            <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
           </outputfile>
           <operations name="Operations Schedule">
             <operation condition="start_of_day">
@@ -69297,10 +69299,7 @@ n_grain = GrainGreenN * 10</text>
                 <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
               </ui>
               <script>
-                <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif        
-        if (today = date('[date]') then
+                <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
 </text>
@@ -69378,6 +69377,7 @@ n_grain = GrainGreenN * 10</text>
               <variable>accTT</variable>
               <variable>Height</variable>
             </variables>
+            <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
           </outputfile>
           <operations name="Operations Schedule">
             <operation condition="start_of_day">
@@ -69707,10 +69707,7 @@ n_grain = GrainGreenN * 10</text>
                 <row_spacing type="text" description="Enter row spacing (mm) : ">610</row_spacing>
               </ui>
               <script>
-                <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif        
-        if (today = date('[date]') then
+                <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
 </text>
@@ -69788,6 +69785,7 @@ n_grain = GrainGreenN * 10</text>
               <variable>accTT</variable>
               <variable>Height</variable>
             </variables>
+            <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
           </outputfile>
           <operations name="Operations Schedule">
             <operation condition="start_of_day">
@@ -70117,10 +70115,7 @@ n_grain = GrainGreenN * 10</text>
                 <row_spacing type="text" description="Enter row spacing (mm) : ">610</row_spacing>
               </ui>
               <script>
-                <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif        
-        if (today = date('[date]') then
+                <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
 </text>
@@ -70198,6 +70193,7 @@ n_grain = GrainGreenN * 10</text>
               <variable>accTT</variable>
               <variable>Height</variable>
             </variables>
+            <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
           </outputfile>
           <operations name="Operations Schedule">
             <operation condition="start_of_day">
@@ -70527,10 +70523,7 @@ n_grain = GrainGreenN * 10</text>
                 <row_spacing type="text" description="Enter row spacing (mm) : ">610</row_spacing>
               </ui>
               <script>
-                <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif     
-        if (today = date('[date]') then
+                <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
    </text>
@@ -70608,6 +70601,7 @@ n_grain = GrainGreenN * 10</text>
               <variable>accTT</variable>
               <variable>Height</variable>
             </variables>
+            <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
           </outputfile>
           <operations name="Operations Schedule">
             <operation condition="start_of_day">
@@ -70937,10 +70931,7 @@ n_grain = GrainGreenN * 10</text>
                 <row_spacing type="text" description="Enter row spacing (mm) : ">610</row_spacing>
               </ui>
               <script>
-                <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif        
-        if (today = date('[date]') then
+                <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
 </text>
@@ -71018,6 +71009,7 @@ n_grain = GrainGreenN * 10</text>
               <variable>accTT</variable>
               <variable>Height</variable>
             </variables>
+            <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
           </outputfile>
           <operations name="Operations Schedule">
             <operation condition="start_of_day">
@@ -71347,10 +71339,7 @@ n_grain = GrainGreenN * 10</text>
                 <row_spacing type="text" description="Enter row spacing (mm) : ">610</row_spacing>
               </ui>
               <script>
-                <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif        
-        if (today = date('[date]') then
+                <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
 </text>
