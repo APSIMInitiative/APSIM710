@@ -208,7 +208,7 @@ double  Stem::partitionDM(double dltDM)
 	// calculate maximum stem size at flowering + dmPlantMaxTT
 	double ttNow = plant->phenology->sumTTtotal(sowing,maturity);
 
-	if(dmPlantMax >  9990 && ttNow > dmPlantMaxTT + plant->phenology->sumTTtotal  (sowing,flowering))		// not yet calculated - do once
+	if(dmPlantMax >  9990 && ttNow > dmPlantMaxTT + plant->phenology->sumTTtotal  (germination,flowering))		// not yet calculated - do once
 		dmPlantMax = dmGreen;		// maximum stem size /m2
 
 	double dmAvailable =  Min(dmPlantMax - dmGreen , dltDM);
