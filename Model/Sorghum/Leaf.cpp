@@ -435,17 +435,23 @@ double Leaf::provideN(double requiredN, bool forLeaf)
          return nProvided;
 
       // not sufficient N from dilution - take from decreasing dltLai and senescence
-	  if (!forLeaf && dltLAI > 0)
+	  if (dltLAI > 0)
          {
-         double n = dltLAI * newLeafSLN;
+		 // Only half of the requiredN can be accounted for by reducing DltLAI
+		 // If the RequiredN is large enough, it will result in 0 new growth
+		 // Stem and Rachis can technically get to this point, but it doesn't occur in all of the validation data sets
+		  
+		 double n = dltLAI * newLeafSLN;
          double laiN = Min(n,requiredN/2.0);
-         dltLAI = (n - laiN) / newLeafSLN;
-	 
-         requiredN -= laiN;
-         nProvided += laiN;
-		 //dltNRetranslocate -= laiN;
+         
+		 dltLAI = (n - laiN) / newLeafSLN;
+		 if (forLeaf) 
+			 {
+			 requiredN -= laiN;
+			 }
          }
-      // recalc the SLN after this N has been removed
+
+	  // recalc the SLN after this N has been removed
       laiToday = calcLAI();
       slnToday = calcSLN();
       double maxN = plant->phenology->getDltTT()
