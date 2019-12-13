@@ -6,6 +6,13 @@
 
 class SimplePart : public plantPart
    {
+
+	// DCaPST: START
+   public:
+	   float radiationInterceptedGreen;
+	   float sw_demand;
+	// DCaPST: END
+
    private:
 
  protected:
@@ -25,7 +32,6 @@ class SimplePart : public plantPart
    float Height;                     // The height of this part (mm)
    float Width;                      // The width of this part (mm)
    float relativeGrowthRate;
-   float radiationInterceptedGreen;
    float transpEff;
    float pEoCropFactor;                             // Crop factor for sw demand applied to Eo
 
@@ -44,7 +50,6 @@ class SimplePart : public plantPart
    float NDemand ;                   // critical plant nitrogen demand (g/m^2)
    float PDemand;
    float sw_demand_te;
-   float sw_demand;
 
    float SoilNDemand;
    float NCapacity;                  // amount of nitrogen this part can take(g/m^2)

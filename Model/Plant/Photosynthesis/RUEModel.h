@@ -23,12 +23,11 @@ class RUEModel : public PhotosynthesisModel {
   void onSetRUEFactor(float Factor);
   void  Read (void);
   void  ZeroAll (void);
-  float getRUE (void);					// PFR)
+  float getRUE (void);					// (PFR)
   float RUEFactor;
+
   private:
   interpolationFunction RUE;                        // radiation use efficiency as f(stage number) (g dm/mj)
-  
-  float Q0(float lat, int day);
 };
 
 #endif
