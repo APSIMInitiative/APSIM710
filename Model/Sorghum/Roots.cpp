@@ -13,6 +13,7 @@ Roots::Roots(ScienceAPI2& api, Plant *p) : PlantPart(api)
    plant = p;
    name = "Roots";
    partNo = 0;
+   nLayers = 0;
 
    initialize();
    doRegistrations();
