@@ -296,6 +296,7 @@ double Phenology::calcStressesTT(void)
          }
       else
          {
+		  double nStress = plant->nitrogen->getPhenoStress();
          Stress = Min(plant->water->phenologyStress(),Max(0.5, plant->nitrogen->getPhenoStress()));
          }
       //Update dltTT
