@@ -49,7 +49,7 @@ void Biomass::doRegistrations(void)
    scienceAPI.exposeFunction("biomass_wt", "g/m2", "Total above-ground biomass",
                     FloatFunction(&Biomass::getBiomass));
 
-   }
+   
 	//dcaps variables
 	scienceAPI.expose("laiTrigger", "", "", true, laiTrigger);
 	scienceAPI.expose("DOY", "", "", true, DOY);
