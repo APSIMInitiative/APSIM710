@@ -81,7 +81,7 @@ void Biomass::initialize(void)
    dltDMDetachedSen.assign  (nParts,0.0);
    dltDMRetranslocate.assign(nParts,0.0);
 
-   }
+   
 	DCAPSTriggered = false;
 
 }
@@ -94,7 +94,7 @@ void Biomass::readParams(void)
 	ratioRootShoot.insert(ratioRootShoot.begin(), 0);  // for compatibility with fortran
 
 	scienceAPI.read("frac_stem2flower", "", 0, stem2FlowerFrac);
-
+}
 //------------------------------------------------------------------------------------------------
 //------ read Biomass parameters
 //------------------------------------------------------------------------------------------------
@@ -122,7 +122,7 @@ void Biomass::updateVars(void)
    stage = plant->phenology->currentStage();
 
    }
-}
+
 //------------------------------------------------------------------------------------------------
 //------------------- Returns true if dcaps is to be used
 //------------------------------------------------------------------------------------------------
