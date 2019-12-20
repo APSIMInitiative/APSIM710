@@ -96,6 +96,8 @@ double sumVector(vector<double> vec, int from, int to)
 //------------------------------------------------------------------------------------------------
 void checkRange(ScienceAPI2 &api, double value, double lower, double upper, const std::string &vName)
    {
+   float epsilon = FLT_EPSILON;
+
    char msg[512];
    char m1[] = "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
 "                      APSIM Warning Error\n"
@@ -110,14 +112,14 @@ void checkRange(ScienceAPI2 &api, double value, double lower, double upper, cons
          m1, vName.c_str(),lower, upper, m2);
       api.write(msg);
       }
-   else if (value > upper)                   //is the value too big?
+   else if (value > upper + epsilon)                   //is the value too big?
       {
       sprintf(msg,
               "%s     %s = %f\n        exceeds upper limit of %f\n%s",
               m1, vName.c_str(),value,upper, m2);
       api.write(msg);
       }
-   else if (value  < lower)                  //is the value too small?
+   else if (value + epsilon < lower)                  //is the value too small?
       {
       sprintf(msg,
               "%s     %s = %f\n        less than lower limit of %f\n%s",
