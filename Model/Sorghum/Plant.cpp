@@ -297,8 +297,6 @@ void Plant::process (void)                 // do crop preparation
 
    water->getOtherVariables();
    water->calcDailySupply();
-   water->calcStresses();
-   water->calcUptake();
 	
 	if (biomass->useDCAPS())
 	{
