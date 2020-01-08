@@ -45,6 +45,7 @@
             this.Label1 = new System.Windows.Forms.Label();
             this.Label3 = new System.Windows.Forms.Label();
             this.Label9 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // OkButton
@@ -61,7 +62,7 @@
             // 
             this.LabelVersion.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.LabelVersion.Font = new System.Drawing.Font("Trebuchet MS", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelVersion.Location = new System.Drawing.Point(9, 308);
+            this.LabelVersion.Location = new System.Drawing.Point(9, 335);
             this.LabelVersion.Margin = new System.Windows.Forms.Padding(0);
             this.LabelVersion.Name = "LabelVersion";
             this.LabelVersion.Size = new System.Drawing.Size(465, 18);
@@ -72,7 +73,7 @@
             // 
             this.LabelBuildDate.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.LabelBuildDate.Font = new System.Drawing.Font("Trebuchet MS", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelBuildDate.Location = new System.Drawing.Point(9, 326);
+            this.LabelBuildDate.Location = new System.Drawing.Point(9, 353);
             this.LabelBuildDate.Margin = new System.Windows.Forms.Padding(0);
             this.LabelBuildDate.Name = "LabelBuildDate";
             this.LabelBuildDate.Size = new System.Drawing.Size(465, 18);
@@ -83,7 +84,7 @@
             // 
             this.LabelBuildNumber.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.LabelBuildNumber.Font = new System.Drawing.Font("Trebuchet MS", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelBuildNumber.Location = new System.Drawing.Point(9, 344);
+            this.LabelBuildNumber.Location = new System.Drawing.Point(9, 371);
             this.LabelBuildNumber.Margin = new System.Windows.Forms.Padding(0);
             this.LabelBuildNumber.Name = "LabelBuildNumber";
             this.LabelBuildNumber.Size = new System.Drawing.Size(465, 18);
@@ -218,6 +219,14 @@
             this.Label9.TabIndex = 22;
             this.Label9.Text = "im";
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(158, 81);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(316, 89);
+            this.textBox1.TabIndex = 28;
+            // 
             // ApsimUISplash
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -225,8 +234,9 @@
             this.BackColor = System.Drawing.SystemColors.Window;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(483, 371);
+            this.ClientSize = new System.Drawing.Size(483, 398);
             this.ControlBox = false;
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.OkButton);
             this.Controls.Add(this.LabelVersion);
             this.Controls.Add(this.LabelBuildDate);
@@ -273,5 +283,6 @@
         internal System.Windows.Forms.Label Label1;
         internal System.Windows.Forms.Label Label3;
         internal System.Windows.Forms.Label Label9;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }

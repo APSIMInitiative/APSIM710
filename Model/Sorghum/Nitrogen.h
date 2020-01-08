@@ -13,7 +13,7 @@ class Nitrogen : public PlantProcess
    private:
 
 // Parameters ----------------------------------------------------------
-
+	   double* test;
    double diffnConstant;
    int   nLayers;
    vector<double> dLayer;

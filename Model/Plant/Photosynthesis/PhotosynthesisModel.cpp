@@ -4,32 +4,20 @@
 #include "RUEModel.h"
 #include "SUCROSModel.h"
 #include "RUEWholePlantModel.h"  // (PFR)
+#include "../Photosynthesis/RUEModel.h"
+#include "../Photosynthesis/DCaPST.h"
+
 using namespace std;
 
 // Return one of the PhotosynthesisModel objects we know about.
-PhotosynthesisModel* constructPhotosynthesisModel (ScienceAPI& scienceAPI, plantInterface& p)
-  {
-  PhotosynthesisModel *object;
+std::vector<PhotosynthesisModel*> constructPhotosynthesisModel(ScienceAPI& scienceAPI, plantInterface& p)
+{
+	std::vector<PhotosynthesisModel*> Models;
 
-  string type;
-  if(!scienceAPI.readOptional("photosynthesismodel", type))
-    type = "rue";
-  //scienceAPI.readOptional("photosynthesismodel", type);
+	Models.push_back(new RUEModel(scienceAPI, p));
+	Models.push_back(new DCaPST(scienceAPI, p));
+	Models.push_back(new SUCROSModel(scienceAPI, p));
+	Models.push_back(new RUEWholePlantModel(scienceAPI, p));
 
-  if (type == "rue")
-     {
-    object = new RUEModel(scienceAPI, p);
-     }
-  else if (type == "sucros")
-   {
-    object = new SUCROSModel(scienceAPI, p);
-   }
-  else if (type == "rue_whole_plant_model")            //   Plant and Food Research
-   {
-    object = new RUEWholePlantModel(scienceAPI, p);
-   }
-  else
-    throw std::invalid_argument("Unknown Photosynthesis Model '" + type + "'");
-
-  return (object);
-  }
+	return(Models);
+}

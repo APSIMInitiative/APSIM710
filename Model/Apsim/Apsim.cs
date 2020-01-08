@@ -161,14 +161,14 @@ public class Apsim
 					List<string> simPaths = new List<string>();
 					string simPath = arg2.Substring(pos+1);
 					if (simPath[0] != '@')  
-						simPaths.Add(simPath);
+						simPaths.Add(StringManip.SplitStringHonouringQuotes(simPath, " ")[0]);
                     else
                     {
                         // "Simulation=@filename" - read paths from a file
 				        System.IO.StreamReader file = new System.IO.StreamReader( simPath.Substring(1) );
 			            string line;
 			            while((line = file.ReadLine()) != null)
-							simPaths.Add(line); 
+							simPaths.Add(StringManip.SplitStringHonouringQuotes(line, " ")[0]); 
                         file.Close();
                     }
 				    allRuns.Add(new RunApsim.apsimRunFileSims{fileName=fileList[0],simulationPaths=simPaths});

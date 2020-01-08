@@ -1,0 +1,1253 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.10
+Title                  = Continuous Wheat with DCaPST
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component                "Soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "wheat" = %apsim%\Model\Plant.dll
+   Component              "Crop Management" = %apsim%\Model\Manager2.dll
+   Component          "Fertilise at Sowing" = %apsim%\Model\Manager2.dll
+   Component                     "DCaPS-C3" = %apsim%\Model\Manager2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        do_cashbook
+        post
+        end_step
+     Simulation start date =  1/01/1940
+     Simulation end date   = 31/12/1950
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: %apsim%\Examples\MetFiles\Goond.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        harvesting
+     Output variables:
+        dd/mm/yyyy as Date
+        biomass
+        yield
+        grain_protein
+        grain_size
+        esw
+
+     Output file = Continuous Wheat with DCaPST.out
+     Format = normal
+
+------- paddock.accum Initialisation ------------------------------------------
+     Initialising
+
+------- paddock.Soil Water Initialisation -------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.150  0.290  0.540  0.590  0.540  1.020  0.762  0.300
+          150.-  300.  0.260  0.290  0.530  0.580  0.530  1.030  0.190  0.300
+          300.-  600.  0.290  0.290  0.540  0.590  0.540  1.020  0.048  0.300
+          600.-  900.  0.290  0.290  0.540  0.580  0.540  1.020  0.000  0.300
+          900.- 1200.  0.300  0.300  0.520  0.570  0.520  1.060  0.000  0.300
+         1200.- 1500.  0.310  0.310  0.500  0.550  0.500  1.110  0.000  0.300
+         1500.- 1800.  0.320  0.320  0.500  0.550  0.500  1.120  0.000  0.300
+         1800.- 2100.  0.330  0.330  0.480  0.530  0.480  1.150  0.000  0.300
+         2100.- 2400.  0.340  0.340  0.470  0.520  0.470  1.180  0.000  0.300
+         2400.- 2700.  0.350  0.350  0.460  0.510  0.460  1.200  0.000  0.300
+         2700.- 3000.  0.360  0.360  0.440  0.490  0.440  1.250  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      43.50      37.50      37.50       7.50
+          150.-  300.      43.50      36.00      36.00       7.50
+          300.-  600.      87.00      75.00      75.00      15.00
+          600.-  900.      87.00      75.00      75.00      12.00
+          900.- 1200.      90.00      66.00      66.00      15.00
+         1200.- 1500.      93.00      57.00      57.00      15.00
+         1500.- 1800.      96.00      54.00      54.00      15.00
+         1800.- 2100.      99.00      45.00      45.00      15.00
+         2100.- 2400.     102.00      39.00      39.00      15.00
+         2400.- 2700.     105.00      33.00      33.00      15.00
+         2700.- 3000.     108.00      24.00      24.00      15.00
+          ---------------------------------------------------------
+               Totals     954.00     541.50     541.50     147.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- paddock.SurfaceOrganicMatter Initialisation ---------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- paddock.Soil Nitrogen Initialisation ----------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Black Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.40  1.04    9.95    0.92    0.00
+             2     8.80  0.89    3.25    0.15    0.00
+             3     9.00  0.89    6.43    0.31    0.00
+             4     9.20  0.89    5.21    0.31    0.00
+             5     9.20  0.77    5.41    0.32    0.00
+             6     9.10  0.45    5.66    0.33    0.00
+             7     9.00  0.27    5.72    0.34    0.00
+             8     9.00  0.22    5.87    0.35    0.00
+             9     8.90  0.16    6.02    0.35    0.00
+            10     8.90  0.13    6.12    0.36    0.00
+            11     8.90  0.12    6.38    0.38    0.00
+          ------------------------------------------------
+           Totals               66.01    4.10    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      15679.1  1254.3   232.9    29.1    19.3     0.5
+             2      13642.7  1091.4   107.8    13.5    16.6     0.4
+             3      27153.5  2172.3    80.5    10.1    12.3     0.3
+             4      27207.0  2176.6    27.0     3.4     9.1     0.2
+             5      24473.9  1957.9    12.1     1.5     6.7     0.2
+             6      14977.6  1198.2     7.4     0.9     5.0     0.1
+             7       9067.5   725.4     4.5     0.6     3.7     0.1
+             8       7586.2   606.9     3.8     0.5     2.7     0.1
+             9       5661.2   452.9     2.8     0.4     2.0     0.1
+            10       4677.7   374.2     2.3     0.3     1.5     0.0
+            11       4497.8   359.8     2.2     0.3     1.1     0.0
+          ---------------------------------------------------------
+           Totals  154624.2 12369.9   483.3    60.4    80.0     2.0
+          ---------------------------------------------------------
+
+------- Crop Management Initialisation ----------------------------------------
+
+------- Fertilise at Sowing Initialisation ------------------------------------
+
+------- DCaPS-C3 Initialisation -----------------------------------------------
+------- Start of simulation  --------------------------------------------------
+27/05/1942 12:00:00 AM Sowing Crop
+27 May 1942(Day of year=147), paddock.wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.290       1.000
+         150.0     0.100          0.290       1.000
+         300.0     0.080          0.320       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.040          0.350       1.000
+         300.0     0.020          0.380       1.000
+         300.0     0.010          0.410       1.000
+         300.0     0.000          0.480       0.000
+         300.0     0.000          0.470       0.000
+         300.0     0.000          0.460       0.000
+         300.0     0.000          0.440       0.000
+         -----------------------------------------------
+         Extractable SW:   320mm in  3000mm total depth ( 11%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            147   30.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+Fertiliser OnTrigger called, paddock='paddock'
+27 May 1942(Day of year=147), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_N)
+                                         added at depth   50.00 (layer   1)
+28 May 1942(Day of year=148), paddock.wheat: 
+      stage 2.0 germination
+4 June 1942(Day of year=155), paddock.wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   32.95 (mm)
+5 June 1942(Day of year=156), paddock.wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.61 (g/m^2)   lai          =   0.022 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   32.52 (mm)
+22 July 1942(Day of year=203), paddock.wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         133.88 (g/m^2)   lai          =   1.858 (m^2/m^2)
+                     stover N conc =     3.20 (%)    extractable sw =  245.59 (mm)
+31 August 1942(Day of year=243), paddock.wheat: 
+      stage 6.0 flowering
+                     biomass =         616.28 (g/m^2)   lai          =   2.042 (m^2/m^2)
+                     stover N conc =     1.34 (%)    extractable sw =  185.35 (mm)
+8 September 1942(Day of year=251), paddock.wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         730.56 (g/m^2)   lai          =   1.869 (m^2/m^2)
+                     stover N conc =     1.19 (%)    extractable sw =  162.88 (mm)
+7 October 1942(Day of year=280), paddock.wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1028.22 (g/m^2)   lai          =   0.560 (m^2/m^2)
+                     stover N conc =     0.60 (%)    extractable sw =   83.21 (mm)
+9 October 1942(Day of year=282), paddock.wheat: 
+      stage 9.0 maturity
+                     biomass =        1031.57 (g/m^2)   lai          =   0.459 (m^2/m^2)
+                     stover N conc =     0.60 (%)    extractable sw =   81.99 (mm)
+10 October 1942(Day of year=283), paddock.wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1032.97 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.60 (%)    extractable sw =   81.35 (mm)
+11/10/1942 12:00:00 AM Harvesting Crop
+11 October 1942(Day of year=284), paddock.wheat: 
+     
+      flowering day          =  243                           stover (kg/ha)         =     6531.9
+      maturity day           =  282                           grain yield (kg/ha)    =     3797.8
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     4340.4
+      grain wt (g)           =    0.041                       grains/m^2             =     9263.0
+      grains/plant           =   92.6                         maximum lai            =      2.485
+      total above ground biomass (kg/ha)    =    10329.7
+      live above ground biomass (kg/ha)     =    10329.7
+      green above ground biomass (kg/ha)    =     9273.9
+      senesced above ground biomass (kg/ha) =     1055.8
+      number of leaves       =     37.0
+      DM Root:Shoot ratio    =     0.11                       Harvest Index          =       0.37
+      Stover C:N ratio       =    68.30                       Root C:N ratio         =      17.51
+      grain N percent        =     2.88                       total N content (kg/ha)=     147.45
+      grain N uptake (kg/ha) =   109.20                       senesced N content (kg/ha)=    5.28
+      green N content (kg/ha)=    32.98
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.000        0.000        0.000        0.000
+         flowering            to start_grain_fill        0.000        0.000        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.001        0.008        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                6531.9                     0.0
+                          N  (kg/ha) =                  38.26                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                3797.8                     0.0
+                          N  (kg/ha) =                 109.20                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =   81.12 (mm)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1165.3
+                          N  (kg/ha) =                   0.00                   26.62
+     
+01/06/1943 12:00:00 AM Sowing Crop
+1 June 1943(Day of year=152), paddock.wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.290       1.000
+         150.0     0.100          0.290       1.000
+         300.0     0.080          0.320       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.040          0.350       1.000
+         300.0     0.020          0.380       1.000
+         300.0     0.010          0.410       1.000
+         300.0     0.000          0.480       0.000
+         300.0     0.000          0.470       0.000
+         300.0     0.000          0.460       0.000
+         300.0     0.000          0.440       0.000
+         -----------------------------------------------
+         Extractable SW:   320mm in  3000mm total depth ( 11%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            152   30.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+Fertiliser OnTrigger called, paddock='paddock'
+1 June 1943(Day of year=152), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_N)
+                                         added at depth   50.00 (layer   1)
+2 June 1943(Day of year=153), paddock.wheat: 
+      stage 2.0 germination
+9 June 1943(Day of year=160), paddock.wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   29.50 (mm)
+10 June 1943(Day of year=161), paddock.wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.63 (g/m^2)   lai          =   0.023 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   29.07 (mm)
+15 August 1943(Day of year=227), paddock.wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         356.28 (g/m^2)   lai          =   4.889 (m^2/m^2)
+                     stover N conc =     3.31 (%)    extractable sw =  163.74 (mm)
+22 September 1943(Day of year=265), paddock.wheat: 
+      stage 6.0 flowering
+                     biomass =        1061.87 (g/m^2)   lai          =   4.030 (m^2/m^2)
+                     stover N conc =     1.58 (%)    extractable sw =   78.42 (mm)
+29 September 1943(Day of year=272), paddock.wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =        1179.37 (g/m^2)   lai          =   2.926 (m^2/m^2)
+                     stover N conc =     1.32 (%)    extractable sw =   66.70 (mm)
+25 October 1943(Day of year=298), paddock.wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1334.91 (g/m^2)   lai          =   0.783 (m^2/m^2)
+                     stover N conc =     0.32 (%)    extractable sw =   43.77 (mm)
+27 October 1943(Day of year=300), paddock.wheat: 
+      stage 9.0 maturity
+                     biomass =        1335.05 (g/m^2)   lai          =   0.617 (m^2/m^2)
+                     stover N conc =     0.32 (%)    extractable sw =   41.02 (mm)
+28 October 1943(Day of year=301), paddock.wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1335.05 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =   39.69 (mm)
+29/10/1943 12:00:00 AM Harvesting Crop
+29 October 1943(Day of year=302), paddock.wheat: 
+     
+      flowering day          =  265                           stover (kg/ha)         =     8336.9
+      maturity day           =  300                           grain yield (kg/ha)    =     5013.6
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     5729.8
+      grain wt (g)           =    0.033                       grains/m^2             =    15245.3
+      grains/plant           =  152.5                         maximum lai            =      5.769
+      total above ground biomass (kg/ha)    =    13350.5
+      live above ground biomass (kg/ha)     =    13350.5
+      green above ground biomass (kg/ha)    =    10775.8
+      senesced above ground biomass (kg/ha) =     2574.8
+      number of leaves       =     45.7
+      DM Root:Shoot ratio    =     0.17                       Harvest Index          =       0.38
+      Stover C:N ratio       =   109.09                       Root C:N ratio         =      17.63
+      grain N percent        =     2.68                       total N content (kg/ha)=     165.14
+      grain N uptake (kg/ha) =   134.57                       senesced N content (kg/ha)=   12.87
+      green N content (kg/ha)=    17.70
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.067        0.087        0.000        0.000
+         flowering            to start_grain_fill        0.445        0.545        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.298        0.356        0.396        0.396
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                8336.9                     0.0
+                          N  (kg/ha) =                  30.57                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                5013.6                     0.0
+                          N  (kg/ha) =                 134.57                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =   39.69 (mm)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  2242.4
+                          N  (kg/ha) =                   0.00                   50.87
+     
+01/06/1945 12:00:00 AM Sowing Crop
+1 June 1945(Day of year=152), paddock.wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.290       1.000
+         150.0     0.100          0.290       1.000
+         300.0     0.080          0.320       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.040          0.350       1.000
+         300.0     0.020          0.380       1.000
+         300.0     0.010          0.410       1.000
+         300.0     0.000          0.480       0.000
+         300.0     0.000          0.470       0.000
+         300.0     0.000          0.460       0.000
+         300.0     0.000          0.440       0.000
+         -----------------------------------------------
+         Extractable SW:   320mm in  3000mm total depth ( 11%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            152   30.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+Fertiliser OnTrigger called, paddock='paddock'
+1 June 1945(Day of year=152), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_N)
+                                         added at depth   50.00 (layer   1)
+2 June 1945(Day of year=153), paddock.wheat: 
+      stage 2.0 germination
+7 June 1945(Day of year=158), paddock.wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   38.37 (mm)
+8 June 1945(Day of year=159), paddock.wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.60 (g/m^2)   lai          =   0.022 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   36.22 (mm)
+5 August 1945(Day of year=217), paddock.wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         214.59 (g/m^2)   lai          =   2.961 (m^2/m^2)
+                     stover N conc =     3.21 (%)    extractable sw =  226.44 (mm)
+12 September 1945(Day of year=255), paddock.wheat: 
+      stage 6.0 flowering
+                     biomass =         822.51 (g/m^2)   lai          =   3.000 (m^2/m^2)
+                     stover N conc =     1.42 (%)    extractable sw =  172.90 (mm)
+19 September 1945(Day of year=262), paddock.wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         970.62 (g/m^2)   lai          =   2.663 (m^2/m^2)
+                     stover N conc =     1.25 (%)    extractable sw =  138.43 (mm)
+18 October 1945(Day of year=291), paddock.wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1268.92 (g/m^2)   lai          =   0.595 (m^2/m^2)
+                     stover N conc =     0.34 (%)    extractable sw =   62.72 (mm)
+20 October 1945(Day of year=293), paddock.wheat: 
+      stage 9.0 maturity
+                     biomass =        1268.92 (g/m^2)   lai          =   0.526 (m^2/m^2)
+                     stover N conc =     0.33 (%)    extractable sw =   62.69 (mm)
+21 October 1945(Day of year=294), paddock.wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1268.92 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.33 (%)    extractable sw =   62.68 (mm)
+22/10/1945 12:00:00 AM Harvesting Crop
+22 October 1945(Day of year=295), paddock.wheat: 
+     
+      flowering day          =  255                           stover (kg/ha)         =     7716.2
+      maturity day           =  293                           grain yield (kg/ha)    =     4973.0
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     5683.4
+      grain wt (g)           =    0.041                       grains/m^2             =    12129.3
+      grains/plant           =  121.3                         maximum lai            =      3.645
+      total above ground biomass (kg/ha)    =    12689.2
+      live above ground biomass (kg/ha)     =    12689.2
+      green above ground biomass (kg/ha)    =    11136.2
+      senesced above ground biomass (kg/ha) =     1553.0
+      number of leaves       =     39.5
+      DM Root:Shoot ratio    =     0.12                       Harvest Index          =       0.39
+      Stover C:N ratio       =   110.01                       Root C:N ratio         =      17.51
+      grain N percent        =     2.67                       total N content (kg/ha)=     160.78
+      grain N uptake (kg/ha) =   132.72                       senesced N content (kg/ha)=    7.76
+      green N content (kg/ha)=    20.29
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.000        0.000        0.000        0.000
+         flowering            to start_grain_fill        0.000        0.000        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.075        0.114        0.185        0.185
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                7716.2                     0.0
+                          N  (kg/ha) =                  28.06                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                4973.0                     0.0
+                          N  (kg/ha) =                 132.72                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =   62.68 (mm)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1557.7
+                          N  (kg/ha) =                   0.00                   35.58
+     
+26/05/1947 12:00:00 AM Sowing Crop
+26 May 1947(Day of year=146), paddock.wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.290       1.000
+         150.0     0.100          0.290       1.000
+         300.0     0.080          0.320       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.040          0.350       1.000
+         300.0     0.020          0.380       1.000
+         300.0     0.010          0.410       1.000
+         300.0     0.000          0.480       0.000
+         300.0     0.000          0.470       0.000
+         300.0     0.000          0.460       0.000
+         300.0     0.000          0.440       0.000
+         -----------------------------------------------
+         Extractable SW:   320mm in  3000mm total depth ( 11%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            146   30.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+Fertiliser OnTrigger called, paddock='paddock'
+26 May 1947(Day of year=146), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_N)
+                                         added at depth   50.00 (layer   1)
+27 May 1947(Day of year=147), paddock.wheat: 
+      stage 2.0 germination
+3 June 1947(Day of year=154), paddock.wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   29.44 (mm)
+4 June 1947(Day of year=155), paddock.wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.53 (g/m^2)   lai          =   0.021 (m^2/m^2)
+                     stover N conc =     5.84 (%)    extractable sw =   29.04 (mm)
+4 August 1947(Day of year=216), paddock.wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         340.58 (g/m^2)   lai          =   4.653 (m^2/m^2)
+                     stover N conc =     3.27 (%)    extractable sw =  161.32 (mm)
+14 September 1947(Day of year=257), paddock.wheat: 
+      stage 6.0 flowering
+                     biomass =        1040.79 (g/m^2)   lai          =   4.266 (m^2/m^2)
+                     stover N conc =     1.51 (%)    extractable sw =  150.61 (mm)
+21 September 1947(Day of year=264), paddock.wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =        1208.46 (g/m^2)   lai          =   3.730 (m^2/m^2)
+                     stover N conc =     1.26 (%)    extractable sw =  125.87 (mm)
+20 October 1947(Day of year=293), paddock.wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1483.94 (g/m^2)   lai          =   0.645 (m^2/m^2)
+                     stover N conc =     0.32 (%)    extractable sw =   89.52 (mm)
+22 October 1947(Day of year=295), paddock.wheat: 
+      stage 9.0 maturity
+                     biomass =        1483.94 (g/m^2)   lai          =   0.475 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =   87.93 (mm)
+23 October 1947(Day of year=296), paddock.wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1483.94 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =   86.35 (mm)
+24/10/1947 12:00:00 AM Harvesting Crop
+24 October 1947(Day of year=297), paddock.wheat: 
+     
+      flowering day          =  257                           stover (kg/ha)         =     8749.0
+      maturity day           =  295                           grain yield (kg/ha)    =     6090.4
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     6960.5
+      grain wt (g)           =    0.041                       grains/m^2             =    14854.7
+      grains/plant           =  148.5                         maximum lai            =      5.286
+      total above ground biomass (kg/ha)    =    14839.4
+      live above ground biomass (kg/ha)     =    14839.4
+      green above ground biomass (kg/ha)    =    12489.4
+      senesced above ground biomass (kg/ha) =     2350.0
+      number of leaves       =     45.3
+      DM Root:Shoot ratio    =     0.14                       Harvest Index          =       0.41
+      Stover C:N ratio       =   111.28                       Root C:N ratio         =      17.54
+      grain N percent        =     2.29                       total N content (kg/ha)=     171.11
+      grain N uptake (kg/ha) =   139.66                       senesced N content (kg/ha)=   11.75
+      green N content (kg/ha)=    19.70
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.000        0.000        0.000        0.000
+         flowering            to start_grain_fill        0.000        0.000        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.069        0.100        0.351        0.351
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                8749.0                     0.0
+                          N  (kg/ha) =                  31.45                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                6090.4                     0.0
+                          N  (kg/ha) =                 139.66                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =   86.35 (mm)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  2059.5
+                          N  (kg/ha) =                   0.00                   46.96
+     
+08/06/1948 12:00:00 AM Sowing Crop
+8 June 1948(Day of year=160), paddock.wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.290       1.000
+         150.0     0.100          0.290       1.000
+         300.0     0.080          0.320       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.040          0.350       1.000
+         300.0     0.020          0.380       1.000
+         300.0     0.010          0.410       1.000
+         300.0     0.000          0.480       0.000
+         300.0     0.000          0.470       0.000
+         300.0     0.000          0.460       0.000
+         300.0     0.000          0.440       0.000
+         -----------------------------------------------
+         Extractable SW:   320mm in  3000mm total depth ( 11%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            160   30.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+Fertiliser OnTrigger called, paddock='paddock'
+8 June 1948(Day of year=160), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_N)
+                                         added at depth   50.00 (layer   1)
+9 June 1948(Day of year=161), paddock.wheat: 
+      stage 2.0 germination
+14 June 1948(Day of year=166), paddock.wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   36.12 (mm)
+15 June 1948(Day of year=167), paddock.wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.52 (g/m^2)   lai          =   0.021 (m^2/m^2)
+                     stover N conc =     5.84 (%)    extractable sw =   42.32 (mm)
+13 August 1948(Day of year=226), paddock.wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         286.25 (g/m^2)   lai          =   3.952 (m^2/m^2)
+                     stover N conc =     3.25 (%)    extractable sw =  197.19 (mm)
+21 September 1948(Day of year=265), paddock.wheat: 
+      stage 6.0 flowering
+                     biomass =        1002.79 (g/m^2)   lai          =   3.798 (m^2/m^2)
+                     stover N conc =     1.15 (%)    extractable sw =  131.39 (mm)
+28 September 1948(Day of year=272), paddock.wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =        1158.14 (g/m^2)   lai          =   3.338 (m^2/m^2)
+                     stover N conc =     0.85 (%)    extractable sw =  107.21 (mm)
+26 October 1948(Day of year=300), paddock.wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1309.81 (g/m^2)   lai          =   0.717 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =   55.78 (mm)
+27 October 1948(Day of year=301), paddock.wheat: 
+      stage 9.0 maturity
+                     biomass =        1309.81 (g/m^2)   lai          =   0.648 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =   55.76 (mm)
+28 October 1948(Day of year=302), paddock.wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1309.81 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.30 (%)    extractable sw =   55.74 (mm)
+29/10/1948 12:00:00 AM Harvesting Crop
+29 October 1948(Day of year=303), paddock.wheat: 
+     
+      flowering day          =  265                           stover (kg/ha)         =     8782.0
+      maturity day           =  301                           grain yield (kg/ha)    =     4316.1
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     4932.7
+      grain wt (g)           =    0.030                       grains/m^2             =    14572.1
+      grains/plant           =  145.7                         maximum lai            =      4.796
+      total above ground biomass (kg/ha)    =    13098.1
+      live above ground biomass (kg/ha)     =    13098.1
+      green above ground biomass (kg/ha)    =    11002.5
+      senesced above ground biomass (kg/ha) =     2095.6
+      number of leaves       =     42.1
+      DM Root:Shoot ratio    =     0.15                       Harvest Index          =       0.33
+      Stover C:N ratio       =   114.37                       Root C:N ratio         =      27.86
+      grain N percent        =     1.99                       total N content (kg/ha)=     116.82
+      grain N uptake (kg/ha) =    86.10                       senesced N content (kg/ha)=   10.48
+      green N content (kg/ha)=    20.24
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.006        0.017        0.000        0.000
+         flowering            to start_grain_fill        0.042        0.099        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.105        0.144        0.644        0.644
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                8782.0                     0.0
+                          N  (kg/ha) =                  30.71                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                4316.1                     0.0
+                          N  (kg/ha) =                  86.10                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =   55.74 (mm)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  2023.9
+                          N  (kg/ha) =                   0.00                   29.05
+     
+02/06/1949 12:00:00 AM Sowing Crop
+2 June 1949(Day of year=153), paddock.wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.290       1.000
+         150.0     0.100          0.290       1.000
+         300.0     0.080          0.320       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.040          0.350       1.000
+         300.0     0.020          0.380       1.000
+         300.0     0.010          0.410       1.000
+         300.0     0.000          0.480       0.000
+         300.0     0.000          0.470       0.000
+         300.0     0.000          0.460       0.000
+         300.0     0.000          0.440       0.000
+         -----------------------------------------------
+         Extractable SW:   320mm in  3000mm total depth ( 11%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            153   30.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+Fertiliser OnTrigger called, paddock='paddock'
+2 June 1949(Day of year=153), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_N)
+                                         added at depth   50.00 (layer   1)
+3 June 1949(Day of year=154), paddock.wheat: 
+      stage 2.0 germination
+10 June 1949(Day of year=161), paddock.wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   34.44 (mm)
+11 June 1949(Day of year=162), paddock.wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.61 (g/m^2)   lai          =   0.022 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   33.93 (mm)
+11 August 1949(Day of year=223), paddock.wheat: 
+      stage 5.0 floral_initiation
+                     biomass =         341.35 (g/m^2)   lai          =   4.687 (m^2/m^2)
+                     stover N conc =     3.25 (%)    extractable sw =  164.18 (mm)
+17 September 1949(Day of year=260), paddock.wheat: 
+      stage 6.0 flowering
+                     biomass =        1031.06 (g/m^2)   lai          =   4.420 (m^2/m^2)
+                     stover N conc =     1.19 (%)    extractable sw =  105.24 (mm)
+24 September 1949(Day of year=267), paddock.wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =        1166.36 (g/m^2)   lai          =   3.564 (m^2/m^2)
+                     stover N conc =     0.92 (%)    extractable sw =   82.76 (mm)
+22 October 1949(Day of year=295), paddock.wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =        1350.77 (g/m^2)   lai          =   0.749 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =  136.68 (mm)
+24 October 1949(Day of year=297), paddock.wheat: 
+      stage 9.0 maturity
+                     biomass =        1350.77 (g/m^2)   lai          =   0.595 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =  138.91 (mm)
+25 October 1949(Day of year=298), paddock.wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =        1350.77 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.31 (%)    extractable sw =  146.94 (mm)
+26/10/1949 12:00:00 AM Harvesting Crop
+26 October 1949(Day of year=299), paddock.wheat: 
+     
+      flowering day          =  260                           stover (kg/ha)         =     8926.8
+      maturity day           =  297                           grain yield (kg/ha)    =     4580.9
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     5235.3
+      grain wt (g)           =    0.031                       grains/m^2             =    14685.6
+      grains/plant           =  146.9                         maximum lai            =      5.469
+      total above ground biomass (kg/ha)    =    13507.7
+      live above ground biomass (kg/ha)     =    13507.7
+      green above ground biomass (kg/ha)    =    11061.2
+      senesced above ground biomass (kg/ha) =     2446.5
+      number of leaves       =     44.4
+      DM Root:Shoot ratio    =     0.16                       Harvest Index          =       0.34
+      Stover C:N ratio       =   111.52                       Root C:N ratio         =      28.45
+      grain N percent        =     1.99                       total N content (kg/ha)=     123.02
+      grain N uptake (kg/ha) =    91.00                       senesced N content (kg/ha)=   12.23
+      green N content (kg/ha)=    19.79
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.026        0.047        0.000        0.000
+         flowering            to start_grain_fill        0.301        0.387        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.098        0.127        0.583        0.583
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                8926.8                     0.0
+                          N  (kg/ha) =                  32.02                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                4580.9                     0.0
+                          N  (kg/ha) =                  91.00                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =  146.94 (mm)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  2130.9
+                          N  (kg/ha) =                   0.00                   29.96
+     
+24/05/1950 12:00:00 AM Sowing Crop
+24 May 1950(Day of year=144), paddock.wheat: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = hartog
+        Phases:
+           out
+           sowing
+           germination
+           emergence
+           end_of_juvenile
+           floral_initiation
+           flowering
+              tt_flowering               =     120 (dd)
+           start_grain_fill
+              tt_start_grain_fill        =     545 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      35 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =    1000 (dd)
+           end_crop
+              tt_end_crop                =    1000 (dd)
+     
+        grains_per_gram_stem           =       25.0 (/g)
+        potential_grain_filling_rate   =     0.0020 (g/grain/day)
+        potential_grain_growth_rate    =     0.0010 (g/grain/day)
+        max_grain_size                 =     0.0410 (g)
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.100          0.290       1.000
+         150.0     0.100          0.290       1.000
+         300.0     0.080          0.320       1.000
+         300.0     0.060          0.320       1.000
+         300.0     0.040          0.350       1.000
+         300.0     0.020          0.380       1.000
+         300.0     0.010          0.410       1.000
+         300.0     0.000          0.480       0.000
+         300.0     0.000          0.470       0.000
+         300.0     0.000          0.460       0.000
+         300.0     0.000          0.440       0.000
+         -----------------------------------------------
+         Extractable SW:   320mm in  3000mm total depth ( 11%).
+         Crop factor for bounding water use is set to   1.5 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            144   30.0  100.0  250.0   0.0   0.0 hartog
+         ------------------------------------------------
+     
+Fertiliser OnTrigger called, paddock='paddock'
+24 May 1950(Day of year=144), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       150.00 of N as urea (urea_N)
+                                         added at depth   50.00 (layer   1)
+25 May 1950(Day of year=145), paddock.wheat: 
+      stage 2.0 germination
+30 May 1950(Day of year=150), paddock.wheat: 
+      stage 3.0 emergence
+                     biomass =           0.46 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     5.85 (%)    extractable sw =   34.81 (mm)
+31 May 1950(Day of year=151), paddock.wheat: 
+      stage 4.0 end_of_juvenile
+                     biomass =           0.62 (g/m^2)   lai          =   0.023 (m^2/m^2)
+                     stover N conc =     5.83 (%)    extractable sw =   34.21 (mm)
+22 July 1950(Day of year=203), paddock.wheat: 
+      stage 5.0 floral_initiation
+                     biomass =          96.13 (g/m^2)   lai          =   1.373 (m^2/m^2)
+                     stover N conc =     3.25 (%)    extractable sw =  292.68 (mm)
+1 September 1950(Day of year=244), paddock.wheat: 
+      stage 6.0 flowering
+                     biomass =         453.66 (g/m^2)   lai          =   1.360 (m^2/m^2)
+                     stover N conc =     1.33 (%)    extractable sw =  268.08 (mm)
+9 September 1950(Day of year=252), paddock.wheat: 
+      stage 7.0 start_grain_fill
+                     biomass =         541.52 (g/m^2)   lai          =   1.197 (m^2/m^2)
+                     stover N conc =     1.15 (%)    extractable sw =  241.21 (mm)
+8 October 1950(Day of year=281), paddock.wheat: 
+      stage 8.0 end_grain_fill
+                     biomass =         731.66 (g/m^2)   lai          =   0.393 (m^2/m^2)
+                     stover N conc =     0.69 (%)    extractable sw =  254.45 (mm)
+10 October 1950(Day of year=283), paddock.wheat: 
+      stage 9.0 maturity
+                     biomass =         732.88 (g/m^2)   lai          =   0.354 (m^2/m^2)
+                     stover N conc =     0.69 (%)    extractable sw =  293.39 (mm)
+11 October 1950(Day of year=284), paddock.wheat: 
+      stage 10.0 harvest_ripe
+                     biomass =         733.50 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     0.70 (%)    extractable sw =  295.07 (mm)
+12/10/1950 12:00:00 AM Harvesting Crop
+12 October 1950(Day of year=285), paddock.wheat: 
+     
+      flowering day          =  244                           stover (kg/ha)         =     4550.6
+      maturity day           =  283                           grain yield (kg/ha)    =     2784.4
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     3182.2
+      grain wt (g)           =    0.041                       grains/m^2             =     6791.3
+      grains/plant           =   67.9                         maximum lai            =      1.720
+      total above ground biomass (kg/ha)    =     7335.0
+      live above ground biomass (kg/ha)     =     7335.0
+      green above ground biomass (kg/ha)    =     6599.0
+      senesced above ground biomass (kg/ha) =      736.0
+      number of leaves       =     34.0
+      DM Root:Shoot ratio    =     0.12                       Harvest Index          =       0.38
+      Stover C:N ratio       =    60.27                       Root C:N ratio         =      17.55
+      grain N percent        =     2.88                       total N content (kg/ha)=     110.38
+      grain N uptake (kg/ha) =    80.18                       senesced N content (kg/ha)=    3.68
+      green N content (kg/ha)=    26.52
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.000        0.000
+         floral_initiation    to flowering               0.000        0.000        0.000        0.000
+         flowering            to start_grain_fill        0.000        0.000        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.000        0.000        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                4550.6                     0.0
+                          N  (kg/ha) =                  30.20                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2784.4                     0.0
+                          N  (kg/ha) =                  80.18                    0.00
+     
+      stage 4.0 end_of_juvenile
+                     biomass =           0.00 (g/m^2)   lai          =   0.020 (m^2/m^2)
+                     stover N conc =     6.30 (%)    extractable sw =  294.88 (mm)
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                   856.3
+                          N  (kg/ha) =                   0.00                   19.51
+     
+31 December 1950(Day of year=365), clock: 
+     Simulation is terminating due to end criteria being met.
+

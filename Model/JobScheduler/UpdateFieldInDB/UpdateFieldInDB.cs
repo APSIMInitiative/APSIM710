@@ -33,7 +33,7 @@ class Program
     private static void DBUpdateField(string name, string value)
     {
         int JobID = Convert.ToInt32(System.Environment.GetEnvironmentVariable("JobID"));
-        string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateField" +
+        string url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateField" +
             "?JobID=" + JobID +
             "&FieldName=" + name +
             "&FieldValue=" + value +

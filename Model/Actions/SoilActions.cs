@@ -235,7 +235,7 @@ namespace Actions
 
 			if (Controller.FileSaveAfterPrompt()) {
 				Cursor.Current = Cursors.WaitCursor;
-				WebRequest request = WebRequest.Create("http://www.apsim.info/Portals/0/APSoil/APSRU-Australia-Soils.soils");
+				WebRequest request = WebRequest.Create("https://apsimdev.apsim.info/Portals/0/APSoil/APSRU-Australia-Soils.soils");
 				HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 				if (response.StatusDescription == "OK") {
 					Stream dataStream = response.GetResponseStream();
@@ -251,7 +251,7 @@ namespace Actions
 					Controller.ApsimData.NewFromFile(SoilsFileName);
 					File.Delete(SoilsFileName);
 				} else {
-					MessageBox.Show("Cannot connect to www.apsim.info", "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					MessageBox.Show("Cannot connect to apsimdev.apsim.info", "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 				response.Close();
 				Cursor.Current = Cursors.Default;
@@ -267,7 +267,7 @@ namespace Actions
 		{
 			if (Controller.FileSaveAfterPrompt()) {
 				Cursor.Current = Cursors.WaitCursor;
-				WebRequest request = WebRequest.Create("http://www.apsim.info/ApsoilWeb/ApsoilKML.aspx");
+				WebRequest request = WebRequest.Create("https://apsimdev.apsim.info/ApsoilWeb/ApsoilKML.aspx");
 				HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 				if (response.StatusDescription == "OK") {
 					Stream dataStream = response.GetResponseStream();
@@ -287,7 +287,7 @@ namespace Actions
 					}
 
 				} else {
-					MessageBox.Show("Cannot connect to www.apsim.info", "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					MessageBox.Show("Cannot connect to apsimdev.apsim.info", "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 				response.Close();
 				Cursor.Current = Cursors.Default;

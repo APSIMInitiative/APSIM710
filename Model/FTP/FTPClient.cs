@@ -14,7 +14,7 @@ namespace FTP
             {
             // ------------------------------------------------------------------
             // Method to upload the specified FullFileName to the specified 
-            // FTPDirectory (e.g. ftp://www.apsim.info/apsim/temp)
+            // FTPDirectory (e.g. ftp://apsimdev.apsim.info/apsim/temp)
             // ------------------------------------------------------------------
             FileInfo File = new FileInfo(FullFileName);
 
@@ -59,7 +59,7 @@ namespace FTP
             {
             // ------------------------------------------------------------------
             // Download the specified FTPFullFileName 
-            // (e.g. ftp://www.apsim.info/apsim/temp/temp.xml) to the 
+            // (e.g. ftp://apsimdev.apsim.info/apsim/temp/temp.xml) to the 
             // DestFileName (full path).
             // ------------------------------------------------------------------
 
@@ -90,7 +90,7 @@ namespace FTP
             {
             // ------------------------------------------------------------------
             // Delete the specified FTPFullFileName 
-            // (e.g. ftp://www.apsim.info/apsim/temp/temp.xml)
+            // (e.g. ftp://apsimdev.apsim.info/apsim/temp/temp.xml)
             // ------------------------------------------------------------------
 
             FtpWebRequest FTP = (FtpWebRequest)FtpWebRequest.Create(FTPFullFileName);
@@ -112,7 +112,7 @@ namespace FTP
             {
             // ------------------------------------------------------------------
             // Return a directory listing to caller for the specified 
-            // FTPDirectory (e.g. ftp://www.apsim.info/apsim/temp)
+            // FTPDirectory (e.g. ftp://apsimdev.apsim.info/apsim/temp)
             // If detailed = true then a detailed listing will be returned.
             // ------------------------------------------------------------------
             FtpWebRequest FTP = (FtpWebRequest)FtpWebRequest.Create(FTPDirectory);
@@ -143,7 +143,7 @@ namespace FTP
             {
             // ------------------------------------------------------------------
             // Get the size of the specified FTPFullFileName 
-            // (e.g. ftp://www.apsim.info/apsim/temp/test.xml)
+            // (e.g. ftp://apsimdev.apsim.info/apsim/temp/test.xml)
             // ------------------------------------------------------------------
 
             FtpWebRequest FTP = (FtpWebRequest)FtpWebRequest.Create(FTPFullFileName);
@@ -163,7 +163,7 @@ namespace FTP
             {
             // ------------------------------------------------------------------
             // Rename the specified FTPFileName 
-            // (ftp://www.apsim.info/apsim/temp/test.xml) to the specified 
+            // (ftp://apsimdev.apsim.info/apsim/temp/test.xml) to the specified 
             // NewFileName (no path)
             // ------------------------------------------------------------------
             FtpWebRequest FTP = (FtpWebRequest)FtpWebRequest.Create(FTPFullFileName);
@@ -180,7 +180,7 @@ namespace FTP
         public static void MakeDirectory(string FTPDirectory, string UserName, string Password)
             {
             // ------------------------------------------------------------------
-            // Make the specified FTPDirectory (ftp://www.apsim.info/apsim/temp)
+            // Make the specified FTPDirectory (ftp://apsimdev.apsim.info/apsim/temp)
             // ------------------------------------------------------------------
             FtpWebRequest FTP = (FtpWebRequest)FtpWebRequest.Create(FTPDirectory);
             FTP.Method = WebRequestMethods.Ftp.MakeDirectory;
