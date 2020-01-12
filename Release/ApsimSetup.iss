@@ -4,10 +4,10 @@
 
 #include  "ISPPBuiltins.iss"
 
-#ifndef BOOTLEG
-#include <.\ModelExcludes.iss>
-#include <.\UserInterfaceExcludes.iss>
-#endif
+;#ifndef BOOTLEG
+;#include <.\ModelExcludes.iss>
+;#include <.\UserInterfaceExcludes.iss>
+;#endif
 
 #ifndef ModelExcludedFiles
 #define ModelExcludedFiles ""
