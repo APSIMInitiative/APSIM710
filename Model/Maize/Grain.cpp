@@ -150,7 +150,7 @@ void Grain::process(void)
 	finalGrainNo = calcGrainNumber();
 
 	   // calculate high temperature effects on grain number
-   if(stage >= fi && stage <= flowering)
+   if(plant->phenology->currentStage() >= fi && plant->phenology->currentStage() <= flowering)
       {
       tempFactor -= calcTempFactor();
       tempFactor = bound(tempFactor,0.0,1.0);
