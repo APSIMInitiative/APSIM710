@@ -313,10 +313,8 @@ void Leaf::senesceArea(void)
 
    // senesced leaf area due to N
    dltSlai = Max(dltSlai,dltSlaiN);
-   if (dltSlai > 0) {
-	   int tmp = 0;
-   }
-   }
+
+}
 //------------------------------------------------------------------------------------------------
 double Leaf::calcLaiSenescenceFrost(void)
    {
@@ -369,9 +367,7 @@ double Leaf::calcLaiSenescenceWater(void)
       dltSlaiWater = Max(0.0,divide((lai - avLaiEquilibWater) , senWaterTimeConst,0.0));
 
    dltSlaiWater = Min(lai,dltSlaiWater);
-   if (dltSlaiWater > 0) {
-	   int tnmp = 0;
-   }
+   
 
    return dltSlaiWater;
    }
@@ -437,18 +433,18 @@ double Leaf::provideN(double requiredN, bool forLeaf)
       // not sufficient N from dilution - take from decreasing dltLai and senescence
 	  if (dltLAI > 0)
          {
-		 // Only half of the requiredN can be accounted for by reducing DltLAI
-		 // If the RequiredN is large enough, it will result in 0 new growth
-		 // Stem and Rachis can technically get to this point, but it doesn't occur in all of the validation data sets
-		  
-		 double n = dltLAI * newLeafSLN;
+         // Only half of the requiredN can be accounted for by reducing DltLAI
+         // If the RequiredN is large enough, it will result in 0 new growth
+         // Stem and Rachis can technically get to this point, but it doesn't occur in all of the validation data sets
+         
+         double n = dltLAI * newLeafSLN;
          double laiN = Min(n,requiredN/2.0);
          
-		 dltLAI = (n - laiN) / newLeafSLN;
-		 if (forLeaf) 
-			 {
-			 requiredN -= laiN;
-			 }
+         dltLAI = (n - laiN) / newLeafSLN;
+         if (forLeaf) 
+            {
+            requiredN -= laiN;
+            }
          }
 
 	  // recalc the SLN after this N has been removed
@@ -495,8 +491,7 @@ double Leaf::provideN(double requiredN, bool forLeaf)
          nProvided += newN;
          dltSlaiN += senescenceLAI;
          dltSlai = Max(dltSlai,dltSlaiN);
-		 if (dltSlai > 0.0000001)
-			 int tmp = 0;
+		 
 
          dltNSenesced += senescenceLAI * senescedLeafSLN;
 

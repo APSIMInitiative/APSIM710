@@ -142,6 +142,9 @@ class Water : public PlantProcess
    vector<double>  getLiveSwDep();
    vector<double>  getLiveEsw();
 
+   double getTotalSupply() { return totalSupply; };
+   void setSWDemand(double demand) { swDemand = demand; };
+
    // phenology
    void  phenologyEvent(int){};
    };

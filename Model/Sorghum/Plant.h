@@ -105,6 +105,7 @@ class Plant
 //  Variables  -----------------------------------------------------
    Status plantStatus;               // plant status - out, dead, alive
    string statusString;
+   string vpSource;                  // if "apsim", use external vp value to calculate vpd 
 //   int das;
    double dltPlants;
    double frIntcRadn;
@@ -118,7 +119,6 @@ class Plant
    double radnInt(void);
 
    void  initialize(void);
-   void  endPlant (void);
    double rue_co2_modifier(void);
    TableFn co2_te_modifier;
 
@@ -157,8 +157,7 @@ class Plant
    void updateVars(void);
    void death(void);
    void detachment(void);
-   void cleanup(void);
-
+   
    double transpEfficiency(void);
    double svp(double temp);
 
@@ -177,14 +176,13 @@ class Plant
    void  killCrop(void);
 
    void getPlantStatus(string &);
-   void get_crop_type(string &);
    void get_cover_green(float &);
    void get_cover_tot(float &);
    void get_height(float &);
 
    void   phenologyEvent(int stage);
 
-	void manageLeafCalcType(void);
+	void setRadInt(double radInt) { radnIntercepted = radInt; }
 
    };  // Plant
 
