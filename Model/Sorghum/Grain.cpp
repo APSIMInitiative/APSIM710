@@ -224,7 +224,7 @@ double Grain::calcGrainNumber(void)
    {
    // increase in plant biomass between fi and start grain fill
    double dltDMPlant = plant->biomass->getTotalBiomass()  - totDMGreenFI;
-
+   dltDMPlant = Max(0, dltDMPlant);
    // growth rate per day
    double nDays = plant->phenology->sumDaysTotal(fi,startGrainFill);
    double growthRate = divide(dltDMPlant,nDays);
