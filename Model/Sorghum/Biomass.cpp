@@ -2,7 +2,7 @@
 #include <ComponentInterface2/Variant.h> 
 #include "Plant.h"
 #include "Biomass.h"
-#include <General\string_functions.h> //dcaps
+#include <General/string_functions.h> //dcaps
 
 using namespace Sorghum;
 //---------------------------------------------------------------------------
