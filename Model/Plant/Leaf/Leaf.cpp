@@ -107,14 +107,19 @@ void Leaf::onCanopyWaterBalance(protocol::CanopyWaterBalanceType& CWB)
 //=======================================================================================
 // Handler for CanopyWaterBalance event
 {
-	ExternalSWDemand = false;
-	for (unsigned i = 0; i < CWB.Canopy.size(); i++)
-	{
-		if (CWB.Canopy[i].name == plant->Name())
+	if (PsModelName != "dcapst") {
+		ExternalSWDemand = true;
+		for (unsigned i = 0; i < CWB.Canopy.size(); i++)
 		{
-			sw_demand = CWB.Canopy[i].PotentialEp;
-			ExternalSWDemand = true;
+			if (CWB.Canopy[i].name == plant->Name())
+			{
+				sw_demand = CWB.Canopy[i].PotentialEp;
+				ExternalSWDemand = true;
+			}
 		}
+	}
+	else {
+		scienceAPI.warning("DCaPST cannot be used with an external soil water demand (e.g. MicroMet)!\nLeaf::onCanopyWaterBalance() did not update 'sw_demand'.");
 	}
 }
 
@@ -134,18 +139,16 @@ float Leaf::dmRetransSupply(void)
 
 void Leaf::doSWDemand(float SWDemandMaxFactor)         //(OUTPUT) crop water demand (mm)
 {
-	// Ben Ababaei (2019.10.14): If the Ps model calculates SW demand internally, the next section is not needed.
+	// Ben Ababaei (2019.10.14): If the Ps model calculates SW demand internally, the next section is not needed to be run.
 	if (ExternalSWDemand == true)
 	{
 		transpEff = dlt.dm_pot_rue / sw_demand;
-		ExternalSWDemand = false;
 	}
 	else
 	{
 		// Return crop water demand from soil by the crop (mm) calculated by
 		// dividing biomass production limited by radiation by transpiration efficiency.
-		// get potential transpiration from potential
-		// carbohydrate production and transpiration efficiency
+		// get potential transpiration from potential carbohydrate production and transpiration efficiency
 
 		cproc_transp_eff_co2_1(plant->environment().vpdEstimate()
 			, plant->phenology().doLookup(c.transpEffCf)
