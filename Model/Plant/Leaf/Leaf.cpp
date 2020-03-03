@@ -119,7 +119,7 @@ void Leaf::onCanopyWaterBalance(protocol::CanopyWaterBalanceType& CWB)
 		}
 	}
 	else {
-		scienceAPI.warning("DCaPST cannot be used with an external soil water demand (e.g. MicroMet)!\nLeaf::onCanopyWaterBalance() did not update 'sw_demand'.");
+		scienceAPI.warning("DCaPST cannot be used with an external soil water demand (e.g. Micromet)!\nLeaf::onCanopyWaterBalance() did not update 'sw_demand'.");
 	}
 }
 
