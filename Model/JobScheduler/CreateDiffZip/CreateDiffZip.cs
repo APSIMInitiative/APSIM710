@@ -39,7 +39,7 @@ class Program
 
         string DirectoryName = Macros["Directory"].Replace('\\', '/');
         Directory.SetCurrentDirectory(DirectoryName);
-
+        Console.WriteLine("Directory = " + DirectoryName);
         string PatchFileName = Macros["PatchFileName"];
 
         // Find SVN.exe on the path.
@@ -182,8 +182,8 @@ class Program
         }
 
         // Now we should have a list of the "real" diffs.
-        int JobID = Convert.ToInt32(System.Environment.GetEnvironmentVariable("JobID"));
-        string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateNumDiffs" +
+        int JobID = Convert.ToInt32(System.Environment.GetEnvironmentVariable("JOB_ID"));
+        string url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateNumDiffs" +
                              "?JobID=" + JobID +
                              "&NumDiffs=" + ModifiedFiles.Count +
                              "&DbConnectPassword=" + Environment.GetEnvironmentVariable("DB_CONN_PSW");

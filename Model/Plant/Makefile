@@ -89,6 +89,7 @@ SRC = PlantComponent.cpp \
       Phenology/Zadok.cpp \
       Photosynthesis/PhotosynthesisModel.cpp \
       Photosynthesis/RUEModel.cpp \
+      Photosynthesis/DCaPST.cpp \
       Photosynthesis/RUEWholePlantModel.cpp \
       Photosynthesis/Weather.cpp \
       Photosynthesis/SUCROSModel.cpp

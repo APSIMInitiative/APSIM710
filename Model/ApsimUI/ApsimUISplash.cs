@@ -29,6 +29,12 @@ namespace APSIMUI
             LabelVersion.Text = "Version: " + Configuration.Instance.ExeVersion();
             LabelBuildDate.Text = "Build date: " + Configuration.Instance.ExeBuildDate();
             LabelBuildNumber.Text = "Build number: " + Configuration.Instance.ExeBuildNumber();
+            textBox1.Lines = new string[] {
+                "Publication suggestion:" , "",
+                "Acknowledgment is made to the APSIM Initiative which takes",
+                "responsibility for quality assurance and a structured innovation",
+                "programme for APSIM, which is provided free for research and",
+                "development use (see www.apsim.info for details)." };
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -40,5 +46,6 @@ namespace APSIMUI
         {
             Close();
         }
+
     }
 }

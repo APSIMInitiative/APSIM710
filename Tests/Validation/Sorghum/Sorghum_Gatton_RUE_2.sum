@@ -1,0 +1,450 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.10
+Title                  = Sorghum_Gatton_RUE_2
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component  "Sow SkipRow on a fixed date" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component          "Ian's Paddock Water" = %apsim%\Model\SoilWat.dll
+   Component       "Ian's Paddock Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                      "sorghum" = %apsim%\Model\Sorghum.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        do_cashbook
+        post
+        end_step
+     Simulation start date = 22/11/1999
+     Simulation end date   =  3/04/2000
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: met\Gatton_RUE.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        harvesting
+     Output variables:
+        today format dd/mm/yyyy as Date
+        daysAfterSowing as Das
+        day_of_year
+        Stage
+        Biomass
+        GreenWt
+        Biomass units g/m^2 as BiomassWt
+        RootGreenWt
+        LeafGreenWt
+        StemGreenWt
+        RachisGreenWt
+        GrainGreenWt
+        biomass_n
+        GreenN
+        RootGreenN
+        LeafGreenN
+        StemGreenN
+        RachisGreenN
+        GrainGreenN
+        GrainGreenNConc
+        GrainNo
+        GrainSize
+        HI
+        LeafNo
+        LAI
+        SLAI
+        ESW
+        no3() as NO3
+        SLN
+        WaterSD
+        sw()
+        TPLA
+        SPLA
+        dlt_dm_green
+        sw_supply
+        radn_int
+        DeltaGreenWt
+        DeltaLAI
+        DeltaGreenN
+        DeltaLeafGreenN
+        DeltaSLAI
+        DeltaTT
+        SenescedWt
+        SenescedN
+        RootSenescedN
+        RootSenescedWt
+        LeafSenescedWt
+        LeafSenescedN
+        RLV
+        RootDepth
+        RootProportion
+        sum(sw_uptake)
+        n_total_uptake
+        n_supply_soil
+        n_cum_uptake
+        sw_demand
+        sw_deficit
+        root_depth
+        no3
+        sw
+        sw_uptake
+        n_sd_ratio
+        no3_demand
+        esw
+        swdef_pheno
+        swdef_photo
+        swdef_expan
+        nfact_pheno
+        nfact_expan
+        sw_dep
+        n_diffusion_uptake
+        n_massflow_uptake
+        cover_green
+        cover_tot
+        DeltaTTFM
+        st
+        GrainTempFactor
+
+     Output file = Sorghum_Gatton_RUE_2.out
+     Format = normal
+
+------- paddock.accum Initialisation ------------------------------------------
+     Initialising
+
+------- paddock.operations Initialisation -------------------------------------
+     Operations Schedule
+     ===================
+       3/12/1999  Prepare      Irrigation apply amount = 17
+       6/12/1999  Prepare      Irrigation apply amount = 20
+      17/12/1999  Prepare      Irrigation apply amount = 20
+       7/01/2000  Prepare      Irrigation apply amount = 10
+      14/01/2000  Prepare      Irrigation apply amount = 48
+      27/01/2000  Prepare      Irrigation apply amount = 21
+       4/02/2000  Prepare      Irrigation apply amount = 17
+      11/02/2000  Prepare      Irrigation apply amount = 30
+      25/02/2000  Prepare      Irrigation apply amount = 41
+       3/03/2000  Prepare      Irrigation apply amount = 15
+      28/11/1999  Prepare      fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type = NO3_N ()
+      27/11/1999  Prepare      fertiliser apply amount = 0 (kg/ha), depth = 50 (mm), type = NO3_N ()
+
+------- paddock.Irrigation Initialisation -------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- paddock.Sow SkipRow on a fixed date Initialisation --------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if (paddock_is_fallow() = 1 and today = date('2/12/1999')) then
+       sorghum sow plants =10, sowing_depth = 40, cultivar = a35xql36, row_spacing = 0.5, skip = solid, tiller_no_fertile = 0 ()
+     endif
+     END of rules
+     
+
+------- paddock.Harvesting rule Initialisation --------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if sorghum.stagename = 'harvest_ripe' or sorghum.plant_status = 'dead' then
+       sorghum  harvest
+       sorghum  end_crop
+                endif
+     END of rules
+     
+
+------- paddock.Ian's Paddock Water Initialisation ----------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.100  0.260  0.410  0.460  0.410  1.320  0.762  0.500
+          150.-  300.  0.150  0.260  0.430  0.480  0.430  1.300  0.190  0.500
+          300.-  600.  0.250  0.260  0.460  0.510  0.460  1.230  0.048  0.500
+          600.-  900.  0.260  0.260  0.440  0.490  0.440  1.270  0.000  0.500
+          900.- 1200.  0.250  0.250  0.400  0.450  0.400  1.370  0.000  0.500
+         1200.- 1500.  0.280  0.280  0.410  0.460  0.410  1.350  0.000  0.500
+         1500.- 1800.  0.310  0.310  0.380  0.430  0.380  1.350  0.000  0.500
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      39.00      22.50      22.50       7.50
+          150.-  300.      39.00      25.50      25.50       7.50
+          300.-  600.      78.00      60.00      60.00      15.00
+          600.-  900.      78.00      54.00      54.00      15.00
+          900.- 1200.      75.00      45.00      45.00      15.00
+         1200.- 1500.      84.00      39.00      39.00      15.00
+         1500.- 1800.      93.00      21.00      21.00      15.00
+          ---------------------------------------------------------
+               Totals     486.00     267.00     267.00      90.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              91.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- paddock.Ian's Paddock Nitrogen Initialisation -------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type LawesBlackVertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.20  1.30   18.22    0.20    0.00
+             2     8.70  0.65    8.59    0.19    0.00
+             3     8.90  0.32    8.26    0.37    0.00
+             4     8.10  0.11    4.71    0.38    0.00
+             5     8.00  0.11    5.20    0.41    0.00
+             6     8.00  0.11    7.17    0.41    0.00
+             7     8.00  0.11    8.36    0.41    0.00
+          ------------------------------------------------
+           Totals               60.51    2.36    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      25222.7  2017.8   517.3    64.7   208.3     6.9
+             2      12597.2  1007.8    77.8     9.7   162.2     5.4
+             3      11808.0   944.6     0.0     0.0    98.4     3.3
+             4       4191.0   335.3     0.0     0.0    59.7     2.0
+             5       4521.0   361.7     0.0     0.0    36.2     1.2
+             6       4455.0   356.4     0.0     0.0    22.0     0.7
+             7       4455.0   356.4     0.0     0.0    13.3     0.4
+          ---------------------------------------------------------
+           Totals   67249.9  5380.0   595.1    74.4   600.0    20.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+27 November 1999(Day of year=331), paddock.operations: 
+      Sending apply message to fertiliser
+28 November 1999(Day of year=332), paddock.operations: 
+      Sending apply message to fertiliser
+2 December 1999(Day of year=336), paddock.Sow SkipRow on a fixed date: 
+     Manager sending message :- sorghum sow  plants = 10, sowing_depth = 40, cultivar = a35xql36, row_spacing = 0.5, skip = solid, tiller_no_fertile = 0
+2 December 1999(Day of year=336), sorghum: 
+     Sowing initiate
+     
+                 Row spacing converted from m to mm
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no     mm     m^2    mm     code     name       no
+         -------------------------------------------------------
+            336    40.0    10.0   500    1.0     a35xql36    0.00
+         -------------------------------------------------------
+     
+      - reading constants for plant(sorghum) - a35xql36
+         -------------------------------------------------------
+         tt_emerg_to_endjuv       =  134.40
+         tt_flower_to_maturity    =  761.00
+         tt_flag_to_flower        =  170.00
+         tt_flower_to_start_grain =   80.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.080          0.260       1.000
+             150.0     0.080          0.260       1.000
+             300.0     0.080          0.260       1.000
+             300.0     0.080          0.260       1.000
+             300.0     0.060          0.250       1.000
+             300.0     0.040          0.280       1.000
+             300.0     0.020          0.310       1.000
+         ---------------------------------------------------
+     
+3 December 1999(Day of year=337), paddock.operations: 
+      Sending apply message to irrigation
+3 December 1999(Day of year=337), sorghum: 
+     Stage 2 Germination  DAS = 1
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =   6.00
+6 December 1999(Day of year=340), paddock.operations: 
+      Sending apply message to irrigation
+6 December 1999(Day of year=340), sorghum: 
+     Stage 3 Emergence  DAS = 4
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =  18.15
+14 December 1999(Day of year=348), sorghum: 
+     Stage 4 EndOfJuvenile  DAS = 12
+     		Biomass       =   3.64 		 LAI            =   0.06
+     		Stover N Conc =   0.12 		 Extractable SW =  54.02
+17 December 1999(Day of year=351), paddock.operations: 
+      Sending apply message to irrigation
+4 January 2000(Day of year=4), sorghum: 
+     Stage 5 FloralInitiation  DAS = 33
+     		Biomass       =  78.19 		 LAI            =   1.04
+     		Stover N Conc =   1.67 		 Extractable SW = 148.89
+7 January 2000(Day of year=7), paddock.operations: 
+      Sending apply message to irrigation
+14 January 2000(Day of year=14), paddock.operations: 
+      Sending apply message to irrigation
+27 January 2000(Day of year=27), paddock.operations: 
+      Sending apply message to irrigation
+30 January 2000(Day of year=30), sorghum: 
+     Stage 6 FlagLeaf  DAS = 59
+     		Biomass       = 519.95 		 LAI            =   3.54
+     		Stover N Conc =   5.38 		 Extractable SW = 226.92
+4 February 2000(Day of year=35), paddock.operations: 
+      Sending apply message to irrigation
+11 February 2000(Day of year=42), paddock.operations: 
+      Sending apply message to irrigation
+12 February 2000(Day of year=43), sorghum: 
+     Stage 7 Flowering  DAS = 72
+     		Biomass       = 779.20 		 LAI            =   3.60
+     		Stover N Conc =   6.78 		 Extractable SW = 237.03
+17 February 2000(Day of year=48), sorghum: 
+     Stage 8 StartGrainFill  DAS = 77
+     		Biomass       = 851.40 		 LAI            =   3.60
+     		Stover N Conc =   7.12 		 Extractable SW = 228.82
+25 February 2000(Day of year=56), paddock.operations: 
+      Sending apply message to irrigation
+3 March 2000(Day of year=63), paddock.operations: 
+      Sending apply message to irrigation
+25 March 2000(Day of year=85), sorghum: 
+     Stage 9 EndGrainFill  DAS = 114
+     		Biomass       = 1169.97 		 LAI            =   1.24
+     		Stover N Conc =   3.63 		 Extractable SW = 208.49
+27 March 2000(Day of year=87), sorghum: 
+     Stage 10 Maturity  DAS = 116
+     		Biomass       = 1171.33 		 LAI            =   1.22
+     		Stover N Conc =   3.61 		 Extractable SW = 206.12
+28 March 2000(Day of year=88), sorghum: 
+     Stage 11 HarvestRipe  DAS = 117
+     		Biomass       = 1171.94 		 LAI            =   1.22
+     		Stover N Conc =   3.61 		 Extractable SW = 205.31
+28 March 2000(Day of year=88), paddock.Harvesting rule: 
+     Manager sending message :- sorghum harvest
+     
+     Harvest
+     Flowering (DAS)       = 72 		 Maturity (DAS)          = 116
+     Flowering day         = 43 		 Maturity day            = 87
+     Maximum LAI           = 3.6 		 Number of leaves        = 18.9
+     Total above ground biomass    (kg/ha) = 11724.5
+     Green above ground biomass    (kg/ha) = 9741.9
+     Senesced above ground biomass (kg/ha) = 1982.6
+     Stover (kg/ha)        = 7162.4 	 Grain yield (kg/ha)     = 4562.1
+     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 5243.8
+     Weight 1000 grains(g) = 17.1 		 Grains/m^2              = 26742.3
+     Grains/head           = 2674.2
+     Grain N percent    (%)     =      1.10 	 Grain N            (kg/ha) =    50.17
+     Total N content    (kg/ha) =     86.25 	 Senesced N content (kg/ha) =    19.71
+     Green N content    (kg/ha) =     21.83
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        0.9
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        1.0
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          1.0          1.0        1.0
+        Start grain fill    to End grain fill            1.0          1.0        0.5
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =               4562.14		    0.00
+                         N  (kg/ha) =                 50.17		    0.00
+     Manager sending message :- sorghum end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =               7162.39		 3148.04
+                         N  (kg/ha) =                 36.08		    5.46
+                         P  (kg/ha) =                  0.00		    0.00
+3 April 2000(Day of year=94), clock: 
+     Simulation is terminating due to end criteria being met.
+

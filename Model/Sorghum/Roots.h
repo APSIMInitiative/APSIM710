@@ -20,6 +20,8 @@ class Roots : public PlantPart
          vector<double> xf;
          double profileDepth;
          int    nLayers;
+		 double swFactor;
+		 double xfc;
 
    TableFn swRoot;
    TableFn rldFn;

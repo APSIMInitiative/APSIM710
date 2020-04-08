@@ -1,6 +1,6 @@
 #define UserInterfaceExcludedFiles \
-"DevelopersPlugIn.xml, \
+"Non-Validated.xml, \
 Plant2IDE.xml, \
 Plant2IDEActions.xml, \
 ToolBoxes\Plant2.xml, \
-ToolBoxes\Developers.xml"
+ToolBoxes\Non-Validated.xml"

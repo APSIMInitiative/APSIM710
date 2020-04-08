@@ -2,17 +2,24 @@
 #include <ComponentInterface2/Variant.h> 
 #include "Plant.h"
 #include "Biomass.h"
+#include <General\string_functions.h> //dcaps
 
 using namespace Sorghum;
 //---------------------------------------------------------------------------
 //------ Biomass Constructor
 //------------------------------------------------------------------------------------------------
 Biomass::Biomass(ScienceAPI2 &api, Plant *p) : PlantProcess(api)
-   {
-   plant = p;
-   initialize();
-   doRegistrations();
-   }
+{
+	plant = p;
+	initialize();
+	doRegistrations();
+
+	//Variables for DCAPS
+	useDetailedPSModel = false;
+	DCaPSModelInitialised = false;
+	DCAPSTriggered = false;
+	laiTrigger = -1;
+}
 //------------------------------------------------------------------------------------------------
 //------ Biomass Destructor
 //------------------------------------------------------------------------------------------------
@@ -42,7 +49,15 @@ void Biomass::doRegistrations(void)
    scienceAPI.exposeFunction("biomass_wt", "g/m2", "Total above-ground biomass",
                     FloatFunction(&Biomass::getBiomass));
 
-   }
+   
+	//dcaps variables
+	scienceAPI.expose("laiTrigger", "", "", true, laiTrigger);
+	scienceAPI.expose("DOY", "", "", true, DOY);
+	scienceAPI.expose("RootShootRatio", "", "", true, RootShootRatio);
+
+	scienceAPI.expose("SWAvailable", "", "", true, SWAvailable);
+
+}
 //------------------------------------------------------------------------------------------------
 //------- Initialize variables
 //------------------------------------------------------------------------------------------------
@@ -66,40 +81,20 @@ void Biomass::initialize(void)
    dltDMDetachedSen.assign  (nParts,0.0);
    dltDMRetranslocate.assign(nParts,0.0);
 
-   }
+   
+	DCAPSTriggered = false;
+
+}
 //------------------------------------------------------------------------------------------------
 //------ read Biomass parameters
 //------------------------------------------------------------------------------------------------
-void Biomass::readParams (void)
-   {
-   scienceAPI.read("ratio_root_shoot","", 0, ratioRootShoot);
-   ratioRootShoot.insert(ratioRootShoot.begin(),0);  // for compatibility with fortran
+void Biomass::readParams(void)
+{
+	scienceAPI.read("ratio_root_shoot", "", 0, ratioRootShoot);
+	ratioRootShoot.insert(ratioRootShoot.begin(), 0);  // for compatibility with fortran
 
-   scienceAPI.read("frac_stem2flower", "", 0, stem2FlowerFrac);
-   }
-
-
-//------------------------------------------------------------------------------------------------
-void Biomass::process(void)
-   {
-/*   calcBiomassTE();
-   calcDltBiomass();
-
-   // calculate grain biomass demand
-   if(stage >= startGrainFill && stage <= endGrainFill)
-      {
-      plant->grain->calcDemandStress();
-      plant->grain->calcBiomassDemand();
-      }
-
-   // biomass partitioning
-   calcPartitioning();
-   // biomass retranslocation
-   if(stage >= startGrainFill && stage <= endGrainFill)
-      calcRetranslocation();
-
-   dmScenescence();  */
-   }
+	scienceAPI.read("frac_stem2flower", "", 0, stem2FlowerFrac);
+}
 //------------------------------------------------------------------------------------------------
 //------ read Biomass parameters
 //------------------------------------------------------------------------------------------------
@@ -127,21 +122,91 @@ void Biomass::updateVars(void)
    stage = plant->phenology->currentStage();
 
    }
+
+//------------------------------------------------------------------------------------------------
+//------------------- Returns true if dcaps is to be used
+//------------------------------------------------------------------------------------------------
+bool Biomass::useDCAPS()
+{
+	double lai = plant->leaf->getLAI();
+
+	//Setup fpr DCaPs
+	if (laiTrigger > -1)
+	{
+		useDetailedPSModel = true;
+	}
+
+	return DCAPSTriggered == true || (useDetailedPSModel == true && lai >= laiTrigger);
+}
 //------------------------------------------------------------------------------------------------
 //------------------- calculate biomass production due to water (transpiration)
 //------------------------------------------------------------------------------------------------
 void Biomass::calcBiomassTE(void)
-   {
-   dltDMPotTE = calcDltDMPotTE();
-   }
+{
+	dltDMPotTE = calcDltDMPotTE();
+
+	//Override for use in the biochem photosynthesis model
+	if (useDCAPS() == true)
+	{
+		dltDMPotTE = dltDMPotRUE;
+	}
+}
 //------------------------------------------------------------------------------------------------
 //------------------- calculate biomass production due to light (limited by water and n)
 //------------------------------------------------------------------------------------------------
 void Biomass::calcBiomassRUE(double rue, double radnIntercepted)
-   {
-   effectiveRue = rue * Min(Min(plant->getTempStress(),plant->nitrogen->getPhotoStress()),plant->phosphorus->getPhotoStress());
-   dltDMPotRUE =  effectiveRue * radnIntercepted;
-   }
+{
+	double tempStress = plant->getTempStress();
+	double nitrogenStress = plant->nitrogen->getPhotoStress();
+	double photoStress = plant->phosphorus->getPhotoStress();
+	effectiveRue = rue * Min(Min(tempStress,nitrogenStress),photoStress);
+	dltDMPotRUE = effectiveRue * radnIntercepted;
+}
+//------------------------------------------------------------------------------------------------
+//------------------- calculate biomass production from DCAPS
+//------------------------------------------------------------------------------------------------
+
+void Biomass::calcBiomassDCAPS()
+{
+
+	double lai = plant->leaf->getLAI();
+
+	if (useDCAPS())
+	{
+		DCAPSTriggered = true;
+
+		DOY = plant->today.doy;
+		double latitude = plant->phenology->getLatitude();
+		double maxT = plant->today.maxT;
+		double minT = plant->today.minT;
+		double radn = plant->today.radn;
+
+		int currentPhase = (int)stage;
+		RootShootRatio = ratioRootShoot[currentPhase];
+
+		SLN = plant->leaf->getSLN();
+		SWAvailable = plant->water->getTotalSupply();
+
+		scienceAPI.publish("dodcaps");
+
+		std::vector<float> DCaPSOut;
+
+		if (!scienceAPI.get("dcaps", "", false, DCaPSOut, -1000.0, 1000.0)) {
+			throw std::runtime_error("nothing returned from dcap");
+		}
+
+		double swDemand, swUptake, radInt;
+		long index = 0;
+
+		dltDMPotRUE = DCaPSOut[0];
+		swDemand = DCaPSOut[1];
+		swUptake = DCaPSOut[2];
+		radInt = DCaPSOut[3];
+
+		plant->setRadInt(radInt);
+		plant->water->setSWDemand(swDemand);
+	}
+}
 //------------------------------------------------------------------------------------------------
 //-------------------
 //------------------------------------------------------------------------------------------------
@@ -184,11 +249,14 @@ void Biomass::calcBiomassPartitioning(void)
    // Root must be satisfied. The roots don't take any of the carbohydrate produced
    //  - that is for tops only.  Here we assume that enough extra was produced to meet demand.
    // Thus the root growth is not removed from the carbo produced by the model.
+	stage = plant->phenology->currentStage();
    double biomPool = dltDM;
 
-   int currentPhase = (int) stage;
+   int currentPhase = (int)plant->phenology->currentStage();
    plant->roots->partitionDM(ratioRootShoot[currentPhase] * biomPool);
-
+   double dmroot = plant->roots->getDltDmGreen();
+   double total = dmroot + biomPool;
+   double ftp = total;
    //  leaf and stem to fi then rachis as well to flag
    if(stage >= emergence && stage < flag)
       {
@@ -291,39 +359,49 @@ void Biomass::Summary(void)
    }
 //------------------------------------------------------------------------------------------------
 void Biomass::incorporateResidue(void)
-{
-    //Stover + remaining grain into surface residue     called from plantActions doEndCrop
-    if(aboveGroundBiomass > 0.0)
-    {
-        BiomassRemovedType chopped;
-        chopped.crop_type = plant->getCropType();
+   {
+   //Stover + remaining grain into surface residue     called from plantActions doEndCrop
+   if(aboveGroundBiomass > 0.0)
+      {
+      // Build surface residues by part
+      vector<string> part_name;
+      vector<float> fraction_to_residue;           // fraction sent to residue (0-1)
+      vector<float> dlt_dm_crop;                   // change in dry matter of crop (kg/ha)
+      vector<float> dlt_dm_n;                      // N content of changed dry matter (kg/ha)
+      vector<float> dlt_dm_p;                      // P content of changed dry matter (kg/ha)
 
-        float fracts[] = {0.0, 1.0, 1.0, 1.0, 0.0};  // No root or grain to residue.
+      float fracts[] = {0.0, 1.0, 1.0, 1.0, 0.0};  // No root or grain to residue.
 
-        // Build surface residues by part
-        for (unsigned part = 0; part < plant->PlantParts.size(); part++)
-        {
-            if (fracts[part] == 0.0)
-            {
-                chopped.dlt_crop_dm.push_back(0.0);       // change in dry matter of crop (kg/ha)
-                chopped.dlt_dm_n.push_back(0.0);          // N content of changed dry matter (kg/ha)
-                chopped.dlt_dm_p.push_back(0.0);          // P content of changed dry matter (kg/ha)
-            }
-            else
-            {
-                chopped.dlt_crop_dm.push_back((float)((plant->PlantParts[part]->getDmGreen() +
-                    plant->PlantParts[part]->getDmSenesced()) * gm2kg/sm2ha));
-                chopped.dlt_dm_n.push_back((float)((plant->PlantParts[part]->getNGreen() +
-                    plant->PlantParts[part]->getNSenesced()) * gm2kg/sm2ha));
-                chopped.dlt_dm_p.push_back((float)((plant->PlantParts[part]->getPGreen() +
-                    plant->PlantParts[part]->getPSenesced()) * gm2kg/sm2ha));
-            }
+      for (unsigned part = 0; part < plant->PlantParts.size(); part++)
+         {
+         part_name.push_back(plant->PlantParts[part]->getName());
+         dlt_dm_crop.push_back((float)((plant->PlantParts[part]->getDmGreen() +
+               plant->PlantParts[part]->getDmSenesced()) * gm2kg/sm2ha));
+         dlt_dm_n.push_back((float)((plant->PlantParts[part]->getNGreen() +
+               plant->PlantParts[part]->getNSenesced()) * gm2kg/sm2ha));
+         dlt_dm_p.push_back((float)((plant->PlantParts[part]->getPGreen() +
+               plant->PlantParts[part]->getPSenesced()) * gm2kg/sm2ha));
 
-            chopped.fraction_to_residue.push_back(fracts[part]);
-        }
-        scienceAPI.publish("BiomassRemoved", chopped);
-    }
-}
+         fraction_to_residue.push_back(fracts[part]);
+         }
+      dlt_dm_crop[0] = 0.0;
+      dlt_dm_n[0] = 0.0;
+      dlt_dm_p[0] = 0.0;
+      dlt_dm_crop[4] = 0.0;
+      dlt_dm_n[4] = 0.0;
+      dlt_dm_p[4] = 0.0;
+
+      Variant chopped;
+      chopped.pack("crop_type",   plant->getCropType());
+      chopped.pack("dm_type",     part_name);
+      chopped.pack("dlt_crop_dm", dlt_dm_crop);
+      chopped.pack("dlt_dm_n",    dlt_dm_n);
+      chopped.pack("dlt_dm_p",    dlt_dm_p);
+      chopped.pack("fraction_to_residue", fraction_to_residue);
+
+      scienceAPI.publish ("crop_chopped", chopped);
+      }
+   }
 //------------------------------------------------------------------------------------------------
 
 

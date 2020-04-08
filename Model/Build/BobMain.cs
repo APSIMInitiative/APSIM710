@@ -35,7 +35,7 @@ class BobMain
             // Setup the DB fields for current job.
             if (System.Environment.MachineName.ToUpper() == "BOB")
             {
-                string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateStartDateToNow" +
+                string url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateStartDateToNow" +
                              "?JobID=" + JobID +
                              "&DbConnectPassword=" + DbConnectPassword;
                 CallRESTService<object>(url);
@@ -44,7 +44,7 @@ class BobMain
                 // status accordingly. Otherwise we get multiple "Running" status'.
                 if (JobID > 0)
                 {
-                    url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetStatus" +
+                    url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/GetStatus" +
                                  "?JobID=" + (JobID-1);
                     string PreviousStatus = CallRESTService<string>(url);
                     if (PreviousStatus == "Running")
@@ -101,7 +101,7 @@ class BobMain
                     throw new Exception("Invalid output from svn INFO: \n" + StdOut);
                 int TipRevisionNumber = Convert.ToInt32(CSGeneral.StringManip.SplitOffAfterDelimiter(ref StdOutLines[4], " "));
 
-                string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateRevisionNumber" +
+                string url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateRevisionNumber" +
                                 "?JobID=" + JobID +
                                 "&RevisionNumber=" + TipRevisionNumber +
                                 "&DbConnectPassword=" + DbConnectPassword;
@@ -147,7 +147,7 @@ class BobMain
             Run("Send email", "SendEmail.exe", "@Build\\MailList.txt", "%APSIM%\\Model");
 
             // Set the finish date.
-            string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateEndDateToNow" +
+            string url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateEndDateToNow" +
                                "?JobID=" + JobID +
                                "&DbConnectPassword=" + DbConnectPassword;
             CallRESTService<object>(url);
@@ -349,7 +349,7 @@ class BobMain
     /// </summary>
     static void DBUpdateStatus(string status, int JobID)
     {
-        string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateStatus" +
+        string url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateStatus" +
             "?JobID=" + JobID +
             "&NewStatus=" + status +
             "&DbConnectPassword=" + GetValidPassword();
@@ -361,7 +361,7 @@ class BobMain
     /// </summary>
     static void DBUpdateLinuxStatus(string status, int JobID)
     {
-        string url = "http://www.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateLinuxStatus" +
+        string url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateLinuxStatus" +
             "?JobID=" + JobID +
             "&NewStatus=" + status +
             "&DbConnectPassword=" + GetValidPassword();
