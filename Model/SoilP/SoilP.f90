@@ -1,8 +1,6 @@
 !
 module SoilPModule
    use Registrations
-   use infrastructure
-
 
 ! ====================================================================
 !      SoilP_constants
@@ -41,6 +39,7 @@ module SoilPModule
 
       integer      num_crops            ! Number of crops in the system
       integer      nveg
+
      !##########################################################################################
      !ELW - ADDED NEW VARIABLES - GLOBAL
       real     pc_solution (max_layer)
@@ -115,7 +114,6 @@ module SoilPModule
                                        ! Soils P sorption characteristic
       real      root_cp                ! C:P ratio of roots at initialisation
       real      root_cp_pool(3)        ! C:P ratio of roots at initialisation in each pool
-      real         fraction_urine_added
 
    end type SoilPParameters
 ! ====================================================================
@@ -144,8 +142,10 @@ module SoilPModule
       real         sorption_coeff      ! exponent of Freundlich isotherm
       real         p_supply_factor (max_crops)
                                        !  factor to calc potential P supply from soil P status
+
       real         crit_p_rlv (max_crops)
                                        ! critical rlv above which p status is maximum
+
       real         lb_labile_p_ppm         ! lower bound for labile P (ppm)
       real         ub_labile_p_ppm         ! upper bound for labile P (ppm)
       real         lb_unavail_p        ! lower bound for unavailable P (kg/ha)
@@ -194,6 +194,7 @@ module SoilPModule
 ! ====================================================================
 subroutine soilp_reset ()
 ! ====================================================================
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -245,6 +246,7 @@ end subroutine
 !     ===========================================================
 subroutine soilp_save_state ()
 !     ===========================================================
+   Use Infrastructure
    implicit none
 
 
@@ -278,6 +280,7 @@ end subroutine
 !     ===========================================================
 subroutine soilP_delta_state ()
 !     ===========================================================
+   Use Infrastructure
    implicit none
 
 
@@ -315,6 +318,7 @@ end subroutine
 !     ===========================================================
 real function soilP_total_P ()
 !     ===========================================================
+   Use Infrastructure
    implicit none
    integer    num_layers
       character  string*300            ! output string
@@ -333,6 +337,7 @@ end function
 ! ====================================================================
 subroutine soilp_zero_variables ()
 ! ====================================================================
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -356,17 +361,17 @@ subroutine soilp_zero_variables ()
    g%crop_names       = ' '
    g%crop_owners      = 0
 
-   g%sat_dep(:)          = 0.0
-   g%dul_dep(:)          = 0.0
-   g%sw_dep(:)           = 0.0
-   g%ll15_dep(:)         = 0.0
-   g%dlayer(:)           = 0.0
-   g%soil_t(:)           = 0.0
-   g%bd(:)               = 0.0
+   g%sat_dep          = 0.0
+   g%dul_dep          = 0.0
+   g%sw_dep           = 0.0
+   g%ll15_dep         = 0.0
+   g%dlayer           = 0.0
+   g%soil_t           = 0.0
+   g%bd               = 0.0
 
-   g%rlv                 = 0.0
-   g%crop_p_demand(:)    = 0.0
-   g%uptake_p_crop(:,:)  = 0.0
+   g%rlv              = 0.0
+   g%crop_p_demand    = 0.0
+   g%uptake_p_crop    = 0.0
    g%p_decomp         = 0.0
 
    c%act_energy_loss_avail_p = 0.0
@@ -399,7 +404,6 @@ subroutine soilp_zero_variables ()
    call fill_real_array (g%fom_p, 0.0, max_layer)
    call fill_real_array (g%hum_p, 0.0, max_layer)
    call fill_real_array (g%biom_p, 0.0, max_layer)
-   g%fom_p_pool(:,:) = 0.0
 
    p%root_cp = 0.0
    p%rate_dissol_rock_p = 0.0
@@ -411,6 +415,7 @@ subroutine soilp_zero_variables ()
    c%eff_band = 0.0
    c%biom_cp = 0.0
    c%hum_cp = 0.0
+
    
  !##########################################################################################
   !ELW - ADDED NEW VARIABLES - GLOBAL
@@ -443,6 +448,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_Send_my_variable (Variable_name)
 ! ====================================================================
+   Use infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -599,7 +605,8 @@ end subroutine
 
 !     ===========================================================
 subroutine soilp_read_param ()
-!
+!     ===========================================================
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -682,9 +689,7 @@ subroutine soilp_read_param ()
 
    ! Now change rate coefficients from fraction per year to fraction per day
    p%rate_loss_avail_p = - alog (1.0 - p%rate_loss_avail_p) / 365.0
-   call read_real_var_optional (section_name, 'fraction_urine_added', '(0-1)', p%fraction_urine_added, numvals, 0.0, 1.0)
-   if (numvals.le.0) p%fraction_urine_added = 0.5
-   
+
    call pop_routine (myname)
    return
 end subroutine
@@ -692,7 +697,7 @@ end subroutine
 !     ===========================================================
       subroutine soilP_ExternalMassFlow (dltP)
 !     ===========================================================
-
+      Use Infrastructure
       implicit none
 
       real, intent(in) :: dltP
@@ -740,7 +745,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_set_my_variable (Variable_name)
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -807,6 +812,13 @@ subroutine soilp_set_my_variable (Variable_name)
 
       call add_real_array (Tarray, g%rock_p, Numvals)
       call bound_check_real_array (g%rock_p, 0.0, 1000.0, 'g%rock_p', Numvals)
+      
+      
+      
+  
+   
+    
+      
    elseif (Variable_name .eq. 'sorption') then
 
       call collect_real_array &
@@ -815,6 +827,8 @@ subroutine soilp_set_my_variable (Variable_name)
       call add_real_array (Tarray, p%sorption, Numvals)
       call bound_check_real_array (p%sorption, 0.0, 1000.0, 'p%sorption', Numvals)
       
+      
+
    else
       ! Don't know this variable name
       call Message_unused ()
@@ -824,10 +838,12 @@ subroutine soilp_set_my_variable (Variable_name)
    return
 end subroutine
 
+
+
 ! ====================================================================
 subroutine soilp_read_constants ()
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -862,7 +878,6 @@ subroutine soilp_read_constants ()
    call read_real_var (section_name, 'eff_band', '()', c%eff_band, numvals, 0.0, 100.0)
 
    call read_real_var (section_name, 'biom_cp', '()', c%biom_cp, numvals, 0.0, 100.0)
-   
 
    call read_real_var (section_name, 'hum_cp', '()', c%hum_cp, numvals, 0.0, 100.0)
 
@@ -875,7 +890,7 @@ subroutine soilp_read_constants ()
    c%rate_decr_placement = - alog (1 - c%rate_decr_placement) / 365.0
 
    !  read crop constants
-      call read_real_var (section_name,'sorption_coeff','()',c%sorption_coeff,numvals,0.0,2.0)
+   call read_real_var (section_name,'sorption_coeff','()',c%sorption_coeff,numvals,0.0,2.0)
 
    call Read_char_array(section_name,'crop_name',max_crops,'()',c%crop_table_name,num_crops_read)
 
@@ -885,7 +900,7 @@ subroutine soilp_read_constants ()
    endif
    call read_real_array (section_name,'crit_p_rlv',max_crops,'()',c%crit_p_rlv,numvals,0.0,100.0)
    if (num_crops_read .ne. numvals) then
-      call fatal_error(err_internal, 'length of crit_p_rlv doesnt match crop_name')
+      call fatal_error(err_internal, 'length of p_supply_factor doesnt match crop_name')
    endif
 
    ! read P pool bounds
@@ -915,10 +930,12 @@ subroutine soilp_read_constants ()
    return
 end subroutine
 
+
+
 ! ====================================================================
 subroutine soilp_get_other_variables ()
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -932,7 +949,7 @@ subroutine soilp_get_other_variables ()
    parameter (myname = 'soilp_get_other_variables')
 
 !+  Local Variables
-    integer numvals                 ! number of values returned
+    integer numvals      
     integer num_layers
     integer layer
                ! number of values returned
@@ -1012,10 +1029,11 @@ subroutine soilp_get_other_variables ()
 end subroutine
 
 
+
 ! ====================================================================
 subroutine soilp_process ()
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -1065,7 +1083,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_rock_p_dissolution ()
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -1109,7 +1127,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_availability_loss ()
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -1182,7 +1200,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_decrease_banded_p_effect ()
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -1223,7 +1241,7 @@ end subroutine
 !     ===========================================================
 real function soilp_wf (layer)
 !     ===========================================================
-
+   Use infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -1274,7 +1292,7 @@ end function
 ! ====================================================================
 subroutine soilp_find_crops ()
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -1337,7 +1355,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_get_crop_variables ()
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -1371,16 +1389,16 @@ subroutine soilp_get_crop_variables ()
       else
          ! crop has been specified so end do
 
- !!JH What is rlv for? It doesn't appear to be used        call get_real_array (g%crop_owners(vegnum),'rlv',max_layer,'(mm/mm^3)',rlv,numvals,0.0,1.0)
-!!JH What is rlv for? It doesn't appear to be used
-!!JH What is rlv for? It doesn't appear to be used       if (numvals.gt.0) then
-!!JH What is rlv for? It doesn't appear to be used            do layer = 1,numvals
-!!JH What is rlv for? It doesn't appear to be used               g%rlv(vegnum,layer) = rlv(layer)
-!!JH What is rlv for? It doesn't appear to be used            end do
-!!JH What is rlv for? It doesn't appear to be used
-!!JH What is rlv for? It doesn't appear to be used         else
-!!JH What is rlv for? It doesn't appear to be used            call fatal_error (Err_Internal,'no rlv returned from '//g%crop_names(vegnum))
-!!JH What is rlv for? It doesn't appear to be used         endif
+         call get_real_array (g%crop_owners(vegnum),'rlv',max_layer,'(mm/mm^3)',rlv,numvals,0.0,1.0)
+
+         if (numvals.gt.0) then
+            do layer = 1,numvals
+               g%rlv(vegnum,layer) = rlv(layer)
+            end do
+
+         else
+            call fatal_error (Err_Internal,'no rlv returned from '//g%crop_names(vegnum))
+         endif
 
          !  mep/dsg 200302  added get for root_depth
          call get_real_var (g%crop_owners(vegnum),'root_depth','(mm)',g%root_depth(vegnum),numvals,0.0,10000.0)
@@ -1410,7 +1428,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_crop_p_uptake ()
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -1441,8 +1459,8 @@ subroutine soilp_crop_p_uptake ()
     real effective_p (max_layer)      !
     real p_layer                      ! temporary calculator
     real b_layer                      ! inverse of c%sorption_coeff
-   character string*300
-   
+    character string*300
+
     !#########################################################################  
     !ELW - ADDITIONS/MODIFICATIONS
     real SolutionPc                      ! P concentration in soil solution
@@ -1495,9 +1513,8 @@ subroutine soilp_crop_p_uptake ()
     real Chelation_P_MM
     real Chelation_P_SL
     real Chelation_P_L
-	
-   b_layer = divide(1.0,c%sorption_coeff, 0.0)
-   
+
+
  !- Implementation Section ----------------------------------
    call push_routine (myname)
   
@@ -1582,7 +1599,7 @@ subroutine soilp_crop_p_uptake ()
       call fill_real_array (effective_p,  0.0, max_layer)
       
       do layer = 1, num_layers
-	           g%uptake_p_crop (crop, layer) = uptake_p_tot *divide (status (layer), status_profile, 0.0)
+      
          total_p     = g%labile_p(layer) + g%banded_p(layer) + g%unavail_p(layer)
          total_p_min = c%lb_labile_p_ppm/soilp_fac(layer) + c%lb_banded_p + c%lb_unavail_p
 
@@ -1641,7 +1658,8 @@ subroutine soilp_crop_p_uptake ()
 
          !g%pc_solution(layer) = (p_layer + dlt_pc_layer) * 1000.0
       end do
-	       !###########################################################################################################################################  
+
+     !###########################################################################################################################################  
      !CALCULATION OF P UPTAKE BY CROPS AND P REMOVAL FROM EACH OF THE SOIL LAYERS
      ! calculate potential p uptake
       crop_num = position_in_char_array (g%crop_names (crop),c%crop_table_name, max_crops)
@@ -1695,7 +1713,7 @@ end subroutine
 ! ====================================================================
 real function soilp_sorption_fn (layer)
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -1725,7 +1743,7 @@ end function
 ! ====================================================================
 real function soilp_root_fac (crop, layer)
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -1763,7 +1781,7 @@ end function
 ! ====================================================================
 real function soilp_sw_fn (layer)
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -1804,7 +1822,7 @@ end function
 !     ================================================================
 subroutine soilp_Tillage ()
 !     ================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -1888,7 +1906,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_redistribute_p (parray, depth)
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -1947,7 +1965,7 @@ end subroutine
 !     ===========================================================
 real function soilp_fac (layer)
 !     ===========================================================
-
+   Use infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -1980,7 +1998,7 @@ end function
 ! ====================================================================
 subroutine soilp_bound_check (num_layers)
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Sub-Program Arguments
@@ -2030,7 +2048,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_get_other_init_variables ()
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -2095,7 +2113,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_min_hum ()
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -2145,7 +2163,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_min_fom ()
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -2213,7 +2231,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_min_biom ()
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -2265,7 +2283,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_min_residues ()
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -2345,7 +2363,7 @@ end subroutine
 !     ===========================================================
 subroutine soilp_OnIncorpFOMPool(variant)
 !     ===========================================================
-
+   Use Infrastructure
    implicit none
 
 !+  Purpose
@@ -2401,7 +2419,7 @@ end subroutine
 !     ================================================================
 subroutine soilp_Sum_Report ()
 !     ================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -2472,7 +2490,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_OnIncorpFOM(variant)
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -2545,7 +2563,7 @@ end subroutine
 !     ===========================================================
 subroutine soilp_currentFOMpoolCPratio (fom_cp_pool, fom_cp, fom_cp_tot)
 !     ===========================================================
-
+   Use Infrastructure
    implicit none
 
 !+  Purpose
@@ -2619,7 +2637,7 @@ end subroutine
 !     ===========================================================
 subroutine soilp_currentFOMCPratio (fom_cp)
 !     ===========================================================
-
+   Use Infrastructure
    implicit none
 
 !+  Purpose
@@ -2649,7 +2667,7 @@ end subroutine
 ! ====================================================================
 subroutine soilp_dlt_fom_p_pools ()
 ! ====================================================================
-
+   Use infrastructure
    implicit none
 
 !+  Purpose
@@ -2706,26 +2724,6 @@ subroutine soilp_dlt_fom_p_pools ()
    return
 end subroutine
 
-!     ===========================================================
-subroutine soilp_OnAddUrine(variant)
-!     ===========================================================
-
-   implicit none
-
-!+  Purpose
-!       Add P from pee
-
-!+  Sub-Program Arguments
-   integer, intent(in) :: variant
-
-   type(AddUrineType) :: UrineAdded
-   integer :: layer
-
-   call unpack_AddUrine(variant, UrineAdded)
-   g%labile_p(1) = g%labile_p(1) + UrineAdded%POX
-   return
-
-end subroutine
 
 end module SoilPModule
 
@@ -2735,7 +2733,6 @@ subroutine alloc_dealloc_instance(doAllocate)
    use SoilPModule
    implicit none
    ml_external alloc_dealloc_instance
-!STDCALL(alloc_dealloc_instance)
 
 !+  Sub-Program Arguments
    logical, intent(in) :: doAllocate
@@ -2764,7 +2761,7 @@ end subroutine
 ! ====================================================================
 subroutine Main (Action, Data_string)
 ! ====================================================================
-
+   Use infrastructure
    Use SoilPModule
    implicit none
    ml_external Main
@@ -2827,14 +2824,12 @@ end subroutine
       ! do first stage initialisation stuff.
       ! ====================================================================
       subroutine doInit1 ()
-
+      use infrastructure
       use SoilPModule
 
       ml_external doInit1
-!STDCALL(doInit1)
 
       call doRegistrations(id)
-      call soilp_zero_variables()
       end subroutine
 
 
@@ -2843,10 +2838,9 @@ end subroutine
 ! ====================================================================
 subroutine respondToEvent(fromID, eventID, variant)
    use SoilpModule
-
+   Use infrastructure
    implicit none
    ml_external respondToEvent
-!STDCALL(respondToEvent)
 
    integer, intent(in) :: fromID
    integer, intent(in) :: eventID
@@ -2858,8 +2852,6 @@ subroutine respondToEvent(fromID, eventID, variant)
       call soilp_min_residues ()
    elseif (eventID .eq.id%Incorp_FOM) then
       call soilp_OnIncorpFOM(variant)
-   elseif (eventID .eq.id%add_urine) then
-      call soilp_OnAddUrine(variant)
    endif
 
    return
