@@ -1,3 +1,4 @@
+
       module CanopyModule
       use Registrations
       use infrastructure
@@ -39,6 +40,19 @@
          real       height(max_crops)       ! canopy height of crops (mm)
          real       intc_light(max_crops)   ! fraction of light intercepted by each
                                             ! crop canopy (0-1)
+                                            
+         !Enli additions
+         real       lai(max_crops)       
+         real       extinct_coeff(max_crops)    
+         real       strip_width_m
+         real       strip_width_s   
+         
+         character*3  TwoStripIntercrops 
+                                             
+                                            
+                                            
+                                            
+                                            
          integer    num_canopies            ! number of canopies present ()
          integer    num_crops               ! number of crops ()
          real       top_layer_light(max_crops) ! fraction of light at top of
@@ -51,9 +65,9 @@
 
 C VOS
          character*3   DoLight                 !VOS to stop the module doing the light interception
-		 
+                 
 
-		 end type CanopyGlobals
+                 end type CanopyGlobals
 ! ====================================================================
       ! instance variables.
       common /InstancePointers/ ID,g,p,c
@@ -93,7 +107,7 @@ C VOS
 
       integer    numvals           ! VOS for if DoLIght is yes
 
-	  
+          
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
@@ -109,13 +123,13 @@ C VOS
      :                   , 'dolight', '()'
      :                   , g%DoLight, numvals)
       if (numvals .eq. 0) then
-	     g%DoLight = "yes"
+             g%DoLight = "yes"
       elseif (g%DoLight .eq. "No") then
-	     g%DoLight = "no"
+             g%DoLight = "no"
       elseif (g%DoLight .eq. "no") then
-	     g%DoLight = "no"
+             g%DoLight = "no"
       else
-	     g%DoLight = "yes"
+             g%DoLight = "yes"
       endif
 C VOS 
 
@@ -237,6 +251,15 @@ C VOS
       g%num_crops    = 0
       g%top_layer_light = 0.0
 
+      !Enli additions
+      g%lai             = 0.0
+      g%extinct_coeff   = 0.0
+      g%strip_width_m   = 0.0
+      g%strip_width_s   = 0.0
+      g%TwoStripIntercrops = 'no'
+      
+      
+      
       g%intercrop_list = blank
       g%crop_module    = 0
       g%before_commence = .true.
@@ -273,6 +296,11 @@ C VOS
       call fill_real_array (g%intc_light, 0.0 ,max_crops)
       call fill_real_array (g%top_layer_light, 0.0, max_crops)
 
+      !Enli additions
+      call fill_real_array (g%lai, 0.0, max_crops)
+      call fill_real_array (g%extinct_coeff, 0.0, max_crops)
+      
+      
       g%num_canopies = 0
       g%num_crops = 0
 
@@ -302,6 +330,15 @@ C VOS
       real       k_lai_full_cover    ! a value for k*lai when cover is 100%
       parameter (k_lai_full_cover = 100.0)
 *
+
+      !Enli additions
+      real       max_lai          ! maximum crop canopy height (mm)
+      parameter (max_lai  = 10.0)
+
+      real       max_extinct_coeff          ! maximum crop canopy height (mm)
+      parameter (max_extinct_coeff  = 1.0)
+
+
       character  my_name*(*)           ! procedure name
       parameter (my_name='canopy_get_other_variables')
 
@@ -418,6 +455,105 @@ C VOS
      :              // 'number of modules with green cover.')
          else
          endif
+         
+
+         
+!%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         
+!Enli additions
+!%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         
+                  
+         
+      crop = 0
+5000  continue
+         call get_real_vars (crop+1, 'lai', '()'
+     :                             , temp, numvals
+     :                             , 0.0, max_lai)
+         if (numvals.ne.0) then
+            if (crop+1.le.max_crops) then
+               crop = crop + 1
+               Owner_module = get_posting_Module ()
+               if (owner_module.eq.g%crop_module(crop)) then
+                  g%lai(crop) = temp
+                  goto 5000
+               else
+                  call fatal_error (err_user
+     :              , 'Modules with LAI do not match '
+     :             // 'modules with green cover')
+               endif
+            else
+               call fatal_error (err_user
+     :                  , 'Too many modules with lai.')
+            endif
+         else
+         endif
+
+         if (crop.ne.g%num_crops) then
+            call fatal_error (err_user
+     :              , 'Number of modules with lai different to '
+     :              // 'number of modules with green cover.')
+         else
+         endif
+         
+
+      crop = 0
+6000  continue
+      
+            if (crop+1.le.max_crops) then
+               crop = crop + 1
+               g%extinct_coeff(crop) = divide(g%K_lai_total(crop),
+     :                                 g%lai(crop), 0.0)
+               goto 6000
+            endif
+
+!         if (crop.ne.g%num_crops) then
+!            call fatal_error (err_user
+!     :              , 'Number of modules with K_lai_total different to '
+!     :              // 'number of modules with green cover.')
+!         else
+!         endif
+         
+         
+       call get_char_var_optional (Unknown_module
+     :                   , 'two_strip_intercrops', '()'
+     :                   , g%TwoStripIntercrops, numvals)
+      if (numvals .eq. 0) then
+             g%TwoStripIntercrops = "no"
+      elseif (g%TwoStripIntercrops .eq. "Yes") then
+             g%TwoStripIntercrops = "yes"
+      elseif (g%TwoStripIntercrops .eq. "yes") then
+             g%TwoStripIntercrops = "yes"
+      else
+             g%TwoStripIntercrops = "no"
+      endif
+   
+      if (g%TwoStripIntercrops .eq. "yes") then
+        call get_real_var_optional(unknown_module, 'strip_width_m', 
+     :     '(mm)', g%strip_width_m, numvals, 0.0, 1000.0)
+        call get_real_var_optional(unknown_module, 'strip_width_s', 
+     :     '(mm)', g%strip_width_s, numvals, 0.0, 1000.0)
+       
+       if (g%strip_width_m < 0.01 .or. g%strip_width_s < 0.01) then
+            call fatal_error (err_user
+     :              , 'strip_width_m or strip_width_s not specified'
+     :              // 'or equal to zero.')
+       endif
+     
+      endif
+    
+    !call Get_real_array(unknown_module, 'dlayer', max_layer, '(mm)',g%dlayer, numvals, 1.0, 10000.0)
+
+         
+              
+!%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         
+!%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         
+         
+         
+         
+         
+         
+         
+         
+         
       call pop_routine (my_name)
       return
       end subroutine
@@ -641,6 +777,21 @@ c      integer    canopy_crop_number    ! function
                ! get light intercepted by each crop canopy
 
          call canopy_intc_light (g%intc_light)
+         
+
+                 
+*     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+*     ENLI'S LIGHT INTERCEPTIION MODEL STARTS HERE
+*     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+      if (g%TwoStripIntercrops .eq. "yes") then
+
+          call LightInterceptionTwoStripInterCrops(g%intc_light)
+      
+      endif 
+      
+*     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+*     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
       else
             ! no canopies present
@@ -650,6 +801,340 @@ c      integer    canopy_crop_number    ! function
       return
       end subroutine
 
+      
+      
+      
+      
+*     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+*     ENLI'S LIGHT INTERCEPTIION MODEL STARTS HERE
+*     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      
+*     ===========================================================
+      subroutine LightInterceptionTwoStripInterCrops (intc_light)
+*     ===========================================================
+
+      implicit none
+
+*+  Sub-Program Arguments
+      real       intc_light(*)         ! (OUTPUT) fraction of light at top
+                                       ! of canopy (0-1)
+
+*+  Purpose
+*     Determine light fraction captured by green leaf of each canopy. (0-1)
+
+*+  Changes
+*      201093 jngh specified and programmed
+
+*+  Constant Values
+      character  my_name*(*)           ! procedure name
+      parameter (my_name='LightInterceptionTwoStripInterCrops')
+
+*+  Local Variables
+      
+      real Heightm   !Height of the high crop
+      real Heights   !Height of the low crop
+      real StripWm   !Strip width of maize
+      real StripWs   !Strip width of soybean
+      real LAIm     !LAI  of the high crop, e.g. maize
+      real LAIs     !LAI  of the low crop, e.g. soybean
+      real ExtCoeffm       !Extinction coefficient of maize
+      real ExtCoeffs       !Extinction coefficient of maize
+      
+      integer canopy
+      integer crop
+      integer Cropm
+      Integer Crops
+      
+      real InterceptM
+      real InterceptS
+      real InterceptTot
+      real InterceptLow
+      real InterceptHigh
+        
+      
+*- Implementation Section ----------------------------------
+
+      call push_routine (my_name)
+
+      call fill_real_array (intc_light, 0.0, max_crops)
+
+            ! Here we take each layer in turn from the top down, get the
+            ! light used by the combined canopy and then apportion that
+            ! to each canopy occupying the layer
+
+        canopy = 1
+
+        ! the crop type for each canopy
+        Cropm     = g%canopy_index(canopy)
+        Heightm   = g%height(Cropm)
+        LAIm      = g%lai(Cropm)
+        ExtCoeffm = g%extinct_coeff(Cropm)
+         
+        Crops     = g%canopy_index(canopy + 1)
+        Heights   = g%height(Crops)
+        LAIs      = g%lai(Crops)
+        ExtCoeffs = g%extinct_coeff(Crops)
+        
+        StripWm = g%strip_width_m
+        StripWs = g%strip_width_s
+
+        if (Heightm .GE. Heights) then
+          call LightInterceptionTwoStripInterCropsHighLow (Heightm, 
+     :           LAIm, ExtCoeffm, StripWm, Heights, LAIs, ExtCoeffs, 
+     :           StripWs, InterceptTot, InterceptM, InterceptS)
+       else
+         call LightInterceptionTwoStripInterCropsHighLow (Heights, 
+     :           LAIs, ExtCoeffs, StripWs, Heightm, LAIm, ExtCoeffm, 
+     :           StripWm, InterceptTot, InterceptHigh, InterceptLow)
+
+         InterceptM = InterceptLow
+         InterceptS = InterceptHigh
+       endif
+           
+ 
+      intc_light(Cropm) = InterceptM
+      intc_light(Crops) = InterceptS
+
+
+      call pop_routine (my_name)
+      return
+      end subroutine
+
+      
+      
+*     ==============================================================================================================
+      subroutine LightInterceptionTwoStripInterCropsHighLow (Heightm, 
+     : LAIm, ExtCoeffm, StripWm, Heights, LAIs, ExtCoeffs, StripWs, 
+     : InterceptTot, InterceptM, InterceptS)
+*     ==============================================================================================================
+
+      implicit none
+
+*+  Sub-Program Arguments
+      real Heightm   !Height of the high crop
+      real Heights   !Height of the low crop
+      real LAIm     !LAI  of the high crop, e.g. maize
+      real LAIs     !LAI  of the low crop, e.g. soybean
+      real StripWm   !Strip width of maize
+      real StripWs   !Strip width of soybean
+      real ExtCoeffm       !Extinction coefficient of high crop (maize)
+      real ExtCoeffs       !Extinction coefficient of low crop (soybean)
+
+      real InterceptM
+      real InterceptS
+      real InterceptTot
+        
+
+*+  Purpose
+*     Light interception of striped high and low crops. (0-1)
+
+*+  Changes
+*      20180820 Enli Wang specified and programmed
+
+*+  Constant Values
+      character  my_name*(*)           ! procedure name
+      parameter (my_name='LightInterceptionTwoStripInterCropsHighLow')
+
+*+  Local Variables
+      
+      real LAIm_upper
+      real LAIm_lower
+      real LAIm_composed_upper
+      real LAIm_composed_lower
+      real LAIs_composed
+      real Fraction_Lower_m
+      real Fraction_Lower_s
+      real Fm
+      real Fs
+      real FiBm
+      real FiBs
+      real FiiBm
+      real FiiBs
+      real Fim
+      real Fib
+      real F1
+      real F2
+      real F3
+      real F4
+      real F5
+      real F6
+      real F7
+      real F8
+      real F9
+      real Km
+      real Ks
+      
+*- Implementation Section ----------------------------------
+
+      call push_routine (my_name)
+
+ 
+        
+        if (Heightm .eq. 0) then
+            InterceptM = 0
+            InterceptS = RadiationIntercroptionStripCrop(LAIs, Heights,
+     :                   StripWs, StripWm, ExtCoeffs)
+        endif
+
+        if (Heights .eq. 0) then
+            InterceptS = 0
+            InterceptM = RadiationIntercroptionStripCrop(LAIm, Heightm,
+     :                   StripWm, StripWs, ExtCoeffm)
+        endif
+      
+      
+        if ((Heightm .ne. 0) .and. (Heights .ne. 0)) then 
+              
+        ! Area fraction of each canopy
+         
+        Fm = divide (StripWm, (StripWm + StripWs), 0.0)
+        Fs = 1.0 - Fm
+         
+        Km = ExtCoeffm
+        Ks = ExtCoeffs
+
+        LAIm_upper = divide(LAIm * (Heightm - Heights), Heightm, 0.0)
+        LAIm_lower = LAIm - LAIm_upper
+
+        FiBm = divide ((((Heightm - Heights) ** 2 + StripWm ** 2) ** 0.5
+     :         - (Heightm - Heights)), StripWm, 0.0)
+        FiBs = divide ((((Heightm - Heights) ** 2 + StripWs ** 2) ** 0.5
+     :         - (Heightm - Heights)), StripWs, 0.0)
+
+        FiiBm = divide( (Heights ** 2 + StripWm ** 2) ** 0.5
+     :         - Heights, StripWm, 0.0)
+        FiiBs = divide( (Heights ** 2 + StripWs ** 2) ** 0.5
+     :         - Heights, StripWs, 0.0)
+
+     
+        LAIm_composed_upper = divide(LAIm_upper, Fm, 0.0)
+
+        Fim = Fm * (FiBm * Exp(-Km * LAIm_composed_upper) +
+     :        Fm * (1 - FiBm) * Exp(-Km * LAIm_upper)) +
+     :        Fm * Fs * (1 - FiBs) * Exp(-Km * LAIm_upper)
+        Fib = Fs * (FiBs + Fs * (1 - FiBs) * Exp(-Km * LAIm_upper)) +
+     :        Fm * Fs * ((1 - FiBm) * Exp(-Km * LAIm_upper))
+
+        F1 = Fm * FiBm * (1 - Exp(-Km * LAIm_composed_upper))
+        F2 = Fm * (1 - FiBm) * (1 - Exp(-Km * LAIm_upper))
+        F3 = Fs * ((1 - FiBs) * (1 - Exp(-Km * LAIm_upper)))
+        
+        LAIm_composed_lower = divide(LAIm_lower, Fm, 0.0)
+        
+        Fraction_Lower_m = divide(Km * LAIm_lower,
+     :                     (Km * LAIm_lower + Ks * LAIs), 0.0)
+        Fraction_Lower_s = divide(Ks * LAIs,
+     :                     (Km * LAIm_lower + Ks * LAIs),0.0)
+        
+        
+        F4 = Fim * FiBm * (1 - Exp(-Km * LAIm_composed_lower))
+        F5 = Fim * (1 - FiiBm) * (1 - Exp(-Km * LAIm_lower - Ks * LAIs)) 
+     :       * Fraction_Lower_m
+        F6 = Fim * (1 - FiiBm) * (1 - Exp(-Km * LAIm_lower - Ks * LAIs))
+     :       * Fraction_Lower_s
+        
+        LAIs_composed = divide(LAIs, Fs, 0.0)
+        
+        F7 = Fib * FiiBs * (1 - Exp(-Ks * LAIs_composed))
+        F8 = Fib * (1 - FiiBs) * (1 - Exp(-Km * LAIm_lower - Ks * LAIs)) 
+     :       * Fraction_Lower_s
+        F9 = Fib * (1 - FiiBs) * (1 - Exp(-Km * LAIm_lower - Ks * LAIs)) 
+     :       * Fraction_Lower_m
+
+        InterceptM = F1 + F2 + F3 + F4 + F5 + F9 
+        InterceptS = F6 + F7 + F8
+
+        InterceptTot = InterceptM + InterceptS  
+        
+        endif 
+              
+
+      call pop_routine (my_name)
+      return
+      end subroutine      
+      
+
+* ====================================================================================================
+       real function RadiationIntercroptionStripCrop(LAI, CropHeight, 
+     :   StripWidth, PathWidth, ExtCoeff) 
+* ====================================================================================================
+
+      implicit none
+
+*+  Sub-Program Arguments
+      real LAI
+      real CropHeight
+      real StripWidth
+      real PathWidth
+      Real ExtCoeff
+      
+*+  Purpose
+*     Light interception of strip crop
+
+*+  Changes
+*        20082018 Enli Wang - Programmed and Specified
+
+*+  Constant Values
+      character*(*) myname               ! name of current procedure
+      parameter (myname = 'RadiationIntercroptionStripCrop')
+
+*+  Local Variables
+      real    TransmitToPath             
+      real    TransmitToStrip 
+      real    PathFraction
+      real    StripFraction
+      real    FPblack
+      real    FSblack
+      real    LAIcompressed
+
+*- Implementation Section ----------------------------------
+      call push_routine (myname)
+
+      PathFraction = PathWidth / (PathWidth + StripWidth)
+      StripFraction = StripWidth / (PathWidth + StripWidth)
+
+      FPblack = ((CropHeight ** 2 + PathWidth ** 2) ** 0.5 
+     : - CropHeight) / PathWidth
+      FSblack = ((CropHeight ** 2 + StripWidth ** 2) ** 0.5
+     :  - CropHeight) / StripWidth
+
+      TransmitToPath = PathFraction * (FPblack + PathFraction * 
+     :  (1 - FPblack) * Exp(-ExtCoeff * LAI)) + StripFraction * 
+     :  PathFraction * ((1 - FSblack) * Exp(-ExtCoeff * LAI))
+
+      LAIcompressed = LAI / StripFraction
+
+      TransmitToStrip = StripFraction * (FSblack * 
+     :  Exp(-ExtCoeff * LAIcompressed) + StripFraction * (1 - FSblack)
+     :  * Exp(-ExtCoeff * LAI)) + PathFraction * StripFraction * 
+     :  (1 - FPblack) * Exp(-ExtCoeff * LAI)
+
+      RadiationIntercroptionStripCrop = 1 - TransmitToPath - 
+     :  TransmitToStrip
+
+      call pop_routine (myname)
+      return
+      end function      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
 
 
 *     ===========================================================
