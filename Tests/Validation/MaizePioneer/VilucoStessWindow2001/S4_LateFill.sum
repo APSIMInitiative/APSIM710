@@ -1,0 +1,1313 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.10 r
+Title                  = S4_LateFill
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                       "earbio" = %apsim%\Model\Report.dll
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component          "Operations Schedule" = %apsim%\Model\Operations.dll
+   Component                   "Fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component          "Fertilise at sowing" = %apsim%\Model\Manager.dll
+   Component      "Fertilise on fixed date" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                       "Window" = %apsim%\Model\Manager.dll
+   Component                        "Logic" = %apsim%\Model\Manager.dll
+   Component                 "Viluco Water" = %apsim%\Model\SoilWat.dll
+   Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
+   Component              "Viluco Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "maize" = %apsim%\Model\Maize.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        do_cashbook
+        post
+        end_step
+     Simulation start date =  7/11/2001
+     Simulation end date   = 30/06/2002
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: viluco0102.met
+
+------- earbio Initialisation -------------------------------------------------
+     Output variables:
+        dd/mm/yyyy as Date
+        DaysAfterSowing
+        biomass
+        yield
+        WaterSd
+        GrainNo
+        GrainSize
+        GrainGreenWt
+        grainWeight
+        Biomass units g/m^2 as BiomassWt
+        maxt
+        esw_profile as esw
+        flowerDay
+        lai
+        n_sd_ratio
+        no3()
+        sw_uptake()
+
+     Output file = S4_LateFill earbio.out
+     Format = normal
+
+------- Outputfile Initialisation ---------------------------------------------
+     Output variables:
+        dd/mm/yyyy as Date
+        irrigation
+        sw_supply
+        sw_demand
+        sw()
+        AccBaseTT   
+        DAysAfterSowing
+        fasw 
+        BaseTT   
+        stage
+        maxt
+        mint
+        vpd
+        radn
+
+     Output file = S4_LateFill.out
+     Format = normal
+
+------- paddock.accum Initialisation ------------------------------------------
+     Initialising
+
+------- paddock.Operations Schedule Initialisation ----------------------------
+     Operations Schedule
+     ===================
+       8/11/2001  Prepare      irrigation apply amount = 6.77 (mm), depth = 100 (mm)
+      12/11/2001  Prepare      irrigation apply amount = 6.77 (mm), depth = 100 (mm)
+      16/11/2001  Prepare      irrigation apply amount = 10.155 (mm), depth = 100 (mm)
+      17/11/2001  Prepare      irrigation apply amount = 6.77 (mm), depth = 100 (mm)
+      20/11/2001  Prepare      irrigation apply amount = 13.54 (mm), depth = 100 (mm)
+      23/11/2001  Prepare      irrigation apply amount = 10.155 (mm), depth = 100 (mm)
+      26/11/2001  Prepare      irrigation apply amount = 13.54 (mm), depth = 100 (mm)
+      30/11/2001  Prepare      irrigation apply amount = 20.31 (mm), depth = 100 (mm)
+       4/12/2001  Prepare      irrigation apply amount = 27.08 (mm), depth = 100 (mm)
+       7/12/2001  Prepare      irrigation apply amount = 16.5865 (mm), depth = 100 (mm)
+       8/12/2001  Prepare      irrigation apply amount = 20.31 (mm), depth = 100 (mm)
+      12/12/2001  Prepare      irrigation apply amount = 27.08 (mm), depth = 100 (mm)
+      16/12/2001  Prepare      irrigation apply amount = 28.434 (mm), depth = 100 (mm)
+      20/12/2001  Prepare      irrigation apply amount = 30.465 (mm), depth = 100 (mm)
+      24/12/2001  Prepare      irrigation apply amount = 28.434 (mm), depth = 100 (mm)
+      28/12/2001  Prepare      irrigation apply amount = 37.235 (mm), depth = 100 (mm)
+       1/01/2002  Prepare      irrigation apply amount = 20.31 (mm), depth = 100 (mm)
+       5/01/2002  Prepare      irrigation apply amount = 30.465 (mm), depth = 100 (mm)
+       6/03/2002  Prepare      irrigation apply amount = 23.695 (mm), depth = 100 (mm)
+      10/03/2002  Prepare      irrigation apply amount = 30.465 (mm), depth = 100 (mm)
+      14/03/2002  Prepare      irrigation apply amount = 23.695 (mm), depth = 100 (mm)
+      18/03/2002  Prepare      irrigation apply amount = 13.54 (mm), depth = 100 (mm)
+      21/03/2002  Prepare      irrigation apply amount = 10.155 (mm), depth = 100 (mm)
+      25/03/2002  Prepare      irrigation apply amount = 23.695 (mm), depth = 100 (mm)
+      28/03/2002  Prepare      irrigation apply amount = 14.894 (mm), depth = 100 (mm)
+       1/04/2002  Prepare      irrigation apply amount = 5.416 (mm), depth = 100 (mm)
+
+------- paddock.Irrigation Initialisation -------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  1.00
+           depth for calculating available soil water =    1000.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- paddock.Sow on a fixed date Initialisation ----------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if (today = date('7-nov') then
+        accbasett   = 0
+        maize sow plants =9.0, sowing_depth = 50, cultivar = pioneer_3394, row_spacing = 760, crop_class = plant
+     endif
+     END of rules
+     
+
+------- paddock.Fertilise at sowing Initialisation ----------------------------
+     Manager rules:
+     
+     SECTION:- maize.sowing
+             fertiliser apply amount = 300 (kg/ha), depth = 50 (mm), type = urea_n
+     END of rules
+     
+
+------- paddock.Fertilise on fixed date Initialisation ------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+              if (today = date('1-jan') then
+     n_topsoil = no3(1) + nh4(1) + no3(2) + nh4(2)
+     if (n_topsoil < 1000) then
+        fertiliser apply amount = 350 (kg/ha), depth = 50 (mm), type = urea_n ()
+     endif
+              endif
+     END of rules
+     
+
+------- paddock.Harvesting rule Initialisation --------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+                if ('maize' = 'cotton') then
+       if (maize.ozcot_status > 0) then
+           maize harvest
+       endif
+                elseif (maize.stagename = 'harvest_ripe' or maize.plant_status = 'dead') then
+       maize  harvest
+       maize  end_crop
+                endif
+     END of rules
+     
+
+------- paddock.Window Initialisation -----------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     startwindow = 62
+     endwindow = 42
+     number = 5
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     END of rules
+     
+     Manager creating a new local real variable : startwindow = 62.00000
+     Manager creating a new local real variable : endwindow = 42.00000
+     Manager creating a new local real variable : number = 5.00000
+
+------- paddock.Logic Initialisation ------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     flowerday = 0
+     flowercounter = 0
+     irrigcounter = 0
+     irrigamount = 25
+     basett = 0
+     accbasett  = 0
+     fasw = 1
+     gngs = 0
+     
+     SECTION:- start_of_day
+     if (daysaftersowing = startwindow) then
+         irrigamount = 0
+     endif
+     if (stage = 7) then
+        flowerday = daysaftersowing
+        flowercounter = 0
+     endif
+     flowercounter = flowercounter + 1
+     irrigcounter = irrigcounter +1
+     if (flowercounter = endwindow) then
+        if (flowerday <> 0) then
+           irrigamount = 100
+        endif
+     endif
+     if (irrigcounter = 2) then
+        irrigcounter = 0
+     endif
+     if (no3() < 200) then
+         fertiliser apply amount = 200, type = no3_n, depth = 50
+     endif
+     taverage = (maxt + mint) / 2
+     if (taverage > 30) then
+        taverage = 35
+     endif
+     basett  = taverage - 10
+     accbasett  = accbasett  + basett
+     
+     SECTION:- end_of_day
+     if (paddock_is_fallow() = 0) then
+        earbio do_output
+        outputfile do_output
+     endif
+     fasw = (sw_dep() - ll_dep()) / (dul_dep() - ll_dep())
+     gngs = grainno * grainsize / 1000
+     END of rules
+     
+     Manager creating a new local real variable : flowerday = 0.00000
+     Manager creating a new local real variable : flowercounter = 0.00000
+     Manager creating a new local real variable : irrigcounter = 0.00000
+     Manager creating a new local real variable : irrigamount = 25.00000
+     Manager creating a new local real variable : basett = 0.00000
+     Manager creating a new local real variable : accbasett = 0.00000
+     Manager creating a new local real variable : fasw = 1.00000
+     Manager creating a new local real variable : gngs = 0.00000
+
+------- paddock.Viluco Water Initialisation -----------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-   50.  0.100  0.180  0.340  0.370  0.340  1.380  0.376  0.300
+           50.-  150.  0.100  0.180  0.340  0.370  0.340  1.380  0.386  0.300
+          150.-  300.  0.100  0.180  0.340  0.370  0.340  1.380  0.190  0.300
+          300.-  450.  0.100  0.180  0.340  0.370  0.340  1.330  0.048  0.300
+          450.-  600.  0.100  0.180  0.340  0.370  0.340  1.310  0.000  0.300
+          600.-  900.  0.100  0.180  0.340  0.370  0.340  1.260  0.000  0.300
+          900.- 1200.  0.100  0.180  0.340  0.370  0.340  1.500  0.000  0.300
+         1200.- 1350.  0.100  0.180  0.340  0.370  0.340  1.500  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-   50.       9.00       8.00       8.00       1.50
+           50.-  150.      18.00      16.00      16.00       3.00
+          150.-  300.      27.00      24.00      24.00       4.50
+          300.-  450.      27.00      24.00      24.00       4.50
+          450.-  600.      27.00      24.00      24.00       4.50
+          600.-  900.      54.00      48.00      48.00       9.00
+          900.- 1200.      54.00      48.00      48.00       9.00
+         1200.- 1350.      27.00      24.00      24.00       4.50
+          ---------------------------------------------------------
+               Totals     243.00     216.00     216.00      40.50
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00    0.80    0.20  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            2.00 (mm^0.5)
+            CONA:                     1.50 ()
+            Eo from priestly-taylor
+
+------- paddock.SurfaceOrganicMatter Initialisation ---------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat_stubwheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- paddock.Viluco Nitrogen Initialisation --------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Grey Vertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.60  1.24    7.74    0.00    0.00
+             2     6.60  1.24   15.47    0.00    0.00
+             3     6.60  1.25   23.21    0.00    0.00
+             4     6.60  1.10   22.37    0.00    0.00
+             5     6.60  0.71   22.03    0.00    0.00
+             6     6.60  0.34   42.38    0.00    0.00
+             7     6.60  0.26   26.82    0.00    0.00
+             8     6.60  0.26    2.50    0.00    0.00
+          ------------------------------------------------
+           Totals              162.50    0.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1       8311.5   573.2   244.5    30.6   118.9     2.6
+             2      16944.2  1168.6   167.8    21.0    95.2     2.1
+             3      25746.9  1775.6   128.1    16.0    68.2     1.5
+             4      21858.1  1507.5    86.9    10.9    48.9     1.1
+             5      13910.1   959.3    41.4     5.2    35.0     0.8
+             6      12826.6   884.6    25.4     3.2    18.0     0.4
+             7      11688.4   806.1    11.6     1.4     9.2     0.2
+             8       5844.2   403.0     5.8     0.7     6.6     0.1
+          ---------------------------------------------------------
+           Totals  117130.0  8077.9   711.5    88.9   400.0     8.9
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+7 November 2001(Day of year=311), paddock.Sow on a fixed date: 
+     Manager sending message :- maize sow  plants = 9.0, sowing_depth = 50, cultivar = pioneer_3394, row_spacing = 760, crop_class = plant
+7 November 2001(Day of year=311), maize: 
+     Sowing initiate
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+            311    50.0     9.0   760    1.0     pioneer_3394
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - pioneer_3394
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  220.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  911.00
+         tt_flag_to_flower        =    0.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+              50.0     0.060          0.180       1.000
+             100.0     0.060          0.180       1.000
+             150.0     0.060          0.180       1.000
+             150.0     0.060          0.180       1.000
+             150.0     0.040          0.180       1.000
+             300.0     0.040          0.180       1.000
+             300.0     0.040          0.180       1.000
+             150.0     0.040          0.180       1.000
+         ---------------------------------------------------
+     
+7 November 2001(Day of year=311), paddock.Fertilise at sowing: 
+     Manager sending message :- fertiliser apply  amount = 300 (kg/ha), depth = 50 (mm), type = urea_n
+7 November 2001(Day of year=311), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       300.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+7 November 2001(Day of year=311), paddock.Logic: 
+     Manager sending message :- fertiliser apply  amount = 200, type = no3_n, depth = 50
+     
+   - Reading Fertiliser Type Parameters
+       200.00 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+     Manager creating a new local real variable : taverage = 17.00000
+8 November 2001(Day of year=312), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+8 November 2001(Day of year=312), maize: 
+     Stage 2 Germination  DAS = 1
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =   0.00
+12 November 2001(Day of year=316), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+12 November 2001(Day of year=316), maize: 
+     Stage 3 Emergence  DAS = 5
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =   8.00
+16 November 2001(Day of year=320), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+17 November 2001(Day of year=321), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+20 November 2001(Day of year=324), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+21 November 2001(Day of year=325), maize: 
+     Stage 4 EndOfJuvenile  DAS = 14
+     		Biomass       =   1.94 		 LAI            =   0.03
+     		Stover N Conc =   0.60 		 Extractable SW =   8.00
+23 November 2001(Day of year=327), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+26 November 2001(Day of year=330), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+30 November 2001(Day of year=334), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+4 December 2001(Day of year=338), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+7 December 2001(Day of year=341), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+8 December 2001(Day of year=342), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+10 December 2001(Day of year=344), maize: 
+     Stage 5 FloralInitiation  DAS = 33
+     		Biomass       =   6.47 		 LAI            =   0.04
+     		Stover N Conc =   3.01 		 Extractable SW =   8.00
+12 December 2001(Day of year=346), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+16 December 2001(Day of year=350), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+20 December 2001(Day of year=354), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+24 December 2001(Day of year=358), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+28 December 2001(Day of year=362), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+1 January 2002(Day of year=1), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+1 January 2002(Day of year=1), paddock.Fertilise on fixed date: 
+     Manager creating a new local real variable : n_topsoil = 448.20752
+     Manager sending message :- fertiliser apply  amount = 350 (kg/ha), depth = 50 (mm), type = urea_n
+1 January 2002(Day of year=1), Fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       350.00 of N as urea (urea_n)
+                                         added at depth   50.00 (layer   1)
+1 January 2002(Day of year=1): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0000502
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0000502
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+2 January 2002(Day of year=2): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0018362
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0018362
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+3 January 2002(Day of year=3): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0043008
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0043008
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+4 January 2002(Day of year=4): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0075686
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0075686
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+5 January 2002(Day of year=5), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+5 January 2002(Day of year=5): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0129008
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0129008
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+6 January 2002(Day of year=6): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0200120
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0200120
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+7 January 2002(Day of year=7): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0283618
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0283618
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+8 January 2002(Day of year=8): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0357810
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0357810
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+9 January 2002(Day of year=9): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0467080
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0467080
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+10 January 2002(Day of year=10): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0570384
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0570384
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+11 January 2002(Day of year=11): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0735672
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.0083289
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0735672
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.0083289
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+12 January 2002(Day of year=12): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0948855
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.0247434
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.0948855
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.0247434
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+13 January 2002(Day of year=13): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.1202273
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.0450435
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.1202273
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.0450435
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+14 January 2002(Day of year=14): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.1484279
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.0679866
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.1484279
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.0679866
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+15 January 2002(Day of year=15): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.1842786
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.0969223
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.1842786
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.0969223
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+16 January 2002(Day of year=16): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.2266422
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.1310211
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.2266422
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.1310211
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+17 January 2002(Day of year=17): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.2764492
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.1718049
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.2764492
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.1718049
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+18 January 2002(Day of year=18): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.3352912
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.2202648
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.3352912
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.2202648
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+19 January 2002(Day of year=19): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.4073807
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.2805962
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.4073807
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.2805962
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+20 January 2002(Day of year=20): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.4994786
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.3581388
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.4994786
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.3581388
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+20 January 2002(Day of year=20), maize: 
+     Stage 6 FlagLeaf  DAS = 74
+     		Biomass       = -23.33 		 LAI            =  -1.16
+     		Stover N Conc =   5.79 		 Extractable SW =   7.74
+21 January 2002(Day of year=21): 
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.6096963
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.4512922
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_green
+     Value:       -0.6096963
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                      APSIM Warning Error
+                      -------------------
+     Value of variable is out of bounds.
+     Variable: cover_tot
+     Value:       -0.4512922
+     Bounds:        0.0000000 to        1.0000000
+     Component name: paddock.Viluco Water
+     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     
+     
+21 January 2002(Day of year=21), maize: 
+     Stage 7 Flowering  DAS = 75
+     		Biomass       = -30.94 		 LAI            =  -1.36
+     		Stover N Conc =   5.79 		 Extractable SW =   7.72
+      ********** Crop failed due to loss of leaf area ********     Plant Death. Standing above-ground dm = -309.40 (kg/ha)
+21 January 2002(Day of year=21), paddock.Harvesting rule: 
+     Manager sending message :- maize harvest
+     
+     Harvest
+     Flowering (DAS)       = 75 		 Maturity (DAS)          = 
+     Flowering day         = 21 		 Maturity day            = 
+     Maximum LAI           = 0.0 		 Number of leaves        = 19.8
+     Total above ground biomass    (kg/ha) = -362.3
+     Green above ground biomass    (kg/ha) = -438.0
+     Senesced above ground biomass (kg/ha) = 75.7
+     Stover (kg/ha)        = -362.3 	 Grain yield (kg/ha)     = 0.0
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 0.0
+     Weight 1000 grains(g) = 0.0 		 Grains/m^2              = 0.0
+     Grains/head           = 0.0
+     Grain N percent    (%)     =      0.00 	 Grain N            (kg/ha) =     0.00
+     Total N content    (kg/ha) =     57.91 	 Senesced N content (kg/ha) =     1.72
+     Green N content    (kg/ha) =     56.35
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           0.8          0.6        1.0
+        End of juvenile     to Floral initiation         0.4          0.1        1.0
+        Floral initiation   to Flag leaf                 0.3          0.1        1.0
+        Flag leaf           to Flowering                 0.0          0.0        1.0
+        Flowering           to Start grain fill          0.0          0.0        0.0
+        Start grain fill    to End grain fill            0.0          0.0        0.0
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =                  0.00		    0.00
+                         N  (kg/ha) =                  0.00		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =               -362.30		 -460.22
+                         N  (kg/ha) =                 57.91		    0.16
+                         P  (kg/ha) =                  0.00		    0.00
+6 March 2002(Day of year=65), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+10 March 2002(Day of year=69), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+14 March 2002(Day of year=73), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+18 March 2002(Day of year=77), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+21 March 2002(Day of year=80), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+25 March 2002(Day of year=84), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+28 March 2002(Day of year=87), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+1 April 2002(Day of year=91), paddock.Operations Schedule: 
+      Sending apply message to irrigation
+30 June 2002(Day of year=181), clock: 
+     Simulation is terminating due to end criteria being met.
+
