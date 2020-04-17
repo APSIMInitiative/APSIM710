@@ -7,9 +7,10 @@
       <DependsOn>Post-Compile</DependsOn>
    </Target>   
    
-   <!-- ############### Target that is run from Jenkins ############### -->
-   <Target name="JenkinsRun">
-      <DependsOn>BobBuildAndRun</DependsOn>
+   <!-- ############### Target that is run from Jenkins to create a release ############### -->
+   <Target name="JenkinsRelease">
+      <DependsOn>Clean</DependsOn>
+      <DependsOn>BuildAll</DependsOn>
       <Job name="Compile InsertFilesIntoSetup">
          <WorkingDirectory>%APSIM%/Release/InsertFilesIntoSetup</WorkingDirectory>
          <CommandLine>make</CommandLine>

@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>MaizePioneer</ProjectName>
+    <ProjectGuid>{72493759-EF26-492F-A6F8-5620CF93D0B6}</ProjectGuid>
+    <RootNamespace>Maize</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\Model\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\..\Model\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</LinkIncremental>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..;..\..\..\BuildLibraries\boost_1_44;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MAIZEPIONEER_EXPORTS;__WIN32__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <ModuleDefinitionFile>MaizePioneer.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MAIZEPIONEER_EXPORTS;__WIN32__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalIncludeDirectories>..;</AdditionalIncludeDirectories>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <ModuleDefinitionFile>MaizePioneer.def</ModuleDefinitionFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Biomass.h" />
+    <ClInclude Include="BiomassCM.h" />
+    <ClInclude Include="BiomassSM.h" />
+    <ClInclude Include="CanopyPhotosynthesis.h" />
+    <ClInclude Include="conversions.h" />
+    <ClInclude Include="Grain.h" />
+    <ClInclude Include="GrainCM.h" />
+    <ClInclude Include="GrainSilking.h" />
+    <ClInclude Include="LayerModel.h" />
+    <ClInclude Include="Leaf.h" />
+    <ClInclude Include="LeafLER.h" />
+    <ClInclude Include="LeafLimitedTranspiration.h" />
+    <ClInclude Include="LeafSlowWilting.h" />
+    <ClInclude Include="NaturalSpline.h" />
+    <ClInclude Include="Nitrogen.h" />
+    <ClInclude Include="Phenology.h" />
+    <ClInclude Include="Phosphorus.h" />
+    <ClInclude Include="Plant.h" />
+    <ClInclude Include="PlantActions.h" />
+    <ClInclude Include="PlantComponents.h" />
+    <ClInclude Include="PlantInterface.h" />
+    <ClInclude Include="Rachis.h" />
+    <ClInclude Include="Roots.h" />
+    <ClInclude Include="Stem.h" />
+    <ClInclude Include="StemCM.h" />
+    <ClInclude Include="StemSM.h" />
+    <ClInclude Include="TypeKind.h" />
+    <ClInclude Include="Utilities.h" />
+    <ClInclude Include="Water.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Biomass.cpp" />
+    <ClCompile Include="..\ComponentInterface2\CMPComponentEntryPoints.cpp" />
+    <ClCompile Include="BiomassCM.cpp" />
+    <ClCompile Include="BiomassSM.cpp" />
+    <ClCompile Include="CanopyPhotosynthesis.cpp" />
+    <ClCompile Include="Dll.cpp" />
+    <ClCompile Include="Grain.cpp" />
+    <ClCompile Include="GrainCM.cpp" />
+    <ClCompile Include="GrainSilking.cpp" />
+    <ClCompile Include="LayerModel.cpp" />
+    <ClCompile Include="Leaf.cpp" />
+    <ClCompile Include="LeafLER.cpp" />
+    <ClCompile Include="LeafLimitedTranspiration.cpp" />
+    <ClCompile Include="LeafSlowWilting.cpp" />
+    <ClCompile Include="NaturalSpline.cpp" />
+    <ClCompile Include="Nitrogen.cpp" />
+    <ClCompile Include="Phenology.cpp" />
+    <ClCompile Include="Phosphorus.cpp" />
+    <ClCompile Include="Plant.cpp" />
+    <ClCompile Include="PlantActions.cpp" />
+    <ClCompile Include="PlantComponents.cpp" />
+    <ClCompile Include="PlantInterface.cpp" />
+    <ClCompile Include="Rachis.cpp" />
+    <ClCompile Include="Roots.cpp" />
+    <ClCompile Include="Stem.cpp" />
+    <ClCompile Include="StemCM.cpp" />
+    <ClCompile Include="StemSM.cpp" />
+    <ClCompile Include="Utilities.cpp" />
+    <ClCompile Include="Water.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MaizePioneer.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\ApsimShared.lib" />
+    <Library Include="..\ComponentInterface2.lib" />
+    <Library Include="..\General.lib" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
