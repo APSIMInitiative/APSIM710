@@ -223,7 +223,7 @@ void Phosphorus::uptake(void)
    {
    vector<double> layeredUptake;
 
-   if (!scienceAPI.get("uptake_p_maize", "", 1, layeredUptake, 0.0f, 10000.0f))
+   if (!scienceAPI.get("uptake_p_sorghum", "", 1, layeredUptake, 0.0f, 10000.0f))
       {
       // we have no P uptake - set to demand
       pUptakeTotal = totalDemand * kg2gm/ha2sm;
