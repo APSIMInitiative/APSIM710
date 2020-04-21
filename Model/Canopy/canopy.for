@@ -462,9 +462,33 @@ C VOS
 !Enli additions
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         
                   
-         
-      crop = 0
-5000  continue
+      call get_char_var_optional (Unknown_module
+     :                   , 'two_strip_intercrops', '()'
+     :                   , g%TwoStripIntercrops, numvals)
+      if (numvals .eq. 0) then
+             g%TwoStripIntercrops = "no"
+      elseif (g%TwoStripIntercrops .eq. "Yes") then
+             g%TwoStripIntercrops = "yes"
+      elseif (g%TwoStripIntercrops .eq. "yes") then
+             g%TwoStripIntercrops = "yes"
+      else
+             g%TwoStripIntercrops = "no"
+      endif
+   
+      if (g%TwoStripIntercrops .eq. "yes") then
+        call get_real_var_optional(unknown_module, 'strip_width_m', 
+     :     '(mm)', g%strip_width_m, numvals, 0.0, 1000.0)
+        call get_real_var_optional(unknown_module, 'strip_width_s', 
+     :     '(mm)', g%strip_width_s, numvals, 0.0, 1000.0)
+       
+       if (g%strip_width_m < 0.01 .or. g%strip_width_s < 0.01) then
+            call fatal_error (err_user
+     :              , 'strip_width_m or strip_width_s not specified'
+     :              // 'or equal to zero.')
+       endif
+     
+       crop = 0
+5000   continue
          call get_real_vars (crop+1, 'lai', '()'
      :                             , temp, numvals
      :                             , 0.0, max_lai)
@@ -495,8 +519,8 @@ C VOS
          endif
          
 
-      crop = 0
-6000  continue
+       crop = 0
+6000   continue
       
             if (crop+1.le.max_crops) then
                crop = crop + 1
@@ -512,32 +536,6 @@ C VOS
 !         else
 !         endif
          
-         
-       call get_char_var_optional (Unknown_module
-     :                   , 'two_strip_intercrops', '()'
-     :                   , g%TwoStripIntercrops, numvals)
-      if (numvals .eq. 0) then
-             g%TwoStripIntercrops = "no"
-      elseif (g%TwoStripIntercrops .eq. "Yes") then
-             g%TwoStripIntercrops = "yes"
-      elseif (g%TwoStripIntercrops .eq. "yes") then
-             g%TwoStripIntercrops = "yes"
-      else
-             g%TwoStripIntercrops = "no"
-      endif
-   
-      if (g%TwoStripIntercrops .eq. "yes") then
-        call get_real_var_optional(unknown_module, 'strip_width_m', 
-     :     '(mm)', g%strip_width_m, numvals, 0.0, 1000.0)
-        call get_real_var_optional(unknown_module, 'strip_width_s', 
-     :     '(mm)', g%strip_width_s, numvals, 0.0, 1000.0)
-       
-       if (g%strip_width_m < 0.01 .or. g%strip_width_s < 0.01) then
-            call fatal_error (err_user
-     :              , 'strip_width_m or strip_width_s not specified'
-     :              // 'or equal to zero.')
-       endif
-     
       endif
     
     !call Get_real_array(unknown_module, 'dlayer', max_layer, '(mm)',g%dlayer, numvals, 1.0, 10000.0)
