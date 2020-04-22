@@ -21,27 +21,35 @@ class VersionStamper
         try
         {
             if (!Macros.ContainsKey("Directory"))
-                throw new Exception("Usage: VersionStamper Directory=c:\\Apsim [Increment=Yes]");
+                throw new Exception("Usage: VersionStamper Directory=c:\\Apsim [Increment=Yes] [RevisionNumber=4191]");
 
-            // Find SVN
-            string svnexe = "git.exe";
-            if (Path.DirectorySeparatorChar == '/') svnexe = "git";
             string RevisionNumber = "";
-            try
-            {
-                // Start an SVN process and get head revision number
-                string SVNFileName = FindFileOnPath(svnexe);
-                string Arguments = "show-ref --head --tags -s";
-                
-                Process P = RunProcess(SVNFileName, Arguments, 
-				    Macros["Directory"] == "" ? 
-					  Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) :
-					  Macros["Directory"]);
-                string StdOut = CheckProcessExitedProperly(P);
-                string[] StdOutLines = StdOut.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                RevisionNumber = StdOutLines[0];
-            }
-            catch (Exception e) {Console.WriteLine("WARNING - while finding git commit hash" + e.Message);}
+			if (Macros.ContainsKey("RevisionNumber"))
+				RevisionNumber = Macros["RevisionNumber"];
+			else
+			{
+				// Use hash of last git commit as revision number
+				string svnexe = "git.exe";
+				if (Path.DirectorySeparatorChar == '/') svnexe = "git";
+				try
+				{
+					// Start an SVN process and get head revision number
+					string SVNFileName = FindFileOnPath(svnexe);
+					string Arguments = "show-ref --head --tags -s";
+					
+					Process P = RunProcess(SVNFileName, Arguments, 
+						Macros["Directory"] == "" ? 
+						Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) :
+						Macros["Directory"]);
+					string StdOut = CheckProcessExitedProperly(P);
+					string[] StdOutLines = StdOut.Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+					RevisionNumber = StdOutLines[0];
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine("WARNING - while finding git commit hash: " + e.Message);
+				}
+			}
             
 
             // Write the VersionInfo.make

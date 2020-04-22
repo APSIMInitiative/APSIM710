@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include <limits>
+#include <float.h>
 #include <ComponentInterface2/ScienceAPI2.h>
 using namespace std;
 
