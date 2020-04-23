@@ -69,6 +69,7 @@ void Water::initialize(void)
    swDemand = 0.0;
    totalSupply = 0.0;      
    dltUptake = 0.0;
+   eswTot = 0;
 //   supplyType = "";
 
    //Init Accumulation Vars
