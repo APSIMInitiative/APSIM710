@@ -150,7 +150,7 @@ void Grain::process(void)
 	finalGrainNo = calcGrainNumber();
 
 	   // calculate high temperature effects on grain number
-   if(stage >= fi && stage <= flowering)
+   if(plant->phenology->currentStage() >= fi && plant->phenology->currentStage() <= flowering)
       {
       tempFactor -= calcTempFactor();
       tempFactor = bound(tempFactor,0.0,1.0);
@@ -248,7 +248,8 @@ double Grain::calcNDemand(void)
    if(gfFract < 0.5)
       nDemand = grainNo * plant->phenology->getDltTT() * grainNFillRate / 1000.0;
    else
-      nDemand = dltDmGreen * targetNConc;
+      nDemand = (dltDmGreen + dmRetranslocate) * targetNConc;
+   nDemand = Min(nDemand, (dltDmGreen + dmRetranslocate) * targetNConc);
 
    nDemand = Max(nDemand,0.0);
    return nDemand;

@@ -1,0 +1,430 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.10
+Title                  = j2ka02
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component          "Operations Schedule" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                 "j2ka__ Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component              "j2ka__ Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "Maize" = %apsim%\Model\Maize.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        do_cashbook
+        post
+        end_step
+     Simulation start date =  1/01/1988
+     Simulation end date   = 18/09/1988
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: met\KATUMANI.MET
+
+------- Outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mm/yyyy as Date
+        DaysAfterSowing
+        Stage
+        Biomass
+        GreenWt
+        Biomass units g/m^2 as BiomassWt
+        RootGreenWt
+        LeafGreenWt
+        StemGreenWt
+        RachisGreenWt
+        GrainGreenWt
+        biomass_n
+        RootGreenN
+        LeafGreenN
+        StemGreenN
+        RachisGreenN
+        GrainGreenN
+        GrainGreenNConc
+        GrainNo
+        GrainSize
+        LeafNo
+        LAI
+        SLAI
+        esw_profile as ESW
+        SLN
+        WaterSD
+        HI
+        TPLA
+        SPLA
+        Height
+        DeltaTT
+        nfact_pheno
+        swdef_pheno
+        cover_green
+        cover_tot
+        sw_supply
+        sw_uptake
+        sum(sw_uptake)
+        RootDepth
+        n_total_uptake
+        n_massflow_uptake
+        n_diffusion_uptake
+        n_sd_ratio
+        sw
+        no3
+        no3_demand
+        n_supply_soil
+        RUE
+        TE
+        nfact_photo
+        temp_stress
+
+     Output file = j2ka02.out
+     Format = csv
+
+------- paddock.accum Initialisation ------------------------------------------
+     Initialising
+
+------- paddock.Operations Schedule Initialisation ----------------------------
+     Operations Schedule
+     ===================
+
+------- paddock.Irrigation Initialisation -------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- paddock.Sow on a fixed date Initialisation ----------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+             if (today = date('25/03/1988') then
+       maize sow plants =2.17, sowing_depth = 50, cultivar = katumani, row_spacing = 500, crop_class = plant
+              endif
+     END of rules
+     
+
+------- paddock.Harvesting rule Initialisation --------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     if (paddock_is_fallow() = 0) then
+        stover = biomass - yield
+        acctt = acctt + deltatt
+     else
+        acctt = 0
+     endif
+                if ('maize' = 'cotton') then
+       if (maize.ozcot_status > 0) then
+           maize harvest
+       endif
+                elseif (maize.stagename = 'harvest_ripe' or maize.plant_status = 'dead') then
+       maize  harvest
+       maize  end_crop
+                endif
+     END of rules
+     
+
+------- paddock.j2ka__ Water Initialisation -----------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  100.  0.040  0.140  0.250  0.350  0.162  1.350  0.613  0.500
+          100.-  200.  0.140  0.140  0.250  0.350  0.162  1.350  0.243  0.500
+          200.-  300.  0.140  0.140  0.290  0.370  0.170  1.350  0.096  0.500
+          300.-  500.  0.150  0.150  0.290  0.370  0.178  1.400  0.048  0.500
+          500.-  700.  0.160  0.160  0.290  0.380  0.186  1.400  0.000  0.500
+          700.-  900.  0.160  0.160  0.290  0.380  0.186  1.400  0.000  0.500
+          900.- 1100.  0.160  0.160  0.290  0.380  0.186  1.400  0.000  0.500
+         1100.- 1300.  0.160  0.160  0.290  0.380  0.186  1.400  0.000  0.500
+         1300.- 1700.  0.160  0.160  0.290  0.380  0.222  1.400  0.000  0.500
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  100.      14.00       2.20      11.00      10.00
+          100.-  200.      14.00       2.20      11.00      10.00
+          200.-  300.      14.00       3.00      15.00       8.00
+          300.-  500.      30.00       5.60      28.00      16.00
+          500.-  700.      32.00       5.20      26.00      18.00
+          700.-  900.      32.00       5.20      26.00      18.00
+          900.- 1100.      32.00       5.20      26.00      18.00
+         1100.- 1300.      32.00       5.20      26.00      18.00
+         1300.- 1700.      64.00      24.80      52.00      36.00
+          ---------------------------------------------------------
+               Totals     264.00      58.60     221.00     152.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              50.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            9.00 (mm^0.5)
+            CONA:                     3.00 ()
+            Eo from priestly-taylor
+
+------- paddock.surface organic matter Initialisation -------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          Maize     Maize          500.0   200.0     3.1     0.0   0.181     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.2
+     
+
+------- paddock.j2ka__ Nitrogen Initialisation --------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.00  1.20    6.75    0.14    0.00
+             2     6.00  1.00    9.45    0.14    0.00
+             3     6.00  0.86    2.70    0.14    0.00
+             4     6.20  0.83    2.80    0.28    0.00
+             5     6.50  0.58    2.80    0.28    0.00
+             6     6.70  0.54    2.24    0.28    0.00
+             7     6.80  0.47    2.24    0.28    0.00
+             8     6.80  0.50    2.52    0.28    0.00
+             9     6.80  0.50    2.80    0.56    0.00
+          ------------------------------------------------
+           Totals               34.30    2.37    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      16168.2  1115.1    31.8     4.0   100.6     2.2
+             2      13486.6   930.1    13.4     1.7    84.3     1.9
+             3      11598.5   799.9    11.5     1.4    70.7     1.6
+             4      23217.0  1601.2    23.0     2.9    49.7     1.1
+             5      16223.9  1118.9    16.1     2.0    34.9     0.8
+             6      15105.0  1041.7    15.0     1.9    24.5     0.5
+             7      13150.9   907.0     9.1     1.1    17.2     0.4
+             8      13990.3   964.8     9.7     1.2    12.1     0.3
+             9      27980.6  1929.7    19.4     2.4     6.0     0.1
+          ---------------------------------------------------------
+           Totals  150921.1 10408.4   148.9    18.6   400.0     8.9
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+1 January 1988(Day of year=1), paddock.Harvesting rule: 
+     Manager creating a new local real variable : acctt = 0.00000
+25 March 1988(Day of year=85), paddock.Sow on a fixed date: 
+     Manager sending message :- maize sow  plants = 2.17, sowing_depth = 50, cultivar = katumani, row_spacing = 500, crop_class = plant
+25 March 1988(Day of year=85), Maize: 
+     Sowing initiate
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             85    50.0     2.2   500    1.0     katumani
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - katumani
+         tt_emerg_to_endjuv       =   50.00
+         tt_endjuv_to_init        =  100.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  660.00
+         tt_flag_to_flower        =   50.00
+         tt_flower_to_start_grain =  120.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             100.0     0.080          0.140       1.000
+             100.0     0.080          0.140       1.000
+             100.0     0.080          0.140       1.000
+             200.0     0.080          0.150       1.000
+             200.0     0.060          0.160       1.000
+             200.0     0.040          0.160       1.000
+             200.0     0.030          0.160       1.000
+             200.0     0.020          0.160       1.000
+             400.0     0.010          0.160       1.000
+         ---------------------------------------------------
+     
+25 March 1988(Day of year=85), paddock.Harvesting rule: 
+     Manager creating a new local real variable : stover = 0.00000
+26 March 1988(Day of year=86), Maize: 
+     Stage 2 Germination  DAS = 1
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =   3.52
+29 March 1988(Day of year=89), Maize: 
+     Stage 3 Emergence  DAS = 4
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =  10.62
+2 April 1988(Day of year=93), Maize: 
+     Stage 4 EndOfJuvenile  DAS = 8
+     		Biomass       =   0.19 		 LAI            =   0.01
+     		Stover N Conc =   0.01 		 Extractable SW =  24.69
+10 April 1988(Day of year=101), Maize: 
+     Stage 5 FloralInitiation  DAS = 16
+     		Biomass       =   2.59 		 LAI            =   0.04
+     		Stover N Conc =   0.07 		 Extractable SW =  64.26
+15 May 1988(Day of year=136), Maize: 
+     Stage 6 FlagLeaf  DAS = 51
+     		Biomass       = 175.37 		 LAI            =   0.91
+     		Stover N Conc =   1.95 		 Extractable SW = 191.04
+19 May 1988(Day of year=140), Maize: 
+     Stage 7 Flowering  DAS = 55
+     		Biomass       = 210.72 		 LAI            =   0.91
+     		Stover N Conc =   2.14 		 Extractable SW = 191.76
+30 May 1988(Day of year=151), Maize: 
+     Stage 8 StartGrainFill  DAS = 66
+     		Biomass       = 311.33 		 LAI            =   0.90
+     		Stover N Conc =   2.43 		 Extractable SW = 175.18
+19 July 1988(Day of year=201), Maize: 
+     Stage 9 EndGrainFill  DAS = 116
+     		Biomass       = 545.19 		 LAI            =   0.41
+     		Stover N Conc =   1.19 		 Extractable SW = 132.74
+22 July 1988(Day of year=204), Maize: 
+     Stage 10 Maturity  DAS = 119
+     		Biomass       = 548.58 		 LAI            =   0.39
+     		Stover N Conc =   1.17 		 Extractable SW = 131.79
+23 July 1988(Day of year=205), Maize: 
+     Stage 11 HarvestRipe  DAS = 120
+     		Biomass       = 548.58 		 LAI            =   0.39
+     		Stover N Conc =   1.17 		 Extractable SW = 131.65
+23 July 1988(Day of year=205), paddock.Harvesting rule: 
+     Manager sending message :- maize harvest
+     
+     Harvest
+     Flowering (DAS)       = 55 		 Maturity (DAS)          = 119
+     Flowering day         = 140 		 Maturity day            = 204
+     Maximum LAI           = 0.9 		 Number of leaves        = 12.7
+     Total above ground biomass    (kg/ha) = 5485.8
+     Green above ground biomass    (kg/ha) = 5067.8
+     Senesced above ground biomass (kg/ha) = 418.0
+     Stover (kg/ha)        = 3443.5 	 Grain yield (kg/ha)     = 2042.2
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 2416.8
+     Weight 1000 grains(g) = 315.5 		 Grains/m^2              = 647.3
+     Grains/head           = 298.3
+     Grain N percent    (%)     =      0.82 	 Grain N            (kg/ha) =    16.83
+     Total N content    (kg/ha) =     28.55 	 Senesced N content (kg/ha) =     4.97
+     Green N content    (kg/ha) =     12.86
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        1.0
+        End of juvenile     to Floral initiation         1.0          1.0        0.9
+        Floral initiation   to Flag leaf                 1.0          1.0        1.0
+        Flag leaf           to Flowering                 1.0          1.0        0.9
+        Flowering           to Start grain fill          1.0          1.0        0.9
+        Start grain fill    to End grain fill            1.0          1.0        0.7
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =               2042.23		    0.00
+                         N  (kg/ha) =                 16.83		    0.00
+     Manager sending message :- maize end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =               3443.52		 1129.65
+                         N  (kg/ha) =                 11.72		    6.11
+                         P  (kg/ha) =                  0.00		    0.00
+18 September 1988(Day of year=262), clock: 
+     Simulation is terminating due to end criteria being met.
+

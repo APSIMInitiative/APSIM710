@@ -29,7 +29,9 @@ void Biomass::doRegistrations(void)
 	scienceAPI.expose("Biomass",      "kg/ha", "Total above-ground biomass",false, aboveGroundBiomass);
 	scienceAPI.expose("HI",           "()",    "Harvest index",             false, hi); 
 	scienceAPI.expose("GreenWt",      "g/m^2", "Live plant dry weight",     false, greenBiomass);
-	scienceAPI.expose("Stover",       "kg/ha", "Stover dry weight",        false, stover);
+	scienceAPI.expose("Stover",       "kg/ha", "Stover dry weight",         false, stover);
+	scienceAPI.expose("RUE",          "",      "DltDmPotRUE",			    false, dltDMPotRUE);
+	scienceAPI.expose("TE",           "",      "DltDmPotTE",			    false, dltDMPotTE);
 
 
 	scienceAPI.exposeFunction("SenescedWt", "g/m^2", "Senesced plant dry weight",
@@ -84,7 +86,8 @@ void Biomass::process(void)
 	// biomass partitioning
 	calcPartitioning();
 	// biomass retranslocation
-	if(stage >= startGrainFill && stage <= endGrainFill)
+	stage = plant->phenology->currentStage();
+	if(stage >= startGrainFill && stage < endGrainFill)
 		calcRetranslocation();
 
 	}
@@ -170,7 +173,7 @@ void Biomass::calcPartitioning(void)
 	//  - that is for tops only.  Here we assume that enough extra was produced to meet demand.
 	// Thus the root growth is not removed from the carbo produced by the model.
 	double biomPool = dltDM;
-
+	stage = plant->phenology->currentStage();
 	int currentPhase = (int) stage;
 	plant->roots->partitionDM(ratioRootShoot[currentPhase] * biomPool);
 

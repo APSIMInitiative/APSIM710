@@ -69,6 +69,7 @@ void Water::initialize(void)
    swDemand = 0.0;
    totalSupply = 0.0;      
    dltUptake = 0.0;
+   eswTot = 0;
 //   supplyType = "";
 
    //Init Accumulation Vars
@@ -112,6 +113,9 @@ void Water::readParams (void)
       llDep.push_back(ll[layer]*dLayer[layer]);
       eswCap.push_back(dulDep[layer] - llDep[layer]);
       }
+
+   rootDepth = plant->roots->getRootDepth();
+   currentLayer = findIndex(rootDepth, dLayer);
 
    // report
    char msg[100];
@@ -246,11 +250,12 @@ void Water::process(void)
 //------------------------------------------------------------------------------------------------
 double Water::swAvailRatio(int currentLayer)
    {
-   return  divide (esw[currentLayer],eswCap[currentLayer], 10.0);
+	// dh - Account for uptake which has been taken out of the soil.
+   return  divide (esw[currentLayer] + dltSwDep[currentLayer],eswCap[currentLayer], 10.0);
    }
 double Water::swAFPSRatio(int currentLayer)
    {
-   double numerator = satDep[currentLayer] - swDep[currentLayer];
+   double numerator = satDep[currentLayer] - (swDep[currentLayer] + dltSwDep[currentLayer]);
    return divide (numerator, dLayer[currentLayer], 10.0);
    }
 //------------------------------------------------------------------------------------------------

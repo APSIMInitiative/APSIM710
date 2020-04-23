@@ -176,6 +176,7 @@ namespace Maize {
 		void get_height(float &);
 
 		void   phenologyEvent(int stage);
+		bool isEmerged(void)const { return phenology->currentStage() >= emergence; }
 	};  // Plant
 }
 #endif //PLANT_H_

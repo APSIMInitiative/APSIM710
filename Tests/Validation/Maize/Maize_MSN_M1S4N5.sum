@@ -1,0 +1,501 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.10
+Title                  = Maize_MSN_M1S4N5
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component               "Field 10 Water" = %apsim%\Model\SoilWat.dll
+   Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
+   Component            "Field 10 Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                        "Maize" = %apsim%\Model\Maize.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        do_cashbook
+        post
+        end_step
+     Simulation start date =  1/01/1986
+     Simulation end date   = 11/05/1986
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: met\M_S4N5.met
+
+------- Outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        dd/mm/yyyy as Date
+        DaysAfterSowing
+        Stage
+        Biomass
+        GreenWt
+        Biomass units g/m^2 as BiomassWt
+        RootGreenWt
+        LeafGreenWt
+        StemGreenWt
+        RachisGreenWt
+        GrainGreenWt
+        biomass_n
+        RootGreenN
+        LeafGreenN
+        StemGreenN
+        RachisGreenN
+        GrainGreenN
+        GrainGreenNConc
+        GrainNo
+        GrainSize
+        LeafNo
+        LAI
+        SLAI
+        esw_profile as ESW
+        SLN
+        WaterSD
+        HI
+        TPLA
+        SPLA
+        Height
+        DeltaTT
+        nfact_pheno
+        swdef_pheno
+        cover_green
+        cover_tot
+        sw_supply
+        sw_uptake
+        sum(sw_uptake)
+        RootDepth
+        n_total_uptake
+        n_massflow_uptake
+        n_diffusion_uptake
+        n_sd_ratio
+        sw
+        no3
+        no3_demand
+        n_supply_soil
+        RUE
+        TE
+        nfact_photo
+        temp_stress
+
+     Output file = Maize_MSN_M1S4N5.out
+     Format = csv
+
+------- paddock.accum Initialisation ------------------------------------------
+     Initialising
+
+------- paddock.operations Initialisation -------------------------------------
+     Operations Schedule
+     ===================
+      24/01/1986  Prepare      Irrigation apply amount = 40
+      31/01/1986  Prepare      Irrigation apply amount = 12
+       1/02/1986  Prepare      Irrigation apply amount = 5
+       4/02/1986  Prepare      Irrigation apply amount = 20
+       9/02/1986  Prepare      Irrigation apply amount = 5
+      10/02/1986  Prepare      Irrigation apply amount = 5
+      11/02/1986  Prepare      Irrigation apply amount = 5
+      13/02/1986  Prepare      Irrigation apply amount = 12
+      17/02/1986  Prepare      Irrigation apply amount = 21
+      20/02/1986  Prepare      Irrigation apply amount = 25
+      24/02/1986  Prepare      Irrigation apply amount = 38
+       3/03/1986  Prepare      Irrigation apply amount = 45
+       5/03/1986  Prepare      Irrigation apply amount = 28
+       9/03/1986  Prepare      Irrigation apply amount = 39
+      12/03/1986  Prepare      Irrigation apply amount = 45
+      16/03/1986  Prepare      Irrigation apply amount = 35
+      19/03/1986  Prepare      Irrigation apply amount = 22
+      23/03/1986  Prepare      Irrigation apply amount = 45
+      26/03/1986  Prepare      Irrigation apply amount = 37
+      31/03/1986  Prepare      Irrigation apply amount = 25
+       2/04/1986  Prepare      Irrigation apply amount = 38
+       6/04/1986  Prepare      Irrigation apply amount = 15
+       7/04/1986  Prepare      Irrigation apply amount = 27
+      16/04/1986  Prepare      Irrigation apply amount = 41
+      21/04/1986  Prepare      Irrigation apply amount = 42
+      24/04/1986  Prepare      Irrigation apply amount = 18
+      27/04/1986  Prepare      Irrigation apply amount = 41
+       2/05/1986  Prepare      Irrigation apply amount = 30
+       6/05/1986  Prepare      Irrigation apply amount = 39
+      11/05/1986  Prepare      Irrigation apply amount = 36
+      16/05/1986  Prepare      Irrigation apply amount = 38
+      19/05/1986  Prepare      Irrigation apply amount = 30
+      28/01/1986  Prepare      fertiliser apply amount = 240, depth = 1, type = urea_n
+       5/03/1986  Prepare      fertiliser apply amount = 60, depth = 1, type = urea_n
+      23/03/1986  Prepare      fertiliser apply amount = 60, depth = 1, type = urea_n
+       9/04/1986  Prepare      fertiliser apply amount = 60, depth = 1, type = urea_n
+
+------- paddock.Irrigation Initialisation -------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.90
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- paddock.Sow on a fixed date Initialisation ----------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if (today = date('29/01/1986') then
+        maize sow plants =7, sowing_depth = 30, cultivar = dekalb_xl82, row_spacing = 500
+     endif
+     END of rules
+     
+
+------- paddock.Harvesting rule Initialisation --------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     if (paddock_is_fallow() = 0) then
+        grainyield = graingreenwt * 10
+     endif
+                if maize.stagename = 'harvest_ripe' or maize.plant_status = 'dead' then
+       maize  harvest
+       maize  end_crop
+                endif
+     END of rules
+     
+
+------- paddock.Field 10 Water Initialisation ---------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.050  0.190  0.300  0.310  0.304  1.560  0.762  0.700
+          150.-  300.  0.080  0.210  0.310  0.330  0.310  1.520  0.190  0.700
+          300.-  450.  0.210  0.210  0.310  0.340  0.310  1.460  0.048  0.700
+          450.-  600.  0.220  0.220  0.320  0.340  0.324  1.460  0.000  0.700
+          600.-  750.  0.220  0.220  0.330  0.340  0.328  1.420  0.000  0.700
+          750.-  900.  0.220  0.220  0.330  0.340  0.328  1.420  0.000  0.700
+          900.- 1200.  0.220  0.220  0.320  0.340  0.325  1.460  0.000  0.700
+         1200.- 1500.  0.230  0.230  0.340  0.350  0.337  1.500  0.000  0.700
+         1500.- 1800.  0.240  0.240  0.350  0.370  0.350  1.530  0.000  0.700
+         1800.- 2000.  0.240  0.240  0.350  0.370  0.350  1.530  0.000  0.000
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      28.50      17.10      16.50       1.50
+          150.-  300.      31.50      15.00      15.00       3.00
+          300.-  450.      31.50      15.00      15.00       4.50
+          450.-  600.      33.00      15.60      15.00       3.00
+          600.-  750.      33.00      16.20      16.50       1.50
+          750.-  900.      33.00      16.20      16.50       1.50
+          900.- 1200.      66.00      31.50      30.00       6.00
+         1200.- 1500.      69.00      32.10      33.00       3.00
+         1500.- 1800.      72.00      33.00      33.00       6.00
+         1800.- 2000.      48.00      22.00      22.00       4.00
+          ---------------------------------------------------------
+               Totals     445.50     213.70     212.50      34.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.20       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              85.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            1.50 (mm^0.5)
+            CONA:                     6.60 ()
+            Eo from priestly-taylor
+
+------- paddock.surface organic matter Initialisation -------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- paddock.Field 10 Nitrogen Initialisation ------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type s3
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  1.27    5.62    0.23    0.00
+             2     6.20  0.59    0.91    0.23    0.00
+             3     6.30  0.34    0.22    0.22    0.00
+             4     6.40  0.34    0.22    0.22    0.00
+             5     6.50  0.26    0.21    0.21    0.00
+             6     6.60  0.26    0.21    0.21    0.00
+             7     6.60  0.25    0.44    0.44    0.00
+             8     6.50  0.19    0.45    0.45    0.00
+             9     6.50  0.21    0.46    0.46    0.00
+            10     6.50  0.21    0.03    0.03    0.00
+          ------------------------------------------------
+           Totals                8.77    2.70    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      29020.8  2001.4   697.2    87.2   192.2     5.3
+             2      13312.2   918.1   139.8    17.5   153.5     4.3
+             3       7410.6   511.1    35.4     4.4   122.6     3.4
+             4       7418.0   511.6    28.0     3.5    97.9     2.7
+             5       5523.7   380.9    14.3     1.8    78.1     2.2
+             6       5528.7   381.3     9.3     1.2    62.4     1.7
+             7      10942.4   754.6     7.6     0.9    39.8     1.1
+             8       8544.1   589.2     5.9     0.7    25.4     0.7
+             9       9632.3   664.3     6.7     0.8    16.2     0.4
+            10       6421.5   442.9     4.5     0.6    12.0     0.3
+          ---------------------------------------------------------
+           Totals  103754.3  7155.5   948.7   118.6   800.0    22.2
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+24 January 1986(Day of year=24), paddock.operations: 
+      Sending apply message to irrigation
+28 January 1986(Day of year=28), paddock.operations: 
+      Sending apply message to fertiliser
+28 January 1986(Day of year=28), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       240.00 of N as urea (urea_n)
+                                         added at depth    1.00 (layer   1)
+29 January 1986(Day of year=29), paddock.Sow on a fixed date: 
+     Manager sending message :- maize sow  plants = 7, sowing_depth = 30, cultivar = dekalb_xl82, row_spacing = 500
+29 January 1986(Day of year=29), Maize: 
+     Sowing initiate
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar
+         Day no     mm     m^2    mm     code     name  
+         -------------------------------------------------------
+             29    30.0     7.0   500    1.0     dekalb_xl82
+         -------------------------------------------------------
+     
+      - reading constants for plant(maize) - dekalb_xl82
+         tt_emerg_to_endjuv       =  100.00
+         tt_endjuv_to_init        =  161.00
+         tt_init_to_flower        =   50.00
+         tt_flower_to_maturity    =  983.00
+         tt_flag_to_flower        =  101.00
+         tt_flower_to_start_grain =  170.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.120          0.190       1.000
+             150.0     0.120          0.210       1.000
+             150.0     0.100          0.210       1.000
+             150.0     0.080          0.230       1.000
+             150.0     0.080          0.230       1.000
+             150.0     0.080          0.240       1.000
+             300.0     0.080          0.250       1.000
+             300.0     0.080          0.280       1.000
+             300.0     0.080          0.280       1.000
+             200.0     0.080          0.280       1.000
+         ---------------------------------------------------
+     
+29 January 1986(Day of year=29), paddock.Harvesting rule: 
+     Manager creating a new local real variable : grainyield = 0.00000
+30 January 1986(Day of year=30), Maize: 
+     Stage 2 Germination  DAS = 1
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =   2.10
+31 January 1986(Day of year=31), paddock.operations: 
+      Sending apply message to irrigation
+31 January 1986(Day of year=31), Maize: 
+     Stage 3 Emergence  DAS = 2
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =   4.84
+1 February 1986(Day of year=32), paddock.operations: 
+      Sending apply message to irrigation
+4 February 1986(Day of year=35), paddock.operations: 
+      Sending apply message to irrigation
+5 February 1986(Day of year=36), Maize: 
+     Stage 4 EndOfJuvenile  DAS = 7
+     		Biomass       =   1.32 		 LAI            =   0.03
+     		Stover N Conc =   0.11 		 Extractable SW =  16.72
+9 February 1986(Day of year=40), paddock.operations: 
+      Sending apply message to irrigation
+10 February 1986(Day of year=41), paddock.operations: 
+      Sending apply message to irrigation
+11 February 1986(Day of year=42), paddock.operations: 
+      Sending apply message to irrigation
+13 February 1986(Day of year=44), paddock.operations: 
+      Sending apply message to irrigation
+15 February 1986(Day of year=46), Maize: 
+     Stage 5 FloralInitiation  DAS = 17
+     		Biomass       =  27.03 		 LAI            =   0.29
+     		Stover N Conc =   0.83 		 Extractable SW =  51.30
+17 February 1986(Day of year=48), paddock.operations: 
+      Sending apply message to irrigation
+20 February 1986(Day of year=51), paddock.operations: 
+      Sending apply message to irrigation
+24 February 1986(Day of year=55), paddock.operations: 
+      Sending apply message to irrigation
+3 March 1986(Day of year=62), paddock.operations: 
+      Sending apply message to irrigation
+5 March 1986(Day of year=64), paddock.operations: 
+      Sending apply message to irrigation
+      Sending apply message to fertiliser
+5 March 1986(Day of year=64), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        60.00 of N as urea (urea_n)
+                                         added at depth    1.00 (layer   1)
+9 March 1986(Day of year=68), paddock.operations: 
+      Sending apply message to irrigation
+12 March 1986(Day of year=71), paddock.operations: 
+      Sending apply message to irrigation
+16 March 1986(Day of year=75), paddock.operations: 
+      Sending apply message to irrigation
+19 March 1986(Day of year=78), paddock.operations: 
+      Sending apply message to irrigation
+20 March 1986(Day of year=79), Maize: 
+     Stage 6 FlagLeaf  DAS = 50
+     		Biomass       = 870.69 		 LAI            =   4.08
+     		Stover N Conc =  15.56 		 Extractable SW = 125.69
+23 March 1986(Day of year=82), paddock.operations: 
+      Sending apply message to irrigation
+      Sending apply message to fertiliser
+23 March 1986(Day of year=82), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        60.00 of N as urea (urea_n)
+                                         added at depth    1.00 (layer   1)
+25 March 1986(Day of year=84), Maize: 
+     Stage 7 Flowering  DAS = 55
+     		Biomass       = 1049.80 		 LAI            =   3.98
+     		Stover N Conc =  17.08 		 Extractable SW = 139.52
+26 March 1986(Day of year=85), paddock.operations: 
+      Sending apply message to irrigation
+31 March 1986(Day of year=90), paddock.operations: 
+      Sending apply message to irrigation
+2 April 1986(Day of year=92), paddock.operations: 
+      Sending apply message to irrigation
+2 April 1986(Day of year=92), Maize: 
+     Stage 8 StartGrainFill  DAS = 63
+     		Biomass       = 1336.25 		 LAI            =   3.74
+     		Stover N Conc =  18.91 		 Extractable SW = 174.04
+6 April 1986(Day of year=96), paddock.operations: 
+      Sending apply message to irrigation
+7 April 1986(Day of year=97), paddock.operations: 
+      Sending apply message to irrigation
+9 April 1986(Day of year=99), paddock.operations: 
+      Sending apply message to fertiliser
+9 April 1986(Day of year=99), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+        60.00 of N as urea (urea_n)
+                                         added at depth    1.00 (layer   1)
+16 April 1986(Day of year=106), paddock.operations: 
+      Sending apply message to irrigation
+21 April 1986(Day of year=111), paddock.operations: 
+      Sending apply message to irrigation
+24 April 1986(Day of year=114), paddock.operations: 
+      Sending apply message to irrigation
+27 April 1986(Day of year=117), paddock.operations: 
+      Sending apply message to irrigation
+2 May 1986(Day of year=122), paddock.operations: 
+      Sending apply message to irrigation
+6 May 1986(Day of year=126), paddock.operations: 
+      Sending apply message to irrigation
+11 May 1986(Day of year=131), paddock.operations: 
+      Sending apply message to irrigation
+11 May 1986(Day of year=131), clock: 
+     Simulation is terminating due to end criteria being met.
+

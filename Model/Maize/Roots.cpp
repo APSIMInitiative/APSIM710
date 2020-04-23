@@ -102,6 +102,24 @@ void Roots::readParams (void)
    pMinTable.read(scienceAPI, "x_p_stage_code","y_p_conc_min_root");
    pSenTable.read(scienceAPI, "x_p_stage_code","y_p_conc_sen_root");
    scienceAPI.read("p_conc_init_root", "", 0, initialPConc);
+
+   // This happens on sowing in new apsim.
+   calcInitialLength();
+   leftDist = plant->getRowSpacing() * (plant->getSkipRow() - 0.5);
+   rightDist = plant->getRowSpacing() * 0.5;
+
+   dmGreen = initialDM * plant->getPlantDensity();
+   nGreen = initialNConc * dmGreen;
+   pGreen = initialPConc * dmGreen;
+   ExternalMassFlowType EMF;
+   EMF.PoolClass = "crop";
+   EMF.FlowType = "gain";
+   EMF.DM = 0.0;
+   EMF.N = (float)(nGreen * gm2kg / sm2ha);
+   EMF.P = (float)(pGreen * gm2kg / sm2ha);
+   EMF.C = 0.0; // ?????
+   EMF.SW = 0.0;
+   scienceAPI.publish("ExternalMassFlow", EMF);
    }
 //------------------------------------------------------------------------------------------------
 void Roots::process(void)
@@ -118,29 +136,7 @@ void Roots::process(void)
 //------------------------------------------------------------------------------------------------
 void Roots::phenologyEvent(int stage)
    {
-   switch (stage)
-      {
-   case germination :
-      calcInitialLength();
-      leftDist  = plant->getRowSpacing() * (plant->getSkipRow() - 0.5);
-      rightDist = plant->getRowSpacing() * 0.5;
-
-      break;
-   case emergence :
-      dmGreen = initialDM * plant->getPlantDensity();
-      nGreen = initialNConc * dmGreen;
-      pGreen = initialPConc * dmGreen;
-      ExternalMassFlowType EMF;
-      EMF.PoolClass = "crop";
-      EMF.FlowType = "gain";
-      EMF.DM = 0.0;
-      EMF.N  = (float)(nGreen * gm2kg/sm2ha);
-      EMF.P  = (float)(pGreen * gm2kg/sm2ha);
-      EMF.C = 0.0; // ?????
-      EMF.SW = 0.0;
-      scienceAPI.publish("ExternalMassFlow", EMF);
-      break;
-      }
+	// noop
    }
 //------------------------------------------------------------------------------------------------
 //------- at the end of the day, update state variables   -  called from plant->process
@@ -277,7 +273,7 @@ double Roots::swAFPSFactor(int layer)
 //------------------------------------------------------------------------------------------------
 void Roots::partitionDM(double dltDM)
    {
-   dltDmGreen = dltDM;
+   dltDmGreen += dltDM;
    }
 //------------------------------------------------------------------------------------------------
 void Roots::calcSenescence(void)

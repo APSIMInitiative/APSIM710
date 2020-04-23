@@ -74,7 +74,7 @@ void Nitrogen::initialize(void)
    plantNDemand =  0.0;
    actualMassFlow =  0.0;
    actualDiffusion = 0.0;
-
+   supplyDemandRatio = 0;
    currentLayer = 0;
 
    //Set up reporting vectors
@@ -182,9 +182,13 @@ void Nitrogen::updateVars(void)
    double SLN = plant->leaf->getSLN();
 	if(SLN > 0)
 		{
-		phenoStress = (1.0/0.7) * SLN * 1.25 - (3.0/7.0);
-		phenoStress = bound(phenoStress,0.0,1.0);
-
+        phenoStress = 1.0;
+        int stage = plant->phenology->currentStage();
+        if (stage >= emergence && stage < flowering)
+        {
+            phenoStress = (1.0 / 0.7) * SLN * 1.25 - (3.0 / 7.0);
+            phenoStress = bound(phenoStress, 0.0, 1.0);
+        }
 		//   photoStress = (2.0/(1.0 + exp(-2.89*(SLN-0.34)))-1.0);
 		photoStress = (2.0/(1.0 + exp(-3.34*(SLN-0.37)))-1.0);
 		photoStress = Max(photoStress,0.0);
@@ -240,9 +244,12 @@ void Nitrogen::phenologyEvent(int iStage)
 //------------------------------------------------------------------------------------------------
 void Nitrogen::supply(void)
    {
-   calcMassFlow();   // N g/m2 from Mass Flow
-   calcDiffusion();  // potential N g/m2 from Diffusion
-   calcFixation();
+	  if (plant->isEmerged())
+	  {
+	     calcMassFlow();   // N g/m2 from Mass Flow
+	     calcDiffusion();  // potential N g/m2 from Diffusion
+	     calcFixation();
+	  }
    }
 //------------------------------------------------------------------------------------------------
 //------- Mass Flow Supply
@@ -288,7 +295,8 @@ void Nitrogen::demand(void)
    totalDemand = 0;
    for(unsigned i=0;i < plant->PlantParts.size();i++)
       {
-      totalDemand += plant->PlantParts[i]->calcNDemand();
+	   double dem = plant->PlantParts[i]->calcNDemand();
+      totalDemand += dem;
       }
    }
 //------------------------------------------------------------------------------------------------
@@ -297,6 +305,8 @@ void Nitrogen::demand(void)
 //     Return actual plant nitrogen uptake from each soil layer.
 void Nitrogen::uptake(void)
    {
+	if (!plant->isEmerged())
+		return;
    // no3 (g/m2) available from diffusion
    vector<double> diffnAvailable;
    for(int layer = 0;layer <= currentLayer;layer++)
@@ -331,9 +341,8 @@ void Nitrogen::uptake(void)
 
       //      nSupplyFrac (5) to limit n uptake
       double maxUptakeRateFrac = Min(1.0,potentialSupply / nSupplyFrac) * maxUptakeRate;
-
-      actualDiffusion = Min(actualDiffusion,
-         maxUptakeRateFrac * plant->phenology->getDltTT() - actualMassFlow);
+	  double maxUptake = Max(0, maxUptakeRateFrac * plant->phenology->getDltTT() - actualMassFlow);
+      actualDiffusion = Min(actualDiffusion, maxUptake);
       }
 
    vector<double> mff,df;
@@ -384,7 +393,7 @@ void Nitrogen::partition(void)
       else
          {
          // get from leaf to provide structN deficit
-         plant->stem->partitionN(nAvailable + plant->leaf->provideN(nRequired - nAvailable));
+         plant->stem->partitionN(nAvailable + plant->leaf->provideN(nRequired - nAvailable, false));
          nAvailable =0.0;
          }
       }
@@ -400,7 +409,7 @@ void Nitrogen::partition(void)
       else
          {
          // get from leaf to provide structN deficit
-         plant->rachis->partitionN(nAvailable + plant->leaf->provideN(nRequired - nAvailable));
+         plant->rachis->partitionN(nAvailable + plant->leaf->provideN(nRequired - nAvailable, false));
          nAvailable =0.0;
          }
       }
@@ -426,7 +435,7 @@ void Nitrogen::partition(void)
          nRequired -= transN;
          if(nRequired > 0)
             {
-            transN = plant->leaf->provideN(nRequired);
+            transN = plant->leaf->provideN(nRequired, true);
             plant->leaf->partitionN(transN);
             }
          }
@@ -438,10 +447,12 @@ void Nitrogen::partition(void)
    double rachisDemand = plant->rachis->calcNDemand();
    double totalDemand = leafDemand + stemDemand + rachisDemand;
 
-   double toLeaf = Min(1.0,divide(leafDemand,totalDemand) * nAvailable);
+   double toLeaf = Min(1.0,divide(leafDemand,totalDemand)) * nAvailable;
+   toLeaf = Min(toLeaf, leafDemand);
    plant->leaf->partitionN(toLeaf);
 
-   double toRachis = Min(1.0,divide(rachisDemand,totalDemand) * nAvailable);
+   double toRachis = Min(1.0,divide(rachisDemand,totalDemand)) * nAvailable;
+   toRachis = Min(toRachis, rachisDemand);
    plant->rachis->partitionN(toRachis);
 
    // rest to stem
@@ -464,7 +475,7 @@ void Nitrogen::partition(void)
          }
       if(nRequired > 0)
          {
-         nLeaf = plant->leaf->provideN(nRequired);
+         nLeaf = plant->leaf->provideN(nRequired, false);
          plant->grain->RetranslocateN(nLeaf);
          }
       }
