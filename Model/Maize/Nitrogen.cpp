@@ -74,7 +74,7 @@ void Nitrogen::initialize(void)
    plantNDemand =  0.0;
    actualMassFlow =  0.0;
    actualDiffusion = 0.0;
-
+   supplyDemandRatio = 0;
    currentLayer = 0;
 
    //Set up reporting vectors
