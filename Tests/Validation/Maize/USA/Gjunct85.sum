@@ -22,6 +22,7 @@ Paddock:
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component          "Fertilise at sowing" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                     "DoOutput" = %apsim%\Model\Manager.dll
    Component                "Field12 Water" = %apsim%\Model\SoilWat.dll
    Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
    Component             "Field12 Nitrogen" = %apsim%\Model\SoilN.dll
@@ -74,15 +75,20 @@ Paddock:
         LAI
         SLAI
         esw_profile as ESW
-        no3() as NO3
         SLN
         WaterSD
-        sw
         HI
         TPLA
         SPLA
-        accTT
         Height
+        cover_green
+        cover_tot
+        sw_supply
+        RootDepth
+        no3() as NO3
+        nfact_photo
+        Yield
+        GrainYield
 
      Output file = Gjunct85.out
      Format = normal
@@ -110,9 +116,6 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-              if (paddock_is_fallow() = 0) then
-     outputfile do_output
-              endif
              if (today = date('7-may') then
        maize sow plants =10.5, sowing_depth = 50, cultivar = usa_18leaf, row_spacing = 610, crop_class = plant
               endif
@@ -135,6 +138,21 @@ Paddock:
        maize  harvest
        maize  end_crop
                 endif
+     END of rules
+     
+
+------- paddock.DoOutput Initialisation ---------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     if (paddock_is_fallow() = 0) then
+        grainyield = graingreenwt * 10
+        outputfile do_output
+     endif
      END of rules
      
 
@@ -334,6 +352,8 @@ Paddock:
    - Reading Fertiliser Type Parameters
        300.00 of N as urea (urea_n)
                                          added at depth   50.00 (layer   1)
+7 May 1985(Day of year=127), paddock.DoOutput: 
+     Manager creating a new local real variable : grainyield = 0.00000
 8 May 1985(Day of year=128), Maize: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
@@ -364,16 +384,16 @@ Paddock:
      		Stover N Conc =  22.62 		 Extractable SW = 164.31
 22 October 1985(Day of year=295), Maize: 
      Stage 9 EndGrainFill  DAS = 168
-     		Biomass       = 3747.45 		 LAI            =   3.03
-     		Stover N Conc =   9.50 		 Extractable SW = 139.40
+     		Biomass       = 3365.29 		 LAI            =   4.66
+     		Stover N Conc =  12.23 		 Extractable SW = 170.23
 30 October 1985(Day of year=303), Maize: 
      Stage 10 Maturity  DAS = 176
-     		Biomass       = 3823.63 		 LAI            =   2.66
-     		Stover N Conc =   9.26 		 Extractable SW = 159.13
+     		Biomass       = 3432.63 		 LAI            =   4.45
+     		Stover N Conc =  11.27 		 Extractable SW = 146.32
 31 October 1985(Day of year=304), Maize: 
      Stage 11 HarvestRipe  DAS = 177
-     		Biomass       = 3823.63 		 LAI            =   2.66
-     		Stover N Conc =   9.26 		 Extractable SW = 157.34
+     		Biomass       = 3432.63 		 LAI            =   4.45
+     		Stover N Conc =  11.27 		 Extractable SW = 144.57
 31 October 1985(Day of year=304), paddock.Harvesting rule: 
      Manager sending message :- maize harvest
      
@@ -381,16 +401,16 @@ Paddock:
      Flowering (DAS)       = 80 		 Maturity (DAS)          = 176
      Flowering day         = 207 		 Maturity day            = 303
      Maximum LAI           = 6.3 		 Number of leaves        = 18.1
-     Total above ground biomass    (kg/ha) = 38236.3
-     Green above ground biomass    (kg/ha) = 35038.5
-     Senesced above ground biomass (kg/ha) = 3197.8
-     Stover (kg/ha)        = 23143.7 	 Grain yield (kg/ha)     = 15092.5
-     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 17861.0
-     Weight 1000 grains(g) = 289.2 		 Grains/m^2              = 5218.9
-     Grains/head           = 497.0
-     Grain N percent    (%)     =      1.25 	 Grain N            (kg/ha) =   188.69
-     Total N content    (kg/ha) =    281.30 	 Senesced N content (kg/ha) =    55.50
-     Green N content    (kg/ha) =    120.49
+     Total above ground biomass    (kg/ha) = 34326.3
+     Green above ground biomass    (kg/ha) = 32518.1
+     Senesced above ground biomass (kg/ha) = 1808.2
+     Stover (kg/ha)        = 23405.7 	 Grain yield (kg/ha)     = 10920.6
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 12923.7
+     Weight 1000 grains(g) = 292.8 		 Grains/m^2              = 3730.1
+     Grains/head           = 355.2
+     Grain N percent    (%)     =      1.43 	 Grain N            (kg/ha) =   156.16
+     Total N content    (kg/ha) =    268.85 	 Senesced N content (kg/ha) =    43.61
+     Green N content    (kg/ha) =    164.69
      
      Average Stress Indices:                          Water Photo  Water Expan  N Photo
         Emergence           to End of juvenile           1.0          1.0        0.9
@@ -402,13 +422,13 @@ Paddock:
      
      Crop harvested.
         Organic matter removed from system:-      From Tops		From Roots
-                         DM (kg/ha) =              15092.54		    0.00
-                         N  (kg/ha) =                188.69		    0.00
+                         DM (kg/ha) =              10920.55		    0.00
+                         N  (kg/ha) =                156.16		    0.00
      Manager sending message :- maize end_crop
      Crop ended.
      Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
-                         DM (kg/ha) =              23143.71		10037.17
-                         N  (kg/ha) =                 92.61		   83.38
+                         DM (kg/ha) =              23405.74		15179.46
+                         N  (kg/ha) =                112.69		   95.60
                          P  (kg/ha) =                  0.00		    0.00
 6 November 1985(Day of year=310), clock: 
      Simulation is terminating due to end criteria being met.

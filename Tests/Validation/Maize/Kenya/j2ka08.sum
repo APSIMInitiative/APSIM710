@@ -21,6 +21,7 @@ Paddock:
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                     "DoOutput" = %apsim%\Model\Manager.dll
    Component                 "j2ka__ Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component              "j2ka__ Nitrogen" = %apsim%\Model\SoilN.dll
@@ -73,14 +74,20 @@ Paddock:
         LAI
         SLAI
         esw_profile as ESW
-        no3() as NO3
         SLN
         WaterSD
-        sw()
         HI
         TPLA
         SPLA
         Height
+        cover_green
+        cover_tot
+        sw_supply
+        RootDepth
+        no3() as NO3
+        nfact_photo
+        Yield
+        GrainYield
 
      Output file = j2ka08.out
      Format = normal
@@ -111,7 +118,7 @@ Paddock:
      
      SECTION:- start_of_day
              if (today = date('25/03/1988') then
-       maize sow plants =4.24, sowing_depth = 50, cultivar = katumani, row_spacing = 500, crop_class = plant
+       maize sow plants =4.19, sowing_depth = 50, cultivar = katumani, row_spacing = 500, crop_class = plant
               endif
      END of rules
      
@@ -123,7 +130,6 @@ Paddock:
      if (paddock_is_fallow() = 0) then
         stover = biomass - yield
         acctt = acctt + deltatt
-        outputfile do_output
      else
         acctt = 0
      endif
@@ -135,6 +141,21 @@ Paddock:
        maize  harvest
        maize  end_crop
                 endif
+     END of rules
+     
+
+------- paddock.DoOutput Initialisation ---------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     if (paddock_is_fallow() = 0) then
+        grainyield = graingreenwt * 10
+        outputfile do_output
+     endif
      END of rules
      
 
@@ -289,7 +310,7 @@ Paddock:
 1 January 1988(Day of year=1), paddock.Harvesting rule: 
      Manager creating a new local real variable : acctt = 0.00000
 25 March 1988(Day of year=85), paddock.Sow on a fixed date: 
-     Manager sending message :- maize sow  plants = 4.24, sowing_depth = 50, cultivar = katumani, row_spacing = 500, crop_class = plant
+     Manager sending message :- maize sow  plants = 4.19, sowing_depth = 50, cultivar = katumani, row_spacing = 500, crop_class = plant
 25 March 1988(Day of year=85), Maize: 
      Sowing initiate
      
@@ -331,6 +352,8 @@ Paddock:
      
 25 March 1988(Day of year=85), paddock.Harvesting rule: 
      Manager creating a new local real variable : stover = 0.00000
+25 March 1988(Day of year=85), paddock.DoOutput: 
+     Manager creating a new local real variable : grainyield = 0.00000
 26 March 1988(Day of year=86), Maize: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
@@ -345,7 +368,7 @@ Paddock:
      		Stover N Conc =   0.02 		 Extractable SW =  24.67
 10 April 1988(Day of year=101), Maize: 
      Stage 5 FloralInitiation  DAS = 16
-     		Biomass       =   5.03 		 LAI            =   0.08
+     		Biomass       =   4.97 		 LAI            =   0.08
      		Stover N Conc =   0.13 		 Extractable SW =  64.48
 15 April 1988(Day of year=106), paddock.Operations Schedule: 
       Sending apply message to fertiliser
@@ -363,28 +386,28 @@ Paddock:
                                          added at depth   50.00 (layer   1)
 15 May 1988(Day of year=136), Maize: 
      Stage 6 FlagLeaf  DAS = 51
-     		Biomass       = 306.90 		 LAI            =   1.79
-     		Stover N Conc =   6.65 		 Extractable SW = 186.25
+     		Biomass       = 304.26 		 LAI            =   1.76
+     		Stover N Conc =   6.62 		 Extractable SW = 186.32
 16 May 1988(Day of year=137), Maize: 
      Stage 7 Flowering  DAS = 52
-     		Biomass       = 323.01 		 LAI            =   1.78
-     		Stover N Conc =   6.93 		 Extractable SW = 187.11
+     		Biomass       = 320.25 		 LAI            =   1.76
+     		Stover N Conc =   6.90 		 Extractable SW = 187.19
 27 May 1988(Day of year=148), Maize: 
      Stage 8 StartGrainFill  DAS = 63
-     		Biomass       = 481.97 		 LAI            =   1.77
-     		Stover N Conc =   7.11 		 Extractable SW = 165.55
+     		Biomass       = 478.07 		 LAI            =   1.75
+     		Stover N Conc =   7.08 		 Extractable SW = 165.80
 15 July 1988(Day of year=197), Maize: 
      Stage 9 EndGrainFill  DAS = 112
-     		Biomass       = 970.80 		 LAI            =   1.57
-     		Stover N Conc =   3.44 		 Extractable SW =  74.00
+     		Biomass       = 962.93 		 LAI            =   1.56
+     		Stover N Conc =   3.45 		 Extractable SW =  74.63
 18 July 1988(Day of year=200), Maize: 
      Stage 10 Maturity  DAS = 115
-     		Biomass       = 993.95 		 LAI            =   1.44
-     		Stover N Conc =   3.11 		 Extractable SW =  71.29
+     		Biomass       = 985.96 		 LAI            =   1.44
+     		Stover N Conc =   3.12 		 Extractable SW =  71.89
 19 July 1988(Day of year=201), Maize: 
      Stage 11 HarvestRipe  DAS = 116
-     		Biomass       = 993.95 		 LAI            =   1.44
-     		Stover N Conc =   3.11 		 Extractable SW =  69.65
+     		Biomass       = 985.96 		 LAI            =   1.44
+     		Stover N Conc =   3.12 		 Extractable SW =  70.22
 19 July 1988(Day of year=201), paddock.Harvesting rule: 
      Manager sending message :- maize harvest
      
@@ -392,16 +415,16 @@ Paddock:
      Flowering (DAS)       = 52 		 Maturity (DAS)          = 115
      Flowering day         = 137 		 Maturity day            = 200
      Maximum LAI           = 1.8 		 Number of leaves        = 12.7
-     Total above ground biomass    (kg/ha) = 9939.5
-     Green above ground biomass    (kg/ha) = 9672.4
-     Senesced above ground biomass (kg/ha) = 267.1
-     Stover (kg/ha)        = 6138.4 	 Grain yield (kg/ha)     = 3801.1
-     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 4498.3
-     Weight 1000 grains(g) = 329.1 		 Grains/m^2              = 1154.9
-     Grains/head           = 272.4
-     Grain N percent    (%)     =      1.43 	 Grain N            (kg/ha) =    54.35
-     Total N content    (kg/ha) =     85.49 	 Senesced N content (kg/ha) =     6.74
-     Green N content    (kg/ha) =     43.13
+     Total above ground biomass    (kg/ha) = 9859.6
+     Green above ground biomass    (kg/ha) = 9607.0
+     Senesced above ground biomass (kg/ha) = 252.7
+     Stover (kg/ha)        = 6090.5 	 Grain yield (kg/ha)     = 3769.1
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 4460.5
+     Weight 1000 grains(g) = 329.2 		 Grains/m^2              = 1145.0
+     Grains/head           = 273.3
+     Grain N percent    (%)     =      1.43 	 Grain N            (kg/ha) =    53.90
+     Total N content    (kg/ha) =     85.10 	 Senesced N content (kg/ha) =     6.52
+     Green N content    (kg/ha) =     43.46
      
      Average Stress Indices:                          Water Photo  Water Expan  N Photo
         Emergence           to End of juvenile           1.0          1.0        1.0
@@ -413,13 +436,13 @@ Paddock:
      
      Crop harvested.
         Organic matter removed from system:-      From Tops		From Roots
-                         DM (kg/ha) =               3801.08		    0.00
-                         N  (kg/ha) =                 54.35		    0.00
+                         DM (kg/ha) =               3769.10		    0.00
+                         N  (kg/ha) =                 53.90		    0.00
      Manager sending message :- maize end_crop
      Crop ended.
      Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
-                         DM (kg/ha) =               6138.42		 3312.84
-                         N  (kg/ha) =                 31.14		   18.73
+                         DM (kg/ha) =               6090.53		 3311.08
+                         N  (kg/ha) =                 31.21		   18.77
                          P  (kg/ha) =                  0.00		    0.00
 18 September 1988(Day of year=262), clock: 
      Simulation is terminating due to end criteria being met.

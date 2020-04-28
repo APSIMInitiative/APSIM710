@@ -20,6 +20,7 @@ Paddock:
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                     "DoOutput" = %apsim%\Model\Manager.dll
    Component            "GattonField Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component         "GattonField Nitrogen" = %apsim%\Model\SoilN.dll
@@ -72,15 +73,20 @@ Paddock:
         LAI
         SLAI
         esw_profile as ESW
-        no3() as NO3
         SLN
         WaterSD
-        sw()
         HI
         TPLA
         SPLA
         Height
-        DailyDeltaTT
+        cover_green
+        cover_tot
+        sw_supply
+        RootDepth
+        no3() as NO3
+        nfact_photo
+        Yield
+        GrainYield
 
      Output file = Maize_Exp1 3N Yr1_1.out
      Format = normal
@@ -104,9 +110,6 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-     if (paddock_is_fallow() = 0) then
-        outputfile do_output
-     endif
      if (today = date('19/02/1999') then
         maize sow plants =6.7, sowing_depth = 50, cultivar = hycorn53, row_spacing = 0.75
      endif
@@ -121,6 +124,21 @@ Paddock:
        maize  harvest
        maize  end_crop
                 endif
+     END of rules
+     
+
+------- paddock.DoOutput Initialisation ---------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     if (paddock_is_fallow() = 0) then
+        grainyield = graingreenwt * 10
+        outputfile do_output
+     endif
      END of rules
      
 
@@ -306,6 +324,8 @@ Paddock:
              300.0     0.020          0.310       1.000
          ---------------------------------------------------
      
+19 February 1999(Day of year=50), paddock.DoOutput: 
+     Manager creating a new local real variable : grainyield = 0.00000
 20 February 1999(Day of year=51), maize: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
@@ -336,16 +356,16 @@ Paddock:
      		Stover N Conc =   5.18 		 Extractable SW = 159.05
 20 June 1999(Day of year=171), maize: 
      Stage 9 EndGrainFill  DAS = 121
-     		Biomass       = 1088.74 		 LAI            =   1.34
-     		Stover N Conc =   2.74 		 Extractable SW = 182.09
+     		Biomass       = 1088.42 		 LAI            =   1.34
+     		Stover N Conc =   2.74 		 Extractable SW = 182.13
 25 June 1999(Day of year=176), maize: 
      Stage 10 Maturity  DAS = 126
-     		Biomass       = 1093.62 		 LAI            =   1.32
-     		Stover N Conc =   2.69 		 Extractable SW = 181.61
+     		Biomass       = 1093.29 		 LAI            =   1.32
+     		Stover N Conc =   2.68 		 Extractable SW = 181.65
 26 June 1999(Day of year=177), maize: 
      Stage 11 HarvestRipe  DAS = 127
-     		Biomass       = 1093.62 		 LAI            =   1.32
-     		Stover N Conc =   2.69 		 Extractable SW = 181.01
+     		Biomass       = 1093.29 		 LAI            =   1.32
+     		Stover N Conc =   2.68 		 Extractable SW = 181.05
 26 June 1999(Day of year=177), paddock.Harvesting rule: 
      Manager sending message :- maize harvest
      
@@ -353,16 +373,16 @@ Paddock:
      Flowering (DAS)       = 56 		 Maturity (DAS)          = 126
      Flowering day         = 106 		 Maturity day            = 176
      Maximum LAI           = 3.2 		 Number of leaves        = 16.3
-     Total above ground biomass    (kg/ha) = 10936.2
-     Green above ground biomass    (kg/ha) = 9755.8
-     Senesced above ground biomass (kg/ha) = 1180.4
-     Stover (kg/ha)        = 4654.8 	 Grain yield (kg/ha)     = 6281.4
-     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 7433.6
-     Weight 1000 grains(g) = 207.0 		 Grains/m^2              = 3034.3
-     Grains/head           = 452.9
-     Grain N percent    (%)     =      0.45 	 Grain N            (kg/ha) =    28.13
-     Total N content    (kg/ha) =     55.00 	 Senesced N content (kg/ha) =    16.82
-     Green N content    (kg/ha) =     19.63
+     Total above ground biomass    (kg/ha) = 10932.9
+     Green above ground biomass    (kg/ha) = 9751.9
+     Senesced above ground biomass (kg/ha) = 1181.0
+     Stover (kg/ha)        = 4648.5 	 Grain yield (kg/ha)     = 6284.4
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 7437.1
+     Weight 1000 grains(g) = 204.8 		 Grains/m^2              = 3068.2
+     Grains/head           = 457.9
+     Grain N percent    (%)     =      0.45 	 Grain N            (kg/ha) =    28.17
+     Total N content    (kg/ha) =     55.00 	 Senesced N content (kg/ha) =    16.83
+     Green N content    (kg/ha) =     19.59
      
      Average Stress Indices:                          Water Photo  Water Expan  N Photo
         Emergence           to End of juvenile           1.0          1.0        1.0
@@ -374,13 +394,13 @@ Paddock:
      
      Crop harvested.
         Organic matter removed from system:-      From Tops		From Roots
-                         DM (kg/ha) =               6281.43		    0.00
-                         N  (kg/ha) =                 28.13		    0.00
+                         DM (kg/ha) =               6284.38		    0.00
+                         N  (kg/ha) =                 28.17		    0.00
      Manager sending message :- maize end_crop
      Crop ended.
      Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
-                         DM (kg/ha) =               4654.75		 2050.31
-                         N  (kg/ha) =                 26.87		    9.58
+                         DM (kg/ha) =               4648.55		 2050.24
+                         N  (kg/ha) =                 26.83		    9.59
                          P  (kg/ha) =                  0.00		    0.00
 23 July 1999(Day of year=204), clock: 
      Simulation is terminating due to end criteria being met.
