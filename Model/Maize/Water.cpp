@@ -84,6 +84,15 @@ void Water::initialize(void)
 	EnvType = 1;
 
    }
+
+//------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------
+double Water::calcSwDefEarExpansion(void)
+{
+	double sdRatio = divide(totalSupply, swDemand, 10.0);
+	return swEarExpansionTable.value(sdRatio);
+}
+
 //------------------------------------------------------------------------------------------------
 //------ read Water parameters
 //------------------------------------------------------------------------------------------------
@@ -95,6 +104,7 @@ void Water::readParams (void)
    scienceAPI.read("kl", "", 0, kl);
    scienceAPI.read("xf", "", 0, xf);
    scienceAPI.read("ll","mm/mm", 0, ll);
+   swEarExpansionTable.read(scienceAPI, "x_sw_ear_demand_ratio", "y_swdef_ear");
 
    if (ll.size() != (unsigned int)nLayers)
       {
@@ -284,6 +294,8 @@ void Water::calcStresses(void)
    photoStress = calcSwDefPhoto();
    phenoStress = calcSwDefPheno();
    expansionStress = calcSwDefExpansion();
+   earExpansionStress = calcSwDefEarExpansion();
+
    accumulate(photoStress, photoStressTotal, plant->phenology->currentStage(), plant->phenology->getDltStage());
    accumulate(phenoStress, phenoStressTotal, plant->phenology->currentStage(), plant->phenology->getDltStage());
    accumulate(expansionStress, expanStressTotal, plant->phenology->currentStage(), plant->phenology->getDltStage());

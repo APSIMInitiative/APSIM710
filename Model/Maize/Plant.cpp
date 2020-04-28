@@ -93,7 +93,19 @@ void Plant::plantInit1(void)
    leaf      = new Leaf(scienceAPI, this);    PlantComponents.push_back(leaf);  PlantParts.push_back(leaf);
    stem      = new Stem(scienceAPI, this);    PlantComponents.push_back(stem);  PlantParts.push_back(stem);
    rachis    = new Rachis(scienceAPI, this);  PlantComponents.push_back(rachis);PlantParts.push_back(rachis);
-   grain     = new Grain(scienceAPI, this);   PlantComponents.push_back(grain); PlantParts.push_back(grain);
+
+   string grainClass = ""; scienceAPI.read("GrainClass", "", true, grainClass);
+   if (grainClass == "Classic" || grainClass == "")
+   {
+	   stem = new Stem(scienceAPI, this);
+	   grain = new Grain(scienceAPI, this);
+   }
+   else if (grainClass == "Cohort")
+   {
+	   stem = new StemCM(scienceAPI, this);
+	   grain = new GrainCM(scienceAPI, this);
+   }
+   //grain     = new Grain(scienceAPI, this);   PlantComponents.push_back(grain); PlantParts.push_back(grain);
 
    phenology = new Phenology(scienceAPI, this); PlantComponents.push_back(phenology);
    PlantProcesses.push_back(phenology);
@@ -103,7 +115,16 @@ void Plant::plantInit1(void)
    PlantProcesses.push_back(phosphorus);
    water     = new Water(scienceAPI, this);     PlantComponents.push_back(water);
    PlantProcesses.push_back(water);
-   biomass   = new Biomass(scienceAPI, this);   PlantComponents.push_back(biomass);
+   
+   if (grainClass == "Classic" || grainClass == "")
+   {
+	   biomass = new Biomass(scienceAPI, this);
+   }
+   else if (grainClass == "Cohort")
+   {
+	   biomass = new BiomassCM(scienceAPI, this);
+   }
+   PlantComponents.push_back(biomass);
    PlantProcesses.push_back(biomass);
 
    doRegistrations();

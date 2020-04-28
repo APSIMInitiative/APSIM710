@@ -10,7 +10,7 @@ namespace Maize {
 
    class Biomass : public PlantProcess
       {
-      private:
+	  protected:
          double effectiveRue;
 
       

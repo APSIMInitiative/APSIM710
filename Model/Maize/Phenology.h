@@ -70,7 +70,7 @@ namespace Maize {
          double phaseFraction(double stage, vector<double> ttTotal,double dltTT,vector<double> stageTT);
          double calcDailyTT(Today *today);
          double temp3Hr (double tMax, double tMin, double period);
-
+		 
          // public Methods -------------------------------------------------------
       public:
          // called from plant
@@ -102,6 +102,7 @@ namespace Maize {
 
          // phenology
          void  phenologyEvent(int){};
-      };
+		 double calcStageTarget(int baseStage, double deltaTT);
+   };
    }
 #endif
