@@ -353,12 +353,19 @@ void Leaf::senesceArea(void)
 //------------------------------------------------------------------------------------------------
 double Leaf::calcLaiSenescenceFrost(void)
    {
-   //  calculate senecence due to frost
-   double dltSlaiFrost = 0.0;
-   if (plant->today.minT < frostKill)
-      dltSlaiFrost = lai;
+   //  calculate senescence due to frost
+   if (plant->today.minT > frostKill) return 0.0;
+   if (stage <= emergence) return 0.0;
+   
+   if (plant->today.minT > (frostKill - 3.0) && stage < fi)
+      {
+      //the plant will survive but all of the leaf area is removed except a fraction
+      //3 degrees is a default for now - extract to a parameter to customise it
+      return Max(0.0,lai - 0.01);
+      }
 
-   return dltSlaiFrost;
+   //the plant will be killed as it's LAI will be 0
+   return lai;
    }
 /* TODO : put in messages */
 //------------------------------------------------------------------------------------------------
