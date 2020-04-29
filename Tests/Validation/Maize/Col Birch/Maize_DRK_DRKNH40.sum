@@ -21,6 +21,7 @@ Paddock:
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                     "DoOutput" = %apsim%\Model\Manager.dll
    Component               "Field 05 Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component            "Field 05 Nitrogen" = %apsim%\Model\SoilN.dll
@@ -53,7 +54,6 @@ Paddock:
         DaysAfterSowing
         Stage
         Biomass
-        GrainYield
         GreenWt
         Biomass units g/m^2 as BiomassWt
         RootGreenWt
@@ -74,14 +74,20 @@ Paddock:
         LAI
         SLAI
         esw_profile as ESW
-        no3() as NO3
         SLN
         WaterSD
-        sw()
         HI
         TPLA
         SPLA
         Height
+        cover_green
+        cover_tot
+        sw_supply
+        RootDepth
+        no3() as NO3
+        nfact_photo
+        Yield
+        GrainYield
 
      Output file = Maize_DRK_DRKNH40.out
      Format = normal
@@ -112,7 +118,7 @@ Paddock:
      
      SECTION:- start_of_day
      if (today = date('7/11/1991') then
-        maize sow plants =6.7, sowing_depth = 70, cultivar = hycorn_40, row_spacing = 0.75
+        maize sow plants =6.7, sowing_depth = 30, cultivar = hycorn_40, row_spacing = 0.75
      endif
      END of rules
      
@@ -123,12 +129,26 @@ Paddock:
      SECTION:- end_of_day
      if (paddock_is_fallow() = 0) then
         grainyield = graingreenwt * 10
-        outputfile do_output
      endif
                 if maize.stagename = 'harvest_ripe' or maize.plant_status = 'dead' then
        maize  harvest
        maize  end_crop
                 endif
+     END of rules
+     
+
+------- paddock.DoOutput Initialisation ---------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     if (paddock_is_fallow() = 0) then
+        grainyield = graingreenwt * 10
+        outputfile do_output
+     endif
      END of rules
      
 
@@ -290,7 +310,7 @@ Paddock:
        300.00 of N as urea (urea_n)
                                          added at depth   50.00 (layer   1)
 7 November 1991(Day of year=311), paddock.Sow on a fixed date: 
-     Manager sending message :- maize sow  plants = 6.7, sowing_depth = 70, cultivar = hycorn_40, row_spacing = 0.75
+     Manager sending message :- maize sow  plants = 6.7, sowing_depth = 30, cultivar = hycorn_40, row_spacing = 0.75
 7 November 1991(Day of year=311), maize: 
      Sowing initiate
      
@@ -301,12 +321,12 @@ Paddock:
          Sowing   Depth  Plants Spacing Skiprow Cultivar
          Day no     mm     m^2    mm     code     name  
          -------------------------------------------------------
-            311    70.0     6.7   750    1.0     hycorn_40
+            311    30.0     6.7   750    1.0     hycorn_40
          -------------------------------------------------------
      
       - reading constants for plant(maize) - hycorn_40
          tt_emerg_to_endjuv       =  280.00
-         tt_endjuv_to_init        =  160.00
+         tt_endjuv_to_init        =    0.00
          tt_init_to_flower        =   50.00
          tt_flower_to_maturity    =  900.00
          tt_flag_to_flower        =   50.00
@@ -337,68 +357,78 @@ Paddock:
 8 November 1991(Day of year=312), maize: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
-     		Stover N Conc =   0.00 		 Extractable SW =   8.40
-11 November 1991(Day of year=315), maize: 
-     Stage 3 Emergence  DAS = 4
+     		Stover N Conc =   0.00 		 Extractable SW =   3.60
+9 November 1991(Day of year=313), maize: 
+     Stage 3 Emergence  DAS = 2
      		Biomass       =   0.00 		 LAI            =   0.00
-     		Stover N Conc =   0.00 		 Extractable SW =  20.47
+     		Stover N Conc =   0.00 		 Extractable SW =   7.56
+27 November 1991(Day of year=331), maize: 
+     Stage 4 EndOfJuvenile  DAS = 20
+     		Biomass       =  30.67 		 LAI            =   0.27
+     		Stover N Conc =   1.22 		 Extractable SW =  71.80
 28 November 1991(Day of year=332), maize: 
-     Stage 4 EndOfJuvenile  DAS = 21
-     		Biomass       =  10.34 		 LAI            =   0.09
-     		Stover N Conc =   0.38 		 Extractable SW =  92.15
-8 December 1991(Day of year=342), maize: 
-     Stage 5 FloralInitiation  DAS = 31
-     		Biomass       =  44.33 		 LAI            =   0.34
-     		Stover N Conc =   1.12 		 Extractable SW = 183.41
-31 January 1992(Day of year=31), maize: 
-     Stage 6 FlagLeaf  DAS = 85
-     		Biomass       = 1601.40 		 LAI            =   4.65
-     		Stover N Conc =  23.52 		 Extractable SW = 101.15
-3 February 1992(Day of year=34), maize: 
-     Stage 7 Flowering  DAS = 88
-     		Biomass       = 1667.23 		 LAI            =   4.34
-     		Stover N Conc =  24.38 		 Extractable SW = 128.01
-12 February 1992(Day of year=43), maize: 
-     Stage 8 StartGrainFill  DAS = 97
-     		Biomass       = 1909.13 		 LAI            =   3.29
-     		Stover N Conc =  25.43 		 Extractable SW = 135.94
-13 March 1992(Day of year=73), maize: 
-      ********** Crop failed due to loss of leaf area ********     Plant Death. Standing above-ground dm = 22966.46 (kg/ha)
-13 March 1992(Day of year=73), paddock.Harvesting rule: 
+     Stage 5 FloralInitiation  DAS = 21
+     		Biomass       =  36.68 		 LAI            =   0.30
+     		Stover N Conc =   1.49 		 Extractable SW =  86.39
+5 January 1992(Day of year=5), maize: 
+     Stage 6 FlagLeaf  DAS = 59
+     		Biomass       = 912.09 		 LAI            =   4.07
+     		Stover N Conc =  14.67 		 Extractable SW = 167.33
+8 January 1992(Day of year=8), maize: 
+     Stage 7 Flowering  DAS = 62
+     		Biomass       = 1043.52 		 LAI            =   4.00
+     		Stover N Conc =  15.70 		 Extractable SW = 156.53
+18 January 1992(Day of year=18), maize: 
+     Stage 8 StartGrainFill  DAS = 72
+     		Biomass       = 1441.73 		 LAI            =   3.64
+     		Stover N Conc =  17.55 		 Extractable SW = 126.96
+26 February 1992(Day of year=57), maize: 
+     Stage 9 EndGrainFill  DAS = 111
+     		Biomass       = 2306.62 		 LAI            =   1.27
+     		Stover N Conc =   8.03 		 Extractable SW = 146.03
+1 March 1992(Day of year=61), maize: 
+     Stage 10 Maturity  DAS = 115
+     		Biomass       = 2334.49 		 LAI            =   1.18
+     		Stover N Conc =   7.64 		 Extractable SW = 139.62
+2 March 1992(Day of year=62), maize: 
+     Stage 11 HarvestRipe  DAS = 116
+     		Biomass       = 2334.49 		 LAI            =   1.18
+     		Stover N Conc =   7.64 		 Extractable SW = 137.48
+2 March 1992(Day of year=62), paddock.Harvesting rule: 
      Manager sending message :- maize harvest
      
      Harvest
-     Flowering (DAS)       = 88 		 Maturity (DAS)          = 
-     Flowering day         = 34 		 Maturity day            = 
-     Maximum LAI           = 4.8 		 Number of leaves        = 25.0
-     Total above ground biomass    (kg/ha) = 22986.4
-     Green above ground biomass    (kg/ha) = 19475.0
-     Senesced above ground biomass (kg/ha) = 3511.4
-     Stover (kg/ha)        = 16655.4 	 Grain yield (kg/ha)     = 6331.0
-     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 7492.3
-     Weight 1000 grains(g) = 160.4 		 Grains/m^2              = 3946.6
-     Grains/head           = 589.0
-     Grain N percent    (%)     =      1.43 	 Grain N            (kg/ha) =    90.53
-     Total N content    (kg/ha) =    257.76 	 Senesced N content (kg/ha) =   102.24
-     Green N content    (kg/ha) =    129.73
+     Flowering (DAS)       = 62 		 Maturity (DAS)          = 115
+     Flowering day         = 8 		 Maturity day            = 61
+     Maximum LAI           = 4.1 		 Number of leaves        = 18.1
+     Total above ground biomass    (kg/ha) = 23344.9
+     Green above ground biomass    (kg/ha) = 21121.5
+     Senesced above ground biomass (kg/ha) = 2223.3
+     Stover (kg/ha)        = 13707.3 	 Grain yield (kg/ha)     = 9637.6
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 11405.4
+     Weight 1000 grains(g) = 239.4 		 Grains/m^2              = 4024.9
+     Grains/head           = 600.7
+     Grain N percent    (%)     =      1.40 	 Grain N            (kg/ha) =   135.01
+     Total N content    (kg/ha) =    211.36 	 Senesced N content (kg/ha) =    47.04
+     Green N content    (kg/ha) =     78.30
      
      Average Stress Indices:                          Water Photo  Water Expan  N Photo
         Emergence           to End of juvenile           1.0          1.0        1.0
         End of juvenile     to Floral initiation         1.0          1.0        1.0
         Floral initiation   to Flag leaf                 1.0          1.0        1.0
-        Flag leaf           to Flowering                 0.9          0.9        0.8
+        Flag leaf           to Flowering                 1.0          0.9        1.0
         Flowering           to Start grain fill          1.0          1.0        1.0
         Start grain fill    to End grain fill            1.0          1.0        1.0
      
      Crop harvested.
         Organic matter removed from system:-      From Tops		From Roots
-                         DM (kg/ha) =               6331.00		    0.00
-                         N  (kg/ha) =                 90.53		    0.00
+                         DM (kg/ha) =               9637.56		    0.00
+                         N  (kg/ha) =                135.01		    0.00
      Manager sending message :- maize end_crop
      Crop ended.
      Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
-                         DM (kg/ha) =              16655.43		 6227.02
-                         N  (kg/ha) =                167.22		   64.74
+                         DM (kg/ha) =              13707.33		 4825.21
+                         N  (kg/ha) =                 76.36		   48.98
                          P  (kg/ha) =                  0.00		    0.00
 30 April 1992(Day of year=121), clock: 
      Simulation is terminating due to end criteria being met.

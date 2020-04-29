@@ -21,6 +21,7 @@ Paddock:
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                     "DoOutput" = %apsim%\Model\Manager.dll
    Component               "Field 06 Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component            "Field 06 Nitrogen" = %apsim%\Model\SoilN.dll
@@ -53,7 +54,6 @@ Paddock:
         DaysAfterSowing
         Stage
         Biomass
-        GrainYield
         GreenWt
         Biomass units g/m^2 as BiomassWt
         RootGreenWt
@@ -74,14 +74,20 @@ Paddock:
         LAI
         SLAI
         esw_profile as ESW
-        no3() as NO3
         SLN
         WaterSD
-        sw()
         HI
         TPLA
         SPLA
         Height
+        cover_green
+        cover_tot
+        sw_supply
+        RootDepth
+        no3() as NO3
+        nfact_photo
+        Yield
+        GrainYield
 
      Output file = Maize_K841_K841P3W.out
      Format = normal
@@ -135,12 +141,26 @@ Paddock:
      SECTION:- end_of_day
      if (paddock_is_fallow() = 0) then
         grainyield = graingreenwt * 10
-        outputfile do_output
      endif
                 if maize.stagename = 'harvest_ripe' or maize.plant_status = 'dead' then
        maize  harvest
        maize  end_crop
                 endif
+     END of rules
+     
+
+------- paddock.DoOutput Initialisation ---------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     if (paddock_is_fallow() = 0) then
+        grainyield = graingreenwt * 10
+        outputfile do_output
+     endif
      END of rules
      
 

@@ -472,7 +472,7 @@ double Leaf::provideN(double requiredN, bool forLeaf)
           // Stem and Rachis can technically get to this point, but it doesn't
           // occur in any of the validation data sets.
          double n = dltLAI * newLeafSLN;
-         double laiN = Min(n,requiredN/2);
+         double laiN = Min(n,requiredN/2.0);
          dltLAI = (n - laiN) / newLeafSLN;
          if (forLeaf)
          {

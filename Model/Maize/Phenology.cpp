@@ -370,3 +370,20 @@ void Phenology::Summary(void)
 }
 //------------------------------------------------------------------------------------------------
 
+double Phenology::calcStageTarget(int baseStage, double deltaTT)
+{
+	// calculate the target stage that is deltaTT from baseStage. E.G. 25oCd before flowering
+	if (deltaTT == 0.0)return baseStage;
+	double target = baseStage;
+	if (deltaTT <= 0.0)
+		for (int i = baseStage; i; i--)
+		{
+			target--;
+			if (fabs(deltaTT) < ttTarget[i - 1])
+				return target + divide((ttTarget[i - 1] + deltaTT), ttTarget[i - 1]);
+			else
+				deltaTT += ttTarget[i - 1];
+		}
+	return 0.0;
+}
+//------------------------------------------------------------------------------------------------

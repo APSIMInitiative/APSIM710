@@ -21,6 +21,7 @@ Paddock:
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                     "DoOutput" = %apsim%\Model\Manager.dll
    Component                   "Calculator" = %apsim%\Model\Manager.dll
    Component                "Field01 Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
@@ -54,8 +55,6 @@ Paddock:
         DaysAfterSowing
         Stage
         Biomass
-        nfact_photo
-        Yield
         GreenWt
         Biomass units g/m^2 as BiomassWt
         RootGreenWt
@@ -76,17 +75,20 @@ Paddock:
         LAI
         SLAI
         esw_profile as ESW
-        no3() as NO3
         SLN
         WaterSD
-        sw()
         HI
         TPLA
         SPLA
-        n_uptake
-        n_grain
-        dlt_dm_green
-        AccTT
+        Height
+        cover_green
+        cover_tot
+        sw_supply
+        RootDepth
+        no3() as NO3
+        nfact_photo
+        Yield
+        GrainYield
 
      Output file = Maize_Gatton-89_m1g5n2.out
      Format = normal
@@ -136,9 +138,6 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-     if (paddock_is_fallow() = 0) then
-        outputfile do_output
-     endif
      if (today = date('29/11/1989') then
         acctt = deltatt
         maize sow plants =7, sowing_depth = 50, cultivar = dekalb_xl82, row_spacing = 1
@@ -154,6 +153,21 @@ Paddock:
        maize  harvest
        maize  end_crop
                 endif
+     END of rules
+     
+
+------- paddock.DoOutput Initialisation ---------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     if (paddock_is_fallow() = 0) then
+        grainyield = graingreenwt * 10
+        outputfile do_output
+     endif
      END of rules
      
 
@@ -376,6 +390,8 @@ Paddock:
              300.0     0.030          0.410       1.000
          ---------------------------------------------------
      
+29 November 1989(Day of year=333), paddock.DoOutput: 
+     Manager creating a new local real variable : grainyield = 0.00000
 30 November 1989(Day of year=334), paddock.operations: 
       Sending apply message to irrigation
 30 November 1989(Day of year=334), Maize: 

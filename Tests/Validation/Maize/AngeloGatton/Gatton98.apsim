@@ -1,4 +1,67 @@
-<folder version="37" creator="Apsim 7.10-r4158" name="Maize">
+<folder version="37" creator="Apsim 7.10-r0" name="Maize">
+  <folder name="Shared">
+    <variables name="My Variables">
+      <variable>dd/mm/yyyy as Date</variable>
+      <variable>DaysAfterSowing</variable>
+      <variable>Stage</variable>
+      <variable>Biomass</variable>
+      <variable>GreenWt</variable>
+      <variable>Biomass units g/m^2 as BiomassWt</variable>
+      <variable>RootGreenWt</variable>
+      <variable>LeafGreenWt</variable>
+      <variable>StemGreenWt</variable>
+      <variable>RachisGreenWt</variable>
+      <variable>GrainGreenWt</variable>
+      <variable>biomass_n</variable>
+      <variable>RootGreenN</variable>
+      <variable>LeafGreenN</variable>
+      <variable>StemGreenN</variable>
+      <variable>RachisGreenN</variable>
+      <variable>GrainGreenN</variable>
+      <variable>GrainGreenNConc</variable>
+      <variable>GrainNo</variable>
+      <variable>GrainSize</variable>
+      <variable>LeafNo</variable>
+      <variable>LAI</variable>
+      <variable>SLAI</variable>
+      <variable>esw_profile as ESW</variable>
+      <variable>SLN</variable>
+      <variable>WaterSD</variable>
+      <variable>HI</variable>
+      <variable>TPLA</variable>
+      <variable>SPLA</variable>
+      <variable>Height</variable>
+      <variable>cover_green</variable>
+      <variable>cover_tot</variable>
+      <variable>sw_supply</variable>
+      <variable>RootDepth</variable>
+      <variable>no3() as NO3</variable>
+      <variable>nfact_photo</variable>
+      <variable>Yield</variable>
+      <variable>GrainYield</variable>
+    </variables>
+    <events name="My Variables Events" />
+    <manager name="DoOutput">
+      <script>
+        <text>
+        </text>
+        <event>init</event>
+      </script>
+      <script>
+        <text>
+        </text>
+        <event>start_of_day</event>
+      </script>
+      <script>
+        <text>if (paddock_is_fallow() = 0) then
+   GrainYield = GrainGreenWt * 10
+   outputfile do_output
+endif
+</text>
+        <event>end_of_day</event>
+      </script>
+    </manager>
+  </folder>
   <simulation name="Maize_Exp1 3N Yr1_1">
     <metfile name="met">
       <filename name="filename" input="yes">Exp1 3N Yr1.met</filename>
@@ -312,10 +375,7 @@
             <row_spacing type="text" description="Enter row spacing (mm) : ">0.75</row_spacing>
           </ui>
           <script>
-            <text>if (paddock_is_fallow() = 0) then
-   outputfile do_output
-endif
-if (today = date('[date]') then
+            <text>if (today = date('[date]') then
    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
 endif
                </text>
@@ -339,6 +399,7 @@ endif
             <event>end_of_day</event>
           </script>
         </manager>
+        <manager name="DoOutput" shortcut="/Maize/Shared/DoOutput" />
       </folder>
       <irrigation name="Irrigation">
         <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
@@ -354,41 +415,8 @@ endif
       <outputfile name="Outputfile">
         <filename output="yes">Maize_Exp1 3N Yr1_1.out</filename>
         <title>Maize_Exp1 3N Yr1_1</title>
-        <variables name="My Variables">
-          <variable>dd/mm/yyyy as Date</variable>
-          <variable>DaysAfterSowing</variable>
-          <variable>Stage</variable>
-          <variable>Biomass</variable>
-          <variable>GreenWt</variable>
-          <variable>Biomass units g/m^2 as BiomassWt</variable>
-          <variable>RootGreenWt</variable>
-          <variable>LeafGreenWt</variable>
-          <variable>StemGreenWt</variable>
-          <variable>RachisGreenWt</variable>
-          <variable>GrainGreenWt</variable>
-          <variable>biomass_n</variable>
-          <variable>RootGreenN</variable>
-          <variable>LeafGreenN</variable>
-          <variable>StemGreenN</variable>
-          <variable>RachisGreenN</variable>
-          <variable>GrainGreenN</variable>
-          <variable>GrainGreenNConc</variable>
-          <variable>GrainNo</variable>
-          <variable>GrainSize</variable>
-          <variable>LeafNo</variable>
-          <variable>LAI</variable>
-          <variable>SLAI</variable>
-          <variable>esw_profile as ESW</variable>
-          <variable>no3() as NO3</variable>
-          <variable>SLN</variable>
-          <variable>WaterSD</variable>
-          <variable>sw()</variable>
-          <variable>HI</variable>
-          <variable>TPLA</variable>
-          <variable>SPLA</variable>
-          <variable>Height</variable>
-          <variable>DailyDeltaTT</variable>
-        </variables>
+        <variables name="My Variables" shortcut="/Maize/Shared/My Variables" />
+        <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
       </outputfile>
       <maize />
     </area>
@@ -655,10 +683,7 @@ endif
             <row_spacing type="text" description="Enter row spacing (mm) : ">0.75</row_spacing>
           </ui>
           <script>
-            <text>if (paddock_is_fallow() = 0) then
-   outputfile do_output
-endif
-if (today = date('[date]') then
+            <text>if (today = date('[date]') then
    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
 endif
                </text>
@@ -682,6 +707,7 @@ endif
             <event>end_of_day</event>
           </script>
         </manager>
+        <manager name="DoOutput" shortcut="/Maize/Shared/DoOutput" />
       </folder>
       <operations>
         <operation condition="start_of_day">
@@ -700,10 +726,11 @@ endif
         <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
       </irrigation>
-      <outputfile name="Outputfile" shortcut="/Maize/Maize_Exp1 3N Yr1_1/paddock/Outputfile">
+      <outputfile name="Outputfile">
         <filename output="yes">Maize_Exp1 3N Yr1_2.out</filename>
         <title>Maize_Exp1 3N Yr1_2</title>
-        <variables name="My Variables" shortcut="/Maize/Maize_Exp1 3N Yr1_1/paddock/Outputfile/My Variables" />
+        <variables name="My Variables" shortcut="/Maize/Shared/My Variables" />
+        <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
       </outputfile>
       <maize />
     </area>
@@ -973,10 +1000,7 @@ endif
             <row_spacing type="text" description="Enter row spacing (mm) : ">0.75</row_spacing>
           </ui>
           <script>
-            <text>if (paddock_is_fallow() = 0) then
-   outputfile do_output
-endif
-if (today = date('[date]') then
+            <text>if (today = date('[date]') then
    [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing]
 endif
                </text>
@@ -1000,6 +1024,7 @@ endif
             <event>end_of_day</event>
           </script>
         </manager>
+        <manager name="DoOutput" shortcut="/Maize/Shared/DoOutput" />
       </folder>
       <operations>
         <operation condition="start_of_day">
@@ -1026,10 +1051,11 @@ endif
         <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0</default_nh4_conc>
         <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0</default_cl_conc>
       </irrigation>
-      <outputfile name="Outputfile" shortcut="/Maize/Maize_Exp1 3N Yr1_1/paddock/Outputfile">
+      <outputfile name="Outputfile">
         <filename output="yes">Maize_Exp1 3N Yr1_3.out</filename>
         <title>Maize_Exp1 3N Yr1_3</title>
-        <variables name="My Variables" shortcut="/Maize/Maize_Exp1 3N Yr1_1/paddock/Outputfile/My Variables" />
+        <variables name="My Variables" shortcut="/Maize/Shared/My Variables" />
+        <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
       </outputfile>
       <maize />
     </area>

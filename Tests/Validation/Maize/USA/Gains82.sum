@@ -21,6 +21,7 @@ Paddock:
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component          "Fertilise at sowing" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                     "DoOutput" = %apsim%\Model\Manager.dll
    Component                "Field01 Water" = %apsim%\Model\SoilWat.dll
    Component         "SurfaceOrganicMatter" = %apsim%\Model\SurfaceOM.dll
    Component             "Field01 Nitrogen" = %apsim%\Model\SoilN.dll
@@ -73,15 +74,20 @@ Paddock:
         LAI
         SLAI
         esw_profile as ESW
-        no3() as NO3
         SLN
         WaterSD
-        sw
         HI
         TPLA
         SPLA
-        accTT
         Height
+        cover_green
+        cover_tot
+        sw_supply
+        RootDepth
+        no3() as NO3
+        nfact_photo
+        Yield
+        GrainYield
 
      Output file = Gains82.out
      Format = normal
@@ -105,9 +111,6 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-              if (paddock_is_fallow() = 0) then
-     outputfile do_output
-              endif
              if (today = date('26-feb') then
        maize sow plants =7.2, sowing_depth = 50, cultivar = usa_18leaf, row_spacing = 1000, crop_class = plant
               endif
@@ -130,6 +133,21 @@ Paddock:
        maize  harvest
        maize  end_crop
                 endif
+     END of rules
+     
+
+------- paddock.DoOutput Initialisation ---------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     if (paddock_is_fallow() = 0) then
+        grainyield = graingreenwt * 10
+        outputfile do_output
+     endif
      END of rules
      
 
@@ -329,6 +347,8 @@ Paddock:
    - Reading Fertiliser Type Parameters
        300.00 of N as urea (urea_n)
                                          added at depth   50.00 (layer   1)
+26 February 1982(Day of year=57), paddock.DoOutput: 
+     Manager creating a new local real variable : grainyield = 0.00000
 27 February 1982(Day of year=58), Maize: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00

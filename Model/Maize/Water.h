@@ -16,6 +16,7 @@ namespace Maize {
 
          TableFn swPhenoTable;
          TableFn swExpansionTable;
+		 TableFn swEarExpansionTable;
 
          vector<double> dLayer;
          vector<double> dulDep;
@@ -92,6 +93,8 @@ namespace Maize {
          void  calcStresses(void);
          void  calcUptake(void);
          void  getOtherVariables (void);
+		 double earExpansionStress; // cohort
+		 double calcSwDefEarExpansion(void);
 
 			void  calcStressTrace(void);
       	int classify(vector<double> stress);
@@ -127,6 +130,7 @@ namespace Maize {
          double swAvailFracLayer(int layer);
          double swDepLayer(int layer){return swDep[layer];}
          double dltSwDepLayer(int layer){return dltSwDep[layer];}
+		 double getEarExpansionStress(void) { return earExpansionStress; } // cohort
 
          //Registration functions
          void  getEswLayers(vector<float>&);

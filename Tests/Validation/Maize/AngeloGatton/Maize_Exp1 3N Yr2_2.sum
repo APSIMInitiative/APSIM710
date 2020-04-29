@@ -21,6 +21,7 @@ Paddock:
    Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
    Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
    Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component                     "DoOutput" = %apsim%\Model\Manager.dll
    Component            "GattonField Water" = %apsim%\Model\SoilWat.dll
    Component       "surface organic matter" = %apsim%\Model\SurfaceOM.dll
    Component         "GattonField Nitrogen" = %apsim%\Model\SoilN.dll
@@ -73,14 +74,20 @@ Paddock:
         LAI
         SLAI
         esw_profile as ESW
-        no3() as NO3
         SLN
         WaterSD
-        sw()
         HI
         TPLA
         SPLA
         Height
+        cover_green
+        cover_tot
+        sw_supply
+        RootDepth
+        no3() as NO3
+        nfact_photo
+        Yield
+        GrainYield
 
      Output file = Maize_Exp1 3N Yr2_2.out
      Format = normal
@@ -110,9 +117,6 @@ Paddock:
      Manager rules:
      
      SECTION:- start_of_day
-     if (paddock_is_fallow() = 0) then
-        outputfile do_output
-     endif
      if (today = date('16/09/1999') then
         maize sow plants =6.7, sowing_depth = 50, cultivar = hycorn53, row_spacing = 0.75
      endif
@@ -127,6 +131,21 @@ Paddock:
        maize  harvest
        maize  end_crop
                 endif
+     END of rules
+     
+
+------- paddock.DoOutput Initialisation ---------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     
+     SECTION:- end_of_day
+     if (paddock_is_fallow() = 0) then
+        grainyield = graingreenwt * 10
+        outputfile do_output
+     endif
      END of rules
      
 
@@ -298,7 +317,7 @@ Paddock:
          tt_endjuv_to_init        =  140.00
          tt_init_to_flower        =   50.00
          tt_flower_to_maturity    =  700.00
-         tt_flag_to_flower        =   60.00
+         tt_flag_to_flower        =   10.00
          tt_flower_to_start_grain =  170.00
          tt_maturity_to_ripe      =    1.00
          ------------------------------------------------------
@@ -319,6 +338,8 @@ Paddock:
              300.0     0.020          0.310       1.000
          ---------------------------------------------------
      
+16 September 1999(Day of year=259), paddock.DoOutput: 
+     Manager creating a new local real variable : grainyield = 0.00000
 17 September 1999(Day of year=260), maize: 
      Stage 2 Germination  DAS = 1
      		Biomass       =   0.00 		 LAI            =   0.00
@@ -346,61 +367,61 @@ Paddock:
      Stage 6 FlagLeaf  DAS = 66
      		Biomass       = 826.94 		 LAI            =   3.48
      		Stover N Conc =   6.09 		 Extractable SW = 178.89
-25 November 1999(Day of year=329), maize: 
-     Stage 7 Flowering  DAS = 70
-     		Biomass       = 926.95 		 LAI            =   3.48
-     		Stover N Conc =   6.25 		 Extractable SW = 163.72
-8 December 1999(Day of year=342), maize: 
-     Stage 8 StartGrainFill  DAS = 83
-     		Biomass       = 1333.39 		 LAI            =   3.40
-     		Stover N Conc =   6.52 		 Extractable SW = 128.30
+22 November 1999(Day of year=326), maize: 
+     Stage 7 Flowering  DAS = 67
+     		Biomass       = 838.33 		 LAI            =   3.48
+     		Stover N Conc =   6.13 		 Extractable SW = 176.74
+4 December 1999(Day of year=338), maize: 
+     Stage 8 StartGrainFill  DAS = 79
+     		Biomass       = 1185.20 		 LAI            =   3.44
+     		Stover N Conc =   6.44 		 Extractable SW = 168.30
+7 January 2000(Day of year=7), maize: 
+     Stage 9 EndGrainFill  DAS = 113
+     		Biomass       = 1592.69 		 LAI            =   1.36
+     		Stover N Conc =   3.39 		 Extractable SW = 239.98
+9 January 2000(Day of year=9), maize: 
+     Stage 10 Maturity  DAS = 115
+     		Biomass       = 1597.05 		 LAI            =   1.32
+     		Stover N Conc =   3.36 		 Extractable SW = 236.75
 10 January 2000(Day of year=10), maize: 
-     Stage 9 EndGrainFill  DAS = 116
-     		Biomass       = 1660.64 		 LAI            =   1.36
-     		Stover N Conc =   3.50 		 Extractable SW = 226.96
-12 January 2000(Day of year=12), maize: 
-     Stage 10 Maturity  DAS = 118
-     		Biomass       = 1665.11 		 LAI            =   1.33
-     		Stover N Conc =   3.47 		 Extractable SW = 223.18
-13 January 2000(Day of year=13), maize: 
-     Stage 11 HarvestRipe  DAS = 119
-     		Biomass       = 1665.11 		 LAI            =   1.33
-     		Stover N Conc =   3.47 		 Extractable SW = 221.58
-13 January 2000(Day of year=13), paddock.Harvesting rule: 
+     Stage 11 HarvestRipe  DAS = 116
+     		Biomass       = 1597.05 		 LAI            =   1.32
+     		Stover N Conc =   3.36 		 Extractable SW = 235.48
+10 January 2000(Day of year=10), paddock.Harvesting rule: 
      Manager sending message :- maize harvest
      
      Harvest
-     Flowering (DAS)       = 70 		 Maturity (DAS)          = 118
-     Flowering day         = 329 		 Maturity day            = 12
+     Flowering (DAS)       = 67 		 Maturity (DAS)          = 115
+     Flowering day         = 326 		 Maturity day            = 9
      Maximum LAI           = 3.5 		 Number of leaves        = 16.3
-     Total above ground biomass    (kg/ha) = 16651.1
-     Green above ground biomass    (kg/ha) = 14779.0
-     Senesced above ground biomass (kg/ha) = 1872.1
-     Stover (kg/ha)        = 8678.3 	 Grain yield (kg/ha)     = 7972.8
-     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 9435.3
-     Weight 1000 grains(g) = 196.1 		 Grains/m^2              = 4065.3
-     Grains/head           = 606.8
-     Grain N percent    (%)     =      0.42 	 Grain N            (kg/ha) =    33.12
-     Total N content    (kg/ha) =     67.85 	 Senesced N content (kg/ha) =    18.90
-     Green N content    (kg/ha) =     29.31
+     Total above ground biomass    (kg/ha) = 15970.5
+     Green above ground biomass    (kg/ha) = 14095.0
+     Senesced above ground biomass (kg/ha) = 1875.6
+     Stover (kg/ha)        = 8056.6 	 Grain yield (kg/ha)     = 7913.9
+     Grain % water content = 15.5 		 Grain yield wet (kg/ha) = 9365.6
+     Weight 1000 grains(g) = 206.5 		 Grains/m^2              = 3831.6
+     Grains/head           = 571.9
+     Grain N percent    (%)     =      0.43 	 Grain N            (kg/ha) =    33.95
+     Total N content    (kg/ha) =     67.52 	 Senesced N content (kg/ha) =    19.02
+     Green N content    (kg/ha) =     28.01
      
      Average Stress Indices:                          Water Photo  Water Expan  N Photo
         Emergence           to End of juvenile           1.0          1.0        0.9
         End of juvenile     to Floral initiation         1.0          1.0        1.0
         Floral initiation   to Flag leaf                 1.0          1.0        0.9
-        Flag leaf           to Flowering                 1.0          1.0        0.9
-        Flowering           to Start grain fill          1.0          1.0        0.9
+        Flag leaf           to Flowering                 1.0          1.0        1.0
+        Flowering           to Start grain fill          0.9          0.9        0.8
         Start grain fill    to End grain fill            1.0          1.0        0.4
      
      Crop harvested.
         Organic matter removed from system:-      From Tops		From Roots
-                         DM (kg/ha) =               7972.80		    0.00
-                         N  (kg/ha) =                 33.12		    0.00
+                         DM (kg/ha) =               7913.95		    0.00
+                         N  (kg/ha) =                 33.95		    0.00
      Manager sending message :- maize end_crop
      Crop ended.
      Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
-                         DM (kg/ha) =               8678.33		 3747.48
-                         N  (kg/ha) =                 34.72		   13.48
+                         DM (kg/ha) =               8056.60		 3461.80
+                         N  (kg/ha) =                 33.57		   13.46
                          P  (kg/ha) =                  0.00		    0.00
 16 February 2000(Day of year=47), clock: 
      Simulation is terminating due to end criteria being met.

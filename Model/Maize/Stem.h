@@ -11,7 +11,7 @@ namespace Maize {
 
    class Stem : public PlantPart
       {
-
+	  protected:
       // Parameters ----------------------------------------------------------
 
       double initialDM;

@@ -8,14 +8,17 @@ SRC = PlantInterface.cpp \
       PlantActions.cpp \
       Leaf.cpp \
       Stem.cpp \
+      StemCM.cpp \
       Nitrogen.cpp \
       Rachis.cpp \
       Grain.cpp \
+      GrainCM.cpp \
       Water.cpp \
       Phenology.cpp  \
       Plant.cpp  \
       Roots.cpp \
       Biomass.cpp \
+      BiomassCM.cpp \
       Utilities.cpp \
       Dll.cpp \
 
