@@ -1,4 +1,67 @@
-<folder version="37" creator="Apsim 7.10-r4158" name="simulations">
+<folder version="37" creator="Apsim 7.10-r0" name="Maize">
+  <folder name="Shared">
+    <variables name="My Variables">
+      <variable>dd/mm/yyyy as Date</variable>
+      <variable>DaysAfterSowing</variable>
+      <variable>Stage</variable>
+      <variable>Biomass</variable>
+      <variable>GreenWt</variable>
+      <variable>Biomass units g/m^2 as BiomassWt</variable>
+      <variable>RootGreenWt</variable>
+      <variable>LeafGreenWt</variable>
+      <variable>StemGreenWt</variable>
+      <variable>RachisGreenWt</variable>
+      <variable>GrainGreenWt</variable>
+      <variable>biomass_n</variable>
+      <variable>RootGreenN</variable>
+      <variable>LeafGreenN</variable>
+      <variable>StemGreenN</variable>
+      <variable>RachisGreenN</variable>
+      <variable>GrainGreenN</variable>
+      <variable>GrainGreenNConc</variable>
+      <variable>GrainNo</variable>
+      <variable>GrainSize</variable>
+      <variable>LeafNo</variable>
+      <variable>LAI</variable>
+      <variable>SLAI</variable>
+      <variable>esw_profile as ESW</variable>
+      <variable>SLN</variable>
+      <variable>WaterSD</variable>
+      <variable>HI</variable>
+      <variable>TPLA</variable>
+      <variable>SPLA</variable>
+      <variable>Height</variable>
+      <variable>cover_green</variable>
+      <variable>cover_tot</variable>
+      <variable>sw_supply</variable>
+      <variable>RootDepth</variable>
+      <variable>no3() as NO3</variable>
+      <variable>nfact_photo</variable>
+      <variable>Yield</variable>
+      <variable>GrainYield</variable>
+    </variables>
+    <events name="My Variables Events" />
+    <manager name="DoOutput">
+      <script>
+        <text>
+        </text>
+        <event>init</event>
+      </script>
+      <script>
+        <text>
+        </text>
+        <event>start_of_day</event>
+      </script>
+      <script>
+        <text>if (paddock_is_fallow() = 0) then
+   GrainYield = GrainGreenWt * 10
+   outputfile do_output
+endif
+</text>
+        <event>end_of_day</event>
+      </script>
+    </manager>
+  </folder>
   <simulation name="Gains82">
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">26/02/1982</start_date>
@@ -10,6 +73,10 @@
     </metfile>
     <area name="paddock">
       <Soil name="Field01">
+        <RecordNumber>0</RecordNumber>
+        <Latitude>0</Latitude>
+        <Longitude>0</Longitude>
+        <YearOfSampling>0</YearOfSampling>
         <Water>
           <SoilCrop name="Maize">
             <Thickness>
@@ -125,18 +192,22 @@
           </SAT>
         </Water>
         <SoilWater>
-          <SummerCona type="text" description="SummerCona">3.5</SummerCona>
-          <SummerU type="text" description="SummerU">6</SummerU>
-          <SummerDate type="text" description="SummerDate">1-Apr</SummerDate>
-          <WinterCona type="text" description="WinterCona">3.5</WinterCona>
-          <WinterU type="text" description="WinterU">6</WinterU>
-          <WinterDate type="text" description="WinterDate">1-Nov</WinterDate>
-          <DiffusConst type="text" description="DiffusConst">88</DiffusConst>
-          <DiffusSlope type="text" description="DiffusSlope">35.4</DiffusSlope>
-          <Salb type="text" description="Salb">0.13</Salb>
-          <CN2Bare type="text" description="Cn2Bare">75</CN2Bare>
-          <CNRed type="text" description="CnRed">20</CNRed>
-          <CNCov type="text" description="CnCov">0.8</CNCov>
+          <SummerCona>3.5</SummerCona>
+          <SummerU>6</SummerU>
+          <SummerDate>1-Apr</SummerDate>
+          <WinterCona>3.5</WinterCona>
+          <WinterU>6</WinterU>
+          <WinterDate>1-Nov</WinterDate>
+          <DiffusConst>88</DiffusConst>
+          <DiffusSlope>35.4</DiffusSlope>
+          <Salb>0.13</Salb>
+          <CN2Bare>75</CN2Bare>
+          <CNRed>20</CNRed>
+          <CNCov>0.8</CNCov>
+          <Slope>NaN</Slope>
+          <DischargeWidth>NaN</DischargeWidth>
+          <CatchmentArea>NaN</CatchmentArea>
+          <MaxPond>NaN</MaxPond>
           <Thickness>
             <double>150</double>
             <double>150</double>
@@ -236,7 +307,6 @@
           </PH>
         </Analysis>
         <Sample name="Initial nitrogen">
-          <Date type="date" description="Sample date:" />
           <Thickness>
             <double>150</double>
             <double>150</double>
@@ -281,6 +351,11 @@
             <double>0.419</double>
             <double>0.419</double>
           </SW>
+          <NO3Units>ppm</NO3Units>
+          <NH4Units>ppm</NH4Units>
+          <SWUnits>Volumetric</SWUnits>
+          <OCUnits>Total</OCUnits>
+          <PHUnits>Water</PHUnits>
         </Sample>
       </Soil>
       <surfaceom name="SurfaceOrganicMatter">
@@ -306,10 +381,7 @@
             <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
           </ui>
           <script>
-            <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif        
-        if (today = date('[date]') then
+            <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
 </text>
@@ -348,11 +420,12 @@
             <event>end_of_day</event>
           </script>
         </manager>
+        <manager name="DoOutput" shortcut="/Maize/Shared/DoOutput" />
       </folder>
       <outputfile>
         <filename name="filename" output="yes">Gains82.out</filename>
         <title>Gains82</title>
-        <variables name="My Variables">
+        <variables name="My Variables" shortcut="/Maize/Shared/My Variables">
           <variable>dd/mm/yyyy as Date</variable>
           <variable>DaysAfterSowing</variable>
           <variable>Stage</variable>
@@ -387,6 +460,7 @@
           <variable>accTT</variable>
           <variable>Height</variable>
         </variables>
+        <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
       </outputfile>
       <irrigation name="Irrigation">
         <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
@@ -708,10 +782,7 @@
             <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
           </ui>
           <script>
-            <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif     
-        if (today = date('[date]') then
+            <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
    </text>
@@ -750,11 +821,12 @@
             <event>end_of_day</event>
           </script>
         </manager>
+        <manager name="DoOutput" shortcut="/Maize/Shared/DoOutput" />
       </folder>
       <outputfile>
         <filename name="filename" output="yes">Gains83.out</filename>
         <title>Gains83</title>
-        <variables name="My Variables">
+        <variables name="My Variables" shortcut="/Maize/Shared/My Variables">
           <variable>dd/mm/yyyy as Date</variable>
           <variable>DaysAfterSowing</variable>
           <variable>Stage</variable>
@@ -789,6 +861,7 @@
           <variable>accTT</variable>
           <variable>Height</variable>
         </variables>
+        <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
       </outputfile>
       <operations name="Operations Schedule">
         <operation condition="start_of_day">
@@ -1118,10 +1191,7 @@
             <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
           </ui>
           <script>
-            <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif        
-        if (today = date('[date]') then
+            <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
 </text>
@@ -1160,11 +1230,12 @@
             <event>end_of_day</event>
           </script>
         </manager>
+        <manager name="DoOutput" shortcut="/Maize/Shared/DoOutput" />
       </folder>
       <outputfile>
         <filename name="filename" output="yes">Quincy776.out</filename>
         <title>Quincy776</title>
-        <variables name="My Variables">
+        <variables name="My Variables" shortcut="/Maize/Shared/My Variables">
           <variable>dd/mm/yyyy as Date</variable>
           <variable>DaysAfterSowing</variable>
           <variable>Stage</variable>
@@ -1199,6 +1270,7 @@
           <variable>accTT</variable>
           <variable>Height</variable>
         </variables>
+        <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
       </outputfile>
       <operations name="Operations Schedule">
         <operation condition="start_of_day">
@@ -1528,10 +1600,7 @@
             <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
           </ui>
           <script>
-            <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif        
-        if (today = date('[date]') then
+            <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
 </text>
@@ -1570,11 +1639,12 @@
             <event>end_of_day</event>
           </script>
         </manager>
+        <manager name="DoOutput" shortcut="/Maize/Shared/DoOutput" />
       </folder>
       <outputfile>
         <filename name="filename" output="yes">Quincy779.out</filename>
         <title>Quincy779</title>
-        <variables name="My Variables">
+        <variables name="My Variables" shortcut="/Maize/Shared/My Variables">
           <variable>dd/mm/yyyy as Date</variable>
           <variable>DaysAfterSowing</variable>
           <variable>Stage</variable>
@@ -1609,6 +1679,7 @@
           <variable>accTT</variable>
           <variable>Height</variable>
         </variables>
+        <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
       </outputfile>
       <operations name="Operations Schedule">
         <operation condition="start_of_day">
@@ -1898,10 +1969,7 @@
             <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
           </ui>
           <script>
-            <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif        
-        if (today = date('[date]') then
+            <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
 </text>
@@ -1940,11 +2008,12 @@
             <event>end_of_day</event>
           </script>
         </manager>
+        <manager name="DoOutput" shortcut="/Maize/Shared/DoOutput" />
       </folder>
       <outputfile>
         <filename output="yes">Quincy786.out</filename>
         <title>Quincy786</title>
-        <variables name="My Variables">
+        <variables name="My Variables" shortcut="/Maize/Shared/My Variables">
           <variable>dd/mm/yyyy as Date</variable>
           <variable>DaysAfterSowing</variable>
           <variable>Stage</variable>
@@ -1979,6 +2048,7 @@
           <variable>accTT</variable>
           <variable>Height</variable>
         </variables>
+        <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
       </outputfile>
       <operations name="Operations Schedule">
         <operation condition="start_of_day">
@@ -2001,53 +2071,18 @@
       </irrigation>
     </area>
   </simulation>
-  <simulation name="Quincy789" shortcut="/simulations/Quincy786">
-    <clock shortcut="/simulations/Quincy786/clock" />
-    <summaryfile shortcut="/simulations/Quincy786/summaryfile" />
+  <simulation name="Quincy789">
+    <clock>
+      <start_date type="date" description="Enter the start date of the simulation">30/03/1978</start_date>
+      <end_date type="date" description="Enter the end date of the simulation">04/08/1978</end_date>
+    </clock>
+    <summaryfile />
     <metfile name="met">
       <filename name="filename" input="yes">Quincy789IB.met</filename>
     </metfile>
-    <area name="paddock" shortcut="/simulations/Quincy786/paddock">
+    <area name="paddock">
       <Soil name="Field06">
         <Water>
-          <SoilCrop name="Maize">
-            <Thickness>
-              <double>150</double>
-              <double>150</double>
-              <double>300</double>
-              <double>300</double>
-              <double>300</double>
-              <double>300</double>
-              <double>300</double>
-            </Thickness>
-            <LL>
-              <double>0.2</double>
-              <double>0.21</double>
-              <double>0.22</double>
-              <double>0.25</double>
-              <double>0.35</double>
-              <double>0.38</double>
-              <double>0.39</double>
-            </LL>
-            <KL>
-              <double>0.12</double>
-              <double>0.08</double>
-              <double>0.08</double>
-              <double>0.06</double>
-              <double>0.04</double>
-              <double>0.02</double>
-              <double>0.01</double>
-            </KL>
-            <XF>
-              <double>1</double>
-              <double>1</double>
-              <double>1</double>
-              <double>1</double>
-              <double>1</double>
-              <double>1</double>
-              <double>1</double>
-            </XF>
-          </SoilCrop>
           <Thickness>
             <double>150</double>
             <double>150</double>
@@ -2102,6 +2137,44 @@
             <double>0.46</double>
             <double>0.47</double>
           </SAT>
+          <SoilCrop name="Maize">
+            <Thickness>
+              <double>150</double>
+              <double>150</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+              <double>300</double>
+            </Thickness>
+            <LL>
+              <double>0.2</double>
+              <double>0.21</double>
+              <double>0.22</double>
+              <double>0.25</double>
+              <double>0.35</double>
+              <double>0.38</double>
+              <double>0.39</double>
+            </LL>
+            <KL>
+              <double>0.12</double>
+              <double>0.08</double>
+              <double>0.08</double>
+              <double>0.06</double>
+              <double>0.04</double>
+              <double>0.02</double>
+              <double>0.01</double>
+            </KL>
+            <XF>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+              <double>1</double>
+            </XF>
+          </SoilCrop>
         </Water>
         <SoilWater>
           <SummerCona type="text" description="SummerCona">3.5</SummerCona>
@@ -2242,10 +2315,16 @@
           </SW>
         </Sample>
       </Soil>
-      <surfaceom name="SurfaceOrganicMatter" shortcut="/simulations/Quincy786/paddock/SurfaceOrganicMatter" />
-      <fertiliser shortcut="/simulations/Quincy786/paddock/fertiliser" />
-      <Maize shortcut="/simulations/Quincy786/paddock/Maize" />
-      <folder name="Manager folder" shortcut="/simulations/Quincy786/paddock/Manager folder">
+      <surfaceom name="SurfaceOrganicMatter">
+        <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
+        <type type="text" description="Organic Matter type">wheat</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">4000</mass>
+        <cnr type="text" description="C:N ratio of initial residue">33</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <fertiliser />
+      <Maize />
+      <folder name="Manager folder">
         <manager name="Sow on a fixed date">
           <ui>
             <category type="category" description="Sowing criteria" />
@@ -2259,23 +2338,51 @@
             <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
           </ui>
           <script>
-            <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif        
-        if (today = date('[date]') then
+            <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
 </text>
             <event>start_of_day</event>
           </script>
         </manager>
-        <manager name="Fertilise at sowing" shortcut="/simulations/Quincy786/paddock/Manager folder/Fertilise at sowing" />
-        <manager name="Harvesting rule" shortcut="/simulations/Quincy786/paddock/Manager folder/Harvesting rule" />
+        <manager name="Fertilise at sowing">
+          <ui>
+            <category type="category" description="When should fertiliser be applied" />
+            <modulename type="modulename" description="On which module should the event come from : ">Maize</modulename>
+            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+            <category type="category" description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">300</fert_amount_sow>
+            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
+          </ui>
+          <script>
+            <text>
+        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+        </manager>
+        <manager name="Harvesting rule">
+          <ui>
+            <category type="category" description="Harvesting criteria" />
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">Maize</crop>
+          </ui>
+          <script>
+            <text>
+          if ([crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead') then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager name="DoOutput" shortcut="/Maize/Shared/DoOutput" />
       </folder>
-      <outputfile shortcut="/simulations/Quincy786/paddock/outputfile">
+      <outputfile>
         <filename output="yes">Quincy789.out</filename>
         <title>Quincy789</title>
-        <variables name="My Variables">
+        <variables name="My Variables" shortcut="/Maize/Shared/My Variables">
           <variable>dd/mm/yyyy as Date</variable>
           <variable>DaysAfterSowing</variable>
           <variable>Stage</variable>
@@ -2310,9 +2417,27 @@
           <variable>accTT</variable>
           <variable>Height</variable>
         </variables>
+        <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
       </outputfile>
-      <operations name="Operations Schedule" shortcut="/simulations/Quincy786/paddock/Operations Schedule" />
-      <irrigation name="Irrigation" shortcut="/simulations/Quincy786/paddock/Irrigation" />
+      <operations name="Operations Schedule">
+        <operation condition="start_of_day">
+          <date>
+          </date>
+          <action>
+          </action>
+        </operation>
+      </operations>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">1000</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.8</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+        <allocation type="text" description="Allocation in mm">0</allocation>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
     </area>
   </simulation>
   <simulation name="Champ83">
@@ -2562,10 +2687,7 @@
             <row_spacing type="text" description="Enter row spacing (mm) : ">1000</row_spacing>
           </ui>
           <script>
-            <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif        
-        if (today = date('[date]') then
+            <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
 </text>
@@ -2604,11 +2726,12 @@
             <event>end_of_day</event>
           </script>
         </manager>
+        <manager name="DoOutput" shortcut="/Maize/Shared/DoOutput" />
       </folder>
       <outputfile>
         <filename name="filename" output="yes">Champ83.out</filename>
         <title>Champ83</title>
-        <variables name="My Variables">
+        <variables name="My Variables" shortcut="/Maize/Shared/My Variables">
           <variable>dd/mm/yyyy as Date</variable>
           <variable>DaysAfterSowing</variable>
           <variable>Stage</variable>
@@ -2643,6 +2766,7 @@
           <variable>accTT</variable>
           <variable>Height</variable>
         </variables>
+        <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
       </outputfile>
       <operations name="Operations Schedule">
         <operation condition="start_of_day">
@@ -2972,10 +3096,7 @@
             <row_spacing type="text" description="Enter row spacing (mm) : ">610</row_spacing>
           </ui>
           <script>
-            <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif        
-        if (today = date('[date]') then
+            <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
 </text>
@@ -3014,11 +3135,12 @@
             <event>end_of_day</event>
           </script>
         </manager>
+        <manager name="DoOutput" shortcut="/Maize/Shared/DoOutput" />
       </folder>
       <outputfile>
         <filename output="yes">Gjunct82.out</filename>
         <title>Gjunct82</title>
-        <variables name="My Variables">
+        <variables name="My Variables" shortcut="/Maize/Shared/My Variables">
           <variable>dd/mm/yyyy as Date</variable>
           <variable>DaysAfterSowing</variable>
           <variable>Stage</variable>
@@ -3053,6 +3175,7 @@
           <variable>accTT</variable>
           <variable>Height</variable>
         </variables>
+        <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
       </outputfile>
       <operations name="Operations Schedule">
         <operation condition="start_of_day">
@@ -3075,16 +3198,16 @@
       </irrigation>
     </area>
   </simulation>
-  <simulation name="Gjunct83" shortcut="/simulations/Gjunct82">
+  <simulation name="Gjunct83">
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">07/05/1983</start_date>
       <end_date type="date" description="Enter the end date of the simulation">28/10/1983</end_date>
     </clock>
-    <summaryfile shortcut="/simulations/Gjunct82/summaryfile" />
+    <summaryfile />
     <metfile name="met">
       <filename name="filename" input="yes">Gjunct83IB.met</filename>
     </metfile>
-    <area name="paddock" shortcut="/simulations/Gjunct82/paddock">
+    <area name="paddock">
       <Soil name="Field10">
         <Water>
           <SoilCrop name="Maize">
@@ -3359,10 +3482,16 @@
           </SW>
         </Sample>
       </Soil>
-      <surfaceom name="SurfaceOrganicMatter" shortcut="/simulations/Gjunct82/paddock/SurfaceOrganicMatter" />
-      <fertiliser shortcut="/simulations/Gjunct82/paddock/fertiliser" />
-      <Maize shortcut="/simulations/Gjunct82/paddock/Maize" />
-      <folder name="Manager folder" shortcut="/simulations/Gjunct82/paddock/Manager folder">
+      <surfaceom name="SurfaceOrganicMatter">
+        <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
+        <type type="text" description="Organic Matter type">wheat</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">4000</mass>
+        <cnr type="text" description="C:N ratio of initial residue">33</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <fertiliser />
+      <Maize />
+      <folder name="Manager folder">
         <manager name="Sow on a fixed date">
           <ui>
             <category type="category" description="Sowing criteria" />
@@ -3376,23 +3505,51 @@
             <row_spacing type="text" description="Enter row spacing (mm) : ">610</row_spacing>
           </ui>
           <script>
-            <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif        
-        if (today = date('[date]') then
+            <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
 </text>
             <event>start_of_day</event>
           </script>
         </manager>
-        <manager name="Fertilise at sowing" shortcut="/simulations/Gjunct82/paddock/Manager folder/Fertilise at sowing" />
-        <manager name="Harvesting rule" shortcut="/simulations/Gjunct82/paddock/Manager folder/Harvesting rule" />
+        <manager name="Fertilise at sowing">
+          <ui>
+            <category type="category" description="When should fertiliser be applied" />
+            <modulename type="modulename" description="On which module should the event come from : ">Maize</modulename>
+            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+            <category type="category" description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">300</fert_amount_sow>
+            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
+          </ui>
+          <script>
+            <text>
+        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+        </manager>
+        <manager name="Harvesting rule">
+          <ui>
+            <category type="category" description="Harvesting criteria" />
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">Maize</crop>
+          </ui>
+          <script>
+            <text>
+          if ([crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead') then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager name="DoOutput" shortcut="/Maize/Shared/DoOutput" />
       </folder>
-      <outputfile shortcut="/simulations/Gjunct82/paddock/outputfile">
+      <outputfile>
         <filename output="yes">Gjunct83.out</filename>
         <title>Gjunct83</title>
-        <variables name="My Variables">
+        <variables name="My Variables" shortcut="/Maize/Shared/My Variables">
           <variable>dd/mm/yyyy as Date</variable>
           <variable>DaysAfterSowing</variable>
           <variable>Stage</variable>
@@ -3427,12 +3584,30 @@
           <variable>accTT</variable>
           <variable>Height</variable>
         </variables>
+        <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
       </outputfile>
-      <operations name="Operations Schedule" shortcut="/simulations/Gjunct82/paddock/Operations Schedule" />
-      <irrigation name="Irrigation" shortcut="/simulations/Gjunct82/paddock/Irrigation" />
+      <operations name="Operations Schedule">
+        <operation condition="start_of_day">
+          <date>
+          </date>
+          <action>
+          </action>
+        </operation>
+      </operations>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">1000</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.8</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+        <allocation type="text" description="Allocation in mm">0</allocation>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
     </area>
   </simulation>
-  <simulation name="Gjunct84" shortcut="/simulations/Gjunct82">
+  <simulation name="Gjunct84">
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">07/05/1984</start_date>
       <end_date type="date" description="Enter the end date of the simulation">12/10/1984</end_date>
@@ -3441,7 +3616,7 @@
     <metfile name="met">
       <filename name="filename" input="yes">Gjunct84IB.met</filename>
     </metfile>
-    <area name="paddock" shortcut="/simulations/Gjunct82/paddock">
+    <area name="paddock">
       <Soil name="Field11">
         <Water>
           <SoilCrop name="Maize">
@@ -3716,10 +3891,16 @@
           </SW>
         </Sample>
       </Soil>
-      <surfaceom name="SurfaceOrganicMatter" shortcut="/simulations/Gjunct82/paddock/SurfaceOrganicMatter" />
-      <fertiliser shortcut="/simulations/Gjunct82/paddock/fertiliser" />
-      <Maize shortcut="/simulations/Gjunct82/paddock/Maize" />
-      <folder name="Manager folder" shortcut="/simulations/Gjunct82/paddock/Manager folder">
+      <surfaceom name="SurfaceOrganicMatter">
+        <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
+        <type type="text" description="Organic Matter type">wheat</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">4000</mass>
+        <cnr type="text" description="C:N ratio of initial residue">33</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <fertiliser />
+      <Maize />
+      <folder name="Manager folder">
         <manager name="Sow on a fixed date">
           <ui>
             <category type="category" description="Sowing criteria" />
@@ -3733,23 +3914,51 @@
             <row_spacing type="text" description="Enter row spacing (mm) : ">610</row_spacing>
           </ui>
           <script>
-            <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif     
-        if (today = date('[date]') then
+            <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
    </text>
             <event>start_of_day</event>
           </script>
         </manager>
-        <manager name="Fertilise at sowing" shortcut="/simulations/Gjunct82/paddock/Manager folder/Fertilise at sowing" />
-        <manager name="Harvesting rule" shortcut="/simulations/Gjunct82/paddock/Manager folder/Harvesting rule" />
+        <manager name="Fertilise at sowing">
+          <ui>
+            <category type="category" description="When should fertiliser be applied" />
+            <modulename type="modulename" description="On which module should the event come from : ">Maize</modulename>
+            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+            <category type="category" description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">300</fert_amount_sow>
+            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
+          </ui>
+          <script>
+            <text>
+        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+        </manager>
+        <manager name="Harvesting rule">
+          <ui>
+            <category type="category" description="Harvesting criteria" />
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">Maize</crop>
+          </ui>
+          <script>
+            <text>
+          if ([crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead') then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager name="DoOutput" shortcut="/Maize/Shared/DoOutput" />
       </folder>
       <outputfile>
         <filename output="yes">Gjunct84.out</filename>
         <title>Gjunct84</title>
-        <variables name="My Variables">
+        <variables name="My Variables" shortcut="/Maize/Shared/My Variables">
           <variable>dd/mm/yyyy as Date</variable>
           <variable>DaysAfterSowing</variable>
           <variable>Stage</variable>
@@ -3784,12 +3993,30 @@
           <variable>accTT</variable>
           <variable>Height</variable>
         </variables>
+        <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
       </outputfile>
-      <operations name="Operations Schedule" shortcut="/simulations/Gjunct82/paddock/Operations Schedule" />
-      <irrigation name="Irrigation" shortcut="/simulations/Gjunct82/paddock/Irrigation" />
+      <operations name="Operations Schedule">
+        <operation condition="start_of_day">
+          <date>
+          </date>
+          <action>
+          </action>
+        </operation>
+      </operations>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">1000</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.8</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+        <allocation type="text" description="Allocation in mm">0</allocation>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
     </area>
   </simulation>
-  <simulation name="Gjunct85" shortcut="/simulations/Gjunct82">
+  <simulation name="Gjunct85">
     <clock>
       <start_date type="date" description="Enter the start date of the simulation">07/05/1985</start_date>
       <end_date type="date" description="Enter the end date of the simulation">06/11/1985</end_date>
@@ -3798,7 +4025,7 @@
     <metfile name="met">
       <filename name="filename" input="yes">Gjunct85IB.met</filename>
     </metfile>
-    <area name="paddock" shortcut="/simulations/Gjunct82/paddock">
+    <area name="paddock">
       <Soil name="Field12">
         <Water>
           <SoilCrop name="Maize">
@@ -4073,10 +4300,16 @@
           </SW>
         </Sample>
       </Soil>
-      <surfaceom name="SurfaceOrganicMatter" shortcut="/simulations/Gjunct82/paddock/SurfaceOrganicMatter" />
-      <fertiliser shortcut="/simulations/Gjunct82/paddock/fertiliser" />
-      <Maize shortcut="/simulations/Gjunct82/paddock/Maize" />
-      <folder name="Manager folder" shortcut="/simulations/Gjunct82/paddock/Manager folder">
+      <surfaceom name="SurfaceOrganicMatter">
+        <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
+        <type type="text" description="Organic Matter type">wheat</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">4000</mass>
+        <cnr type="text" description="C:N ratio of initial residue">33</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <fertiliser />
+      <Maize />
+      <folder name="Manager folder">
         <manager name="Sow on a fixed date">
           <ui>
             <category type="category" description="Sowing criteria" />
@@ -4090,23 +4323,51 @@
             <row_spacing type="text" description="Enter row spacing (mm) : ">610</row_spacing>
           </ui>
           <script>
-            <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif        
-        if (today = date('[date]') then
+            <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
 </text>
             <event>start_of_day</event>
           </script>
         </manager>
-        <manager name="Fertilise at sowing" shortcut="/simulations/Gjunct82/paddock/Manager folder/Fertilise at sowing" />
-        <manager name="Harvesting rule" shortcut="/simulations/Gjunct82/paddock/Manager folder/Harvesting rule" />
+        <manager name="Fertilise at sowing">
+          <ui>
+            <category type="category" description="When should fertiliser be applied" />
+            <modulename type="modulename" description="On which module should the event come from : ">Maize</modulename>
+            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+            <category type="category" description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">300</fert_amount_sow>
+            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
+          </ui>
+          <script>
+            <text>
+        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+        </manager>
+        <manager name="Harvesting rule">
+          <ui>
+            <category type="category" description="Harvesting criteria" />
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">Maize</crop>
+          </ui>
+          <script>
+            <text>
+          if ([crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead') then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager name="DoOutput" shortcut="/Maize/Shared/DoOutput" />
       </folder>
-      <outputfile shortcut="/simulations/Gjunct82/paddock/outputfile">
+      <outputfile>
         <filename output="yes">Gjunct85.out</filename>
         <title>Gjunct85</title>
-        <variables name="My Variables">
+        <variables name="My Variables" shortcut="/Maize/Shared/My Variables">
           <variable>dd/mm/yyyy as Date</variable>
           <variable>DaysAfterSowing</variable>
           <variable>Stage</variable>
@@ -4141,9 +4402,27 @@
           <variable>accTT</variable>
           <variable>Height</variable>
         </variables>
+        <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
       </outputfile>
-      <operations name="Operations Schedule" shortcut="/simulations/Gjunct82/paddock/Operations Schedule" />
-      <irrigation name="Irrigation" shortcut="/simulations/Gjunct82/paddock/Irrigation" />
+      <operations name="Operations Schedule">
+        <operation condition="start_of_day">
+          <date>
+          </date>
+          <action>
+          </action>
+        </operation>
+      </operations>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">1000</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.8</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+        <allocation type="text" description="Allocation in mm">0</allocation>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
     </area>
   </simulation>
   <simulation name="Gjunct86">
@@ -4151,11 +4430,11 @@
       <start_date type="date" description="Enter the start date of the simulation">30/04/1986</start_date>
       <end_date type="date" description="Enter the end date of the simulation">29/10/1986</end_date>
     </clock>
-    <summaryfile shortcut="/simulations/Gjunct82/summaryfile" />
+    <summaryfile />
     <metfile name="met">
       <filename name="filename" input="yes">Gjunct86IB.met</filename>
     </metfile>
-    <area name="paddock" shortcut="/simulations/Gjunct82/paddock">
+    <area name="paddock">
       <Soil name="Field13">
         <Water>
           <SoilCrop name="Maize">
@@ -4430,10 +4709,16 @@
           </SW>
         </Sample>
       </Soil>
-      <surfaceom name="SurfaceOrganicMatter" shortcut="/simulations/Gjunct82/paddock/SurfaceOrganicMatter" />
-      <fertiliser shortcut="/simulations/Gjunct82/paddock/fertiliser" />
-      <Maize shortcut="/simulations/Gjunct82/paddock/Maize" />
-      <folder name="Manager folder" shortcut="/simulations/Gjunct82/paddock/Manager folder">
+      <surfaceom name="SurfaceOrganicMatter">
+        <PoolName type="text" description="Organic Matter pool name">wheat</PoolName>
+        <type type="text" description="Organic Matter type">wheat</type>
+        <mass type="text" description="Initial surface residue (kg/ha)">4000</mass>
+        <cnr type="text" description="C:N ratio of initial residue">33</cnr>
+        <standing_fraction type="text" description="Fraction of residue standing">0.0</standing_fraction>
+      </surfaceom>
+      <fertiliser />
+      <Maize />
+      <folder name="Manager folder">
         <manager name="Sow on a fixed date">
           <ui>
             <category type="category" description="Sowing criteria" />
@@ -4447,60 +4732,72 @@
             <row_spacing type="text" description="Enter row spacing (mm) : ">610</row_spacing>
           </ui>
           <script>
-            <text>         if (paddock_is_fallow() = 0) then 
-            outputfile do_output
-         endif        
-        if (today = date('[date]') then
+            <text>        if (today = date('[date]') then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], crop_class = [class]
          endif
 </text>
             <event>start_of_day</event>
           </script>
         </manager>
-        <manager name="Fertilise at sowing" shortcut="/simulations/Gjunct82/paddock/Manager folder/Fertilise at sowing" />
-        <manager name="Harvesting rule" shortcut="/simulations/Gjunct82/paddock/Manager folder/Harvesting rule" />
+        <manager name="Fertilise at sowing">
+          <ui>
+            <category type="category" description="When should fertiliser be applied" />
+            <modulename type="modulename" description="On which module should the event come from : ">Maize</modulename>
+            <eventname type="text" description="On which event should fertiliser be applied : ">sowing</eventname>
+            <category type="category" description="Fertiliser application details" />
+            <fertmodule type="modulename" description="Module used to apply the fertiliser : ">fertiliser</fertmodule>
+            <fert_amount_sow type="text" description="Amount of starter fertiliser at sowing (kg/ha) : ">300</fert_amount_sow>
+            <fert_type_sow type="list" listvalues="NO3_N, NH4_N, NH4NO3, urea_N, urea_no3, urea, nh4so4_n, rock_p, banded_p, broadcast_p" description="Sowing fertiliser type : ">urea_N</fert_type_sow>
+          </ui>
+          <script>
+            <text>
+        [fertmodule] apply amount = [fert_amount_sow] (kg/ha), depth = 50 (mm), type = [fert_type_sow]
+            </text>
+            <event>[modulename].[eventname]</event>
+          </script>
+        </manager>
+        <manager name="Harvesting rule">
+          <ui>
+            <category type="category" description="Harvesting criteria" />
+            <crop type="crop" description="Enter name of crop to harvest when ripe : ">Maize</crop>
+          </ui>
+          <script>
+            <text>
+          if ([crop].StageName = 'harvest_ripe' or [crop].plant_status = 'dead') then
+              [crop]  harvest
+              [crop]  end_crop
+           endif
+</text>
+            <event>end_of_day</event>
+          </script>
+        </manager>
+        <manager name="DoOutput" shortcut="/Maize/Shared/DoOutput" />
       </folder>
-      <outputfile shortcut="/simulations/Gjunct82/paddock/outputfile">
+      <outputfile>
         <filename output="yes">Gjunct86.out</filename>
         <title>Gjunct86</title>
-        <variables name="My Variables">
-          <variable>dd/mm/yyyy as Date</variable>
-          <variable>DaysAfterSowing</variable>
-          <variable>Stage</variable>
-          <variable>Biomass</variable>
-          <variable>GreenWt</variable>
-          <variable>Biomass units g/m^2 as BiomassWt</variable>
-          <variable>RootGreenWt</variable>
-          <variable>LeafGreenWt</variable>
-          <variable>StemGreenWt</variable>
-          <variable>RachisGreenWt</variable>
-          <variable>GrainGreenWt</variable>
-          <variable>biomass_n</variable>
-          <variable>RootGreenN</variable>
-          <variable>LeafGreenN</variable>
-          <variable>StemGreenN</variable>
-          <variable>RachisGreenN</variable>
-          <variable>GrainGreenN</variable>
-          <variable>GrainGreenNConc</variable>
-          <variable>GrainNo</variable>
-          <variable>GrainSize</variable>
-          <variable>LeafNo</variable>
-          <variable>LAI</variable>
-          <variable>SLAI</variable>
-          <variable>esw_profile as ESW</variable>
-          <variable>no3() as NO3</variable>
-          <variable>SLN</variable>
-          <variable>WaterSD</variable>
-          <variable>sw</variable>
-          <variable>HI</variable>
-          <variable>TPLA</variable>
-          <variable>SPLA</variable>
-          <variable>accTT</variable>
-          <variable>Height</variable>
-        </variables>
+        <variables name="My Variables" shortcut="/Maize/Shared/My Variables" />
+        <events name="My Variables Events" shortcut="/Maize/Shared/My Variables Events" />
       </outputfile>
-      <operations name="Operations Schedule" shortcut="/simulations/Gjunct82/paddock/Operations Schedule" />
-      <irrigation name="Irrigation" shortcut="/simulations/Gjunct82/paddock/Irrigation" />
+      <operations name="Operations Schedule">
+        <operation condition="start_of_day">
+          <date>
+          </date>
+          <action>
+          </action>
+        </operation>
+      </operations>
+      <irrigation name="Irrigation">
+        <automatic_irrigation type="list" listvalues="on,off" description="Automatic irrigation">on</automatic_irrigation>
+        <asw_depth type="text" description="Depth to which ASW is calculated. (mm)">1000</asw_depth>
+        <crit_fr_asw type="text" description="Fraction of ASW below which irrigation is applied (0-1.0)">0.8</crit_fr_asw>
+        <irrigation_efficiency type="text" description="Efficiency of the irrigation. (0-1.0)">1</irrigation_efficiency>
+        <irrigation_allocation type="list" listvalues="on,off" description="Allocation limits">off</irrigation_allocation>
+        <allocation type="text" description="Allocation in mm">0</allocation>
+        <default_no3_conc type="text" description="Nitrate concentration (ppm N)">0.0</default_no3_conc>
+        <default_nh4_conc type="text" description="Ammonium concentration (ppm N)">0.0</default_nh4_conc>
+        <default_cl_conc type="text" description="Chloride concentration (ppm Cl)">0.0</default_cl_conc>
+      </irrigation>
     </area>
   </simulation>
 </folder>

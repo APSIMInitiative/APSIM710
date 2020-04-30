@@ -13,6 +13,9 @@
 #include "Stem.h"
 #include "Rachis.h"
 #include "Grain.h"
+#include "GrainCM.h"
+#include "StemCM.h"
+#include "BiomassCM.h"
 
 #include "Nitrogen.h"
 #include "Phosphorus.h"

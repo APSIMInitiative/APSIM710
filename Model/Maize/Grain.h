@@ -10,7 +10,7 @@ namespace Maize {
    //------------------------------------------------------------------------------------------------
    class Grain : public PlantPart
       {
-      private:
+	  protected:
 
          // Parameters ----------------------------------------------------------
          double waterContent;
@@ -86,9 +86,11 @@ namespace Maize {
          double calcPDemand(void);
          double calcPRetransDemand(void);
          double getPConc(void)const{return pConc;}
+		 virtual double getGRFract(void) { return 0; } //cohort
 
          // phenology
          void  phenologyEvent(int);
+		 virtual double calcDltCDemand(double dailyBiom) { return 0; }; //cohort
 
          void  Summary(void);
       };
