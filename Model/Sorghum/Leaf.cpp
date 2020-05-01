@@ -318,18 +318,39 @@ void Leaf::senesceArea(void)
 //------------------------------------------------------------------------------------------------
 double Leaf::calcLaiSenescenceFrost(void)
    {
-   //  calculate senecence due to frost
-	if (stage <= emergence)return 0.0;
-   double dltSlaiFrost = 0.0;
-   if (plant->today.minT < frostKill)
-		{
-		if(stage < fi)
-         dltSlaiFrost = Max(0.0,lai - 0.01);
-		else
-			dltSlaiFrost = lai;
-		}
+   double severeFrost = frostKill - 3.0;
+   //  calculate senescence due to frost
+   if (plant->today.minT > frostKill) return 0.0;
+   if (stage <= emergence) return 0.0;
+   
+   char msg[120];
+   if (plant->today.minT > severeFrost)
+      {
+      if(stage < fi)
+         {
+         //the plant will survive but all of the leaf area is removed except a fraction
+         //3 degrees is a default for now - extract to a parameter to customise it
+         sprintf(msg,"Frost Event: (Non Fatal) \n");
+         scienceAPI.write(msg);
+         sprintf(msg, "\t\tMin Temp      = %.2f \t\t Senesced LAI    = %.2f\n", plant->today.minT, lai - 0.01);
+         scienceAPI.write(msg);
 
-   return dltSlaiFrost;
+         return Max(0.0,lai - 0.01);
+         }
+      else if(stage > flowering)
+         {
+            //after flowering it takes a servere Frost to kill the plant
+            //not sure what the effect on LAI should be at this stage
+            return 0.0;
+         }
+      }
+
+   sprintf(msg, "Frost Event: (Fatal) \n");
+   scienceAPI.write(msg);
+   sprintf(msg, "\t\tMin Temp      = %.2f \t\t Senesced LAI    = %.2f\n", plant->today.minT, lai - 0.01);
+   scienceAPI.write(msg);
+   //the plant will be killed as it's LAI will be 0
+   return lai;
    }
    /* TODO : put in messages */
 //------------------------------------------------------------------------------------------------
