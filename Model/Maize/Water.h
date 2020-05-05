@@ -89,12 +89,8 @@ namespace Maize {
          double layerProportion(void);
 
 			// process
-         void  calcDailySupply(void);
-         void  calcStresses(void);
-         void  calcUptake(void);
-         void  getOtherVariables (void);
-		 double earExpansionStress; // cohort
-		 double calcSwDefEarExpansion(void);
+        double earExpansionStress; // cohort
+		  double calcSwDefEarExpansion(void);
 
 			void  calcStressTrace(void);
       	int classify(vector<double> stress);
@@ -115,6 +111,12 @@ namespace Maize {
          void  updateVars(void);
          void  process(void);
          double calcDemand(void);
+
+			// process
+         void  getOtherVariables (void);
+         void  calcDailySupply(void);
+         void  calcStresses(void);
+         void  calcUptake(void);
 
          // Roots
          double swAvailRatio(int currentLayer);
@@ -146,6 +148,7 @@ namespace Maize {
          // phenology
          void  phenologyEvent(int){};
          double getDemand(void)const{return swDemand;}
+         void setSWDemand(double demand) { swDemand = demand; };
       };
    //------------------------------------------------------------------------------------------------
    }

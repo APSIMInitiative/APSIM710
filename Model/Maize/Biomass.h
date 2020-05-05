@@ -12,7 +12,17 @@ namespace Maize {
       {
 	  protected:
          double effectiveRue;
+         bool useDetailedPSModel;
+         bool DCaPSModelInitialised;
 
+         double laiTrigger;
+         bool DCAPSTriggered;
+
+         int DOY;
+         double RootShootRatio;
+         double SLN;
+         double SWAvailable;
+         double DCAPSPotBiom;
       
          // Parameters ----------------------------------------------------------
          vector<double> ratioRootShoot;
@@ -91,6 +101,9 @@ namespace Maize {
 
          // phenology
          void  phenologyEvent(int){};
+         bool useDCAPS();
+   		void calcBiomassDCAPS();
+
       };
    }
 #endif

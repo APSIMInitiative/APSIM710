@@ -304,7 +304,6 @@ void Plant::process (void)                 // do crop preparation
 		//DCAPS give sw demand
 	}
 	
-	
 	water->calcStresses();
 	water->calcUptake();
 
@@ -316,13 +315,7 @@ void Plant::process (void)                 // do crop preparation
    stage = (float)phenology->currentStage();
    for (unsigned i = 0; i < PlantParts.size(); i++)
    {
-	   PlantParts[i]->setStage(phenology->currentStage());
-   }
-
-
-   for (unsigned i = 0; i < PlantParts.size(); i++)
-   {
-	   PlantParts[i]->setStage(phenology->currentStage());
+	   PlantParts[i]->setStage(stage);
    }
 
    leaf->calcPotentialArea();

@@ -248,7 +248,18 @@ void Plant::onSowCrop(SowType &sow)
 //------------------------------------------------------------------------------------------------
 void Plant::prepare (void)
    {
-	
+
+
+   if (!scienceAPI.get("co2", "mg/kg", true, co2, 300.0f, 1000.0f))
+      co2 = 350.0;
+
+   tempStress = tempStressTable.value(today.avgT);
+   radnIntercepted = radnInt();
+	double rueToday = rue * rue_co2_modifier();
+	biomass->calcBiomassRUE(rueToday,radnIntercepted);
+   transpEff = transpEfficiency();
+   water->calcDemand();
+
    // at beginning of day, reset the daily dlt variables
    for(unsigned i=0;i < PlantParts.size();i++)
       {
@@ -263,27 +274,36 @@ void Plant::prepare (void)
 //------------------------------------------------------------------------------------------------
 void Plant::process (void)                 // do crop growth and development
    {
-
-   if (!scienceAPI.get("co2", "mg/kg", true, co2, 300.0f, 1000.0f))
-      co2 = 350.0;
-
-	// TODO this rue/transpiration code should be shifted to Leaf
-   tempStress = tempStressTable.value(today.avgT);
-   radnIntercepted = radnInt();
-	double rueToday = rue * rue_co2_modifier();
-	biomass->calcBiomassRUE(rueToday,radnIntercepted);
-   transpEff = transpEfficiency();
 	
-	water->process();
+   stage = (float)phenology->currentStage();
+
+   water->getOtherVariables();
+   water->calcDailySupply();
+	
+	if (biomass->useDCAPS())
+	{
+		biomass->calcBiomassDCAPS();
+		//DCAPS give sw demand
+	}
+
+	water->calcStresses();
+	water->calcUptake();
+
 	stem->calcCanopyHeight();
 	leaf->potentialGrowth();
+
 	phenology->development();
 
 	stage = phenology->currentStage();
+   for (unsigned i = 0; i < PlantParts.size(); i++)
+   {
+	   PlantParts[i]->setStage(stage);
+   }
 
    grain->process();
 	biomass->process();
 	roots->process();
+   
 	leaf->actualGrowth();
    nitrogen->process();
    biomass->dmScenescence();         // moved because nitrogen now causes senescence

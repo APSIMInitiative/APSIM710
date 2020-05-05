@@ -133,6 +133,8 @@ namespace Maize {
 
          void partitionN(double N){dltNGreen += N;}
          void partitionP(double P){dltPGreen += P;}
+         void setStage(double newStage){stage = newStage;}
+
          void calcDltPSenesced(void);
          void calcDltPDetached(void);
          void updateP(void);

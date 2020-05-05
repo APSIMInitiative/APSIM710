@@ -165,6 +165,7 @@ namespace Maize {
 		string getCropType(void)const { return cropType; }
 
 		double getRadnInt(void)const { return radnIntercepted; }
+		void setRadInt(double radInt) { radnIntercepted = radInt; }
 
 		double getPlantDensity(void)const { return plantDensity; }
 		double getRowSpacing(void)const { return rowSpacing; }
@@ -180,6 +181,8 @@ namespace Maize {
 
 		void   phenologyEvent(int stage);
 		bool isEmerged(void)const { return phenology->currentStage() >= emergence; }
+
+
 	};  // Plant
 }
 #endif //PLANT_H_
