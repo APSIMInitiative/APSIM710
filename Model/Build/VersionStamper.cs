@@ -80,7 +80,8 @@ class VersionStamper
             Out.WriteLine("using System.Reflection;");
             Out.WriteLine("[assembly: AssemblyFileVersion(\"" + Major.ToString() + "." +
                                                                 Minor.ToString() + "." +
-                                                                "0.0\")]");
+                                                                RevisionNumber + "." +
+																"0\")]");
             Out.Close();
 
             // Write the VersionInfo.vb
@@ -88,7 +89,8 @@ class VersionStamper
             Out.WriteLine("Imports System.Reflection");
             Out.WriteLine("<Assembly: AssemblyFileVersion(\"" + Major.ToString() + "." +
                                                                 Minor.ToString() + "." +
-                                                                "0.0\")>");
+                                                                RevisionNumber + "." +
+																"0\")>");
             Out.Close();
 
             // Write the VersionInfo.cpp
