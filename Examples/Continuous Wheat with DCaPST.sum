@@ -14,7 +14,8 @@ Title                  = Continuous Wheat with DCaPST
    Component                        "clock" = %apsim%\Model\Clock.dll
    Component                          "met" = %apsim%\Model\Input.dll
 Paddock:
-   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                   "Outputfile" = %apsim%\Model\Report.dll
+   Component                        "Daily" = %apsim%\Model\Report.dll
    Component                        "accum" = %apsim%\Model\Accum.dll
    Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
    Component                   "Soil Water" = %apsim%\Model\SoilWat.dll
@@ -46,7 +47,7 @@ Paddock:
      Sparse data is not allowed
      INPUT File name: %apsim%\Examples\MetFiles\Goond.met
 
-------- outputfile Initialisation ---------------------------------------------
+------- Outputfile Initialisation ---------------------------------------------
      Output frequency:
         harvesting
      Output variables:
@@ -58,6 +59,28 @@ Paddock:
         esw
 
      Output file = Continuous Wheat with DCaPST.out
+     Format = normal
+
+------- Daily Initialisation --------------------------------------------------
+     Output frequency:
+        post
+     Output variables:
+        dd/mm/yyyy as date
+        day_of_year
+        MaxT
+        MinT
+        Radn
+        RootShoot
+        SLN
+        SoilWater
+        LAI
+        BIOshootDAYPot
+        BIOshootDAY
+        EcanDemand
+        EcanSupply
+        RadIntDcaps
+
+     Output file = Continuous Wheat with DCaPST Daily.out
      Format = normal
 
 ------- paddock.accum Initialisation ------------------------------------------
@@ -460,31 +483,31 @@ Fertiliser OnTrigger called, paddock='paddock'
                      stover N conc =     1.58 (%)    extractable sw =   78.42 (mm)
 29 September 1943(Day of year=272), paddock.wheat: 
       stage 7.0 start_grain_fill
-                     biomass =        1179.37 (g/m^2)   lai          =   2.926 (m^2/m^2)
+                     biomass =        1179.38 (g/m^2)   lai          =   2.927 (m^2/m^2)
                      stover N conc =     1.32 (%)    extractable sw =   66.70 (mm)
 25 October 1943(Day of year=298), paddock.wheat: 
       stage 8.0 end_grain_fill
-                     biomass =        1334.91 (g/m^2)   lai          =   0.783 (m^2/m^2)
+                     biomass =        1334.92 (g/m^2)   lai          =   0.783 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   43.77 (mm)
 27 October 1943(Day of year=300), paddock.wheat: 
       stage 9.0 maturity
-                     biomass =        1335.05 (g/m^2)   lai          =   0.617 (m^2/m^2)
+                     biomass =        1335.06 (g/m^2)   lai          =   0.617 (m^2/m^2)
                      stover N conc =     0.32 (%)    extractable sw =   41.02 (mm)
 28 October 1943(Day of year=301), paddock.wheat: 
       stage 10.0 harvest_ripe
-                     biomass =        1335.05 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     biomass =        1335.06 (g/m^2)   lai          =   0.000 (m^2/m^2)
                      stover N conc =     0.31 (%)    extractable sw =   39.69 (mm)
 29/10/1943 12:00:00 AM Harvesting Crop
 29 October 1943(Day of year=302), paddock.wheat: 
      
-      flowering day          =  265                           stover (kg/ha)         =     8336.9
-      maturity day           =  300                           grain yield (kg/ha)    =     5013.6
-      grain % water content  =   12.5                         grain yield wet (kg/ha)=     5729.8
+      flowering day          =  265                           stover (kg/ha)         =     8337.0
+      maturity day           =  300                           grain yield (kg/ha)    =     5013.7
+      grain % water content  =   12.5                         grain yield wet (kg/ha)=     5729.9
       grain wt (g)           =    0.033                       grains/m^2             =    15245.3
       grains/plant           =  152.5                         maximum lai            =      5.769
-      total above ground biomass (kg/ha)    =    13350.5
-      live above ground biomass (kg/ha)     =    13350.5
-      green above ground biomass (kg/ha)    =    10775.8
+      total above ground biomass (kg/ha)    =    13350.6
+      live above ground biomass (kg/ha)     =    13350.6
+      green above ground biomass (kg/ha)    =    10775.9
       senesced above ground biomass (kg/ha) =     2574.8
       number of leaves       =     45.7
       DM Root:Shoot ratio    =     0.17                       Harvest Index          =       0.38
@@ -503,11 +526,11 @@ Fertiliser OnTrigger called, paddock='paddock'
      
      Crop harvested.
          Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
-                          DM (kg/ha) =                8336.9                     0.0
+                          DM (kg/ha) =                8337.0                     0.0
                           N  (kg/ha) =                  30.57                    0.00
      
          Organic matter removed from system:-      From Tops               From Roots
-                          DM (kg/ha) =                5013.6                     0.0
+                          DM (kg/ha) =                5013.7                     0.0
                           N  (kg/ha) =                 134.57                    0.00
      
       stage 4.0 end_of_juvenile
