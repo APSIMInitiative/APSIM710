@@ -167,7 +167,7 @@ class Plant
    string getCropType(void)const{return cropType;}
 
    double getRadnInt(void)const{return radnIntercepted;}
-
+	void setRadInt(double radInt) { radnIntercepted = radInt; }
 
    double getPlantDensity(void)const{return plantDensity;}
    double getRowSpacing(void)const{return rowSpacing;}
@@ -181,8 +181,6 @@ class Plant
    void get_height(float &);
 
    void   phenologyEvent(int stage);
-
-	void setRadInt(double radInt) { radnIntercepted = radInt; }
 
    };  // Plant
 

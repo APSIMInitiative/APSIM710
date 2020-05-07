@@ -13,6 +13,13 @@ Biomass::Biomass(ScienceAPI2 &api, Plant *p) : PlantProcess(api)
 	plant = p;
 	initialize();
 	doRegistrations();
+
+	//Variables for DCAPS
+	useDetailedPSModel = false;
+	DCaPSModelInitialised = false;
+	DCAPSTriggered = false;
+	laiTrigger = -1;
+
 	}
 //------------------------------------------------------------------------------------------------
 //------ Biomass Destructor
@@ -45,6 +52,13 @@ void Biomass::doRegistrations(void)
 
 	scienceAPI.exposeFunction("biomass_wt", "g/m2", "Total above-ground biomass",FloatFunction(&Biomass::getBiomass));
 
+	//dcaps variables
+	scienceAPI.expose("laiTrigger", "", "", true, laiTrigger);
+	scienceAPI.expose("DOY", "", "", true, DOY);
+	scienceAPI.expose("RootShootRatio", "", "", true, RootShootRatio);
+
+	scienceAPI.expose("SWAvailable", "", "", true, SWAvailable);
+
 	}
 //------------------------------------------------------------------------------------------------
 //------- Initialize variables
@@ -67,6 +81,9 @@ void Biomass::initialize(void)
 	dltDMGreen.assign(nParts,0.0);
 	dltDMDetachedSen.assign  (nParts,0.0);
 	dltDMRetranslocate.assign(nParts,0.0);
+
+	DCAPSTriggered = false;
+
 	}
 //------------------------------------------------------------------------------------------------
 //------ read Biomass parameters
@@ -118,12 +135,81 @@ void Biomass::updateVars(void)
 	stage = plant->phenology->currentStage();
 
 	}
+
+//------------------------------------------------------------------------------------------------
+//------------------- Returns true if dcaps is to be used
+//------------------------------------------------------------------------------------------------
+bool Biomass::useDCAPS()
+{
+	double lai = plant->leaf->getLAI();
+
+	//Setup fpr DCaPs
+	if (laiTrigger > -1)
+	{
+		useDetailedPSModel = true;
+	}
+
+	return DCAPSTriggered == true || (useDetailedPSModel == true && lai >= laiTrigger);
+}
+
+//------------------------------------------------------------------------------------------------
+//------------------- calculate biomass production from DCAPS
+//------------------------------------------------------------------------------------------------
+
+void Biomass::calcBiomassDCAPS()
+{
+
+	double lai = plant->leaf->getLAI();
+
+	if (useDCAPS())
+	{
+		DCAPSTriggered = true;
+
+		DOY = plant->today.doy;
+		double latitude = plant->phenology->getLatitude();
+		double maxT = plant->today.maxT;
+		double minT = plant->today.minT;
+		double radn = plant->today.radn;
+
+		int currentPhase = (int)stage;
+		RootShootRatio = ratioRootShoot[currentPhase];
+
+		SLN = plant->leaf->getSLN();
+		SWAvailable = plant->water->getTotalSupply();
+
+		scienceAPI.publish("dodcaps");
+
+		std::vector<float> DCaPSOut;
+
+		if (!scienceAPI.get("dcaps", "", false, DCaPSOut, -1000.0, 1000.0)) {
+			throw std::runtime_error("nothing returned from dcap");
+		}
+
+		double swDemand, swUptake, radInt;
+		long index = 0;
+
+		dltDMPotRUE = DCaPSOut[0];
+		swDemand = DCaPSOut[1];
+		swUptake = DCaPSOut[2];
+		radInt = DCaPSOut[3];
+
+		plant->setRadInt(radInt);
+		plant->water->setSWDemand(swDemand);
+	}
+}
 //------------------------------------------------------------------------------------------------
 //------------------- calculate biomass production due to water (transpiration)
 //------------------------------------------------------------------------------------------------
 void Biomass::calcBiomassTE(void)
 	{
 	dltDMPotTE = calcDltDMPotTE();
+
+	//Override for use in the biochem photosynthesis model
+	if (useDCAPS() == true)
+	{
+		dltDMPotTE = dltDMPotRUE;
+	}
+
 	}
 //------------------------------------------------------------------------------------------------
 //------------------- calculate biomass production due to light (limited by water and n)

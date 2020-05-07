@@ -24,7 +24,7 @@ class VersionStamper
                 throw new Exception("Usage: VersionStamper Directory=c:\\Apsim [Increment=Yes] [RevisionNumber=4191]");
 
             string RevisionNumber = "";
-			if (Macros.ContainsKey("RevisionNumber"))
+			if (Macros.ContainsKey("RevisionNumber") && Macros["RevisionNumber"] != "%REVISION_NUMBER%")
 				RevisionNumber = Macros["RevisionNumber"];
 			else
 			{
