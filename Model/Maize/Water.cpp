@@ -407,7 +407,9 @@ void Water::calcUptake(void)
    else if (plant->uptake_source == "swim3")
 		{
 	   scienceAPI.get("uptake_water_maize", "",1, dltSwDep);
-	   totalUptake += sumVector(dltSwDep);
+       for (unsigned i = 0; i < dltSwDep.size(); i++)
+           dltSwDep[i] *= -1;
+	   totalUptake += -1 * sumVector(dltSwDep);
 		}
   
    }
