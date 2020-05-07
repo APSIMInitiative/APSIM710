@@ -1,4 +1,4 @@
-<folder version="37" creator="Apsim 7.10" name="simulations">
+<folder version="37" creator="Apsim 7.10-r0" name="simulations">
   <simulation name="Continuous Wheat with DCaPST">
     <metfile name="met">
       <filename name="filename" input="yes">%apsim%/Examples/MetFiles/Goond.met</filename>
@@ -967,11 +967,15 @@ public class Script
         </manager2>
         <manager2 name="DCaPS-C3">
           <ui />
-          <text>
-using System;
+          <text>using System;
+using System.IO;
+
 using ModelFramework;
-using LayerCanopyPhotosynthesis;
- 
+
+using DCAPST;
+using DCAPST.Interfaces;
+using DCAPST.Utilities; 
+
 public class Script 
 {      
    [Link]  public Simulation MySimulation;
@@ -987,250 +991,233 @@ public class Script
    [Output] public double EcanSupply;
    [Output] public double RUE;
    [Output] public double TE; 
-   [Output] public double RadIntDcapst; 
+   [Output] public double RadIntDcaps; 
    [Output] public double BIOshootDAYPot;
+   [Output] public double SoilWater;
    
-   public PhotosynthesisModel PM;
+   public CanopyParameters CP;
+   public PathwayParameters PP;
+   public DCAPSTModel DM;
    
-   public string Shift2PsModel = "dcapst"; //The photosynthesis module to which you want to witch when LAI&gt;LAITrigger
-   public double LAITrigger = 0.5; //reduced from 1 (AW, 2019.09.12)
-   public double PsiFactor = 1.0; //psiFactor-Psi Reduction Factor  
+   public double LAITrigger = 0.5;
+   public double PsiFactor = 1.0; // Psi reduction factor
+
+   // DCaPST is disabled to begin with
+   bool dcapstON = false;
    
-   public bool DCaPSTTriggered = false;
-   public string PsModelName1;
+   // The alternative photosystem model
+   string PsModelName1;
+
+   private FileStream stream;
+   private StreamWriter writer;
    
-   int DOY = 0;
-   int iter = 0;
-   double latitude = 0;
-   double maxT = 0;
-   double minT = 0;
-   double radn = 0;
-   double RootShootRatio = 0;
-   double SLN = 0;
-   double SWAvailable = 0;
-   double SWAvailablePrev = 0;
-   double lai = 0;   
-   
-   // (Ben, 2019.07.20): Set this to TRUE to use APSIM internal CO2
-   bool APSIMCO2 = false;
-   public double CO2 = 370;
-      
    // The following event handler will be called once at the beginning of the simulation
    [EventHandler] public void OnInitialised()
    {
-     
-      PM = new PhotosynthesisModelC3();
-      PM.photoPathway = PhotosynthesisModel.PhotoPathway.C3;
-      PM.Initialised = false;
-      PM.Canopy.NLayers = 1;
-
-      //Set the parameters
-      PM.EnvModel.Initialised = false;
+      string path = "IntervalValues.csv";
+      stream = new FileStream(path, FileMode.Create);
+      writer = new StreamWriter(stream);
       
-      PM.Canopy.U0 = 1.5;     //U0 - wind speed just above the canopy
+      /* IMPORTANT - Do NOT change the order of these values */
 
-      PM.EnvModel.RPAR = 0.5;     //RPAR - Fraction of PAR energy to that of the total solar
+      CP = Classic.SetUpCanopy(
+         CanopyType.C3, // Canopy type
+         370, // CO2 partial pressure
+         0.7, // Empirical curvature factor
+         0.047, // Diffusivity-solubility ratio
+         210000, // O2 partial pressure
+         0.78, // PAR diffuse extinction coefficient
+         0.8, // NIR diffuse extinction coefficient
+         0.036, // PAR diffuse reflection coefficient
+         0.389, // NIR diffuse reflection coefficient
+         60, // Leaf angle
+         0.15, // PAR leaf scattering coefficient
+         0.8, // NIR leaf scattering coefficient
+         0.05, // Leaf width
+         1.3, // SLN ratio at canopy top
+         14, // Minimum structural nitrogen
+         1.5, // Wind speed
+         1.5); // Wind speed profile distribution coefficient
 
-      if (APSIMCO2) { MyPaddock.Get("CO2", out CO2); }
-      
-      PM.Canopy.Ca = CO2;     //Ca - Atmsopheric CO2 partial pressure
-      PM.Canopy.OxygenPartialPressure = 210000;     //OxygenPartialPressure - Atmsopheric O2 partial pressure
-      PM.EnvModel.ATM = 1.01325;     //Air pressure - Air pressure
+      PP = Classic.SetUpPathway(
+         0, // Electron transport minimum temperature
+         30.0, // Electron transport optimum temperature
+         45.0, // Electron transport maximum temperature
+         0.911017958600129, // Electron transport scaling constant
+         1, // Electron transport Beta value
 
-      //////// Canopy level ////////
-      PM.B = 0.409;     //BiomassConversionCoefficient - CO2-to-biomass conversion efficiency
+         0, // Mesophyll conductance minimum temperature
+         29.2338417788683, // Mesophyll conductance optimum temperature
+         45, // Mesophyll conductance maximum temperature
+         0.875790608584141, // Mesophyll conductance scaling constant
+         1, // Mesophyll conductance Beta value
 
-      PM.Canopy.LeafAngle = 60;     //LeafAngle - Leaf angle (with respect to the horizontal plane)
-      PM.Canopy.CPath.SLNRatioTop = 1.3;     //SLNRatioTop - Ratio of the specific leaf nitrogen at the top of the canopy to that of the canopy average
-      PM.Canopy.CPath.StructuralN = 14;     //StructuralN - Specific leaf nitrogen below which Vcamx, Jmax and Vpmax are zero
-      PM.Canopy.DiffuseExtCoeff = 0.78;     //DiffuseExtCoeff - 
-      PM.Canopy.DiffuseExtCoeffNIR = 0.8;     //DiffuseExtCoeffNIR - 
-      PM.Canopy.LeafScatteringCoeff = 0.15;     //LeafScatteringCoeff - leaf-level scattering coefficient for PAR
-      PM.Canopy.LeafScatteringCoeffNIR = 0.8;     //LeafScatteringCoeffNIR - leaf-level scattering coefficient for NIR
-      PM.Canopy.DiffuseReflectionCoeff = 0.036;     //DiffuseReflectionCoeff - canopy-level reflection coefficient for diffuse radiation for PAR
-      PM.Canopy.DiffuseReflectionCoeffNIR = 0.389;     //DiffuseReflectionCoeffNIR - canopy-level reflection coefficient for diffuse radiation for NIR
-      PM.Canopy.LeafWidth = 0.05;     //LeafWidth - Leaf width
-      PM.Canopy.Ku = 1.5;     //Ku - canopy wind speed profile coefficient
+         273.422964228666, // Kc25 - Michaelis Menten constant of Rubisco carboxylation at 25 degrees C
+         93720, // KcFactor
 
-      //////// Photosynthesis ////////
-      PM.Canopy.CPath.PsiVc = 1.1;     //PsiVc - Slope of linear relationship between Vcmax per leaf area at 25°C and specific leaf nitrogen
-      PM.Canopy.CPath.PsiJ = 1.85;     //PsiJ - Slope of linear relationship between Jmax per leaf area at 25°C and specific leaf nitrogen
-      PM.Canopy.CPath.PsiRd = 0;     //PsiRd - Slope of linear relationship between Rd per leaf area at 25°C and specific leaf nitrogen
+         165824.064155384, // Ko25 - Michaelis Menten constant of Rubisco oxygenation at 25 degrees C
+         33600, // KoFactor
 
-      PM.Canopy.Vpr_l = 0;     //Vpr_l - PEP regeneration rate per unit leaf
-      PM.Canopy.Theta = 0.7;     //theta - Empirical curvature factor
-      PM.Canopy.F = 0.15;     //F - Spectral correction factor
-      PM.Canopy.Alpha = 0;     //Alpha - Fraction of PS II activity in the bundle sheath
-      PM.Canopy.CPath.Phi = 2;     //Phi - extra energy (ATP) cost required from processes other than the C3 cycle
-      PM.Canopy.CPath.X = 0.4;     //X - Fraction of electron transport partitioned to mesophyll chloroplasts
-      PM.Canopy.Constant = 0.047;     //Constant - 
+         4.59217066521612, // VcVo25 - Rubisco carboxylation to oxygenation at 25 degrees C
+         35713.19871277176, // VcVoFactor
 
-      //////// Leaf gas diffusion ////////
-      PM.Canopy.CPath.CiCaRatio = 0.7;     //CiCaRatio - ratio of intercellular to air CO2 partial pressure
-      PM.Canopy.CPath.PsiGm = 0.00412;     //PsiGm - Slope of linear relationship between gm per leaf area at 25°C and specific leaf nitrogen
-      //reduced to 0.00412 (AW, 2019.09.12)
-      PM.Canopy.Gbs_CO2 = 0.003;     //Gbs_CO2 - Bundle-sheath conductance for CO2 per leaf area
+         0.0, // Kp25 - Michaelis Menten constant of PEPc activity at 25 degrees C (Unused in C3)
+         0.0, // KpFactor (Unused in C3)
 
-      //////// Temperature response ////////
-      PM.Canopy.CPath.KcP25 = 273.422964228666;     //KcP25
-      PM.Canopy.CPath.KcTEa = 93720;     //KcEa
-      PM.Canopy.CPath.KoP25 = 165824.064155384;     //KoP25
-      PM.Canopy.CPath.KoTEa = 33600;     //KoEa
+         65330, // VcFactor
+         46390, // RdFactor
+         57043.2677590512, // VpFactor
 
-      PM.Canopy.CPath.VcTEa = 65330;     //VcmaxEa
-      PM.Canopy.CPath.VcMax_VoMaxP25 = 4.59217066521612;     //Vcmax_VomaxP25
-      PM.Canopy.CPath.VcMax_VoMaxTEa = 35713.1987127717;     //Vcmax_VomaxEa
+         0.0, // PEPc regeneration (Unused in C3)
+         0.15, // Spectral correction factor
+         0.1, // Photosystem II activity fraction
+         0.003, // Bundle sheath CO2 conductance
+         1.1 * PsiFactor, // Max Rubisco activity to SLN ratio
+         1.85 * PsiFactor, // Max electron transport to SLN ratio
+         0.0 * PsiFactor, // Respiration to SLN ratio
+         1.0 * PsiFactor, // Max PEPc activity to SLN ratio
+         0.00412 * PsiFactor, // Mesophyll CO2 conductance to SLN ratio
+         0.75, // Extra ATP cost
+         0.7); // Intercellular CO2 to air CO2 ratio
 
-      PM.Canopy.CPath.RdTEa = 46390;     //RdEa
-
-      PM.Canopy.CPath.JTMin = 0;     //JTMin
-      PM.Canopy.CPath.JTOpt = 30;     //JTOpt
-      PM.Canopy.CPath.JTMax = 45;     //JTMax
-      PM.Canopy.CPath.JMaxC = 0.911017958600129;     //JMaxC
-      PM.Canopy.CPath.JBeta = 1;     //Jbeta
-
-      PM.Canopy.CPath.GmTMin = 0;     //GmTMin
-      PM.Canopy.CPath.GmTOpt = 29.2338417788683;     //GmTOpt
-      PM.Canopy.CPath.GmTMax = 45;     //GmTMax
-      PM.Canopy.CPath.GmC = 0.875790608584141;     //GmMaxC
-      PM.Canopy.CPath.GmBeta = 1;     //Gmbeta
-
-      //////// Constants ////////
-      PM.Canopy.Sigma = 0.0000000567;     //
-      PM.Canopy.Rcp = 1200;     //Volumetric heat capacity of air
-
-      PM.Canopy.G = 0.066;     //Psychrometric constant
-      PM.Canopy.Lambda = 2447000;     //Latent heat of vapourisation of water
-
-      //Set the Psi values using PsiFactor
-      PM.Canopy.CPath.PsiVc *= PsiFactor;
-      PM.Canopy.CPath.PsiJ *= PsiFactor;
-      PM.Canopy.CPath.PsiRd *= PsiFactor;
-      PM.Canopy.CPath.PsiVp *= PsiFactor;
-
-      PM.EnvModel.Initialised = true;
-      PM.Initialised = true;
-
-      //Set the LAI trigger and keep initial Ps model name    
+      //Set the LAI trigger
       MyPaddock.Set("DCaPSTTriggerLAI", LAITrigger);
-      MyPaddock.Get("PsModelName1", out PsModelName1);       
-   }
-   
-   [EventHandler] public void OnPrepare()
-   {    
-      RootShoot = 0;
-      BIOshootDAY = 0;
-      BIOtotalDAY = 0;
-      EcanDemand = 0; 
-      EcanSupply = 0;
-      RadIntDcapst = 0;
-      RUE = 0;
-      TE = 0;
-      BIOshootDAYPot = 0;
-      iter = 0;
-      
-      for(int i = 0; i &lt; 5; i++) { dcapst[i] = -1.0f;}      
-              
-      if (!DCaPSTTriggered) {
-         if (Shift2PsModel == "dcapstold") {
-            DCaPSTTriggered = true;
-            MyPaddock.Set("PsModelName", Shift2PsModel); 
-         
-         } else {
-         
-            MyPaddock.Get("lai", out lai);          
-            if (lai &gt;= LAITrigger) {
-               DCaPSTTriggered = true;
-               MyPaddock.Set("PsModelName", Shift2PsModel); 
-            }           
-         }  
-      }
+      MyPaddock.Get("PsModelName1", out PsModelName1);
    }
    
    // This routine is called when the plant model wants us to do the calculation
-   [EventHandler] public void Ondodcapst() {
-      //      ApsimC3PhotoLink p = new ApsimC3PhotoLink();
+   private bool empty = true; // tracks if the header has been printed for the interval value data
+   [EventHandler] public void Ondodcapst() 
+   {
+      int DOY = 0;
+      double latitude = 0;
+      double maxT = 0;
+      double minT = 0;
+      double radn = 0;
+      double RootShootRatio = 0;
+      double SLN = 0;
+      double SWAvailable = 0;
+      double lai = 0;
+	  
+      MyPaddock.Get("DCAPSTDOY", out DOY);      
+      MyPaddock.Get("DCAPSTsln", out SLN);
+      MyPaddock.Get("DCAPSTRootShootRatio", out RootShootRatio);
+      MyPaddock.Get("DCAPSTswAvail", out SWAvailable);
      
       MyPaddock.Get("latitude", out latitude);
       MyPaddock.Get("maxT", out maxT);
       MyPaddock.Get("minT", out minT);
       MyPaddock.Get("radn", out radn);
+      MyPaddock.Get("lai", out lai);
+            
+      // Model the photosynthesis
+      DCAPSTModel DM = Classic.SetUpModel(CP, PP, DOY, latitude, maxT, minT, radn);
+      
+      // Optional values 
+      DM.PrintIntervalValues = false; // Switch to print extra data (default = false)
+      DM.Biolimit = 0;     // Biological transpiration limit of the crop (0 disables mechanism)
+      DM.Reduction = 0;    // Excess water reduction fraction for bio-limited transpiration (0 disables mechanism)
+
+      // Run the simulation
+      DM.DailyRun(lai, SLN, SWAvailable, RootShootRatio);
+      
+      if (DM.PrintIntervalValues)
+      {
+         if (empty)
+         {
+            writer.WriteLine(DM.PrintResultHeader());
+            empty = false;
+         }
+         
+         writer.WriteLine(DM.IntervalResults);
+      }
+      
+      // Outputs
+      RootShoot = RootShootRatio;
+      BIOshootDAY = dcapst[0] = DM.ActualBiomass;
+      BIOtotalDAY = BIOshootDAY * (1 + RootShoot);
+      EcanDemand = dcapst[1] = DM.WaterDemanded; 
+      EcanSupply = dcapst[2] = DM.WaterSupplied;
+      RadIntDcaps = dcapst[3] = DM.InterceptedRadiation;
+      RUE = (RadIntDcaps == 0 ? 0 : BIOshootDAY / RadIntDcaps);
+      TE = (EcanSupply == 0 ? 0 : BIOshootDAY / EcanSupply);
+      BIOshootDAYPot = dcapst[4] = DM.PotentialBiomass;
+      SoilWater = SWAvailable;
+   }
+      
+   // Set its default value to garbage so that we find out quickly
+   [EventHandler] public void OnPrepare()
+   {
+      RootShoot = 0;
+      BIOshootDAY = 0;
+      BIOtotalDAY = 0;
+      EcanDemand = 0; 
+      EcanSupply = 0;
+      RadIntDcaps = 0;
+      RUE = 0;
+      TE = 0;
+      BIOshootDAYPot = 0;
+      
+      for(int i = 0; i &lt; 5; i++) { dcapst[i] = -1.0f;}
+      
+      double lai = 0;
       MyPaddock.Get("lai", out lai); 
       
-      if (Shift2PsModel == "dcapst") {
-         MyPaddock.Get("DCAPSTDOY", out DOY);      
-         MyPaddock.Get("DCAPSTsln", out SLN);
-         MyPaddock.Get("DCAPSTRootShootRatio", out RootShootRatio);
-         MyPaddock.Get("DCAPSTswAvail", out SWAvailable);
-         
-      } else {
-         MyPaddock.Get("DCAPSTOldDOY", out DOY);      
-         MyPaddock.Get("DCAPSTOldsln", out SLN);
-         MyPaddock.Get("DCAPSTOldRootShootRatio", out RootShootRatio);
-         MyPaddock.Get("DCAPSTOldswAvail", out SWAvailable);
+      if (!dcapstON &amp;&amp; lai &gt;= LAITrigger)
+      {
+         dcapstON = true;
+         MyPaddock.Set("PsModelName", "dcapst");
       }
- 
-              
-      //Check
-      //Console.WriteLine("DCaps Input Manager--------------");
-      //Console.WriteLine("DOY = " + DOY.ToString());
-      //Console.WriteLine("latitude = " + latitude.ToString());
-      //Console.WriteLine("maxT = " + maxT.ToString());
-      //Console.WriteLine("minT = " + minT.ToString());
-      //Console.WriteLine("radn = " + radn.ToString());
-      //Console.WriteLine("RootShootRatio = " + RootShootRatio.ToString());
-      //Console.WriteLine("SLN = " + SLN.ToString());
-      //Console.WriteLine("SWAvailable = " + SWAvailable.ToString());
-      //Console.WriteLine("lai = " + lai.ToString());
-      //Console.WriteLine("DCaps Input Manager--------------");      
-        
-      dcapst = PM.RunApsim(DOY, latitude, maxT, minT, radn, lai, SLN, SWAvailable, RootShootRatio);
-      
-      //Additional outputs
-      RootShoot = RootShootRatio;
-      BIOshootDAY = dcapst[0];
-      BIOtotalDAY = BIOshootDAY * (1 + RootShoot);
-      EcanDemand = dcapst[1]; 
-      EcanSupply = dcapst[2];
-      RadIntDcapst = dcapst[3];
-      RUE = (RadIntDcapst == 0 ? 0 : BIOshootDAY / RadIntDcapst);
-      TE = (EcanSupply == 0 ? 0 : BIOshootDAY / EcanSupply); 
-      BIOshootDAYPot = dcapst[4];
-      
-      //Check Outputs
-      //      Console.WriteLine("DCapst Out Manager--------------");
-      //      Console.WriteLine("1 = " + dcapst[0].ToString());
-      //      Console.WriteLine("2 = " + dcapst[1].ToString());
-      //      Console.WriteLine("3 = " + dcapst[2].ToString());
-      //      Console.WriteLine("4 = " + dcapst[3].ToString());
-      //      Console.WriteLine("DCapst Out Manager--------------");
-      //      
-   }      
+   }
    
-   [EventHandler] public void OnSowing() {
-      DCaPSTTriggered = false;
+   // Make certain DCaPST is disabled at sowing
+   [EventHandler] public void OnSowing() 
+   {
+      dcapstON = false;
       MyPaddock.Set("PsModelName", PsModelName1); 
    }
-}
-</text>
+}</text>
           <Reference>
             <ref type=" text" description="Path to assembly:">%apsim%/Model/DCaPST.dll</ref>
           </Reference>
         </manager2>
       </folder>
-      <outputfile>
+      <outputfile name="Outputfile">
         <filename output="yes">Continuous Wheat with DCaPST.out</filename>
         <title>Continuous Wheat with DCaPST</title>
         <variables name="Variables">
-          <variable array="?" description="Date (dd/mm/yyyy)">dd/mm/yyyy as Date</variable>
-          <variable array="?" description="Biomass">biomass</variable>
-          <variable array="?" description="Yield">yield</variable>
-          <variable array="?" description="grain protein content">grain_protein</variable>
-          <variable array="?" description="Size of each grain">grain_size</variable>
-          <variable array="?" description="Extractable Soil Water (mm)">esw</variable>
+          <variable>dd/mm/yyyy as Date</variable>
+          <variable>biomass</variable>
+          <variable>yield</variable>
+          <variable>grain_protein</variable>
+          <variable>grain_size</variable>
+          <variable>esw</variable>
         </variables>
         <events name="Reporting Frequency">
-          <event description="">harvesting</event>
+          <event>harvesting</event>
+        </events>
+      </outputfile>
+      <outputfile name="Daily">
+        <filename name="filename" output="yes">Continuous Wheat with DCaPST Daily.out</filename>
+        <title>Continuous Wheat with DCaPST Daily</title>
+        <variables name="DailyVariables">
+          <variable>dd/mm/yyyy as date</variable>
+          <variable>day_of_year</variable>
+          <variable>MaxT</variable>
+          <variable>MinT</variable>
+          <variable>Radn</variable>
+          <variable>RootShoot</variable>
+          <variable>SLN</variable>
+          <variable>SoilWater</variable>
+          <variable>LAI</variable>
+          <variable>BIOshootDAYPot</variable>
+          <variable>BIOshootDAY</variable>
+          <variable>EcanDemand</variable>
+          <variable>EcanSupply</variable>
+          <variable>RadIntDcaps</variable>
+        </variables>
+        <events name="DailyVariables Events">
+          <event>Daily</event>
         </events>
       </outputfile>
     </area>
