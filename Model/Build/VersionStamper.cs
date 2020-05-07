@@ -90,7 +90,7 @@ class VersionStamper
             Out.WriteLine("<Assembly: AssemblyFileVersion(\"" + Major.ToString() + "." +
                                                                 Minor.ToString() + "." +
                                                                 RevisionNumber + "." +
-																"0\")]");
+																"0\")>");
             Out.Close();
 
             // Write the VersionInfo.cpp
