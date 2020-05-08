@@ -216,7 +216,7 @@ void Biomass::calcBiomassTE(void)
 //------------------------------------------------------------------------------------------------
 void Biomass::calcBiomassRUE(double rue, double radnIntercepted)
 	{
-	effectiveRue = rue * Min(plant->getTempStress(),plant->nitrogen->getPhotoStress());
+	effectiveRue = rue * Min(plant->getTempStress(), Min(plant->nitrogen->getPhotoStress(), plant->phosphorus->getPhotoStress()));
 	dltDMPotRUE =  effectiveRue * radnIntercepted;
 	}
 //------------------------------------------------------------------------------------------------

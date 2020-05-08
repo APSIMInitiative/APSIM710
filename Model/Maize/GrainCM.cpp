@@ -656,7 +656,7 @@ double GrainCM::calcGrainNumber(void)
 // Calculate the stress factor for diminishing potential harvest index
 double GrainCM::yieldPartDemandStress(void)
    {
-   double rueReduction = Min(plant->getTempStress(),plant->nitrogen->getPhotoStress());
+   double rueReduction = Min(plant->getTempStress(), Min(plant->nitrogen->getPhotoStress(), plant->phosphorus->getPhotoStress()));
    return plant->water->photosynthesisStress() * rueReduction;
    }
 //------------------------------------------------------------------------------------------------
