@@ -684,8 +684,8 @@ void Leaf::leafAreaPotBellShapeCurve(void)
 
 double Leaf::calcStressedLeafArea()
    {
-   return dltPotentialLAI * Min(plant->water->getExpansionStress(),
-      plant->nitrogen->getExpansionStress());
+    double expansionStress = Min(plant->water->getExpansionStress(), Min(plant->nitrogen->getExpansionStress(), plant->phosphorus->getExpansionStress()));
+   return dltPotentialLAI * expansionStress;
    }
 //------------------------------------------------------------------------------------------------
 double Leaf::calcMaxLaiPossible(void)
