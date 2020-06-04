@@ -1,0 +1,483 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.10 r1dc07aa5627d36f92c1a4aa08cb6d09d15396648
+Title                  = Walgett19TOS1CvAcePop132
+   Component                        "clock" = %apsim%/Model/Clock.so
+   Component                          "met" = %apsim%/Model/Input.so
+Paddock:
+   Component             "outputfile Daily" = %apsim%/Model/Report.so
+   Component           "outputfile Harvest" = %apsim%/Model/Report.so
+   Component                        "accum" = %apsim%/Model/Accum.so
+   Component                   "fertiliser" = %apsim%/Model/Fertiliser.so
+   Component                   "Irrigation" = %apsim%/Model/Irrigation.so
+   Component                        "Rules" = %apsim%/Model/Manager.so
+   Component "Vertosol No11 (PAWC-136 No523-Generic) Water" = %apsim%/Model/SoilWat.so
+   Component         "SurfaceOrganicMatter" = %apsim%/Model/SurfaceOM.so
+   Component "Vertosol No11 (PAWC-136 No523-Generic) Nitrogen" = %apsim%/Model/SoilN.so
+   Component                       "lentil" = %apsim%/Model/Plant.so
+   Component                     "SW Calcs" = %apsim%/Model/Manager2.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        do_cashbook
+        post
+        end_step
+     Simulation start date = 20/05/2019
+     Simulation end date   = 15/02/2020
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: Walgett.met
+
+------- outputfile Daily Initialisation ---------------------------------------
+     Output variables:
+        dd/mm/yyyy as Date
+        StageName
+        DaysAfterSowing
+        lai
+        leaf_no as leaves/plant
+        leaf_no_sen as deadleaves.m2
+        grainTotalWt as GrainWt
+        biomass_wt as AboveGround.Wt
+        root_depth
+        sw
+        esw_layr as esw
+        lentil_cvv  as cultivar
+        lentil_density  as density
+        tos as TOS
+        site
+        esw_100_600
+        esw_0_600
+
+     Output file = Walgett19TOS1CvAcePop132 outputfile Daily.out
+     Format = normal
+
+------- outputfile Harvest Initialisation -------------------------------------
+     Output frequency:
+        harvesting
+     Output variables:
+        dd/mm/yyyy as HarvestDate
+        sow_day as SowDate
+        lentil.yield
+        lentil.biomass
+        lentil.root_depth
+        MaxLAI
+        lentil.floral_initiation_das as FloralInitDAS
+        lentil.flowering_das as FloweringDAS
+        DaysAfterSowing as MaturityDAS
+        lentil_density  as density
+        lentil_cvv  as cultivar
+        tos as TOS
+        site
+
+     Output file = Walgett19TOS1CvAcePop132 outputfile Harvest.out
+     Format = normal
+
+------- paddock.accum Initialisation ------------------------------------------
+     Initialising
+
+------- paddock.Irrigation Initialisation -------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- paddock.Rules Initialisation ------------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     under_crop = 0
+     sow_day = '21/05/2019'
+     tos = 'tos1'
+     lentil_cvv = 'ace'
+     lentil_density = '132'
+     site = 'walgett'
+     maxlai = 0
+     
+     SECTION:- start_of_day
+     if (under_crop > 0 and stagename = 'out') then
+        under_crop = 0
+     endif
+     if (lentil.lai > maxlai) then
+        maxlai = lentil.lai
+     endif
+     if (today = date('20/05/2019')) then
+        'vertosol no11 (pawc-136 no523-generic) water' reset
+        'vertosol no11 (pawc-136 no523-generic) nitrogen' reset
+        'surfaceorganicmatter' reset
+     endif
+     if (today = date('21/05/2019')) then
+        lentil sow cultivar = 'ace', plants = 132 (/m2), sowing_depth = 40 (mm)
+        maxlai = 0
+        under_crop = 1
+     endif
+     if (lentil.stagename = 'harvest_ripe') or (lentil.plant_status = 'dead') then
+        lentil harvest
+        lentil end_crop
+     endif
+     
+     SECTION:- end_of_day
+     if (under_crop > 0) then
+        'outputfile daily' do_output
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : under_crop = 0.00000
+     Manager creating a new local string variable : sow_day = 21/05/2019
+     Manager creating a new local string variable : tos = tos1
+     Manager creating a new local string variable : lentil_cvv = ace
+     Manager creating a new local string variable : lentil_density = 132
+     Manager creating a new local string variable : site = walgett
+     Manager creating a new local real variable : maxlai = 0.00000
+
+------- paddock.Vertosol No11 (PAWC-136 No523-Generic) Water Initialisation ---
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.089  0.177  0.320  0.370  0.199  1.590  0.762  0.300
+          150.-  300.  0.140  0.175  0.308  0.358  0.282  1.620  0.190  0.300
+          300.-  600.  0.190  0.190  0.321  0.371  0.304  1.590  0.048  0.300
+          600.-  900.  0.190  0.190  0.322  0.372  0.303  1.580  0.000  0.300
+          900.- 1200.  0.190  0.190  0.312  0.362  0.297  1.610  0.000  0.300
+         1200.- 1500.  0.190  0.190  0.301  0.351  0.297  1.640  0.000  0.300
+         1500.- 1800.  0.190  0.190  0.280  0.329  0.297  1.700  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      26.55       3.30      21.45       7.50
+          150.-  300.      26.25      16.05      19.95       7.50
+          300.-  600.      57.00      34.20      39.30      15.00
+          600.-  900.      57.00      33.90      39.60      15.00
+          900.- 1200.      57.00      32.10      36.60      15.00
+         1200.- 1500.      57.00      32.10      33.30      15.00
+         1500.- 1800.      57.00      32.10      27.00      14.70
+          ---------------------------------------------------------
+               Totals     337.80     183.75     217.20      89.70
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              73.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Stage 1 Duration (U): Summer        6.00 (mm)
+                                  Winter        4.00 (mm)
+            Stage 2       (CONA): Summer        3.50 (mm^0.5)
+                                  Winter        2.50 (mm^0.5)
+            Critical Dates:       Summer        1-Nov
+                                  Winter        1-Apr
+            Eo from priestly-taylor
+
+------- paddock.SurfaceOrganicMatter Initialisation ---------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat           50.0    20.0     0.3     0.0   0.025     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+
+------- paddock.Vertosol No11 (PAWC-136 No523-Generic) Nitrogen Initialisation      
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Clay
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.10  1.17   21.00    0.00    0.00
+             2     8.70  0.94    7.00    0.00    0.00
+             3     8.90  0.58    3.50    0.00    0.00
+             4     8.00  0.29    3.50    0.00    0.00
+             5     7.00  0.18    0.00    0.00    0.00
+             6     6.40  0.12    0.00    0.00    0.00
+             7     5.80  0.12    0.00    0.00    0.00
+          ------------------------------------------------
+           Totals               35.00    0.00    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      27260.6  2271.7   643.9    80.5   138.9     3.5
+             2      22566.4  1880.5   178.4    22.3   108.1     2.7
+             3      27795.1  2316.3   109.4    13.7    65.6     1.6
+             4      13888.2  1157.3     0.0     0.0    39.8     1.0
+             5       8500.8   708.4     0.0     0.0    24.1     0.6
+             6       5756.4   479.7     0.0     0.0    14.6     0.4
+             7       5967.0   497.2     0.0     0.0     8.9     0.2
+          ---------------------------------------------------------
+           Totals  111734.4  9311.2   931.8   116.5   400.0    10.0
+          ---------------------------------------------------------
+
+------- SW Calcs Initialisation -----------------------------------------------
+------- Start of simulation  --------------------------------------------------
+20 May 2019(Day of year=140), paddock.Vertosol No11 (PAWC-136 No523-Generic) Water: 
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+20 May 2019(Day of year=140), paddock.Vertosol No11 (PAWC-136 No523-Generic) Nitrogen: 
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type Clay
+20 May 2019(Day of year=140), paddock.SurfaceOrganicMatter: 
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat           50.0    20.0     0.3     0.0   0.025     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.0
+     
+21 May 2019(Day of year=141), paddock.Rules: 
+     Manager sending message :- lentil sow  cultivar = 'ace', plants = 132 (/m2), sowing_depth = 40 (mm)
+21 May 2019(Day of year=141), paddock.lentil: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = ace
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       1 (dd/mm)
+           emergence
+              cumvd_emergence            =       0 (vd)
+              tt_emergence               =     515 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    10.6    14.4 (h)
+              y_tt_end_of_juvenile       =     435      30 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =      12 (h)
+              y_tt_floral_initiation     =      32 (dd)
+           flowering
+              x_pp_flowering             =      12 (h)
+              y_tt_flowering             =     300 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =      12 (h)
+              y_tt_start_grain_fill      =     435 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      60 (dd)
+           maturity
+              tt_maturity                =       1 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0148     0.0148
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.50       0.70
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.060          0.177       1.000
+         150.0     0.060          0.175       1.000
+         300.0     0.060          0.190       1.000
+         300.0     0.040          0.220       1.000
+         300.0     0.040          0.251       1.000
+         300.0     0.020          0.278       1.000
+         300.0     0.020          0.280       1.000
+         -----------------------------------------------
+         Extractable SW:   136mm in  1800mm total depth (  8%).
+         Crop factor for bounding water use is set to   1.2 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            141   40.0  132.0  250.0   0.0   0.0 ace
+         ------------------------------------------------
+     
+22 May 2019(Day of year=142), paddock.lentil: 
+      stage 2.0 germination
+25 May 2019(Day of year=145), paddock.lentil: 
+      stage 3.0 emergence
+                     biomass =           1.72 (g/m^2)   lai          =   0.011 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =    2.77 (mm)
+5 July 2019(Day of year=186), paddock.lentil: 
+      stage 4.0 end_of_juvenile
+                     biomass =          16.53 (g/m^2)   lai          =   0.231 (m^2/m^2)
+                     stover N conc =     4.31 (%)    extractable sw =   69.58 (mm)
+1 August 2019(Day of year=213), paddock.lentil: 
+      stage 5.0 floral_initiation
+                     biomass =          73.41 (g/m^2)   lai          =   0.878 (m^2/m^2)
+                     stover N conc =     2.90 (%)    extractable sw =   77.13 (mm)
+3 August 2019(Day of year=215), paddock.lentil: 
+      stage 6.0 flowering
+                     biomass =          81.28 (g/m^2)   lai          =   1.005 (m^2/m^2)
+                     stover N conc =     2.87 (%)    extractable sw =   75.30 (mm)
+27 August 2019(Day of year=239), paddock.lentil: 
+      stage 7.0 start_grain_fill
+                     biomass =         240.78 (g/m^2)   lai          =   1.900 (m^2/m^2)
+                     stover N conc =     1.90 (%)    extractable sw =   38.25 (mm)
+22 September 2019(Day of year=265), paddock.lentil: 
+      stage 8.0 end_grain_fill
+                     biomass =         330.55 (g/m^2)   lai          =   0.204 (m^2/m^2)
+                     stover N conc =     1.75 (%)    extractable sw =   13.15 (mm)
+26 September 2019(Day of year=269), paddock.lentil: 
+      stage 9.0 maturity
+                     biomass =         337.57 (g/m^2)   lai          =   0.177 (m^2/m^2)
+                     stover N conc =     1.73 (%)    extractable sw =   11.33 (mm)
+27 September 2019(Day of year=270), paddock.lentil: 
+      stage 10.0 harvest_ripe
+                     biomass =         338.83 (g/m^2)   lai          =   0.000 (m^2/m^2)
+                     stover N conc =     1.72 (%)    extractable sw =   10.86 (mm)
+28 September 2019(Day of year=271), paddock.Rules: 
+     Manager sending message :- lentil harvest
+28 September 2019(Day of year=271), paddock.lentil: 
+     
+      flowering day          =  215                           stover (kg/ha)         =     2227.9
+      maturity day           =  269                           grain yield (kg/ha)    =     1160.3
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     1318.5
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      2.571
+      total above ground biomass (kg/ha)    =     3388.3
+      live above ground biomass (kg/ha)     =     3388.3
+      green above ground biomass (kg/ha)    =     2445.0
+      senesced above ground biomass (kg/ha) =      943.3
+      number of leaves       =     51.4
+      DM Root:Shoot ratio    =     0.30                       Harvest Index          =       0.34
+      Stover C:N ratio       =    24.57                       Root C:N ratio         =      26.06
+      grain N percent        =     3.60                       total N content (kg/ha)=      78.04
+      grain N uptake (kg/ha) =    41.77                       senesced N content (kg/ha)=   14.15
+      green N content (kg/ha)=    22.12
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.000        0.000        0.000        0.000
+         end_of_juvenile      to floral_initiation       0.000        0.000        0.025        0.000
+         floral_initiation    to flowering               0.000        0.000        0.088        0.000
+         flowering            to start_grain_fill        0.078        0.111        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.272        0.345        0.000        0.000
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                2227.9                     0.0
+                          N  (kg/ha) =                  36.27                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                1160.3                     0.0
+                          N  (kg/ha) =                  41.77                    0.00
+     
+      stage 11.0 end_crop
+     Manager sending message :- lentil end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                   0.0                  1030.3
+                          N  (kg/ha) =                   0.00                   15.81
+     
+15 February 2020(Day of year=46), clock: 
+     Simulation is terminating due to end criteria being met.
+
