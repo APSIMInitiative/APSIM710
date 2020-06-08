@@ -64,7 +64,7 @@
     <RadiationPartitioningOrder>fruit leaf</RadiationPartitioningOrder>
     <crop_type>lentil</crop_type>
     <default_crop_class>plant</default_crop_class>
-    <default_cultivar>nugett</default_cultivar>
+    <default_cultivar>nugget</default_cultivar>
     <stress_determinants>leaf stem meal</stress_determinants>
     <yield_parts>meal</yield_parts>
     <retrans_parts>leaf stem</retrans_parts>
@@ -140,6 +140,7 @@
          SECTION 0 - CO2
          %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          -->
+      <co2_default units="ppm">350</co2_default>
       <photosynthetic_pathway units="C3, or C4">C3</photosynthetic_pathway>
       <x_co2_te_modifier units="ppm co2">350  700   1000</x_co2_te_modifier> 
       <y_co2_te_modifier>1.0  1.37  1.69</y_co2_te_modifier> 
@@ -160,8 +161,8 @@
       <!-- __________________________________________________________________________________________________________-
          EMERGENCE
          -->
-      <shoot_lag units="oCd" description="Time lag before linear coleoptile growth starts (deg days)">15.0</shoot_lag> !PLP 15.0
-      <shoot_rate units="oCd/mm" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">2.8</shoot_rate> !PLP 1.8
+      <shoot_lag units="oCd" description="Time lag before linear coleoptile growth starts (deg days)">15.0</shoot_lag>
+      <shoot_rate units="oCd/mm" description="Growing deg day increase with depth for coleoptile (deg day/mm depth)">1.0</shoot_rate>
       <!-- Water stress factor for emergence
          -->
       <fasw_emerg description="Fraction of available soil water">0.0  1.0    </fasw_emerg>
@@ -181,17 +182,17 @@
          THERMAL TIME CALCULATION
          Thermal time calculation
          -->
-      <x_temp units="oC" description="temperature table for thermal time">2.0 30.0  40.0</x_temp> !PLP 0.0  30.0  40.0
-      <y_tt units="oCd" description="thermal time">0.0 28.0  0.0</y_tt>
-      <!-- __________________________________________________________________________________________________________-
+      <x_temp units="oC" description="temperature table for thermal time">0.0  30.0  40.0</x_temp>
+      <y_tt units="oCd" description="thermal time">0.0  30.0  0.0</y_tt>
+            <!-- __________________________________________________________________________________________________________-
          LEAF NUMBER DEVELOPMENT
          currently leaf number at emergence will affect LAI at early stage, leaf_no_seed has no effect on the model, but will have in future
          -->
       <leaf_no_at_emerg description="(expanded) leaf number at emergence ()">1.0     </leaf_no_at_emerg>
-      <x_node_no_app>0  6.99 10  20</x_node_no_app> !PLP 0    6.99 7  20 !0   10  15  20
-      <y_node_app_rate>100 100  61   61</y_node_app_rate> !PLP 61   61  61   61 !300 80 60 46
-      <x_node_no_leaf>0  6  10  20</x_node_no_leaf>
-      <y_leaves_per_node>0  1.5  4  4</y_leaves_per_node> !PLP 1    6  20  50 !0 2 3 1 
+      <x_node_no_app>0    6.99 7  20</x_node_no_app>
+      <y_node_app_rate>61   61  61   61</y_node_app_rate>
+      <x_node_no_leaf>   0 12 16</x_node_no_leaf>
+      <y_leaves_per_node>1  1  7.2</y_leaves_per_node>
       <x_lai_ratio description="ratio table for critical leaf size below which leaf number is reduced ()">0.0  0.8 1.0</x_lai_ratio>
       <y_leaf_no_frac description="reduction in leaf appearance ()">0.0  1.0 1.0</y_leaf_no_frac>
       <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -205,8 +206,9 @@
          -->
       <stage_code>1      2    3     4     5     6     7      8     9    10     11</stage_code>
       <x_stage_rue description="numeric code for phenological stages">1      2    3     4     5     6     7      8     9      10    11</x_stage_rue>
-      <y_rue units="g/MJ">0      0    0.69  0.69  0.69  0.69  0.69   0.69  0.69  0.69   0</y_rue> !PLP 0      0    0.69  0.69  0.69  0.69  0.69   0.69  0.69  0.69   0
-      <!-- DR measured 1.67-1.85 g/MJ PAR in lentil
+      <y_rue units="g/MJ">0      0    0.8  0.8  0.8  0.8  0.8   0.8  0.8  0.8   0</y_rue>
+
+       <!-- DR measured 1.67-1.85 g/MJ PAR in lentil
          -->
       <!-- __________________________________________________________________________________________________________-
          EXTINCTION COEFFICIENT
@@ -223,7 +225,7 @@
       <!-- __________________________________________________________________________________________________________-
          TEMPERATURE RESPONSE OF PHOTOSYNTHESIS - RUE
          -->
-      <x_ave_temp units="oC" description="mean daily temperature">0.0  22.0  30.0  40.0</x_ave_temp> !PLP
+      <x_ave_temp units="oC" description="mean daily temperature">0.0  15.0  30.0  40.0</x_ave_temp>
       <y_stress_photo units="0-1" description="multiplier on RUE">0.0   1.0   1.0   0.0</y_stress_photo>
       <!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
          BIOMASS INITIATION, PARTITION AND TRANSLOCATION
@@ -250,10 +252,10 @@
          sow    ger   eme  juv    fi    fl    st_gf end_gf  mat hv_rpe  end
          stage_code           = 1      2    3     4     5     6      7      8     9    10     11   ()
          -->
-      <ratio_root_shoot units="0-1">0      0    3.0   2.0   1.0  1.0   0.1  0     0     0      0</ratio_root_shoot>
-      <frac_leaf units="0-1" description="fraction of remaining dm allocated to leaves">0      0    0.8  0.69  0.55  0.55   0.55   0     0     0      0</frac_leaf>!PLP
-      <frac_pod units="0-1" description="fraction of dm allocated to pod or multiplier of grain dm to account for pod dm">0      0    0     0     0.0     0.52   0.69  0.01   0     0      0</frac_pod> !PLP
-      <!-- __________________________________________________________________________________________________________-
+      <ratio_root_shoot units="0-1">0      0    1.0   1.0   1.00  0.33   0.087  0     0     0      0</ratio_root_shoot>
+      <frac_leaf units="0-1" description="fraction of remaining dm allocated to leaves">0      0    0.40  0.40  0.40  0.43   0.40   0     0     0      0</frac_leaf>
+      <frac_pod units="0-1" description="fraction of dm allocated to pod or multiplier of grain dm to account for pod dm">0      0    0     0     0     0.06   0.275  0.4   0     0      0</frac_pod>
+            <!-- __________________________________________________________________________________________________________-
          GRAIN NUMBER DETERMINATION
          __________________________________________________________________________________________________________-
          GRAIN FILLING
@@ -275,20 +277,21 @@
          LEAF SIZE AS A FUNCTION OF LEAF NUMBER
          -->
       <node_no_correction>0.0</node_no_correction>
-      <x_node_no>1    4    6    8    13   16 20  </x_node_no> 
-      <y_leaf_size>300  570  570  570 200 100 100</y_leaf_size> !PLP 80  144  230  523  650  700 !100  300  300  200 200 150  100
-      <!-- ______________________________________________________________________________
+      <x_node_no>1    4    6    8    13   16</x_node_no>
+      <y_leaf_size>80  144  230  523  650  700</y_leaf_size>
+            <!-- ______________________________________________________________________________
          SPECIFIC LEAF AREA - SLA
          -->
-      <x_lai>0     1     2     4</x_lai>
-      <y_sla_max description="maximum specific leaf area for delta LAI">45000 35000 25000  15000</y_sla_max> !PLP 45000 30000 25000  15000
-      <sla_min description="minimum specific leaf area for delta LAI">10000           </sla_min>  
-      <!-- ______________________________________________________________________________
+      <x_lai>0     4     6     8</x_lai>
+      <y_sla_max description="maximum specific leaf area for delta LAI">45000 25000 20000  15000</y_sla_max>
+      <sla_min description="minimum specific leaf area for delta LAI">10000           </sla_min>
+            <!-- ______________________________________________________________________________
          TPLA  - USED TO INTIALISE THE INITIAL LAI
                <initial_tpla units="mm^2/plant" description="initial total plant leaf area">100.0</initial_tpla>  version 7.6
 -->
-      <initial_tpla units="mm^2/plant" description="initial total plant leaf area">800.0</initial_tpla> <!-- DR had 80mm^2, chickpea now 1000  -->
-      <!-- ______________________________________________________________________________
+      <initial_tpla units="mm^2/plant" description="initial total plant leaf area">80.0</initial_tpla>
+            <!-- DR had 80mm^2, chickpea now 1000  -->
+            <!-- ______________________________________________________________________________
          HARVESTING EFFECTS ON LEAF AREA
          -->
       <fr_height_cut>0.0  0.1    1</fr_height_cut>
@@ -344,7 +347,7 @@
          Fraction of distance between svp at min temp and svp at max temp where average svp during transpiration lies.
          -->
       <svp_fract description="(0-1)">0.75  </svp_fract>
-      <eo_crop_factor_default description="default crop factor for limiting soil">100.0  </eo_crop_factor_default>
+      <eo_crop_factor_default description="default crop factor for limiting soil">1.2  </eo_crop_factor_default>
       <!--  water demand to some fraction/multiple
          of atmospheric potential.
          __________________________________________________________________________________________________________-
@@ -467,7 +470,7 @@
       <x_dm_sen_frac_root description="root">0    1     </x_dm_sen_frac_root>
       <y_dm_sen_frac_root>0.005 0.005</y_dm_sen_frac_root>
       <x_dm_sen_frac_leaf description="leaf">0    1     </x_dm_sen_frac_leaf>
-      <y_dm_sen_frac_leaf>0    0.5</y_dm_sen_frac_leaf>
+      <y_dm_sen_frac_leaf>0    1</y_dm_sen_frac_leaf>
       <x_dm_sen_frac_stem description="stem">0    1     </x_dm_sen_frac_stem>
       <y_dm_sen_frac_stem>0    0</y_dm_sen_frac_stem>
       <x_dm_sen_frac_pod description="flower">0    1     </x_dm_sen_frac_pod>
@@ -480,7 +483,7 @@
          LEAF NUMBER AND AREA SENESCENCE
          -->
       <min_tpla description="lower limit of total plant leaf area">0.0</min_tpla>
-      <node_sen_rate units="oCd/node" description="rate of node senescence on main stem">106.0</node_sen_rate>!PLP 46.6
+      <node_sen_rate units="oCd/node" description="rate of node senescence on main stem">46.6</node_sen_rate>
       <fr_lf_sen_rate description="fraction of total leaf number senescing per main stem node">0.02</fr_lf_sen_rate>
       <n_fact_lf_sen_rate description="max relative increase in leaf senescence due to N stress">0.0     </n_fact_lf_sen_rate>
       <lai_sen_light units="m^2/m^2" description="induced senescence occurs (m^2/m^2)">4.0</lai_sen_light>
@@ -562,21 +565,23 @@
       !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       -->
     <digger cultivar="yes">
-      <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
-      <y_hi_incr units="1/days" description="rate of HI increase (optional)">0.0134 0.0134</y_hi_incr>
+      <x_pp_hi_incr units="h">12</x_pp_hi_incr>
+      <y_hi_incr units="1/days" description="rate of HI increase (optional)">0.0134</y_hi_incr>
       <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
       <y_hi_max_pot>0.50 0.70</y_hi_max_pot>
-      <cumvd_emergence>0      100</cumvd_emergence>
-      <tt_emergence units="oCd" description="TT from emergence to end of juvenile phase">515.0   515.0</tt_emergence><!-- DR had 363 -->
-      <est_days_emerg_to_init units="d" description="estimated days from emergence to floral init.">100</est_days_emerg_to_init>
-      <x_pp_end_of_juvenile>10.7  17</x_pp_end_of_juvenile>
-      <y_tt_end_of_juvenile>446.0 0.0</y_tt_end_of_juvenile>
-      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
-      <y_tt_floral_initiation units="oCd" description="TT from initiation to flowering">33.0   33.0</y_tt_floral_initiation>
-      <x_pp_flowering units="h">1      24</x_pp_flowering>
-      <y_tt_flowering units="oCd" description="TT from flowering to start grain fill">450.0  450.0</y_tt_flowering>
-      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
-      <y_tt_start_grain_fill units="oCd">690    690</y_tt_start_grain_fill>
+      <cumvd_emergence>0</cumvd_emergence>
+      <tt_emergence units="oCd" description="TT from emergence to end of juvenile phase">300</tt_emergence>
+
+            <!-- DR had 363 -->
+      <est_days_emerg_to_init units="d" description="estimated days from emergence to floral init.">60</est_days_emerg_to_init>
+      <x_pp_end_of_juvenile>12.0  14.1</x_pp_end_of_juvenile>
+      <y_tt_end_of_juvenile>687  114</y_tt_end_of_juvenile>
+      <x_pp_floral_initiation units="h">12</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd" description="TT from initiation to flowering">46.0</y_tt_floral_initiation>
+      <x_pp_flowering units="h">12</x_pp_flowering>
+      <y_tt_flowering units="oCd" description="TT from flowering to start grain fill">600</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">12</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">630</y_tt_start_grain_fill>
       <tt_end_grain_fill units="oCd">60</tt_end_grain_fill>
       <tt_maturity units="oCd" description="TT from maturity to harvest ripe">1.0</tt_maturity>
       <x_stem_wt units="g/plant">0  10</x_stem_wt>
@@ -587,115 +592,146 @@
       <y_hi_incr units="1/days" description="rate of HI increase (optional)">0.016 0.016</y_hi_incr>
       <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
       <y_hi_max_pot>0.50 0.70</y_hi_max_pot>
-      <cumvd_emergence>0      25</cumvd_emergence>
-      <tt_emergence units="oCd" description="TT from emergence to end of juvenile phase">350.0   350.0</tt_emergence>
+      <cumvd_emergence>0</cumvd_emergence>
+      <tt_emergence units="oCd" description="TT from emergence to end of juvenile phase">350.0</tt_emergence>
       <est_days_emerg_to_init units="d" description="estimated days from emergence to floral init.">100</est_days_emerg_to_init>
       <x_pp_end_of_juvenile>13.0  15.9</x_pp_end_of_juvenile>
       <y_tt_end_of_juvenile>473.0 171.0</y_tt_end_of_juvenile>
-      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
-      <y_tt_floral_initiation units="oCd" description="TT from initiation to flowering">294.0   294.0</y_tt_floral_initiation>
-      <x_pp_flowering units="h">1      24</x_pp_flowering>
-      <y_tt_flowering units="oCd" description="TT from flowering to start grain fill">300.0  300.0</y_tt_flowering>
-      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
-      <y_tt_start_grain_fill units="oCd">435    435</y_tt_start_grain_fill>
+      <x_pp_floral_initiation units="h">12</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd" description="TT from initiation to flowering">294.0</y_tt_floral_initiation>
+      <x_pp_flowering units="h">12</x_pp_flowering>
+      <y_tt_flowering units="oCd" description="TT from flowering to start grain fill">300.0</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">12</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">435</y_tt_start_grain_fill>
       <tt_end_grain_fill units="oCd">60</tt_end_grain_fill>
       <tt_maturity units="oCd" description="TT from maturity to harvest ripe">1.0</tt_maturity>
       <x_stem_wt units="g/plant">0  10</x_stem_wt>
-      <y_height units="mm" description="plant canopy height">0  5000</y_height><!-- do you really mean that?? -->
+      <y_height units="mm" description="plant canopy height">0  800</y_height>
     </laird>
     <northfield cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days" description="rate of HI increase (optional)">0.013 0.013</y_hi_incr>
       <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
       <y_hi_max_pot>0.50 0.70</y_hi_max_pot>
-      <cumvd_emergence>0      25</cumvd_emergence>
-      <tt_emergence units="oCd" description="TT from emergence to end of juvenile phase">482.0   482.0</tt_emergence>
+      <cumvd_emergence>0</cumvd_emergence>
+      <tt_emergence units="oCd" description="TT from emergence to end of juvenile phase">482.0</tt_emergence>
+
       <est_days_emerg_to_init units="d" description="estimated days from emergence to floral init.">100</est_days_emerg_to_init>
-      <x_pp_end_of_juvenile>12.4  13.5</x_pp_end_of_juvenile>
-      <y_tt_end_of_juvenile>790.0 0.0</y_tt_end_of_juvenile>
-      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
-      <y_tt_floral_initiation units="oCd" description="TT from initiation to flowering">249.0   249.0</y_tt_floral_initiation>
-      <x_pp_flowering units="h">1      24</x_pp_flowering>
-      <y_tt_flowering units="oCd" description="TT from flowering to start grain fill">310.0  150.0</y_tt_flowering>
-      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
-      <y_tt_start_grain_fill units="oCd">425    425</y_tt_start_grain_fill>
+      <x_pp_end_of_juvenile>10.3  16.2</x_pp_end_of_juvenile>
+      <y_tt_end_of_juvenile>687 114</y_tt_end_of_juvenile>
+      <x_pp_floral_initiation units="h">12</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd" description="TT from initiation to flowering">46.0</y_tt_floral_initiation>
+      <x_pp_flowering units="h">12</x_pp_flowering>
+      <y_tt_flowering units="oCd" description="TT from flowering to start grain fill">310.0</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">12</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">425</y_tt_start_grain_fill>
       <tt_end_grain_fill units="oCd">60</tt_end_grain_fill>
       <tt_maturity units="oCd" description="TT from maturity to harvest ripe">1.0</tt_maturity>
       <x_stem_wt units="g/plant">0  10</x_stem_wt>
-      <y_height units="mm" description="plant canopy height">0  5000</y_height>
+      <y_height units="mm" description="plant canopy height">0  800</y_height>
     </northfield>
     <ill6002 cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days" description="rate of HI increase (optional)">1 1</y_hi_incr>
       <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
       <y_hi_max_pot>0.50 0.50</y_hi_max_pot>
-      <cumvd_emergence>0      25</cumvd_emergence>
-      <tt_emergence units="oCd" description="TT from emergence to end of juvenile phase">350.0   350.0</tt_emergence>
+      <cumvd_emergence>0</cumvd_emergence>
+      <tt_emergence units="oCd" description="TT from emergence to end of juvenile phase">350.0</tt_emergence>
       <est_days_emerg_to_init units="d" description="estimated days from emergence to floral init.">100</est_days_emerg_to_init>
       <x_pp_end_of_juvenile>10.8  13.9</x_pp_end_of_juvenile>
       <y_tt_end_of_juvenile>390.0 200.0</y_tt_end_of_juvenile>
-      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
-      <y_tt_floral_initiation units="oCd" description="TT from initiation to flowering">200.0   200.0</y_tt_floral_initiation>
-      <x_pp_flowering units="h">1      24</x_pp_flowering>
-      <y_tt_flowering units="oCd" description="TT from flowering to start grain fill">300.0  300.0</y_tt_flowering>
-      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
-      <y_tt_start_grain_fill units="oCd">435    435</y_tt_start_grain_fill>
+      <x_pp_floral_initiation units="h">12</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd" description="TT from initiation to flowering">200.0</y_tt_floral_initiation>
+      <x_pp_flowering units="h">12</x_pp_flowering>
+      <y_tt_flowering units="oCd" description="TT from flowering to start grain fill">300.0</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">12</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">435</y_tt_start_grain_fill>
       <tt_end_grain_fill units="oCd">60</tt_end_grain_fill>
       <tt_maturity units="oCd" description="TT from maturity to harvest ripe">1.0</tt_maturity>
       <x_stem_wt units="g/plant">0  10</x_stem_wt>
-      <y_height units="mm" description="plant canopy height">0  5000</y_height>
+      <y_height units="mm" description="plant canopy height">0  800</y_height>
     </ill6002>
     <ill6109 cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days" description="rate of HI increase (optional)">1 1</y_hi_incr>
       <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
       <y_hi_max_pot>0.50 0.50</y_hi_max_pot>
-      <cumvd_emergence>0      25</cumvd_emergence>
-      <tt_emergence units="oCd" description="TT from emergence to end of juvenile phase">183.0   183.0</tt_emergence>
+      <cumvd_emergence>0</cumvd_emergence>
+      <tt_emergence units="oCd" description="TT from emergence to end of juvenile phase">183.0</tt_emergence>
       <est_days_emerg_to_init units="d" description="estimated days from emergence to floral init.">100</est_days_emerg_to_init>
       <x_pp_end_of_juvenile>10.5  13.8</x_pp_end_of_juvenile>
       <y_tt_end_of_juvenile>300.0 216.0</y_tt_end_of_juvenile>
-      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
-      <y_tt_floral_initiation units="oCd" description="TT from initiation to flowering">294.0   294.0</y_tt_floral_initiation>
-      <x_pp_flowering units="h">1      24</x_pp_flowering>
-      <y_tt_flowering units="oCd" description="TT from flowering to start grain fill">300.0  300.0</y_tt_flowering>
-      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
-      <y_tt_start_grain_fill units="oCd">435    435</y_tt_start_grain_fill>
+      <x_pp_floral_initiation units="h">12</x_pp_floral_initiation>
+      <y_tt_floral_initiation units="oCd" description="TT from initiation to flowering">200</y_tt_floral_initiation>
+      <x_pp_flowering units="h">12</x_pp_flowering>
+      <y_tt_flowering units="oCd" description="TT from flowering to start grain fill">300.0</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">12</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">435</y_tt_start_grain_fill>
       <tt_end_grain_fill units="oCd">60</tt_end_grain_fill>
       <tt_maturity units="oCd" description="TT from maturity to harvest ripe">1.0</tt_maturity>
       <x_stem_wt units="g/plant">0  10</x_stem_wt>
-      <y_height units="mm" description="plant canopy height">0  5000</y_height>
+      <y_height units="mm" description="plant canopy height">0  800</y_height>
     </ill6109>
-    <nugett cultivar="yes">
+    <nugget_base cultivar="yes">
       <x_pp_hi_incr units="h">1      24</x_pp_hi_incr>
       <y_hi_incr units="1/days" description="rate of HI increase (optional)">0.0148 0.0148</y_hi_incr>
       <x_hi_max_pot_stress>0.00 1.00</x_hi_max_pot_stress>
       <y_hi_max_pot>0.50 0.70</y_hi_max_pot>
-      <cumvd_emergence>0      25</cumvd_emergence>
-      <tt_emergence units="oCd" description="TT from emergence to end of juvenile phase">363.0   363.0</tt_emergence>
+      <cumvd_emergence>0</cumvd_emergence>
+      <tt_emergence units="oCd" description="TT from emergence to end of juvenile phase">515.0</tt_emergence>
       <est_days_emerg_to_init units="d" description="estimated days from emergence to floral init.">100</est_days_emerg_to_init>
-      <x_pp_end_of_juvenile>12.2  13.2</x_pp_end_of_juvenile>
-      <y_tt_end_of_juvenile>790.0 0.0</y_tt_end_of_juvenile>
-      <x_pp_floral_initiation units="h">1      24</x_pp_floral_initiation>
-      <y_tt_floral_initiation units="oCd" description="TT from initiation to flowering">320.0   320.0</y_tt_floral_initiation>
-      <x_pp_flowering units="h">1      24</x_pp_flowering>
-      <y_tt_flowering units="oCd" description="TT from flowering to start grain fill">300.0  200.0</y_tt_flowering>
-      <x_pp_start_grain_fill units="h">1      24</x_pp_start_grain_fill>
-      <y_tt_start_grain_fill units="oCd">435    435</y_tt_start_grain_fill>
+      <x_pp_end_of_juvenile>10.6  14.4</x_pp_end_of_juvenile>
+      <!--<y_tt_end_of_juvenile>687 114.0</y_tt_end_of_juvenile>-->
+      <x_pp_floral_initiation units="h">12</x_pp_floral_initiation>
+      <!--<y_tt_floral_initiation units="oCd" description="TT from initiation to flowering">46.0</y_tt_floral_initiation>-->
+      <x_pp_flowering units="h">12</x_pp_flowering>
+      <y_tt_flowering units="oCd" description="TT from flowering to start grain fill">300.0</y_tt_flowering>
+      <x_pp_start_grain_fill units="h">12</x_pp_start_grain_fill>
+      <y_tt_start_grain_fill units="oCd">435</y_tt_start_grain_fill>
       <tt_end_grain_fill units="oCd">60</tt_end_grain_fill>
       <tt_maturity units="oCd" description="TT from maturity to harvest ripe">1.0</tt_maturity>
       <x_stem_wt units="g/plant">0  10</x_stem_wt>
-      <y_height units="mm" description="plant canopy height">0  5000</y_height>
-    </nugett>
-    <Bolt cultivar="yes">
-      <derived_from>nugett</derived_from>
-    </Bolt>
-    <XT cultivar="yes">
-      <derived_from>nugett</derived_from>
-    </XT>
-    <Jumbo cultivar="yes">
-      <derived_from>nugett</derived_from>
-    </Jumbo>
+      <y_height units="mm" description="plant canopy height">0  800</y_height>
+    </nugget_base>
+    <nugget cultivar="yes">
+      <derived_from>nugget_base</derived_from>
+      <y_tt_end_of_juvenile>640 35</y_tt_end_of_juvenile>
+      <y_tt_floral_initiation units="oCd" description="TT from initiation to flowering">30.0</y_tt_floral_initiation>
+    </nugget>
+   <!--  Early -->
+    <bolt cultivar="yes">
+      <derived_from>nugget</derived_from>
+      <y_tt_end_of_juvenile>450 50</y_tt_end_of_juvenile>
+      <y_tt_floral_initiation units="oCd" description="TT from initiation to flowering">35.0</y_tt_floral_initiation>
+    </bolt>
+    <hallmarkxt cultivar="yes">
+      <derived_from>nugget</derived_from>
+      <y_tt_end_of_juvenile>450 50</y_tt_end_of_juvenile>
+      <y_tt_floral_initiation units="oCd" description="TT from initiation to flowering">35.0</y_tt_floral_initiation>
+    </hallmarkxt>
+   <!--  Mid -->
+    <blitz cultivar="yes">
+      <derived_from>nugget</derived_from>
+      <y_tt_end_of_juvenile>435 30</y_tt_end_of_juvenile>
+      <y_tt_floral_initiation units="oCd" description="TT from initiation to flowering">32.0</y_tt_floral_initiation>
+    </blitz>
+    <jumbo2 cultivar="yes">
+      <derived_from>nugget</derived_from>
+      <y_tt_end_of_juvenile>435 30</y_tt_end_of_juvenile>
+      <y_tt_floral_initiation units="oCd" description="TT from initiation to flowering">32.0</y_tt_floral_initiation>
+    </jumbo2>
+    <ace cultivar="yes">
+      <derived_from>nugget</derived_from>
+      <y_tt_end_of_juvenile>435 30</y_tt_end_of_juvenile>
+      <y_tt_floral_initiation units="oCd" description="TT from initiation to flowering">32.0</y_tt_floral_initiation>
+    </ace>
+   <!--  Late -->
+    <greenfield cultivar="yes">
+      <derived_from>nugget</derived_from>
+      <y_tt_end_of_juvenile>640 35</y_tt_end_of_juvenile>
+      <y_tt_floral_initiation units="oCd" description="TT from initiation to flowering">30.0</y_tt_floral_initiation>
+    </greenfield>
+
    <!-- ***********************************************************************************************************
       Nepal varieties
       ***********************************************************************************************************
