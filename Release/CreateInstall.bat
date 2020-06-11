@@ -17,4 +17,4 @@ mkdir "%2"
 %InnoSetup% /Q /O"%2" /F"%1" "%2.iss"
 
 rem ----- Temporarily disable signing while we sort out new certificate
-rem call "C:\SignCsiro.bat" %2\%1.exe
+call "C:\SignCsiro.bat" %2\%1.exe
