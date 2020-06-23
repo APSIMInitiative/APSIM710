@@ -12,6 +12,7 @@ Leaf::Leaf(ScienceAPI2 &api, Plant *p) : PlantPart(api)
    plant = p;
    name = "Leaf";
    partNo = 1;
+   frostKillSevere = -3.5;
 
    doRegistrations();
    initialize();
@@ -47,6 +48,9 @@ void Leaf::doRegistrations(void)
    scienceAPI.expose("DeltaLeafGreenN","g/m^2", "Daily N increase in leaves",      false, dltNGreen);
    scienceAPI.expose("DeltaLeafNo",    "lvs/d", "Fraction of oldest leaf expanded",false, dltLeafNo);
    scienceAPI.expose("DeltaSlaiFrost", "m2/m2", "Senesced leaf area from frost",   false, dltSlaiFrost);
+   scienceAPI.expose("DeltaSlaiLight", "m2/m2", "Senesced leaf area from light",   false, dltSlaiLight);
+   scienceAPI.expose("DeltaSlaiAge",   "m2/m2", "Senesced leaf area from age",     false, dltSlaiAge);
+   scienceAPI.expose("DeltaSlaiWater", "m2/m2", "Senesced leaf area from age",     false, dltSlaiWater);
    scienceAPI.expose("ExtinctionCoef", "()",    "Light Extinction coefficient",    false, extinctionCoef);
    scienceAPI.expose("LeafGreenP",     "g/m^2" ,"P in live leaf",                  false, pGreen);
 	// leaf size
@@ -163,6 +167,7 @@ void Leaf::readParams (void)
    scienceAPI.read("sen_threshold"       , "", false, senThreshold);
    scienceAPI.read("sen_water_time_const", "", false, senWaterTimeConst);
    scienceAPI.read("frost_kill"          , "", false, frostKill);
+   scienceAPI.read("frost_kill_severe"   , "", true, frostKillSevere);
 
    // phosphorus
    pMaxTable.read(scienceAPI, "x_p_stage_code","y_p_conc_max_leaf");
@@ -353,39 +358,52 @@ void Leaf::senesceArea(void)
 //------------------------------------------------------------------------------------------------
 double Leaf::calcLaiSenescenceFrost(void)
    {
-   double severeFrost = frostKill - 3.0;
+   //frostKillSevere will kill the plant at any stage
+   //frostKill will remove LAI but only kill the plant between FloralInit and Flowering
+   
    //  calculate senescence due to frost
    if (plant->today.minT > frostKill) return 0.0;
    if (stage <= emergence) return 0.0;
-   
+   double senescedLAI = 0.0;
+
    char msg[120];
-   if (plant->today.minT > severeFrost)
+   if (plant->today.minT > frostKillSevere)
       {
+      //Temperature is warmer than frostKillSevere, but cooler than frostKill
       if(stage < fi)
          {
          //the plant will survive but all of the leaf area is removed except a fraction
-         //3 degrees is a default for now - extract to a parameter to customise it
          sprintf(msg,"Frost Event: (Non Fatal) \n");
          scienceAPI.write(msg);
          sprintf(msg, "\t\tMin Temp      = %.2f \t\t Senesced LAI    = %.2f\n", plant->today.minT, lai - 0.01);
          scienceAPI.write(msg);
 
-         return Max(0.0,lai - 0.01);
+         senescedLAI =  Max(0.0,lai - 0.1);
          }
       else if(stage > flowering)
          {
-            //after flowering it takes a serverFrost to kill the plant
-            //not sure what the effect on LAI should be at this stage
-            return 0.0;
+            //after flowering it takes a servereFrost to kill the plant
+            //not sure what the effect on LAI should be after this stage
+            senescedLAI = 0.0;
+         }
+      else
+         {
+            //between floralInit and Flowering the plant will be killed
+            senescedLAI = lai;
          }
       }
-
-   sprintf(msg, "Frost Event: (Fatal) \n");
-   scienceAPI.write(msg);
-   sprintf(msg, "\t\tMin Temp      = %.2f \t\t Senesced LAI    = %.2f\n", plant->today.minT, lai - 0.01);
-   scienceAPI.write(msg);
-   //the plant will be killed as it's LAI will be 0
-   return lai;
+   else
+      {
+         //Temperature is colder or equal to frostKillSevere parameter
+         sprintf(msg, "Frost Event: (Fatal) \n");
+         scienceAPI.write(msg);
+         sprintf(msg, "\t\tMin Temp      = %.2f \t\t Senesced LAI    = %.2f\n", plant->today.minT, lai - 0.01);
+         scienceAPI.write(msg);
+         //the plant will be killed as it's LAI will be 0
+         senescedLAI = lai;
+      }
+      
+      return senescedLAI;
    }
 /* TODO : put in messages */
 //------------------------------------------------------------------------------------------------
