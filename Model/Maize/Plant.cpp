@@ -381,7 +381,7 @@ void Plant::death(void)
       }
 
    //kill plant if lai falls below 0.1 - water stress not frost
-   if (stage > flag && stage < maturity)
+   if (stage >= flag && stage < maturity)
       {
       if (leaf->getLAI() - leaf->getDltSlai() < 0.1)
          {
