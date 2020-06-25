@@ -4,7 +4,7 @@
 #define BiomassCMH
 
 #include "PlantComponents.h"
-#include "biomass.h"
+#include "Biomass.h"
 namespace Maize {
    //------------------------------------------------------------------------------------------------
 
