@@ -80,18 +80,16 @@ class VersionStamper
             Out = new StreamWriter("VersionInfo.cs");
             Out.WriteLine("using System.Reflection;");
             Out.WriteLine("[assembly: AssemblyFileVersion(\"" + Major.ToString() + "." +
-                                                                Minor.ToString() + "." +
-                                                                RevisionNumber + "." +
-																"0\")]");
+                                                                Minor.ToString() +
+																".0.0\")]");
             Out.Close();
 
             // Write the VersionInfo.vb
             Out = new StreamWriter("VersionInfo.vb");
             Out.WriteLine("Imports System.Reflection");
             Out.WriteLine("<Assembly: AssemblyFileVersion(\"" + Major.ToString() + "." +
-                                                                Minor.ToString() + "." +
-                                                                RevisionNumber + "." +
-																"0\")>");
+                                                                Minor.ToString() +
+																".0.0\")>");
             Out.Close();
 
             // Write the VersionInfo.cpp
