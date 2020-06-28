@@ -23,7 +23,7 @@ class VersionStamper
             if (!Macros.ContainsKey("Directory"))
                 throw new Exception("Usage: VersionStamper Directory=c:\\Apsim [Increment=Yes] [RevisionNumber=4191]");
 
-            string RevisionNumber = "";
+            string RevisionNumber = "0";
 			if (Macros.ContainsKey("RevisionNumber") && Macros["RevisionNumber"] != "%REVISION_NUMBER%")
 				RevisionNumber = Macros["RevisionNumber"];
 			else
@@ -48,6 +48,7 @@ class VersionStamper
 				catch (Exception e)
 				{
 					Console.WriteLine("WARNING - while finding git commit hash: " + e.Message);
+					Console.WriteLine("Resorting to fallback revision number 0");
 				}
 			}
             
@@ -79,18 +80,16 @@ class VersionStamper
             Out = new StreamWriter("VersionInfo.cs");
             Out.WriteLine("using System.Reflection;");
             Out.WriteLine("[assembly: AssemblyFileVersion(\"" + Major.ToString() + "." +
-                                                                Minor.ToString() + "." +
-                                                                RevisionNumber + "." +
-																"0\")]");
+                                                                Minor.ToString() +
+																".0.0\")]");
             Out.Close();
 
             // Write the VersionInfo.vb
             Out = new StreamWriter("VersionInfo.vb");
             Out.WriteLine("Imports System.Reflection");
             Out.WriteLine("<Assembly: AssemblyFileVersion(\"" + Major.ToString() + "." +
-                                                                Minor.ToString() + "." +
-                                                                RevisionNumber + "." +
-																"0\")>");
+                                                                Minor.ToString() +
+																".0.0\")>");
             Out.Close();
 
             // Write the VersionInfo.cpp
