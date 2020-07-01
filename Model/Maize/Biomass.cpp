@@ -73,6 +73,7 @@ void Biomass::initialize(void)
 	aboveGroundBiomass = 0.0;
 	greenBiomass = 0.0;
 	stover = 0.0;
+	aboveGroundGreenBiomass = 0.0;
 	//Setup report vectors
 
 	int nParts = plant->PlantParts.size();
