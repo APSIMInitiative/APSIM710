@@ -34,7 +34,8 @@ void Stem::initialize(void)
    canopyHeight    = 0.0;
    dmGreenStem     = 0.0;
    dltCanopyHeight = 0.0;
-	dmPlantMax = 9999;
+   dmPlantMax = 9999;
+   dltNConc = 0;
 
    PlantPart::initialize();
    }

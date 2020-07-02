@@ -36,6 +36,12 @@ void Rachis::doRegistrations(void)
 void Rachis::initialize(void)
    {
    PlantPart::initialize();
+
+   initialNConc = 0;
+   targetNConc = 0;
+   structRachisNConc = 0;
+   dilnNSlope = 0;
+   dilnNInt = 0;
    }
 //------------------------------------------------------------------------------------------------
 //------ read Rachis parameters

@@ -93,6 +93,9 @@ void Nitrogen::initialize(void)
    dltNo3.clear();
 
    rootDepth = 0.0;
+
+   sumDiffSupply = 0;
+   totalDemand = 0;
    }
 //------------------------------------------------------------------------------------------------
 //----------- read Nitrogen parameters

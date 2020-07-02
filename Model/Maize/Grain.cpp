@@ -62,6 +62,8 @@ void Grain::initialize(void)
 
    tempFactor = 1.0;
 
+   potGFRate = 0;
+
    PlantPart::initialize();
    }
 //------------------------------------------------------------------------------------------------
