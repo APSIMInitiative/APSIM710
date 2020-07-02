@@ -55,7 +55,9 @@ void LeafCulms::initialize()
 	supply = 0;
 	demand = 0;
 	tillers = 0.0;
-
+	tilleringPropensity = 0;
+	tillerSdSlope = 0;
+	tillerSlaBound = 0;
 	//Culms[0]->initialize();
 	Leaf::initialize();
 }
