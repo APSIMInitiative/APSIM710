@@ -414,7 +414,7 @@ void Plant::death(void)
    //kill plant if lai falls to 0 - very severe stress or severe frost event
    char msg[120];
 
-   if (stage > emergence && stage < maturity)
+   if (stage > fi && stage < maturity)
       {
       if (leaf->getLAI() - leaf->getDltSlai() < 0.0001)
          {
