@@ -417,7 +417,8 @@ void Plant::death(void)
       if (leaf->getLAI() - leaf->getDltSlai() < 0.0001)
          {
          dltDeadPlants = -plantDensity;
-         scienceAPI.write(" ********** Crop failed due to loss of leaf area ********");
+         scienceAPI.write(" ********** Crop failed due to loss of leaf area ********\n");
+         scienceAPI.write("     LAI: " + leaf->getLAI().ToString() + "\t dlt SLAI: " + leaf->getDltSlai().ToString() + "\n");
          }
       }
 
