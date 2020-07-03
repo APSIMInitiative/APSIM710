@@ -269,6 +269,7 @@ module PublishEventsModule
 
    call SplitEventLine(DataString, KeyName, KeyUnits, KeyValues, NumValues)
    tillage%type = ' '
+   tillage%name = ' '
    tillage%f_incorp = 0.0
    tillage%tillage_depth = 0.0
    tillage%cn_red = 0.0
