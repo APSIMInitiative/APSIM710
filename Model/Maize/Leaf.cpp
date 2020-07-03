@@ -102,6 +102,27 @@ void Leaf::initialize(void)
    coverSen = 0.0;
    coverTot = 0.0;
 
+   tplaInflectionRatio = 0;
+   tplaProductionCoef = 0;
+   dmTotal = 0;
+   tillerCoef = 0;
+   mainStemCoef = 0;
+
+   splaIntercept = 0;
+   splaSlope = 0;
+   splaProdCoef = 0;
+   nTotal = 0;
+   dltLAI = 0;
+   dltSlaiAge = 0;
+   dltSlaiLight = 0;
+   dltSlaiWater = 0;
+   dltSlaiFrost = 0;
+   dltSlaiN = 0;
+   deadLai = 0;
+   SLN = 0;
+   SLN0 = 0;
+   dltNSenesced = 0;
+
    //canPhoto = NULL;
 
    PlantPart::initialize();

@@ -73,6 +73,11 @@ void Phosphorus::initialize(void)
    pGreenBiomass = 0.0;
 
    //currentLayer =  0.0;
+   stage = 0;
+   phenoSlope = 0;
+   photoSlope = 0;
+   expansionSlope = 0;
+   grainSlope = 0;
 
    //Set up reporting vectors
    int nParts = plant->PlantParts.size();

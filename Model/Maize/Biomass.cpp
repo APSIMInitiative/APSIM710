@@ -73,6 +73,18 @@ void Biomass::initialize(void)
 	aboveGroundBiomass = 0.0;
 	greenBiomass = 0.0;
 	stover = 0.0;
+	aboveGroundGreenBiomass = 0.0;
+	effectiveRue = 0;
+	DOY = 0;
+	RootShootRatio = 0;
+	SLN = 0;
+	SWAvailable = 0;
+	DCAPSPotBiom = 0;
+	totalBiomass = 0;
+	yield = 0;
+	biomGreen = 0;
+	biomStover = 0;
+
 	//Setup report vectors
 
 	int nParts = plant->PlantParts.size();

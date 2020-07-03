@@ -40,12 +40,16 @@ void PlantPart::initialize(void)
 
    // phosphorus
    pGreen =    0.0;
+   pConc = 0.0;
    pDemand =   0.0;
    pSenesced = 0.0;
    dltPGreen = 0.0;
    dltPSenesced = 0.0;
    dltPDetached = 0.0;
    dltPRetranslocate = 0.0;
+
+   // Misc variables
+   dmPlantMin = 0.0;
    }
 //---------------------------------------------------------------------------
 void PlantPart::dmDetachment(vector<double> senDetachFrac)

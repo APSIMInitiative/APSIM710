@@ -73,6 +73,11 @@ void Roots::initialize(void)
    leftDist     = 0.0;
    rightDist    = 0.0;
 
+   dltRootDepth = 0;
+   dltRootFront = 0;
+   currentLayer = 0;
+   lastLayerPropn = 0;
+
    PlantPart::initialize();
    }
 //------------------------------------------------------------------------------------------------

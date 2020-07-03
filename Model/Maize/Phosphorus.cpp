@@ -77,6 +77,17 @@ void Phosphorus::initialize(void)
 
    currentLayer =  0;
 
+   phenoSlope = 0;
+   photoSlope = 0;
+   expansionSlope = 0;
+   grainSlope = 0;
+   profileDepth = 0;
+   plantPDemand = 0;
+   supplyDemandRatio = 0;
+   pSupply = 0;
+   rootDepth = 0;
+   nLayers = 0;
+
    //Set up reporting vectors
    int nParts = plant->PlantParts.size();
    pGreen.assign      (nParts,0.0);

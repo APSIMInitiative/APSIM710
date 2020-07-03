@@ -42,7 +42,9 @@ void Phenology::initialize(void)
 	floweringDOY = 0;
 	maturityDAS = 0;
 	maturityDOY = 0;
-	//photoPeriod = 0;
+	photoPeriod = 0;
+	stageCode = 0;
+	stage = 0;
 }
 //------------------------------------------------------------------------------------------------
 //------ get the Phenology parameters

@@ -81,6 +81,12 @@ void Biomass::initialize(void)
    dltDMDetachedSen.assign  (nParts,0.0);
    dltDMRetranslocate.assign(nParts,0.0);
 
+   effectiveRue = 0;
+   DOY = 0;
+   RootShootRatio = 0;
+   SLN = 0;
+   SWAvailable = 0;
+   DCAPSPotBiom = 0;
    
 	DCAPSTriggered = false;
 

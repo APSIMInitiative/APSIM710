@@ -91,6 +91,17 @@ void Leaf::initialize(void)
    coverGreen = 0.0;
    coverSen   = 0.0;
    coverTot   = 0.0;
+
+   tplaInflectionRatio = 0;
+   tplaProductionCoef = 0;
+   dmTotal = 0;
+   tillerCoef = 0;
+   mainStemCoef = 0;
+   dltStressedLAI = 0;
+   dltSlaiLight = 0;
+   dltSlaiWater = 0;
+   dltSlaiFrost = 0;
+
    PlantPart::initialize();
    }
 //------------------------------------------------------------------------------------------------
