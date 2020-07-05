@@ -369,13 +369,29 @@ void Plant::death(void)
    //need to kill plant if lai = 0
    //gmc & rlv
    /* TODO : Check this to see what happens if LAI < 0.1 before flag - or if possible */
+   
+   //kill plant if lai falls to 0 - very severe stress or severe frost event
+   char msg[120];
+   if (stage > fi && stage < maturity)
+      {
+      if (leaf->getLAI() - leaf->getDltSlai() < 0.0001)
+         {
+         dltDeadPlants = -plantDensity;
+         scienceAPI.write(" ********** Crop failed due to loss of leaf area ********\n");
+         sprintf(msg, "\tLAI: %.3f \t\tDltSLAI: %.3f \t\tDltLAI: %.2f\n", leaf->getLAI(), leaf->getDltSlai(), leaf->getDltLAI());
+         scienceAPI.write(msg);
+         }
+      }
 
+   //kill plant if lai falls below 0.1 - water stress not frost
    if (stage >= flag && stage < maturity)
       {
       if (leaf->getLAI() - leaf->getDltSlai() < 0.1)
          {
          dltDeadPlants = -plantDensity;
          scienceAPI.write(" ********** Crop failed due to loss of leaf area ********");
+         sprintf(msg, "\tLAI: %.3f \t\tDltSLAI: %.3f \t\tDltLAI: %.2f\n", leaf->getLAI(), leaf->getDltSlai(), leaf->getDltLAI());
+         scienceAPI.write(msg);
          }
       }
 
