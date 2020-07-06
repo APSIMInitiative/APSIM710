@@ -352,9 +352,9 @@ double Water::calcSwDefPhoto(void)
 //------------------------------------------------------------------------------------------------
 double Water::calcSwDefPheno(void)
    {
-   double swAvailRatio = divide(totalAvail,totalAvailPot,1.0);
-   swAvailRatio = bound(swAvailRatio,0.0,1.0);
-   return swPhenoTable.value(swAvailRatio);
+   double sdRatio = divide(totalSupply, swDemand, 1.0);
+	sdRatio = bound(sdRatio,0.0,1.0);
+	return swPhenoTable.value(sdRatio);
    }
 //------------------------------------------------------------------------------------------------
 double Water::calcSwDefExpansion(void)
