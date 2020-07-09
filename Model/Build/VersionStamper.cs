@@ -77,15 +77,16 @@ class VersionStamper
             Out.Close();
 
             // Write the VersionInfo.cs
+			int ignore;
             Out = new StreamWriter("VersionInfo.cs");
             Out.WriteLine("using System.Reflection;");
-            Out.WriteLine(string.Format("[assembly: AssemblyFileVersion(\"{0}.{1}.{2}.{3}\")]", Major, Minor, int.TryParse(RevisionNumber, out _) ? RevisionNumber : "0", "0"));
+            Out.WriteLine(string.Format("[assembly: AssemblyFileVersion(\"{0}.{1}.{2}.{3}\")]", Major, Minor, int.TryParse(RevisionNumber, out ignore) ? RevisionNumber : "0", "0"));
             Out.Close();
 
             // Write the VersionInfo.vb
             Out = new StreamWriter("VersionInfo.vb");
             Out.WriteLine("Imports System.Reflection");
-            Out.WriteLine(string.Format("<Assembly: AssemblyFileVersion(\"{0}.{1}.{2}.{3}\")>", Major, Minor, int.TryParse(RevisionNumber, out _) ? RevisionNumber : "0", "0"));
+            Out.WriteLine(string.Format("<Assembly: AssemblyFileVersion(\"{0}.{1}.{2}.{3}\")>", Major, Minor, int.TryParse(RevisionNumber, out ignore) ? RevisionNumber : "0", "0"));
             Out.Close();
 
             // Write the VersionInfo.cpp
