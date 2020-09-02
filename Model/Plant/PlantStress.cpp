@@ -292,13 +292,13 @@ void NStress::read_n_constants (void)
     scienceAPI.read("n_fact_grain", c.nFact.grain, 0.0f, 100.0f);
 }
 
-void NStress::doPlantNStress (plantPart* leafPart, plantPart* stemPart)
+void NStress::doPlantNStress(plantPart* leafPart, plantPart* stemPart)
 //=======================================================================================
 // Calculate Plant Nitrogen Stress Factors
-    {
+{
     if (c.n_stress_option == 1)
-        {
-        vector<plantPart *> parts;
+    {
+        vector<plantPart*> parts;
 
         // Expansion uses leaves only
         parts.push_back(leafPart);
@@ -306,13 +306,13 @@ void NStress::doPlantNStress (plantPart* leafPart, plantPart* stemPart)
 
         // Rest have leaf & stem
         parts.push_back(stemPart);
-        nFact.pheno = critNFactor(parts, c.nFact.pheno);
+        nFact.pheno = 1; // critNFactor(parts, c.nFact.pheno); // No effect of N on phenology (following APSIM-wheat document, 2020/09/02).
         nFact.photo = critNFactor(parts, c.nFact.photo);
         nFact.grain = critNFactor(parts, c.nFact.grain);
-        }
+    }
     else if (c.n_stress_option == 2)
-        {
-        vector< plantPart *> parts;
+    {
+        vector< plantPart*> parts;
 
         // Expansion & photosynthesis from leaves only
         parts.push_back(leafPart);
@@ -321,18 +321,18 @@ void NStress::doPlantNStress (plantPart* leafPart, plantPart* stemPart)
 
         // leaf & stem
         parts.push_back(stemPart);
-        nFact.pheno = critNFactor(parts, c.nFact.pheno);
+        nFact.pheno = 1; // critNFactor(parts, c.nFact.pheno); // No effect of N on phenology (following APSIM-wheat document, 2020/09/02).
         nFact.grain = critNFactor(parts, c.nFact.grain);
-        }
+    }
     else
-        {
-        throw std::invalid_argument ("invalid template option in doPlantNStress");
-        }
+    {
+        throw std::invalid_argument("invalid template option in doPlantNStress");
+    }
     Debug("NStress.Photo=%f", nFact.photo);
     Debug("NStress.Pheno=%f", nFact.pheno);
     Debug("NStress.Grain=%f", nFact.grain);
     Debug("NStress.Expansion=%f", nFact.expansion);
-    }
+}
 
 
 float NStress::critNFactor(vector< plantPart *> &parts, float multiplier)
@@ -376,7 +376,6 @@ float NStress::critNFactor(vector< plantPart *> &parts, float multiplier)
       float divisor =   N_conc_crit - N_conc_min;
       float result = (float)(multiplier * divide (dividend, divisor, 1.0));
       result = bound(result, 0.0, 1.0);
-	  result = 100;
       return (result);
       }
    else
