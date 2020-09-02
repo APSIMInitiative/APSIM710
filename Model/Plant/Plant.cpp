@@ -366,7 +366,7 @@ void Plant::onPrepare()
 		Debug("       =%i", _environment->dayOfYear());
 		plant.prepare();
 
-		nStress->doPlantNStress(&leaf(), &stem());
+		nStress->doPlantNStress(g.module_name, &leaf(), &stem());
 		tempStress->doPlantTempStress(environment());
 		plant.doRadnPartition();
 
@@ -482,7 +482,7 @@ void Plant::onProcess()
 		plant_cleanup();
 
 		swStress->doPlantWaterStress(Tops().SWDemand());
-		nStress->doPlantNStress(&leaf(), &stem());
+		nStress->doPlantNStress(g.module_name, &leaf(), &stem());
 
 		// See if we need to output a phenological stage report because
 		// we've entered a new phase today.

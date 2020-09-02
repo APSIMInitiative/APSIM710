@@ -71,7 +71,7 @@ public:
    NStress(ScienceAPI& scienceAPI, protocol::Component *p);
    ~NStress(void);
    void init(void);
-   void doPlantNStress (plantPart* leafPart, plantPart* stemPart);
+   void doPlantNStress (string module, plantPart* leafPart, plantPart* stemPart);
    float critNFactor(vector< plantPart *> &, float );
    void read_n_constants (void);
    void get_nfact_pheno(protocol::Component *, protocol::QueryValueData &);

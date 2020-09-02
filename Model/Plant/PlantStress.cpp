@@ -292,12 +292,12 @@ void NStress::read_n_constants (void)
     scienceAPI.read("n_fact_grain", c.nFact.grain, 0.0f, 100.0f);
 }
 
-void NStress::doPlantNStress(plantPart* leafPart, plantPart* stemPart)
+void NStress::doPlantNStress(string module, plantPart* leafPart, plantPart* stemPart)
 //=======================================================================================
 // Calculate Plant Nitrogen Stress Factors
 {
     if (c.n_stress_option == 1)
-    {
+    {        
         vector<plantPart*> parts;
 
         // Expansion uses leaves only
@@ -306,9 +306,13 @@ void NStress::doPlantNStress(plantPart* leafPart, plantPart* stemPart)
 
         // Rest have leaf & stem
         parts.push_back(stemPart);
-        nFact.pheno = 1; // critNFactor(parts, c.nFact.pheno); // No effect of N on phenology (following APSIM-wheat document, 2020/09/02).
         nFact.photo = critNFactor(parts, c.nFact.photo);
         nFact.grain = critNFactor(parts, c.nFact.grain);
+
+        if (module == "wheat")
+            nFact.pheno = 1; // No effect of N on phenology (following APSIM-wheat document, 2020/09/02).
+        else
+            nFact.pheno = critNFactor(parts, c.nFact.pheno);
     }
     else if (c.n_stress_option == 2)
     {
@@ -321,8 +325,12 @@ void NStress::doPlantNStress(plantPart* leafPart, plantPart* stemPart)
 
         // leaf & stem
         parts.push_back(stemPart);
-        nFact.pheno = 1; // critNFactor(parts, c.nFact.pheno); // No effect of N on phenology (following APSIM-wheat document, 2020/09/02).
         nFact.grain = critNFactor(parts, c.nFact.grain);
+
+        if (module == "wheat")
+            nFact.pheno = 1; // No effect of N on phenology (following APSIM-wheat document, 2020/09/02).
+        else
+            nFact.pheno = critNFactor(parts, c.nFact.pheno);
     }
     else
     {
