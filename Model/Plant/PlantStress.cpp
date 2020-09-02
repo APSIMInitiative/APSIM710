@@ -375,7 +375,8 @@ float NStress::critNFactor(vector< plantPart *> &parts, float multiplier)
       float dividend =  N_conc - N_conc_min;
       float divisor =   N_conc_crit - N_conc_min;
       float result = (float)(multiplier * divide (dividend, divisor, 1.0));
-      result = bound (result, 0.0, 1.0);
+      result = bound(result, 0.0, 1.0);
+	  result = 100;
       return (result);
       }
    else
