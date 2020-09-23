@@ -140,53 +140,32 @@ namespace DCAPST.Canopy
         /// <inheritdoc/>
         public AreaValues GetAreaValues()
         {
-            var alpha = new AreaValues();
-
-            foreach (var p in pathways)
+            var values = new AreaValues()
             {
-                if (p.Type == PathwayType.Ac1) alpha.Ac1 = p.CO2Rate;
-                else if (p.Type == PathwayType.Ac2) alpha.Ac2 = p.CO2Rate;
-                else alpha.Aj = p.CO2Rate;
-            }
+                A = CO2AssimilationRate,
+                E = WaterUse,
+                Ac1 = pathways.Single(p => p.Type == PathwayType.Ac1).GetPathValues(),
+                Ac2 = pathways.SingleOrDefault(p => p.Type == PathwayType.Ac2) is AssimilationPathway path ? path.GetPathValues() : new PathValues(),
+                Aj = pathways.Single(p => p.Type == PathwayType.Aj).GetPathValues(),
+            };            
 
-            alpha.A = CO2AssimilationRate;
-            alpha.E = WaterUse;
-
-            return alpha;
+            return values;
         }
     }
 
     /// <summary>
     /// An instance of values present within an assimilation area
     /// </summary>
-    public class AreaValues
+    public struct AreaValues
     {
         public double A { get; set; }
 
-        public double Ac1 { get; set; }
-
-        public double Ac2 { get; set; }
-
-        public double Aj { get; set; }
-
-        public double gsCO2 { get; set; }
-
         public double E { get; set; }
 
-        public override string ToString()
-        {
-            // This intentionally excludes A
-            return $"{Ac1:F6},{Ac2:F6},{Aj:F6},{gsCO2:F6},{E:F6}";
-        }
+        public PathValues Ac1 { get; set; }
 
-        /// <summary>
-        /// Generates a .csv format header line
-        /// </summary>
-        /// <param name="pre">A prefix for each column</param>
-        /// <param name="suf">A suffix for each column</param>
-        public string Header(string pre = "", string suf = "")
-        {
-            return $"{pre}_Ac1_{suf}, {pre}_Ac2_{suf}, {pre}_Aj_{suf}, {pre}_gsCO2_{suf}, {pre}_E_{suf}";
-        }
-    }
+        public PathValues Ac2 { get; set; }
+
+        public PathValues Aj { get; set; }
+    }  
 }

@@ -90,6 +90,8 @@ namespace DCAPST
         /// </summary>
         public double InterceptedRadiation { get; private set; }
 
+        public Report Report { get; private set; }
+
         private readonly double start = 6.0;
         private readonly double end = 18.0;
         private readonly double timestep = 1.0;
@@ -120,9 +122,6 @@ namespace DCAPST
         public void DailyRun(
             double lai,
             double sln,
-            ///double greenN,
-            ///double nLowLimit,
-            ///double nLAITrigger,
             double soilWater,
             double RootShootRatio
         )
@@ -130,10 +129,6 @@ namespace DCAPST
             for (double x = start; x <= end; x += timestep) Intervals.Add(new IntervalValues() { Time = x });
 
             Solar.Initialise();
-
-            //double sln = greenN / lai;
-            //if (lai < nLAITrigger) sln = Math.Max(greenN, nLowLimit);
-
             Canopy.InitialiseDay(lai, sln);
 
             // UNLIMITED POTENTIAL CALCULATIONS
@@ -164,12 +159,6 @@ namespace DCAPST
                 potential = CalculateLimited(waterDemands);
             }
 
-            if (PrintIntervalValues)
-            {
-                IntervalResults = Solar.DayOfYear.ToString() + ",";
-                IntervalResults += string.Join(",", Intervals.Select(i => i.ToString()));
-            }
-
             // ACTUAL CALCULATIONS
             var totalDemand = waterDemands.Sum();
             var limitedSupply = CalculateWaterSupplyLimits(soilWater, waterDemands);
@@ -188,7 +177,7 @@ namespace DCAPST
             WaterDemanded = totalDemand;
             WaterSupplied = (soilWater < totalDemand) ? limitedSupply.Sum() : waterDemands.Sum();
 
-            if (PrintIntervalValues) IntervalResults += "," + string.Join(",", Intervals.Select(i => i.ToString()));
+            Report = new Report(Intervals);
         }        
 
         /// <summary>
@@ -235,11 +224,9 @@ namespace DCAPST
                 return true;
             else
             {
-                I.Sunlit.A = 0;
-                I.Shaded.A = 0;
+                I.Sunlit = new AreaValues();
+                I.Shaded = new AreaValues();
 
-                I.Sunlit.E = 0;
-                I.Shaded.E = 0;
                 return false;
             }
         }
@@ -404,18 +391,6 @@ namespace DCAPST
             }
             return demand.Select(d => d > averageDemandRate ? averageDemandRate : d);
         }
-
-        /// <summary>
-        /// Generates a .csv formatted string to use as a header in an output file for tracked interval values
-        /// </summary>
-        public string PrintResultHeader()
-        {
-            var builder = new StringBuilder();
-            builder.Append("DoY,");
-            Intervals.ForEach(i => builder.Append(i.PrintHeader("Pot_") + ","));
-            Intervals.ForEach(i => builder.Append(i.PrintHeader("") + ","));
-            return builder.ToString();
-        }
     }
 
     public class IntervalValues
@@ -428,26 +403,31 @@ namespace DCAPST
         /// <summary>
         /// Area values for the sunlit canopy
         /// </summary>
-        public AreaValues Sunlit { get; set; } = new AreaValues();
+        public AreaValues Sunlit { get; set; }
 
         /// <summary>
         /// Area values for the shaded canopy
         /// </summary>
-        public AreaValues Shaded { get; set; } = new AreaValues();
+        public AreaValues Shaded { get; set; }
+    }
 
-        public override string ToString()
-        {            
-            return $"{Sunlit},{Shaded}";
-        }
-
-        /// <summary>
-        /// Generates a .csv formatted string for use as column headers
-        /// </summary>
-        public string PrintHeader(string prefix)
+    public struct Report
+    {
+        public Report (List<IntervalValues> values)
         {
-            var sunlit = Sunlit.Header($"{prefix}sun", $"at {Time}");
-            var shaded = Shaded.Header($"{prefix}sh", $"at {Time}");
-            return $"{sunlit},{shaded}";
+            SunlitAc1Temperature = values.Select(i => i.Sunlit.Ac1.Temperature).ToArray();
+            SunlitAc2Temperature = values.Select(i => i.Sunlit.Ac2.Temperature).ToArray();
+            SunlitAjTemperature = values.Select(i => i.Sunlit.Aj.Temperature).ToArray();
+            ShadedAc1Temperature = values.Select(i => i.Shaded.Ac1.Temperature).ToArray();
+            ShadedAc2Temperature = values.Select(i => i.Shaded.Ac2.Temperature).ToArray();
+            ShadedAjTemperature = values.Select(i => i.Shaded.Aj.Temperature).ToArray();
         }
+
+        public double[] SunlitAc1Temperature { get; }
+        public double[] SunlitAc2Temperature { get; }
+        public double[] SunlitAjTemperature { get; }
+        public double[] ShadedAc1Temperature { get; }
+        public double[] ShadedAc2Temperature { get; }
+        public double[] ShadedAjTemperature { get; }
     }
 }

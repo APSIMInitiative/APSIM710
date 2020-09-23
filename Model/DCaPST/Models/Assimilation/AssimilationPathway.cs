@@ -91,5 +91,26 @@ namespace DCAPST
             ChloroplasticCO2 = 1000;
             ChloroplasticO2 = 210000;
         }
+
+        public PathValues GetPathValues()
+        {
+            var values = new PathValues()
+            {
+                CO2Rate = CO2Rate,
+                WaterUse = WaterUse,
+                Temperature = Temperature
+            };
+
+            return values;
+        }
+    }
+
+    public struct PathValues
+    {
+        public double CO2Rate { get; set; }
+
+        public double WaterUse { get; set; }
+
+        public double Temperature { get; set; }
     }
 }
