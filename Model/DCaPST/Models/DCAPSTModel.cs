@@ -90,13 +90,11 @@ namespace DCAPST
         /// </summary>
         public double InterceptedRadiation { get; private set; }
 
-        public Report Report { get; private set; }
-
         private readonly double start = 6.0;
         private readonly double end = 18.0;
         private readonly double timestep = 1.0;
 
-        private List<IntervalValues> Intervals = new List<IntervalValues>();
+        public IntervalValues[] Intervals;
 
         public DCAPSTModel(
             ISolarGeometry solar, 
@@ -126,7 +124,13 @@ namespace DCAPST
             double RootShootRatio
         )
         {
-            for (double x = start; x <= end; x += timestep) Intervals.Add(new IntervalValues() { Time = x });
+            var steps = (end - start) / timestep;
+            if (steps % 1 == 0) steps++;
+            
+            Intervals = Enumerable.Range(0, (int)Math.Ceiling(steps))
+                .Select(i => new IntervalValues() { Time = start + i * timestep })
+                .ToArray();
+
 
             Solar.Initialise();
             Canopy.InitialiseDay(lai, sln);
@@ -176,8 +180,6 @@ namespace DCAPST
             PotentialBiomass = potential * hrs_to_seconds / mmolToMol * molWtCO2 * B / (1 + RootShootRatio);
             WaterDemanded = totalDemand;
             WaterSupplied = (soilWater < totalDemand) ? limitedSupply.Sum() : waterDemands.Sum();
-
-            Report = new Report(Intervals);
         }        
 
         /// <summary>
@@ -283,15 +285,15 @@ namespace DCAPST
             double[] sunlitDemand = demands.Zip(ratios, (d, ratio) => d * ratio).ToArray();
             double[] shadedDemand = demands.Zip(ratios, (d, ratio) => d * (1 - ratio)).ToArray();
 
-            foreach (var I in Intervals)
+            for (int i = 0; i < Intervals.Length; i++)
             {
-                if (!TryInitiliase(I)) continue;
+                var interval = Intervals[i];
 
-                int i = Intervals.IndexOf(I);
+                if (!TryInitiliase(interval)) continue;
                 
                 double total = sunlitDemand[i] + shadedDemand[i];
                 transpiration.MaxRate = total;
-                DoTimestepUpdate(I, sunlitDemand[i] / total, shadedDemand[i] / total);
+                DoTimestepUpdate(interval, sunlitDemand[i] / total, shadedDemand[i] / total);
             }
 
             return Intervals.Select(i => i.Sunlit.A + i.Shaded.A).Sum();
@@ -305,15 +307,15 @@ namespace DCAPST
             double[] sunlitDemand = Intervals.Select(i => i.Sunlit.E).ToArray();
             double[] shadedDemand = Intervals.Select(i => i.Shaded.E).ToArray();
 
-            foreach (var I in Intervals)
+            for (int i = 0; i < Intervals.Length; i++)
             {
-                if (!TryInitiliase(I)) continue;
-
-                int i = Intervals.IndexOf(I);
+                var interval = Intervals[i];
+                
+                if (!TryInitiliase(interval)) continue;
 
                 transpiration.MaxRate = waterSupply[i];
                 double total = sunlitDemand[i] + shadedDemand[i];
-                DoTimestepUpdate(I, sunlitDemand[i] / total, shadedDemand[i] / total);
+                DoTimestepUpdate(interval, sunlitDemand[i] / total, shadedDemand[i] / total);
             }
 
             return Intervals.Select(i => i.Sunlit.A + i.Shaded.A).Sum();
@@ -409,25 +411,5 @@ namespace DCAPST
         /// Area values for the shaded canopy
         /// </summary>
         public AreaValues Shaded { get; set; }
-    }
-
-    public struct Report
-    {
-        public Report (List<IntervalValues> values)
-        {
-            SunlitAc1Temperature = values.Select(i => i.Sunlit.Ac1.Temperature).ToArray();
-            SunlitAc2Temperature = values.Select(i => i.Sunlit.Ac2.Temperature).ToArray();
-            SunlitAjTemperature = values.Select(i => i.Sunlit.Aj.Temperature).ToArray();
-            ShadedAc1Temperature = values.Select(i => i.Shaded.Ac1.Temperature).ToArray();
-            ShadedAc2Temperature = values.Select(i => i.Shaded.Ac2.Temperature).ToArray();
-            ShadedAjTemperature = values.Select(i => i.Shaded.Aj.Temperature).ToArray();
-        }
-
-        public double[] SunlitAc1Temperature { get; }
-        public double[] SunlitAc2Temperature { get; }
-        public double[] SunlitAjTemperature { get; }
-        public double[] ShadedAc1Temperature { get; }
-        public double[] ShadedAc2Temperature { get; }
-        public double[] ShadedAjTemperature { get; }
     }
 }

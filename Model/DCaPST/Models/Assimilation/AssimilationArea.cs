@@ -140,13 +140,24 @@ namespace DCAPST.Canopy
         /// <inheritdoc/>
         public AreaValues GetAreaValues()
         {
+            // Casting to an array to ensure we don't change pathways outside of this method
+            var temp = pathways.ToArray().OrderBy(p => p.CO2Rate).First().Temperature;
+
+            var ac1 = pathways.FirstOrDefault(p => p.Type == PathwayType.Ac1).GetPathValues();
+            
+            var ac2 = pathways.FirstOrDefault(p => p.Type == PathwayType.Ac2)
+                is AssimilationPathway path ? path.GetPathValues() : new PathValues();
+
+            var aj = pathways.FirstOrDefault(p => p.Type == PathwayType.Aj).GetPathValues();
+
             var values = new AreaValues()
             {
                 A = CO2AssimilationRate,
                 E = WaterUse,
-                Ac1 = pathways.Single(p => p.Type == PathwayType.Ac1).GetPathValues(),
-                Ac2 = pathways.SingleOrDefault(p => p.Type == PathwayType.Ac2) is AssimilationPathway path ? path.GetPathValues() : new PathValues(),
-                Aj = pathways.Single(p => p.Type == PathwayType.Aj).GetPathValues(),
+                Temperature = temp,
+                Ac1 = ac1,
+                Ac2 = ac2,
+                Aj = aj
             };            
 
             return values;
@@ -161,6 +172,8 @@ namespace DCAPST.Canopy
         public double A { get; set; }
 
         public double E { get; set; }
+
+        public double Temperature { get; set; }
 
         public PathValues Ac1 { get; set; }
 
