@@ -371,6 +371,14 @@ float NStress::critNFactor(vector< plantPart *> &parts, float multiplier)
 
       float N_conc_min = (float)divide (N_min, dm, 0.0);
 
+      //code is designed expecting n_conc to never be less than N_conc_min
+      //DCaPS uses an SLN calc which can cause that to occur.
+      //Adding a check to investigate if N`_Conc ever goes below N_conc_min
+      if(N_conc <= N_min)
+      {
+         throw new exception("N Conc has fallen below Minimum N Concentration");
+      }
+
       //calculate shortfall in N concentrations
       float dividend =  N_conc - N_conc_min;
       float divisor =   N_conc_crit - N_conc_min;
