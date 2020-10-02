@@ -374,7 +374,7 @@ float NStress::critNFactor(vector< plantPart *> &parts, float multiplier)
       //code is designed expecting n_conc to never be less than N_conc_min
       //DCaPS uses an SLN calc which can cause that to occur.
       //Adding a check to investigate if N`_Conc ever goes below N_conc_min
-      if(N_conc <= N_conc_min)
+      if(N_conc < N_conc_min)
       {
          throw new exception("N Conc has fallen below Minimum N Concentration");
       }
