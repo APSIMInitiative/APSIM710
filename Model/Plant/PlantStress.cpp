@@ -284,7 +284,7 @@ void NStress::init(void)
 //     ===========================================================
 void NStress::read_n_constants (void)
 {
-    scienceAPI.read("n_stress_option", c.n_stress_option, 1, 2);
+    scienceAPI.read("n_stress_option", c.n_stress_option, 1, 3);
     scienceAPI.read("n_fact_photo", c.nFact.photo, 0.0f, 100.0f);
     scienceAPI.read("n_fact_pheno", c.nFact.pheno, 0.0f, 100.0f);
     scienceAPI.read("n_fact_expansion", c.nFact.expansion, 0.0f, 100.0f);
@@ -322,6 +322,20 @@ void NStress::doPlantNStress (plantPart* leafPart, plantPart* stemPart)
         // leaf & stem
         parts.push_back(stemPart);
         nFact.pheno = critNFactor(parts, c.nFact.pheno);
+        nFact.grain = critNFactor(parts, c.nFact.grain);
+        }
+    else if (c.n_stress_option == 3)
+        {
+        vector< plantPart *> parts;
+
+        // Expansion & photosynthesis from leaves only
+        parts.push_back(leafPart);
+        nFact.expansion = critNFactor(parts, c.nFact.expansion);
+        nFact.photo = critNFactor(parts, c.nFact.photo);
+
+        // leaf & stem
+        parts.push_back(stemPart);
+        nFact.pheno = 1.0;
         nFact.grain = critNFactor(parts, c.nFact.grain);
         }
     else
@@ -370,14 +384,6 @@ float NStress::critNFactor(vector< plantPart *> &parts, float multiplier)
          N_min += (*part)->nMin();
 
       float N_conc_min = (float)divide (N_min, dm, 0.0);
-
-      //code is designed expecting n_conc to never be less than N_conc_min
-      //DCaPS uses an SLN calc which can cause that to occur.
-      //Adding a check to investigate if N`_Conc ever goes below N_conc_min
-      if(N_conc < N_conc_min)
-      {
-         throw new exception("N Conc has fallen below Minimum N Concentration");
-      }
 
       //calculate shortfall in N concentrations
       float dividend =  N_conc - N_conc_min;
