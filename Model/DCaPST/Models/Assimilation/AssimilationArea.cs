@@ -20,6 +20,8 @@ namespace DCAPST.Canopy
         /// </summary>
         public ParameterRates At25C { get; private set; } = new ParameterRates();
 
+        private double iteration { get; set; }
+
         /// <summary>
         /// The leaf area index of this part of the canopy
         /// </summary>
@@ -89,7 +91,9 @@ namespace DCAPST.Canopy
         /// and the water used by the process
         /// </summary>
         public void DoPhotosynthesis(ITemperature temperature, Transpiration transpiration)
-        {            
+        {
+            iteration = 0;
+
             // Initialise at the current temperature
             pathways.ForEach(p => p.SetConditions(temperature.AirTemperature, LAI));
 
@@ -109,7 +113,12 @@ namespace DCAPST.Canopy
                 UpdateAssimilation(transpiration);
 
                 // If the additional updates fail, stop the process (meaning the initial results used)
-                if (GetCO2Rate() == 0 || GetWaterUse() == 0) return;
+                if (GetCO2Rate() == 0 || GetWaterUse() == 0)
+                {
+                    iteration = 0;
+                    return;
+                }
+                iteration++;
             }
 
             // Update results only if convergence succeeds
@@ -153,8 +162,9 @@ namespace DCAPST.Canopy
             var values = new AreaValues()
             {
                 A = CO2AssimilationRate,
-                E = WaterUse,
+                Water = WaterUse,
                 Temperature = temp,
+                Iteration = iteration,
                 Ac1 = ac1,
                 Ac2 = ac2,
                 Aj = aj
@@ -171,9 +181,11 @@ namespace DCAPST.Canopy
     {
         public double A { get; set; }
 
-        public double E { get; set; }
+        public double Water { get; set; }
 
         public double Temperature { get; set; }
+
+        public double Iteration { get; set; }
 
         public PathValues Ac1 { get; set; }
 

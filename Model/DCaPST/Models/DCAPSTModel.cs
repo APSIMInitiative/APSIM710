@@ -139,7 +139,7 @@ namespace DCAPST
             // Note: In the potential case, we assume unlimited water and therefore supply = demand
             transpiration.Limited = false;
             var potential = CalculatePotential();
-            var waterDemands = Intervals.Select(i => i.Sunlit.E + i.Shaded.E).ToList();
+            var waterDemands = Intervals.Select(i => i.Sunlit.Water + i.Shaded.Water).ToList();
 
             // BIO-LIMITED CALCULATIONS
 
@@ -281,7 +281,7 @@ namespace DCAPST
         /// </summary>
         public double CalculateLimited(IEnumerable<double> demands)
         {
-            var ratios = Intervals.Select(i => RatioFunction(i.Sunlit.E, i.Shaded.E));
+            var ratios = Intervals.Select(i => RatioFunction(i.Sunlit.Water, i.Shaded.Water));
             double[] sunlitDemand = demands.Zip(ratios, (d, ratio) => d * ratio).ToArray();
             double[] shadedDemand = demands.Zip(ratios, (d, ratio) => d * (1 - ratio)).ToArray();
 
@@ -304,8 +304,8 @@ namespace DCAPST
         /// </summary>
         public double CalculateActual(double[] waterSupply)
         {
-            double[] sunlitDemand = Intervals.Select(i => i.Sunlit.E).ToArray();
-            double[] shadedDemand = Intervals.Select(i => i.Shaded.E).ToArray();
+            double[] sunlitDemand = Intervals.Select(i => i.Sunlit.Water).ToArray();
+            double[] shadedDemand = Intervals.Select(i => i.Shaded.Water).ToArray();
 
             for (int i = 0; i < Intervals.Length; i++)
             {

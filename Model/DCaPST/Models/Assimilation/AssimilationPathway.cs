@@ -97,7 +97,7 @@ namespace DCAPST
             var values = new PathValues()
             {
                 Assimilation = CO2Rate,
-                WaterUse = WaterUse,
+                Water = WaterUse,
                 Temperature = Temperature
             };
 
@@ -109,7 +109,7 @@ namespace DCAPST
     {
         public double Assimilation { get; set; }
 
-        public double WaterUse { get; set; }
+        public double Water { get; set; }
 
         public double Temperature { get; set; }
     }
