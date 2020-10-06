@@ -186,7 +186,8 @@ namespace DCAPST.Utilities
             double latitude, 
             double maxT, 
             double minT, 
-            double radn)
+            double radn,
+            double rpar)
         {
             // Model the solar geometry
             var SG = new SolarGeometry
@@ -199,7 +200,7 @@ namespace DCAPST.Utilities
             var SR = new SolarRadiation(SG)
             {
                 Daily = radn,
-                RPAR = 0.5
+                RPAR = rpar
             };
 
             // Model the environmental temperature
