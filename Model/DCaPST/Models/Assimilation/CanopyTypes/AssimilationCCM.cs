@@ -31,34 +31,41 @@ namespace DCAPST
         /// <inheritdoc/>
         protected override void UpdateChloroplasticCO2(AssimilationPathway pathway, AssimilationFunction func)
         {
-            var a = (pathway.MesophyllCO2 * func.X[3] + func.X[4] - func.X[5] * pathway.CO2Rate - func.MesophyllRespiration - func.X[6]);
-            pathway.ChloroplasticCO2 = pathway.MesophyllCO2 + a * func.X[7] / pathway.Gbs;
+            var a = pathway.MesophyllCO2 * func.x._3 
+                + func.x._4
+                - func.x._5 * pathway.CO2Rate 
+                - func.MesophyllRespiration;
+
+            pathway.ChloroplasticCO2 = pathway.MesophyllCO2 + a * func.x._6 / pathway.Gbs;
         }
 
         /// <inheritdoc/>
         protected override AssimilationFunction GetAc1Function(AssimilationPathway pathway, TemperatureResponse leaf)
         {
-            var x = new double[9];
+            var alpha = 0.1 / (canopy.DiffusivitySolubilityRatio * pathway.Gbs);
+            var kcko = leaf.Kc / leaf.Ko;
+            var cc = pathway.ChloroplasticCO2;
+            var oc = pathway.ChloroplasticO2;
 
-            x[0] = leaf.VcMaxT;
-            x[1] = leaf.Kc / leaf.Ko;
-            x[2] = leaf.Kc;
-            x[3] = leaf.VpMaxT / (pathway.MesophyllCO2 + leaf.Kp);
-            x[4] = 0.0;
-            x[5] = 0.0;
-            x[6] = pathway.ChloroplasticCO2 * leaf.VcMaxT / (pathway.ChloroplasticCO2 + (leaf.Kc / leaf.Ko) * pathway.ChloroplasticO2 + leaf.Kc);
-            x[7] = 1.0;
-            x[8] = 1.0;
+            var x = new Terms()
+            {
+                _1 = leaf.VcMaxT,
+                _2 = leaf.Kc + canopy.AirO2 * kcko,
+                _3 = leaf.VpMaxT / (pathway.MesophyllCO2 + leaf.Kp),
+                _4 = -cc * leaf.VcMaxT / (cc + leaf.Kc * (1 + oc / leaf.Ko)),
+                _5 = 0.0,
+                _6 = 1.0,
+                _7 = alpha * leaf.Gamma,
+                _8 = leaf.Gamma * canopy.AirO2,
+                _9 = kcko * alpha
+            };
 
             var func = new AssimilationFunction()
             {
-                X = x,
+                x = x,
 
                 MesophyllRespiration = leaf.GmRd,
-                HalfRubiscoSpecificityReciprocal = leaf.Gamma,
-                FractionOfDiffusivitySolubilityRatio = 0.1 / canopy.DiffusivitySolubilityRatio,
                 BundleSheathConductance = pathway.Gbs,
-                Oxygen = canopy.AirO2,
                 Respiration = leaf.RdT
             };
 
@@ -68,27 +75,30 @@ namespace DCAPST
         /// <inheritdoc/>
         protected override AssimilationFunction GetAc2Function(AssimilationPathway pathway, TemperatureResponse leaf)
         {
-            var x = new double[9];
+            var a = 0.1 / (canopy.DiffusivitySolubilityRatio * pathway.Gbs);
+            var cc = pathway.ChloroplasticCO2;
+            var oc = pathway.ChloroplasticO2;
 
-            x[0] = leaf.VcMaxT;
-            x[1] = leaf.Kc / leaf.Ko;
-            x[2] = leaf.Kc;
-            x[3] = 0.0;
-            x[4] = pathway.Vpr;
-            x[5] = 0.0;
-            x[6] = pathway.ChloroplasticCO2 * leaf.VcMaxT / (pathway.ChloroplasticCO2 + leaf.Kc * (1 + pathway.ChloroplasticO2 / leaf.Ko));
-            x[7] = 1.0;
-            x[8] = 1.0;
+            var x = new Terms()
+            {
+                _1 = leaf.VcMaxT,
+                _2 = leaf.Kc + canopy.AirO2 * (leaf.Kc / leaf.Ko),
+                _3 = 0.0,
+                _4 = pathway.Vpr - cc * leaf.VcMaxT / (cc + leaf.Kc * (1 + oc / leaf.Ko)),
+                _5 = 0.0,
+                _6 = 1.0,
+                _7 = a * leaf.Gamma,
+                _8 = leaf.Gamma * canopy.AirO2,
+                _9 = (leaf.Kc / leaf.Ko) * a
+            };
+
 
             var func = new AssimilationFunction()
             {
-                X = x,
+                x = x,
 
                 MesophyllRespiration = leaf.GmRd,
-                HalfRubiscoSpecificityReciprocal = leaf.Gamma,
-                FractionOfDiffusivitySolubilityRatio = 0.1 / canopy.DiffusivitySolubilityRatio,
                 BundleSheathConductance = pathway.Gbs,
-                Oxygen = canopy.AirO2,
                 Respiration =leaf.RdT
             };
 
@@ -98,27 +108,31 @@ namespace DCAPST
         /// <inheritdoc/>
         protected override AssimilationFunction GetAjFunction(AssimilationPathway pathway, TemperatureResponse leaf)
         {
-            var x = new double[9];
-
-            x[0] = (1 - parameters.MesophyllElectronTransportFraction) * parameters.ATPProductionElectronTransportFactor * leaf.J / 3.0;
-            x[1] = 7.0 / 3.0 * leaf.Gamma;
-            x[2] = 0.0;
-            x[3] = 0.0;
-            x[4] = parameters.MesophyllElectronTransportFraction * parameters.ATPProductionElectronTransportFactor * leaf.J / parameters.ExtraATPCost;
-            x[5] = 0.0;
-            x[6] = pathway.ChloroplasticCO2 * (1 - parameters.MesophyllElectronTransportFraction) * parameters.ATPProductionElectronTransportFactor * leaf.J / (3 * pathway.ChloroplasticCO2 + 7 * leaf.Gamma * pathway.ChloroplasticO2);
-            x[7] = 1.0;
-            x[8] = 1.0;
+            var a = 0.1 / (canopy.DiffusivitySolubilityRatio * pathway.Gbs);
+            var y = parameters.MesophyllElectronTransportFraction;
+            var z = parameters.ATPProductionElectronTransportFactor;
+            var cc = pathway.ChloroplasticCO2;
+            var oc = pathway.ChloroplasticO2;
+            
+            var x = new Terms()
+            {
+                _1 = (1 - y) * z * leaf.J / 3.0,
+                _2 = canopy.AirO2 * (7.0 / 3.0) * leaf.Gamma,
+                _3 = 0.0,
+                _4 = (y * z * leaf.J / parameters.ExtraATPCost) - cc * (1 - y) * z * leaf.J / (3 * cc + 7 * leaf.Gamma * oc),
+                _5 = 0.0,
+                _6 = 1.0,
+                _7 = a * leaf.Gamma,
+                _8 = leaf.Gamma * canopy.AirO2,
+                _9 = (7.0 / 3.0) * leaf.Gamma * a 
+            };
 
             var func = new AssimilationFunction()
             {
-                X = x,
+                x = x,
 
                 MesophyllRespiration = leaf.GmRd,
-                HalfRubiscoSpecificityReciprocal = leaf.Gamma,
-                FractionOfDiffusivitySolubilityRatio = 0.1 / canopy.DiffusivitySolubilityRatio,
                 BundleSheathConductance = pathway.Gbs,
-                Oxygen = canopy.AirO2,
                 Respiration = leaf.RdT
             };
 

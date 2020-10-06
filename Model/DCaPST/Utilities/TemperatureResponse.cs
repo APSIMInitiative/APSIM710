@@ -125,7 +125,7 @@ namespace DCAPST
             var universalGasConstant = 8.314;
 
             var numerator = tMin * (temp + absolute0C - absolute25C);
-            var denominator = (absolute25C * universalGasConstant * (temp + absolute0C));
+            var denominator = absolute25C * universalGasConstant * (temp + absolute0C);
 
             return P25 * Math.Exp(numerator / denominator);
         }

@@ -18,7 +18,7 @@ namespace DCAPST
         /// <summary>
         /// Function terms
         /// </summary>
-        public double[] X;
+        public Terms x;
 
         /// <summary>
         /// Intercellular CO2
@@ -33,68 +33,17 @@ namespace DCAPST
         /// <summary>
         /// Mesophyll respiration
         /// </summary>
-        public double MesophyllRespiration;
-        
-        /// <summary>
-        /// Half the rubisco specificity reciprocal
-        /// </summary>
-        public double HalfRubiscoSpecificityReciprocal;
-        
-        /// <summary>
-        /// A fraction of the diffusivity solubility ratio
-        /// </summary>
-        public double FractionOfDiffusivitySolubilityRatio;
+        public double MesophyllRespiration;        
         
         /// <summary>
         ///  The bundle sheath conductance
         /// </summary>
-        public double BundleSheathConductance;
-        
-        /// <summary>
-        /// Oxygen partial pressure
-        /// </summary>
-        public double Oxygen;
+        public double BundleSheathConductance;      
 
         /// <summary>
         /// Leaf respiration
         /// </summary>
         public double Respiration;
-
-        /// <summary>
-        /// Solves the assimilation function
-        /// </summary>        
-        public double Value()
-        {
-            if (X.Length != 9) throw new Exception("Invalid assimilation terms");
-
-            double m = MesophyllRespiration;
-            double h = HalfRubiscoSpecificityReciprocal;
-            double f = FractionOfDiffusivitySolubilityRatio;
-            double g = BundleSheathConductance;
-            double o = Oxygen;
-            double r = Respiration;
-
-            var n1 = r - X[0];
-            var n2 = m - Ci * X[3];
-            var n3 = X[4] - X[6];
-
-            var a1 = g * Rm - f * X[1] * X[8];
-            var a2 = (Rm * X[3] + X[5]) * X[7];            
-
-            var b0 = Rm * n1 - Ci;
-            var b1 = f * X[8] * (r * X[1] - h * X[0]);
-            var b2 = g * (b0 - o * X[1] - X[2]);
-            var b3 = a2 * n1 + (n2 - n3) * X[7];
-
-            var c1 = X[7] * (n1 * n2 + n3 * X[0] - X[6] * r);
-            var c2 = g * (Ci * n1 + o * (h * X[0] + X[1] * r) + r * X[2]);            
-
-            var a = a1 + a2;
-            var b = b1 + b2 + b3;
-            var c = c1 - c2;
-
-            return SolveQuadratic(a, b, c);
-        }
 
         /// <summary>
         /// The quadratic equation
@@ -104,5 +53,53 @@ namespace DCAPST
             var root = b * b - 4 * a * c;
             return (-b - Math.Sqrt(root)) / (2 * a);
         }
+
+        public double Value()
+        {
+            double R_m = MesophyllRespiration;
+            double gbs = BundleSheathConductance;
+            double R_d = Respiration;
+
+            double p = Ci;
+            double q = Rm;
+
+
+            var n1 = R_d - x._1;
+            var n2 = p * x._3 + x._4;
+            var n3 = q * x._3 + x._5;            
+
+            var a = gbs * (q - x._9) + n3 * x._6;
+
+            var c1 = -p * n1 - R_d * x._2 - x._1 * x._8;
+            var c2 = n1 * (R_m - n2);
+            var c = gbs * c1 + x._6 * c2;
+
+            var b1 = q * n1 - R_d * x._9 - x._1 * x._7 - x._2 - p;
+            var b2 = R_m + n1 * n3 - n2;
+            var b = gbs * b1 + x._6 * b2;
+
+            return SolveQuadratic(a, b, c);
+        }
+    }
+
+    public struct Terms
+    {
+        public double _1 { get; set; }
+
+        public double _2 { get; set; }
+
+        public double _3 { get; set; }
+
+        public double _4 { get; set; }
+
+        public double _5 { get; set; }
+
+        public double _6 { get; set; }
+
+        public double _7 { get; set; }
+
+        public double _8 { get; set; }
+
+        public double _9 { get; set; }
     }
 }
