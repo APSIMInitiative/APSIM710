@@ -26,7 +26,7 @@ public class Script
     [Output] public double RadIntDcaps;
     [Output] public double BIOshootDAYPot;
     [Output] public double SoilWater;
-    [Output] public double DCAPSTsln;
+    [Output] public double dsln;
 
     // Interval outputs
     [Output] public double Hour;
@@ -153,7 +153,8 @@ public class Script
         MyPaddock.Get("lai", out lai);
 
         // Model the photosynthesis
-        DCAPSTModel DM = Classic.SetUpModel(CP, PP, DOY, latitude, maxT, minT, radn);
+        double rpar = 0.5;
+        DCAPSTModel DM = Classic.SetUpModel(CP, PP, DOY, latitude, maxT, minT, radn, rpar);
 
         // OPTIONAL VALUES:      
         // Biological transpiration limit of the crop
@@ -181,11 +182,11 @@ public class Script
         TE = (EcanSupply == 0 ? 0 : BIOshootDAY / EcanSupply);
         BIOshootDAYPot = dcapst[4] = DM.PotentialBiomass;
         SoilWater = SWAvailable;
-        DCAPSTsln = sln;
+        dsln = sln;
 
         // Interval outputs
 
-        // For reasons unknown, dodcapst is called twice, but only the 2nd call is valid.
+        // For reasons unknown, wheat calls this method twice, but only the 2nd call is used/valid.
         // This skipper just stops the bad data from showing up in the interval report
         skipper = !skipper;
         if (skipper)
