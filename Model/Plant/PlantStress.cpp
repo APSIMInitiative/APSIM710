@@ -327,15 +327,14 @@ void NStress::doPlantNStress (plantPart* leafPart, plantPart* stemPart)
     else if (c.n_stress_option == 3)
         {
         vector< plantPart *> parts;
-
-        // Expansion & photosynthesis from leaves only
+        // Expansion uses leaves only
         parts.push_back(leafPart);
         nFact.expansion = critNFactor(parts, c.nFact.expansion);
-        nFact.photo = critNFactor(parts, c.nFact.photo);
 
-        // leaf & stem
+        // Rest have leaf & stem
         parts.push_back(stemPart);
         nFact.pheno = 1.0;
+        nFact.photo = critNFactor(parts, c.nFact.photo);
         nFact.grain = critNFactor(parts, c.nFact.grain);
         }
     else
