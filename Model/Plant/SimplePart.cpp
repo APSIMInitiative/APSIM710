@@ -531,20 +531,23 @@ void SimplePart::get_AvailableToAnimal(protocol::AvailableToAnimalType &avail)
 // Remove dry matter from the pools
 void  SimplePart::set_RemovedByAnimal(const protocol::RemovedByAnimalType &dm)
 {
+    float green_total = 0, senesced_total = 0;  // total over the Chem (digestible and indigestible)
 	for (vector<protocol::RemovedByAnimalelementType>::const_iterator cohort = dm.element.begin(); cohort != dm.element.end(); cohort++)
 	{
 		if (Str_i_Eq(cohort->Organ, myName))
 		{
 			if (Str_i_Eq(cohort->AgeID, "green"))
-			{
-				giveDmGreenRemoved((float)(cohort->WeightRemoved * kg2gm / ha2sm));
+            {
+                green_total += (float)cohort->WeightRemoved;
 			}
 			else if (Str_i_Eq(cohort->AgeID, "senesced"))
 			{
-				giveDmSenescedRemoved((float)(cohort->WeightRemoved * kg2gm / ha2sm));
+                senesced_total += (float)cohort->WeightRemoved;
 			}
 		}
 	}
+    giveDmGreenRemoved(green_total * kg2gm / ha2sm);
+    giveDmSenescedRemoved(senesced_total * kg2gm / ha2sm);
 }
 
 void SimplePart::doRemoveBiomass(protocol::RemoveCropBiomassType dmRemoved, bool c_remove_biomass_report)

@@ -15,7 +15,7 @@ namespace outputComp
     // ============================================================================
     public class TTextReporter : TGenericReporter
     {
-        private const int MAXCOLWIDTH = 15;
+        private const int MAXCOLWIDTH = 20;
         private StreamWriter FOutFile;  //Results file 
         private int FInitColumns;       //Initial number of output columns      
         private int FLastColumnCount;   //Number of columns in the last write
