@@ -50,7 +50,7 @@ namespace DCAPST.Environment
         private readonly ITemperature temp;
 
         /// <summary> Current leaf temperature </summary>
-        private double leafTemp;
+        public double LeafTemp { get; set; }
 
         /// <summary> Canopy boundary heat conductance </summary>
         private double gbh;
@@ -68,10 +68,10 @@ namespace DCAPST.Environment
         private double GbCO2 => temp.AtmosphericPressure * temp.AirMolarDensity * Gbw / m;
 
         /// <summary> Outgoing thermal radiation</summary>
-        private double ThermalRadiation => 8 * kb * Math.Pow(temp.AirTemperature + 273, 3) * (leafTemp - temp.AirTemperature);
+        private double ThermalRadiation => 8 * kb * Math.Pow(temp.AirTemperature + 273, 3) * (LeafTemp - temp.AirTemperature);
                 
         /// <summary> Vapour pressure at the leaf temperature </summary>
-        private double VpLeaf => 0.61365 * Math.Exp(17.502 * leafTemp / (240.97 + leafTemp));
+        private double VpLeaf => 0.61365 * Math.Exp(17.502 * LeafTemp / (240.97 + LeafTemp));
 
         /// <summary> Vapour pressure at the air temperature</summary>
         private double VpAir => 0.61365 * Math.Exp(17.502 * temp.AirTemperature / (240.97 + temp.AirTemperature));
@@ -85,8 +85,8 @@ namespace DCAPST.Environment
         /// <summary> Difference in air vapour pressures </summary>
         private double DeltaAirVP => VpAir1 - VpAir;
 
-        /// <summary> Leaf to air vapour pressure deficit </summary>
-        private double vpd => VpLeaf - VptMin;
+        /// <inheritdoc/>
+        public double VPD => VpLeaf - VptMin;
 
         public WaterInteraction(ITemperature temperature)
         {
@@ -98,9 +98,8 @@ namespace DCAPST.Environment
         /// </summary>
         /// <param name="leafTemp">Leaf temperature</param>
         /// <param name="gbh">Boundary heat conductance</param>
-        public void SetConditions(double leafTemp, double gbh, double radiation)
+        public void SetConditions(double gbh, double radiation)
         {
-            this.leafTemp = leafTemp;
             this.gbh = (gbh != 0) ? gbh : throw new Exception("Gbh cannot be 0");
             this.radiation = radiation;
         }
@@ -153,7 +152,7 @@ namespace DCAPST.Environment
         {        
             // Transpiration in kilos of water per second
             double ekg = latentHeatOfVapourisation * availableWater / hrs_to_seconds;
-            double rtw = (DeltaAirVP * Rbh * (radiation - ThermalRadiation - ekg) + vpd * sAir) / (ekg * g);
+            double rtw = (DeltaAirVP * Rbh * (radiation - ThermalRadiation - ekg) + VPD * sAir) / (ekg * g);
             return rtw;
         }
 
@@ -167,7 +166,7 @@ namespace DCAPST.Environment
             // TODO: Make this work with the timestep model
 
             // dummy variables
-            double a_lump = DeltaAirVP * (radiation - ThermalRadiation) + vpd * sAir / Rbh;
+            double a_lump = DeltaAirVP * (radiation - ThermalRadiation) + VPD * sAir / Rbh;
             double b_lump = DeltaAirVP + g * rtw / Rbh;
             double latentHeatLoss = a_lump / b_lump;
 
@@ -194,7 +193,7 @@ namespace DCAPST.Environment
         public double LeafTemperature(double rtw)
         {
             // dummy variables
-            double a = g * (radiation - ThermalRadiation) * rtw / sAir - vpd;
+            double a = g * (radiation - ThermalRadiation) * rtw / sAir - VPD;
             double d = DeltaAirVP + g * rtw / Rbh;
 
             double deltaT = a / d;

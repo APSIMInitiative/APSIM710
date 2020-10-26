@@ -67,13 +67,13 @@ namespace DCAPST.Canopy
         /// <summary>
         /// Sets the current conditions for transpiration
         /// </summary>
-        public void SetConditions(ParameterRates At25C, double temperature, double photons, double radiation)
+        public void SetConditions(ParameterRates At25C, double photons, double radiation)
         {
-            Leaf.SetConditions(At25C, temperature, photons);
-            Water.SetConditions(temperature, BoundaryHeatConductance, radiation);
+            Leaf.SetConditions(At25C, photons);
+            Water.SetConditions(BoundaryHeatConductance, radiation);
         }
 
-        public void UpdatePathway(IAssimilation assimilation, AssimilationPathway pathway)
+        public AssimilationFunction UpdateA(IAssimilation assimilation, AssimilationPathway pathway)
         {
             var func = assimilation.GetFunction(pathway, Leaf);
 
@@ -108,8 +108,9 @@ namespace DCAPST.Canopy
                 Resistance = Water.UnlimitedWaterResistance(pathway.CO2Rate, Canopy.AirCO2, pathway.IntercellularCO2);
                 pathway.WaterUse = Water.HourlyWaterUse(Resistance);
             }
+            pathway.VPD = Water.VPD;
 
-            assimilation.UpdatePartialPressures(pathway, Leaf, func);
+            return func;
         }
 
         /// <summary>

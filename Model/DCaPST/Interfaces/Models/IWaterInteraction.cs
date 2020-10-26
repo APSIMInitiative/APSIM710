@@ -8,7 +8,7 @@
         /// <summary>
         /// Sets the current conditions of the leaf water model
         /// </summary>
-        void SetConditions(double temperature, double gbs, double radiation);
+        void SetConditions(double gbs, double radiation);
 
         /// <summary>
         /// Calculates the resistance to water when supply is unlimited
@@ -34,5 +34,10 @@
         /// Finds the water demand of a leaf canopy across an hour
         /// </summary>
         double HourlyWaterUse(double resistance);
+
+        double LeafTemp { get; set; }
+
+        /// <summary> Leaf to air vapour pressure deficit </summary>
+        double VPD { get; }
     }
 }

@@ -29,7 +29,8 @@ namespace ModelsTests.Environment.UnitTests
 
             // Act
             var water = new WaterInteraction(temperature.Object);
-            water.SetConditions(leafTemp, gbh, 0.0);
+            water.SetConditions(gbh, 0.0);
+            water.LeafTemp = leafTemp;
             var actual = water.UnlimitedWaterResistance(A, Ca, Ci);
 
             // Assert
@@ -55,7 +56,8 @@ namespace ModelsTests.Environment.UnitTests
 
             // Act
             var water = new WaterInteraction(temperature.Object);
-            water.SetConditions(leafTemp, gbh, rn);
+            water.SetConditions(gbh, rn);
+            water.LeafTemp = leafTemp;
             var actual = water.LimitedWaterResistance(available);
 
             // Assert
@@ -81,7 +83,8 @@ namespace ModelsTests.Environment.UnitTests
 
             // Act
             var water = new WaterInteraction(temperature.Object);
-            water.SetConditions(leafTemp, gbh, rn);
+            water.SetConditions(gbh, rn);
+            water.LeafTemp = leafTemp;
             var actual = water.HourlyWaterUse(rtw);
 
             // Assert
@@ -105,7 +108,8 @@ namespace ModelsTests.Environment.UnitTests
 
             // Act
             var water = new WaterInteraction(temperature.Object);
-            water.SetConditions(leafTemp, gbh, 0.0);
+            water.SetConditions(gbh, 0.0);
+            water.LeafTemp = leafTemp;
             var actual = water.TotalCO2Conductance(rtw);
 
             // Assert
@@ -131,7 +135,8 @@ namespace ModelsTests.Environment.UnitTests
 
             // Act
             var water = new WaterInteraction(temperature.Object);
-            water.SetConditions(leafTemp, gbh, rn);
+            water.SetConditions(gbh, rn);
+            water.LeafTemp = leafTemp;
             var actual = water.LeafTemperature(rtw);
 
             // Assert

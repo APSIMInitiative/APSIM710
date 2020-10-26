@@ -30,17 +30,16 @@ namespace DCAPST
             this.pathway = pathway;
         }
 
-        public void SetConditions(ParameterRates rates, double temperature, double photons)
+        public void SetConditions(ParameterRates rates, double photons)
         {
             rateAt25 = rates;
-            this.temperature = temperature;
             photoncount = photons;
         }
 
         /// <summary>
         /// The current leaf temperature
         /// </summary>
-        private double temperature;
+        public double temperature { get; set; }
 
         /// <summary>
         /// Number of photons that reached the leaf
