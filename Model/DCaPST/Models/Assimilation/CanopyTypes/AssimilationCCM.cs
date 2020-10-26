@@ -7,6 +7,8 @@ namespace DCAPST
     /// </summary>
     public class AssimilationCCM : Assimilation
     {
+        public override int Iterations { get; set; } = 10;
+
         public AssimilationCCM(ICanopyParameters canopy, IPathwayParameters parameters) : base(canopy, parameters)
         { }
 

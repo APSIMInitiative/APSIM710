@@ -92,34 +92,18 @@ namespace DCAPST.Canopy
         /// </summary>
         public void DoPhotosynthesis(ITemperature temperature, Transpiration transpiration)
         {
-            iteration = 0;
+            CO2AssimilationRate = 0;
+            WaterUse = 0;
 
-            // Initialise at the current temperature
-            pathways.ForEach(p => p.SetConditions(temperature.AirTemperature, LAI));
+            // Do the initial iterations
+            DoIterations(transpiration, temperature.AirTemperature, true);
 
-            // Determine initial results
-            UpdateAssimilation(transpiration);
+            // If the result is not sensible, repeat the iterations without updating temperature
+            if (GetCO2Rate() <= 0 || GetWaterUse() <= 0) 
+                DoIterations(transpiration, temperature.AirTemperature, false);
 
-            // Store the initial results in case the subsequent updates fail
-            CO2AssimilationRate = GetCO2Rate();
-            WaterUse = GetWaterUse();
-
-            // Only attempt to converge result if there is sufficient assimilation
-            if (CO2AssimilationRate < 0.5 || WaterUse == 0) return;
-
-            // Repeat calculation 3 times to let solution converge
-            for (int n = 0; n < 3; n++)
-            {
-                UpdateAssimilation(transpiration);
-
-                // If the additional updates fail, stop the process (meaning the initial results used)
-                if (GetCO2Rate() == 0 || GetWaterUse() == 0)
-                {
-                    iteration = 0;
-                    return;
-                }
-                iteration++;
-            }
+            // If the result is still not sensible, use default values (0's)
+            if (GetCO2Rate() <= 0 || GetWaterUse() <= 0) return;
 
             // Update results only if convergence succeeds
             CO2AssimilationRate = GetCO2Rate();
@@ -127,22 +111,41 @@ namespace DCAPST.Canopy
         }
 
         /// <summary>
-        /// Recalculates the assimilation values for each pathway
+        /// Repeat the assimilation calculation to let the result converge
         /// </summary>
-        public void UpdateAssimilation(Transpiration t)
+        private void DoIterations(Transpiration t, double airTemp, bool updateT)
+        {
+            pathways.ForEach(p => p.SetConditions(airTemp, LAI));
+            t.SetConditions(At25C, PhotonCount, AbsorbedRadiation);
+
+            for (int n = 0; n <= assimilation.Iterations; n++)
+                UpdateAssimilation(t, updateT);
+        }
+
+        /// <summary>
+        /// Calculates the assimilation values for each pathway
+        /// </summary>
+        private void UpdateAssimilation(Transpiration t, bool updateT)
         {
             foreach (var p in pathways)
             {
-                t.SetConditions(At25C, p.Temperature, PhotonCount, AbsorbedRadiation);                
-                t.UpdatePathway(assimilation, p);
-                t.UpdateTemperature(p);
+                t.Leaf.temperature = p.Temperature;
+                t.Water.LeafTemp = p.Temperature;
 
-                // If the assimilation is not sensible zero the values
-                if (double.IsNaN(p.CO2Rate) || p.CO2Rate <= 0.0 || double.IsNaN(p.WaterUse) || p.WaterUse <= 0.0)
+                var func = t.UpdateA(assimilation, p);
+                assimilation.UpdatePartialPressures(p, t.Leaf, func);                
+
+                if (!(assimilation is AssimilationC3)) 
+                    t.UpdateA(assimilation, p);
+
+                if (updateT)
+                    t.UpdateTemperature(p);
+
+                if (double.IsNaN(p.CO2Rate) || double.IsNaN(p.WaterUse))
                 {
                     p.CO2Rate = 0;
                     p.WaterUse = 0;
-                }                
+                }
             }
         }
 
@@ -164,7 +167,6 @@ namespace DCAPST.Canopy
                 A = CO2AssimilationRate,
                 Water = WaterUse,
                 Temperature = temp,
-                Iteration = iteration,
                 Ac1 = ac1,
                 Ac2 = ac2,
                 Aj = aj
@@ -184,8 +186,6 @@ namespace DCAPST.Canopy
         public double Water { get; set; }
 
         public double Temperature { get; set; }
-
-        public double Iteration { get; set; }
 
         public PathValues Ac1 { get; set; }
 

@@ -333,6 +333,8 @@ namespace DCAPST
             
             var shadedHeat =  (totalHeat == sunlitHeat) ? double.Epsilon : totalHeat - sunlitHeat;
 
+            interval.AirTemperature = Temperature.AirTemperature;
+
             PerformPhotosynthesis(Canopy.Sunlit, sunlitHeat, sunFraction);
             interval.Sunlit = Canopy.Sunlit.GetAreaValues();            
 
@@ -401,6 +403,8 @@ namespace DCAPST
         /// The time of the interval
         /// </summary>
         public double Time { get; set; }
+
+        public double AirTemperature { get; set; }
 
         /// <summary>
         /// Area values for the sunlit canopy

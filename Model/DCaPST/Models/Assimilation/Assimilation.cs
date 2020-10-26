@@ -7,6 +7,9 @@ namespace DCAPST
     /// </summary>
     public abstract class Assimilation : IAssimilation
     {
+        /// <inheritdoc/>
+        public virtual int Iterations { get; set; } = 3;
+
         /// <summary>
         /// The parameters describing the canopy
         /// </summary>
@@ -36,9 +39,17 @@ namespace DCAPST
         /// <inheritdoc/>
         public void UpdatePartialPressures(AssimilationPathway pathway, TemperatureResponse leaf, AssimilationFunction function)
         {
+            var cm = pathway.MesophyllCO2;
+            var cc = pathway.ChloroplasticCO2;
+            var oc = pathway.ChloroplasticO2;
+
             UpdateMesophyllCO2(pathway, leaf);
             UpdateChloroplasticO2(pathway);
             UpdateChloroplasticCO2(pathway, function);
+
+            pathway.MesophyllCO2 = (pathway.MesophyllCO2 + cm) / 2.0;
+            pathway.ChloroplasticCO2 = (pathway.ChloroplasticCO2 + cc) / 2.0;
+            pathway.ChloroplasticO2 = (pathway.ChloroplasticO2 + oc) / 2.0;
         }
 
         /// <inheritdoc/>

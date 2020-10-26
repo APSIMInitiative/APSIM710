@@ -23,7 +23,11 @@
         /// <param name="pathway">The pathway to update</param>
         /// <param name="leaf">The leaf temperature response model</param>
         /// <param name="function">The assimilation function specific to the pathway</param>
-
         void UpdatePartialPressures(AssimilationPathway pathway, TemperatureResponse leaf, AssimilationFunction function);
+
+        /// <summary>
+        /// Maximum number of iterations when calculating assimilation convergence
+        /// </summary>
+        int Iterations { get; set; }
     }
 }

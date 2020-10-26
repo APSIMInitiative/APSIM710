@@ -40,6 +40,8 @@ namespace DCAPST
         /// </summary>
         public double WaterUse { get; set; }
 
+        public double VPD { get; set; }
+
         /// <summary>
         /// Intercellular airspace CO2 partial pressure (microbar)
         /// </summary>
@@ -98,7 +100,8 @@ namespace DCAPST
             {
                 Assimilation = CO2Rate,
                 Water = WaterUse,
-                Temperature = Temperature
+                Temperature = Temperature,
+                VPD = VPD
             };
 
             return values;
@@ -112,5 +115,7 @@ namespace DCAPST
         public double Water { get; set; }
 
         public double Temperature { get; set; }
+
+        public double VPD { get; set; }
     }
 }
