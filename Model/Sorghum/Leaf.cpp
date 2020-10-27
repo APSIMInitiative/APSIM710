@@ -727,7 +727,7 @@ void Leaf::calcSenescence(void)
    dltDmSenesced = divide(dltSlai,slaToday);
 
    double slnToday = divide(nGreenToday,laiToday);
-   dltNSenesced  += dltSlai * Max((slnToday - senescedLeafSLN),0.0);
+   dltNSenesced += dltSlai * Max(slnToday, 0.0);
    }
 //------------------------------------------------------------------------------------------------
 double Leaf::partitionDM(double dltDM)
