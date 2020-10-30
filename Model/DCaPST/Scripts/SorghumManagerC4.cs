@@ -6,7 +6,6 @@ using DCAPST;
 using DCAPST.Interfaces;
 using DCAPST.Utilities;
 
-
 public class Script
 {
     [Link] public Simulation MySimulation;
