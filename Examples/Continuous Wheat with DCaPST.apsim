@@ -969,55 +969,64 @@ public class Script
           <ui />
           <text>using System;
 using System.IO;
-
 using ModelFramework;
 
 using DCAPST;
 using DCAPST.Interfaces;
-using DCAPST.Utilities; 
+using DCAPST.Utilities;
 
-public class Script 
-{      
-   [Link]  public Simulation MySimulation;
+public class Script
+{
+   [Link] public Simulation MySimulation;
    [Link] Paddock MyPaddock; // Can be used to dynamically get access to simulation structure and variables
    [Input] DateTime Today;   // Equates to the value of the current simulation date - value comes from CLOCK
    [Output] public double[] dcapst = new double[5];
-   
-   //Additional Outputs
+
+   [Event] public event NullTypeDelegate IntervalStep;
+
+   // Daily Outputs
    [Output] public double BIOtotalDAY;
    [Output] public double BIOshootDAY;
    [Output] public double RootShoot;
-   [Output] public double EcanDemand; 
+   [Output] public double EcanDemand;
    [Output] public double EcanSupply;
    [Output] public double RUE;
-   [Output] public double TE; 
-   [Output] public double RadIntDcaps; 
+   [Output] public double TE;
+   [Output] public double RadIntDcaps;
    [Output] public double BIOshootDAYPot;
    [Output] public double SoilWater;
-   
+   [Output] public double dsln;
+
+   // Interval outputs
+   [Output] public double Hour;
+   [Output] public double SunlitTemperature;
+   [Output] public double ShadedTemperature;
+   [Output] public double SunlitAc1;
+   [Output] public double SunlitAc2;
+   [Output] public double SunlitAj;
+   [Output] public double ShadedAc1;
+   [Output] public double ShadedAc2;
+   [Output] public double ShadedAj;
+
    public CanopyParameters CP;
    public PathwayParameters PP;
    public DCAPSTModel DM;
-   
-   public double LAITrigger = 0.5;
-   public double PsiFactor = 1.0; // Psi reduction factor
+
+   public double NLAITrigger = 1.0; // default = 1.0
+   public double LAITrigger = 0.5;  // default = 0.5
+   public double NLowLimit = 0.0;   // default = 0.5
+   public double PsiFactor = 1.0;   // Psi reduction factor
 
    // DCaPST is disabled to begin with
    bool dcapstON = false;
-   
+
    // The alternative photosystem model
    string PsModelName1;
 
-   private FileStream stream;
-   private StreamWriter writer;
-   
    // The following event handler will be called once at the beginning of the simulation
-   [EventHandler] public void OnInitialised()
+   [EventHandler]
+   public void OnInitialised()
    {
-      string path = "IntervalValues.csv";
-      stream = new FileStream(path, FileMode.Create);
-      writer = new StreamWriter(stream);
-      
       /* IMPORTANT - Do NOT change the order of these values */
 
       CP = Classic.SetUpCanopy(
@@ -1084,10 +1093,12 @@ public class Script
       MyPaddock.Set("DCaPSTTriggerLAI", LAITrigger);
       MyPaddock.Get("PsModelName1", out PsModelName1);
    }
-   
+
    // This routine is called when the plant model wants us to do the calculation
-   private bool empty = true; // tracks if the header has been printed for the interval value data
-   [EventHandler] public void Ondodcapst() 
+   //private bool lowLAI = false;
+   private bool skipper = false;
+   [EventHandler]
+   public void Ondodcapst()
    {
       int DOY = 0;
       double latitude = 0;
@@ -1095,86 +1106,109 @@ public class Script
       double minT = 0;
       double radn = 0;
       double RootShootRatio = 0;
-      double SLN = 0;
+      double sln = 0;
+      double greenN = 0;
       double SWAvailable = 0;
       double lai = 0;
-	  
-      MyPaddock.Get("DCAPSTDOY", out DOY);      
-      MyPaddock.Get("DCAPSTsln", out SLN);
+
+      MyPaddock.Get("DCAPSTDOY", out DOY);
       MyPaddock.Get("DCAPSTRootShootRatio", out RootShootRatio);
       MyPaddock.Get("DCAPSTswAvail", out SWAvailable);
-     
+      MyPaddock.Get("LeafGreenN", out greenN);
       MyPaddock.Get("latitude", out latitude);
       MyPaddock.Get("maxT", out maxT);
       MyPaddock.Get("minT", out minT);
       MyPaddock.Get("radn", out radn);
       MyPaddock.Get("lai", out lai);
-            
+
       // Model the photosynthesis
-      DCAPSTModel DM = Classic.SetUpModel(CP, PP, DOY, latitude, maxT, minT, radn);
-      
-      // Optional values 
-      DM.PrintIntervalValues = false; // Switch to print extra data (default = false)
-      DM.Biolimit = 0;     // Biological transpiration limit of the crop (0 disables mechanism)
-      DM.Reduction = 0;    // Excess water reduction fraction for bio-limited transpiration (0 disables mechanism)
+      double rpar = 0.5;
+      DCAPSTModel DM = Classic.SetUpModel(CP, PP, DOY, latitude, maxT, minT, radn, rpar);
+
+      // OPTIONAL VALUES:      
+      // Biological transpiration limit of the crop
+      DM.Biolimit = 0;     // default = 0 (disabled)
+
+      // Excess water reduction fraction for bio-limited transpiration 
+      DM.Reduction = 0;    // default = 0 (disabled)      
+
+      if (lai &gt; LAITrigger &amp;&amp; lai &lt; NLAITrigger)
+         sln = Math.Max(greenN, NLowLimit);
+      else
+         sln = greenN / lai;
 
       // Run the simulation
-      DM.DailyRun(lai, SLN, SWAvailable, RootShootRatio);
-      
-      if (DM.PrintIntervalValues)
-      {
-         if (empty)
-         {
-            writer.WriteLine(DM.PrintResultHeader());
-            empty = false;
-         }
-         
-         writer.WriteLine(DM.IntervalResults);
-      }
-      
-      // Outputs
+      DM.DailyRun(lai, sln, SWAvailable, RootShootRatio);
+
+      // Daily outputs
       RootShoot = RootShootRatio;
       BIOshootDAY = dcapst[0] = DM.ActualBiomass;
       BIOtotalDAY = BIOshootDAY * (1 + RootShoot);
-      EcanDemand = dcapst[1] = DM.WaterDemanded; 
+      EcanDemand = dcapst[1] = DM.WaterDemanded;
       EcanSupply = dcapst[2] = DM.WaterSupplied;
       RadIntDcaps = dcapst[3] = DM.InterceptedRadiation;
       RUE = (RadIntDcaps == 0 ? 0 : BIOshootDAY / RadIntDcaps);
       TE = (EcanSupply == 0 ? 0 : BIOshootDAY / EcanSupply);
       BIOshootDAYPot = dcapst[4] = DM.PotentialBiomass;
       SoilWater = SWAvailable;
+      dsln = sln;
+
+      // Interval outputs
+
+      // For reasons unknown, wheat calls this method twice, but only the 2nd call is used/valid.
+      // This skipper just stops the bad data from showing up in the interval report
+      skipper = !skipper;
+      if (skipper)
+      {
+         foreach (var interval in DM.Intervals)
+         {
+            Hour = interval.Time;
+            SunlitTemperature = interval.Sunlit.Temperature;
+            ShadedTemperature = interval.Shaded.Temperature;
+            SunlitAc1 = interval.Sunlit.Ac1.Assimilation;
+            SunlitAc2 = interval.Sunlit.Ac2.Assimilation;
+            SunlitAj = interval.Sunlit.Aj.Assimilation;
+            ShadedAc1 = interval.Shaded.Ac1.Assimilation;
+            ShadedAc2 = interval.Shaded.Ac2.Assimilation;
+            ShadedAj = interval.Shaded.Aj.Assimilation;
+
+            if (IntervalStep != null) IntervalStep.Invoke();
+         }
+      }
    }
-      
+
    // Set its default value to garbage so that we find out quickly
-   [EventHandler] public void OnPrepare()
+   [EventHandler]
+   public void OnPrepare()
    {
       RootShoot = 0;
       BIOshootDAY = 0;
       BIOtotalDAY = 0;
-      EcanDemand = 0; 
+      EcanDemand = 0;
       EcanSupply = 0;
       RadIntDcaps = 0;
       RUE = 0;
       TE = 0;
       BIOshootDAYPot = 0;
-      
-      for(int i = 0; i &lt; 5; i++) { dcapst[i] = -1.0f;}
-      
+
+      for (int i = 0; i &lt; 5; i++) { dcapst[i] = -1.0f; }
+
       double lai = 0;
-      MyPaddock.Get("lai", out lai); 
-      
+      MyPaddock.Get("lai", out lai);
+
       if (!dcapstON &amp;&amp; lai &gt;= LAITrigger)
       {
          dcapstON = true;
          MyPaddock.Set("PsModelName", "dcapst");
       }
    }
-   
+
    // Make certain DCaPST is disabled at sowing
-   [EventHandler] public void OnSowing() 
+   [EventHandler]
+   public void OnSowing()
    {
       dcapstON = false;
-      MyPaddock.Set("PsModelName", PsModelName1); 
+      MyPaddock.Set("PsModelName", PsModelName1);
    }
 }</text>
           <Reference>
