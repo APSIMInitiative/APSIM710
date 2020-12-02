@@ -30,7 +30,7 @@ Roots::~Roots()
 void Roots::doRegistrations(void)
    {
    scienceAPI.expose("RootLength"    ,"mm/mm2","Root length",                 false, rootLength);
-   scienceAPI.expose("RLV"           ,"mm/mm3","Root length volume in layers",false, rlvFactor);
+   scienceAPI.exposeFunction("RLV"           ,"mm/mm3","Root length volume in layers", FloatArrayFunction(&Roots::getRLV));
    scienceAPI.expose("RootDepth"     ,"mm"    ,"Depth of roots",              false, rootDepth);
    scienceAPI.expose("root_depth"    ,"mm"    ,"Depth of roots",              false, rootDepth);
    scienceAPI.expose("RootFront"     ,"mm"    ,"Depth of root front",         false, rootFront);
@@ -59,7 +59,6 @@ void Roots::onNewProfile(NewProfileType &v /* message */)
    /* TODO : Insert new root profile and llDep code for change in profile due to erosion */
 
    rootLength.assign (nLayers,0.0);
-   rlvFactor.assign  (nLayers,0.0);
    dltRootLength.assign           (nLayers,0.0);
    dltScenescedRootLength.assign  (nLayers,0.0);
    rootProportion.assign  (nLayers,0.0);
@@ -89,7 +88,6 @@ void Roots::initialize(void)
    if(nLayers > 0 && nLayers < 100)
    {
    rootLength.assign(nLayers, 0.0);
-   rlvFactor.assign(nLayers,0.0);
    rootProportion.assign(nLayers,0.0);
    }
    PlantPart::initialize();
@@ -145,6 +143,13 @@ void Roots::readParams (void)
    rightDist = plant->getRowSpacing() * 0.5;
 
    }
+
+//------------------------------------------------------------------------------------------------
+void Roots::resetDailyVars(void)
+   {
+   dltRootLength.assign(nLayers,0.0);
+   }
+
 //------------------------------------------------------------------------------------------------
 void Roots::process(void)
    {
@@ -195,6 +200,9 @@ void Roots::updateVars(void)
    rootDepth += dltRootDepth;
    dltRootFront = calcDltRootFront(plant->phenology->currentStage());
    rootFront += dltRootFront;
+
+   for(int layer = 0; layer < nLayers; layer++)
+      rootLength[layer] += dltRootLength[layer];
 
    calcRootProportions();
    // calculate current root layer
@@ -257,14 +265,19 @@ void Roots::calcSenLength(void)
 //------------------------------------------------------------------------------------------------
 void Roots::calcRootDistribution(void)
    {
+   vector<double> rlvFactor;
+   rlvFactor.assign(nLayers, 0.0);
    double rlvFactorTotal = 0.0;
+
    for(int layer = 0; layer <= currentLayer; layer++)
       {
       double rld = divide (rootLength[layer],dLayer[layer]);
       double plantRld = divide (rld, plant->getPlantDensity());
       double branchingFactor = rldFn.value(plantRld);
-      rlvFactor[layer] = (swAvailFactor(layer) * branchingFactor * xf[layer] *
-                  divide(dLayer[layer],rootDepth * 10));
+      rlvFactor[layer] = swAvailFactor(layer) * 
+          branchingFactor * 
+            xf[layer] *
+              divide(dLayer[layer], rootDepth); //space weighting factor
       rlvFactor[layer] = Max(rlvFactor[layer],1e-6);
       rlvFactorTotal += rlvFactor[layer];
       }
@@ -272,8 +285,6 @@ void Roots::calcRootDistribution(void)
    for(int layer = 0; layer <= currentLayer; layer++)
       {
       dltRootLength[layer] = dltLengthTot * divide(rlvFactor[layer],rlvFactorTotal);
-      /* ADTODO : is this right???*/
-      rootLength[layer] += dltRootLength[layer];
       }
    }
 //------------------------------------------------------------------------------------------------
@@ -281,9 +292,6 @@ double Roots::calcDltRootDepth(double stage)
    {
    // sw available factor of root layer
    swFactor = swAvailFactor(currentLayer);
-   if (swFactor < 1.0) {
-	   int tm = 0;
-   }
    xfc = xf[currentLayer];
    //float adjRootDepthRate = calcAdjRootDepthRate(rootDepthRate[int (stage)]);
    //dltRootDepth  = adjRootDepthRate * swFactor * xf[currentLayer];
@@ -334,7 +342,11 @@ void Roots::getRootLength(vector<float> &result)
 //------------------------------------------------------------------------------------------------
 void Roots::getRLV(vector<float> &result)
    {
-   DVecToFVec(result, rlvFactor);
+   result.assign(nLayers, 0.0);
+   for(int layer = 0; layer <= currentLayer; layer++)
+      {
+      result[layer] = divide(rootLength[layer], dLayer[layer]);
+      }
    }
 //------------------------------------------------------------------------------------------------
 void Roots::getRP(vector<float> &result)
