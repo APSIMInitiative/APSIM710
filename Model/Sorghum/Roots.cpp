@@ -147,6 +147,7 @@ void Roots::readParams (void)
 //------------------------------------------------------------------------------------------------
 void Roots::resetDailyVars(void)
    {
+   PlantPart::resetDailyVars();
    dltRootLength.assign(nLayers,0.0);
    }
 
