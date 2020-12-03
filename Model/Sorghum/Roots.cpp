@@ -30,7 +30,7 @@ Roots::~Roots()
 void Roots::doRegistrations(void)
    {
    scienceAPI.expose("RootLength"    ,"mm/mm2","Root length",                 false, rootLength);
-   scienceAPI.exposeFunction("RLV"           ,"mm/mm3","Root length volume in layers", FloatArrayFunction(&Roots::getRLV));
+   scienceAPI.exposeFunction("RLV"   ,"mm/mm3","Root length volume in layers", FloatArrayFunction(&Roots::getRLV));
    scienceAPI.expose("RootDepth"     ,"mm"    ,"Depth of roots",              false, rootDepth);
    scienceAPI.expose("root_depth"    ,"mm"    ,"Depth of roots",              false, rootDepth);
    scienceAPI.expose("RootFront"     ,"mm"    ,"Depth of root front",         false, rootFront);
