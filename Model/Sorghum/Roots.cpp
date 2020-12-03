@@ -373,40 +373,43 @@ double Roots::calcPDemand(void)
    }
 //------------------------------------------------------------------------------------------------
 void Roots::incorporateResidue(void)
-   {
+{
    //Root residue incorporation    called from plantActions doEndCrop
 
-   if(!(totalBiomass() > 0.0))return;
+   if (totalBiomass() > 0.0)
+   {
+      vector<double> dmIncorp;
+      vector<double> nIncorp;
+      vector<double> pIncorp;
+      double rootLengthSum = sumVector(rootLength);
 
-   vector <double> dmIncorp;
-   vector <double> nIncorp;
-   vector <double> pIncorp;
-   double rootLengthSum = sumVector(rootLength);
-
-   double carbon = totalBiomass() * gm2kg /sm2ha;
-   double n = totalN() * gm2kg /sm2ha;
-   double p = totalP() * gm2kg /sm2ha;
-   for (unsigned layer = 0; layer < dLayer.size(); layer++)
+      double carbon = totalBiomass() * gm2kg / sm2ha;
+      double n = totalN() * gm2kg / sm2ha;
+      double p = totalP() * gm2kg / sm2ha;
+      for (unsigned layer = 0; layer < dLayer.size(); layer++)
       {
-      dmIncorp.push_back(carbon * divide(rootLength[layer],rootLengthSum,0.0));
-      nIncorp.push_back(n * divide(rootLength[layer],rootLengthSum,0.0));
-      pIncorp.push_back(p * divide(rootLength[layer],rootLengthSum,0.0));
+         dmIncorp.push_back(carbon * divide(rootLength[layer], rootLengthSum, 0.0));
+         nIncorp.push_back(n * divide(rootLength[layer], rootLengthSum, 0.0));
+         pIncorp.push_back(p * divide(rootLength[layer], rootLengthSum, 0.0));
       }
 
-   FOMLayerType IncorpFOM;
-   IncorpFOM.Type = plant->getCropType();
-   for (unsigned i = 0; i != dmIncorp.size(); i++)
+      FOMLayerType IncorpFOM;
+      IncorpFOM.Type = plant->getCropType();
+      for (unsigned i = 0; i != dmIncorp.size(); i++)
       {
-      FOMLayerLayerType Layer;
-      Layer.FOM.amount = dmIncorp[i];
-      Layer.FOM.N = nIncorp[i];
-      Layer.FOM.P = pIncorp[i];
-      Layer.CNR = 0;
-      Layer.LabileP = 0;
-      IncorpFOM.Layer.push_back(Layer);
+         FOMLayerLayerType Layer;
+         Layer.FOM.amount = dmIncorp[i];
+         Layer.FOM.N = nIncorp[i];
+         Layer.FOM.P = pIncorp[i];
+         Layer.CNR = 0;
+         Layer.LabileP = 0;
+         IncorpFOM.Layer.push_back(Layer);
       }
-   scienceAPI.publish("IncorpFOM", IncorpFOM);
+      scienceAPI.publish("IncorpFOM", IncorpFOM);
    }
+   rootLength.assign(nLayers, 0.0);
+   rootProportion.assign(nLayers, 0.0);
+}
 //------------------------------------------------------------------------------------------------
 double Roots::RootProportionInLayer(int layer)
    {
