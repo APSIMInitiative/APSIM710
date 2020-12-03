@@ -202,9 +202,6 @@ void Roots::updateVars(void)
    dltRootFront = calcDltRootFront(plant->phenology->currentStage());
    rootFront += dltRootFront;
 
-   for(int layer = 0; layer < nLayers; layer++)
-      rootLength[layer] += dltRootLength[layer];
-
    calcRootProportions();
    // calculate current root layer
    currentLayer = findIndex(rootDepth, dLayer);
@@ -278,14 +275,17 @@ void Roots::calcRootDistribution(void)
       rlvFactor[layer] = swAvailFactor(layer) * 
           branchingFactor * 
             xf[layer] *
-              divide(dLayer[layer], rootDepth); //space weighting factor
+              divide(dLayer[layer]  /* * RootProportionInLayer(layer) */,
+                     rootDepth); //space weighting factor
       rlvFactor[layer] = Max(rlvFactor[layer],1e-6);
       rlvFactorTotal += rlvFactor[layer];
       }
    double dltLengthTot = dltDmGreen / sm2smm * specificRootLength;
+   dltRootLength.assign(nLayers,0.0);
    for(int layer = 0; layer <= currentLayer; layer++)
       {
       dltRootLength[layer] = dltLengthTot * divide(rlvFactor[layer],rlvFactorTotal);
+      rootLength[layer] += dltRootLength[layer];
       }
    }
 //------------------------------------------------------------------------------------------------
