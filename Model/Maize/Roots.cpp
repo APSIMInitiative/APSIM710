@@ -374,7 +374,8 @@ double Roots::calcPDemand(void)
          }
          scienceAPI.publish("IncorpFOM", IncorpFOM);
       }
-      rootLength.assign(nLayers, 0.0);
+      // Ensure root distribution doesnt carry to next year
+      rootLength.assign(nLayers, 0.0); 
    }
    //------------------------------------------------------------------------------------------------
    double Roots::RootProportionInLayer(int layer)
