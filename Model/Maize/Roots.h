@@ -50,7 +50,6 @@ namespace Maize {
          vector<double> rootLength;
          vector<double> dltRootLength;
          vector<double> dltScenescedRootLength;
-         vector<double> rlvFactor;
 
          // Private Methods -------------------------------------------------------
          void  doRegistrations(void);
@@ -79,6 +78,7 @@ namespace Maize {
 
          void  readParams (void);
          void  updateVars(void);
+         void  resetDailyVars(void);
          void  process(void);
          void  onNewProfile(NewProfileType &);
 

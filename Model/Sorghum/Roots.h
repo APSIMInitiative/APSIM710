@@ -56,7 +56,6 @@ class Roots : public PlantPart
          vector<double> rootLength;
          vector<double> dltRootLength;
          vector<double> dltScenescedRootLength;
-         vector<double> rlvFactor;
    		 vector<double> rootProportion;
 
          // Private Methods -------------------------------------------------------
@@ -89,6 +88,7 @@ class Roots : public PlantPart
 
          void  readParams (void);
          void  updateVars(void);
+         void  resetDailyVars(void);
          void  process(void);
          void  onNewProfile(NewProfileType &);
 

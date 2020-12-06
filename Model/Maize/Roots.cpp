@@ -28,7 +28,7 @@ Roots::~Roots()
 void Roots::doRegistrations(void)
    {
    scienceAPI.expose("RootLength"    ,"mm/mm2","Root length",                 false, rootLength);
-   scienceAPI.expose("RLV"           ,"mm/mm3","Root length volume in layers",false, rlvFactor);
+   scienceAPI.exposeFunction("RLV"   ,"mm/mm3","Root length volume in layers", FloatArrayFunction(&Roots::getRLV));
    scienceAPI.expose("RootDepth"     ,"mm"    ,"Depth of roots",              false, rootDepth);
    scienceAPI.expose("root_depth"    ,"mm"    ,"Depth of roots",              false, rootDepth);
    scienceAPI.expose("RootFront"     ,"mm"    ,"Depth of root front",         false, rootFront);
@@ -55,7 +55,6 @@ void Roots::onNewProfile(NewProfileType &v /* message */)
    /* TODO : Insert new root profile and llDep code for change in profile due to erosion */
 
    rootLength.assign (nLayers,0.0);
-   rlvFactor.assign  (nLayers,0.0);
    dltRootLength.assign           (nLayers,0.0);
    dltScenescedRootLength.assign  (nLayers,0.0);
 
@@ -109,6 +108,9 @@ void Roots::readParams (void)
    scienceAPI.read("p_conc_init_root", "", 0, initialPConc);
 
    // This happens on sowing in new apsim.
+   if (nLayers > 0)
+      rootLength.assign (nLayers,0.0);
+
    calcInitialLength();
    leftDist = plant->getRowSpacing() * (plant->getSkipRow() - 0.5);
    rightDist = plant->getRowSpacing() * 0.5;
@@ -126,6 +128,14 @@ void Roots::readParams (void)
    EMF.SW = 0.0;
    scienceAPI.publish("ExternalMassFlow", EMF);
    }
+
+//------------------------------------------------------------------------------------------------
+void Roots::resetDailyVars(void)
+   {
+   PlantPart::resetDailyVars();
+   dltRootLength.assign(nLayers,0.0);
+   }
+
 //------------------------------------------------------------------------------------------------
 void Roots::process(void)
    {
@@ -154,6 +164,7 @@ void Roots::updateVars(void)
    rootDepth += dltRootDepth;
    dltRootFront = calcDltRootFront(plant->phenology->currentStage());
    rootFront += dltRootFront;
+
    // calculate current root layer
    currentLayer = findIndex(rootDepth, dLayer);
    // calculate proportion of this layer occupied
@@ -211,6 +222,8 @@ void Roots::calcSenLength(void)
 
 void Roots::calcRootDistribution(void)
    {
+   vector<double> rlvFactor;
+   rlvFactor.assign(nLayers, 0.0);
    double rlvFactorTotal = 0.0;
    for(int layer = 0; layer <= currentLayer; layer++)
       {
@@ -221,11 +234,12 @@ void Roots::calcRootDistribution(void)
 	  double swFactor = swAvailFactor(layer);
 	  double afpsFactor = swAFPSFactor(layer);
 	  double wf = Min(swFactor, afpsFactor);
-      rlvFactor[layer] = (wf * branchingFactor * xf[layer] * divide(dLayer[layer],rootDepth * 10));
+      rlvFactor[layer] = (wf * branchingFactor * xf[layer] * divide(dLayer[layer],rootDepth));
       rlvFactor[layer] = Max(rlvFactor[layer],1e-6);
       rlvFactorTotal += rlvFactor[layer];
       }
    double dltLengthTot = dltDmGreen / sm2smm * specificRootLength;
+   dltRootLength.assign(nLayers, 0.0);
    for(int layer = 0; layer <= currentLayer; layer++)
       {
       dltRootLength[layer] = dltLengthTot * divide(rlvFactor[layer],rlvFactorTotal);
@@ -297,7 +311,11 @@ void Roots::getRootLength(vector<float> &result)
 //------------------------------------------------------------------------------------------------
 void Roots::getRLV(vector<float> &result)
    {
-   DVecToFVec(result, rlvFactor);
+   result.assign(nLayers, 0.0);
+   for(int layer = 0; layer <= currentLayer; layer++)
+      {
+      result[layer] = divide(rootLength[layer], dLayer[layer]);
+      }
    }
 //------------------------------------------------------------------------------------------------
 void Roots::getRP(vector<float> &result)
@@ -321,43 +339,46 @@ double Roots::calcPDemand(void)
    return pDemand;
    }
 //------------------------------------------------------------------------------------------------
-void Roots::incorporateResidue(void)
+   void Roots::incorporateResidue(void)
    {
-   //Root residue incorporation    called from plantActions doEndCrop
+      //Root residue incorporation    called from plantActions doEndCrop
 
-   if(!(totalBiomass() > 0.0))return;
-
-   vector <double> dmIncorp;
-   vector <double> nIncorp;
-   vector <double> pIncorp;
-   double rootLengthSum = sumVector(rootLength);
-
-   double carbon = totalBiomass() * gm2kg /sm2ha;
-   double n = totalN() * gm2kg /sm2ha;
-   double p = totalP() * gm2kg /sm2ha;
-   for (unsigned layer = 0; layer < dLayer.size(); layer++)
+      if (totalBiomass() > 0.0)
       {
-      dmIncorp.push_back(carbon * divide(rootLength[layer],rootLengthSum,0.0));
-      nIncorp.push_back(n * divide(rootLength[layer],rootLengthSum,0.0));
-      pIncorp.push_back(p * divide(rootLength[layer],rootLengthSum,0.0));
-      }
+         vector<double> dmIncorp;
+         vector<double> nIncorp;
+         vector<double> pIncorp;
+         double rootLengthSum = sumVector(rootLength);
 
-   FOMLayerType IncorpFOM;
-   IncorpFOM.Type = plant->getCropType();
-   for (unsigned i = 0; i != dmIncorp.size(); i++)
-      {
-      FOMLayerLayerType Layer;
-      Layer.FOM.amount = (float)dmIncorp[i];
-      Layer.FOM.N = (float)nIncorp[i];
-      Layer.FOM.P = (float)pIncorp[i];
-      Layer.CNR = 0;
-      Layer.LabileP = 0;
-      IncorpFOM.Layer.push_back(Layer);
+         double carbon = totalBiomass() * gm2kg / sm2ha;
+         double n = totalN() * gm2kg / sm2ha;
+         double p = totalP() * gm2kg / sm2ha;
+         for (unsigned layer = 0; layer < dLayer.size(); layer++)
+         {
+            dmIncorp.push_back(carbon * divide(rootLength[layer], rootLengthSum, 0.0));
+            nIncorp.push_back(n * divide(rootLength[layer], rootLengthSum, 0.0));
+            pIncorp.push_back(p * divide(rootLength[layer], rootLengthSum, 0.0));
+         }
+
+         FOMLayerType IncorpFOM;
+         IncorpFOM.Type = plant->getCropType();
+         for (unsigned i = 0; i != dmIncorp.size(); i++)
+         {
+            FOMLayerLayerType Layer;
+            Layer.FOM.amount = (float)dmIncorp[i];
+            Layer.FOM.N = (float)nIncorp[i];
+            Layer.FOM.P = (float)pIncorp[i];
+            Layer.CNR = 0;
+            Layer.LabileP = 0;
+            IncorpFOM.Layer.push_back(Layer);
+         }
+         scienceAPI.publish("IncorpFOM", IncorpFOM);
       }
-   scienceAPI.publish("IncorpFOM", IncorpFOM);
+      // Ensure root distribution doesnt carry to next year
+      rootLength.assign(nLayers, 0.0); 
    }
-//------------------------------------------------------------------------------------------------
-double Roots::RootProportionInLayer(int layer)
+   //------------------------------------------------------------------------------------------------
+   double Roots::RootProportionInLayer(int layer)
    {
    /* Row Spacing and configuration (skip) are used to calculate semicircular root front to give
    proportion of the layer occupied by the roots. */
