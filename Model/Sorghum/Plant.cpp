@@ -393,48 +393,24 @@ void Plant::updateVars(void)
 //------------------------------------------------------------------------------------------------
 void Plant::death(void)
    {
-   // Emergence
-   float ttEmergeLimit;
-   scienceAPI.read("tt_emerg_limit", "", 0, ttEmergeLimit);
 
+   // Emergence
    if(stage < emergence)
       {
+      float ttEmergeLimit;
+      scienceAPI.read("tt_emerg_limit", "", 0, ttEmergeLimit);
       if(phenology->sumTTtotal(germination,harvest) > ttEmergeLimit)
          {
-      scienceAPI.write(" ********** Crop failed emergence due to deep planting\n");
+         scienceAPI.write(" ********** Crop failed emergence due to deep planting\n");
          dltDeadPlants = -plantDensity;
          }
       }
 
-
-   //If leaves are killed from frost, leaf->dltSlai is set to leaf->lai
-   //need to kill plant if lai = 0
-   //gmc & rlv
-   /* TODO : Check this to see what happens if LAI < 0.1 before flag - or if possible */
-   //kill plant if lai falls to 0 - very severe stress or severe frost event
-   char msg[120];
-
-   if (stage > fi && stage < maturity)
-      {
-      if (leaf->getLAI() - leaf->getDltSlai() < 0.0001)
-         {
-         dltDeadPlants = -plantDensity;
-         scienceAPI.write(" ********** Crop failed due to loss of leaf area ********\n");
-         sprintf(msg, "\tLAI: %.3f \t\tDltSLAI: %.3f \t\tDltLAI: %.2f\n", leaf->getLAI(), leaf->getDltSlai(), leaf->getDltLAI());
-         scienceAPI.write(msg);
-         }
-      }
-
-   if (stage >= flag && stage < maturity)
-      {
-      if (leaf->getLAI() - leaf->getDltSlai() < 0.1)
-         {
-         dltDeadPlants = -plantDensity;
-         scienceAPI.write(" ********** Crop failed due to loss of leaf area ********");
-         sprintf(msg, "\tLAI: %.3f \t\tDltSLAI: %.3f \t\tDltLAI: %.2f\n", leaf->getLAI(), leaf->getDltSlai(), leaf->getDltLAI());
-         scienceAPI.write(msg);
-         }
-      }
+   // Frost (stage dependant)
+   if (leaf->hasDied()) 
+   {
+      dltDeadPlants = -plantDensity;
+   }
 
    //Check to see if plant death should terminate crop
    if(plantDensity + dltDeadPlants < 0.01)

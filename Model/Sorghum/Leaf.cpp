@@ -105,6 +105,7 @@ void Leaf::initialize(void)
    dltSlaiLight = 0;
    dltSlaiWater = 0;
    dltSlaiFrost = 0;
+   deathByFrostFlag = false;
 
    PlantPart::initialize();
    }
@@ -340,7 +341,7 @@ double Leaf::calcLaiSenescenceFrost(void)
    //  calculate senescence due to frost
    if (plant->today.minT > frostKill) return 0.0;
    if (stage <= emergence) return 0.0;
-   double senescedLAI = 0.0;
+   double senescedLAIFrost = 0.0;
 
    char msg[120];
    if (plant->today.minT > frostKillSevere)
@@ -351,42 +352,91 @@ double Leaf::calcLaiSenescenceFrost(void)
          //the plant will survive but all of the leaf area is removed except a fraction
          sprintf(msg,"Frost Event: (Non Fatal) \n");
          scienceAPI.write(msg);
-         sprintf(msg, "\t\tMin Temp      = %.2f \t\t Senesced LAI    = %.2f\n", plant->today.minT, lai - 0.01);
+         sprintf(msg, "\t\tMin Temp      = %.2f \t\t Senesced LAI    = %.2f\n", 
+                 plant->today.minT, lai - 0.01);
          scienceAPI.write(msg);
-
-         senescedLAI =  Max(0.0,lai - 0.1);
+         // FIXME - which is it? 0.01 or 0.1? If it's a fraction, then shouldn't we 
+         //         multiply by 0.9?
+         senescedLAIFrost =  Max(0.0, lai - 0.1);  
          }
       else if(stage > flowering)
          {
-            //after flowering it takes a servereFrost to kill the plant
+            //after flowering it takes a severe Frost to kill the plant
             //not sure what the effect on LAI should be after this stage
-            senescedLAI = 0.0;
+            senescedLAIFrost = 0.0;
          }
       else
          {
             //between floralInit and Flowering the plant will be killed
-            senescedLAI = lai;
+            senescedLAIFrost = lai;
+            deathByFrostFlag = true;
          }
       }
    else
       {
          //Temperature is colder or equal to frostKillSevere parameter
-         sprintf(msg, "Frost Event: (Fatal) \n");
-         scienceAPI.write(msg);
-         sprintf(msg, "\t\tMin Temp      = %.2f \t\t Senesced LAI    = %.2f\n", plant->today.minT, lai - 0.01);
-         scienceAPI.write(msg);
-         //the plant will be killed as it's LAI will be 0
-         senescedLAI = lai;
+         senescedLAIFrost = lai;
+         deathByFrostFlag = true;
       }
       
-      return senescedLAI;
+      return senescedLAIFrost;
    }
-   /* TODO : put in messages */
+
+// Determine if the entire plant should die
+bool Leaf::hasDied(void)
+   {
+   bool result = false;
+   //If leaves are killed from frost, leaf->dltSlai is set to leaf->lai
+   //need to kill plant if lai = 0
+   //gmc & rlv
+   /* TODO : Check this to see what happens if LAI < 0.1 before flag - or if possible */
+   //        kill plant if lai falls to 0 - very severe stress or severe frost event
+   //
+   char msg[120];
+
+   if (stage > fi && stage < maturity)
+      {
+      // FIXME These 0.0001 / 0.1 thresholds seem arbitrary. Is there a better approach?
+      if (lai - dltSlai < 0.0001)
+         {
+         scienceAPI.write(" ********** Crop failed due to loss of leaf area ********\n");
+         sprintf(msg, "\tLAI: %.3f \t\tDltSLAI: %.3f \t\tDltLAI: %.2f\n", 
+                 lai, dltSlai, dltLAI);
+         scienceAPI.write(msg);
+         result = true;
+         }
+      }
+
+   if (stage >= flag && stage < maturity)
+      {
+      if (lai - dltSlai < 0.1)
+         {
+         scienceAPI.write(" ********** Crop failed due to loss of leaf area ********");
+         sprintf(msg, "\tLAI: %.3f \t\tDltSLAI: %.3f \t\tDltLAI: %.2f\n", 
+                 lai, dltSlai, dltLAI);
+         scienceAPI.write(msg);
+         result = true;
+         }
+      }
+
+   if (deathByFrostFlag) 
+      {
+      //Temperature is colder or equal to frostKillSevere parameter
+      sprintf(msg, "Frost Event: (Fatal) \n");
+      scienceAPI.write(msg);
+      sprintf(msg, "\t\tMin Temp      = %.2f \t\t Senesced LAI    = %.2f\n", 
+              plant->today.minT, dltSlai);
+      scienceAPI.write(msg);
+      result = true;
+      }
+
+   return(result);
+   }
 //------------------------------------------------------------------------------------------------
 double Leaf::calcLaiSenescenceWater(void)
    {
    /* TODO : Direct translation sort of. needs work */
-	double dtmp = plant->water->getTotalSupply();
+	//double dtmp = plant->water->getTotalSupply();
 
    double dlt_dm_transp = plant->biomass->getDltDMPotTE();
 
@@ -570,8 +620,6 @@ double Leaf::provideN(double requiredN, bool forLeaf)
          nProvided += newN;
          dltSlaiN += senescenceLAI;
          dltSlai = Max(dltSlai,dltSlaiN);
-		 if (dltSlai > 0.0000001)
-			 int tmp = 0;
 
          dltNSenesced += senescenceLAI * senescedLeafSLN;
 

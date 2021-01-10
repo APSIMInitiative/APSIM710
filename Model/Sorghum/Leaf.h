@@ -111,6 +111,7 @@ namespace Sorghum {
 			double tillersAdded;
 			double tillers;
 
+            bool deathByFrostFlag;     // flag set when frost has killed leaf
 
 			// Private Methods -------------------------------------------------------
 			virtual void  doRegistrations(void);
@@ -177,7 +178,7 @@ namespace Sorghum {
 			double getLeafNo(void){return nLeaves;}
 			void  laiDetachment(vector<double> senDetachFrac);
 
-
+            bool hasDied();
 			void  Summary(void);
 
 			// phenology
