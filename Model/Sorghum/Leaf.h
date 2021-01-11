@@ -178,7 +178,7 @@ namespace Sorghum {
 			double getLeafNo(void){return nLeaves;}
 			void  laiDetachment(vector<double> senDetachFrac);
 
-            bool hasDied();
+            bool checkForDeath();
 			void  Summary(void);
 
 			// phenology
