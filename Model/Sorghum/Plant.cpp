@@ -407,7 +407,7 @@ void Plant::death(void)
       }
 
    // Frost (stage dependant)
-   if (leaf->hasDied()) 
+   if (leaf->checkForDeath()) 
    {
       dltDeadPlants = -plantDensity;
    }
