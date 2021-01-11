@@ -355,8 +355,6 @@ double Leaf::calcLaiSenescenceFrost(void)
          sprintf(msg, "\t\tMin Temp      = %.2f \t\t Senesced LAI    = %.2f\n", 
                  plant->today.minT, lai - 0.01);
          scienceAPI.write(msg);
-         // FIXME - which is it? 0.01 or 0.1? If it's a fraction, then shouldn't we 
-         //         multiply by 0.9?
          senescedLAIFrost =  Max(0.0, lai - 0.1);  
          }
       else if(stage > flowering)
@@ -383,7 +381,7 @@ double Leaf::calcLaiSenescenceFrost(void)
    }
 
 // Determine if the entire plant should die
-bool Leaf::hasDied(void)
+bool Leaf::checkForDeath(void)
    {
    bool result = false;
    //If leaves are killed from frost, leaf->dltSlai is set to leaf->lai
@@ -396,7 +394,6 @@ bool Leaf::hasDied(void)
 
    if (stage > fi && stage < maturity)
       {
-      // FIXME These 0.0001 / 0.1 thresholds seem arbitrary. Is there a better approach?
       if (lai - dltSlai < 0.0001)
          {
          scienceAPI.write(" ********** Crop failed due to loss of leaf area ********\n");
@@ -406,20 +403,18 @@ bool Leaf::hasDied(void)
          result = true;
          }
       }
-
-   if (stage >= flag && stage < maturity)
+   else if (stage >= flag && stage < maturity)
       {
       if (lai - dltSlai < 0.1)
          {
-         scienceAPI.write(" ********** Crop failed due to loss of leaf area ********");
+         scienceAPI.write(" ********** Crop failed due to loss of leaf area ********\n");
          sprintf(msg, "\tLAI: %.3f \t\tDltSLAI: %.3f \t\tDltLAI: %.2f\n", 
                  lai, dltSlai, dltLAI);
          scienceAPI.write(msg);
          result = true;
          }
       }
-
-   if (deathByFrostFlag) 
+   else if (deathByFrostFlag) 
       {
       //Temperature is colder or equal to frostKillSevere parameter
       sprintf(msg, "Frost Event: (Fatal) \n");
