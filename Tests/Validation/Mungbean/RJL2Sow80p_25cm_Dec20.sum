@@ -1,0 +1,434 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.10 r4171
+Title                  = RJL2Sow80p_25cm_Dec20
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "Operations" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "irrigation" = %apsim%\Model\Irrigation.dll
+   Component                      "manager" = %apsim%\Model\Manager.dll
+   Component               "Empty manager2" = %apsim%\Model\Manager.dll
+   Component                   "soil Water" = %apsim%\Model\SoilWat.dll
+   Component                    "SurfaceOM" = %apsim%\Model\SurfaceOM.dll
+   Component                "soil Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                     "mungbean" = %apsim%\Model\Plant.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        do_cashbook
+        post
+        end_step
+     Simulation start date = 18/11/1976
+     Simulation end date   = 11/05/1977
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: met files for classic\mungbean for REMS\cooper.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output variables:
+        dd/mm/yyyy as Date
+        DaysAftersowing
+        yield
+        biomass
+        flowering_das
+        harvestindex
+        maturity_das
+        id
+
+     Output file = RJL2Sow80p_25cm_Dec20.out
+     Format = normal
+
+------- paddock.accum Initialisation ------------------------------------------
+     Initialising
+
+------- paddock.Operations Initialisation -------------------------------------
+     Operations Schedule
+     ===================
+      20/12/1976  Prepare      mungbean sow plants = 80, sowing_depth = 40, cultivar = berken,crop_class = plant, row_spacing = 250
+
+------- paddock.irrigation Initialisation -------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Enabled)
+           critical fraction of available soil water =  0.70
+           depth for calculating available soil water =    1000.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- paddock.manager Initialisation ----------------------------------------
+     Manager rules:
+     
+     SECTION:- init
+          dateset = 0
+          emer_date = 0
+          endjuv_date = 0
+          anth_date = 0
+          mat_date = 0
+     
+     SECTION:- end_of_day
+          if mungbean.stage = 3 and dateset = 0 then
+             emer_date = daysaftersowing
+             dateset = 1
+          endif
+          if mungbean.stage = 4 and dateset = 1 then
+             endjuv_date = daysaftersowing
+             dateset = 2
+          endif
+          if mungbean.stage = 6 and dateset = 2 then
+             anth_date = daysaftersowing
+             dateset = 3
+          endif
+          if mungbean.stage = 9 and dateset = 3 then
+             mat_date = daysaftersowing
+             dateset = 4
+          endif
+     if (mungbean.stagename = 'maturity' or mungbean.plant_status = 'dead') then
+        outputfile do_output
+        mungbean harvest
+        mungbean kill_crop
+        mungbean end_crop
+        dateset = 0
+     endif
+     END of rules
+     
+     Manager creating a new local real variable : dateset = 0.00000
+     Manager creating a new local real variable : emer_date = 0.00000
+     Manager creating a new local real variable : endjuv_date = 0.00000
+     Manager creating a new local real variable : anth_date = 0.00000
+     Manager creating a new local real variable : mat_date = 0.00000
+
+------- paddock.Empty manager2 Initialisation ---------------------------------
+     Manager rules:
+     
+     SECTION:- init
+     
+     SECTION:- start_of_day
+     if leafgreenwt>0 then
+     sla=leaf_area/leafgreenwt
+     endif
+     if biomass>0 then
+     harvestindex=yield/biomass
+     endif
+     id=11
+     
+     SECTION:- end_of_day
+     END of rules
+     
+
+------- paddock.soil Water Initialisation -------------------------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.100  0.200  0.413  0.453  0.413  1.200  0.762  0.300
+          150.-  300.  0.260  0.280  0.454  0.504  0.454  1.200  0.190  0.300
+          300.-  600.  0.320  0.340  0.495  0.545  0.495  1.200  0.048  0.300
+          600.-  900.  0.300  0.320  0.495  0.545  0.495  1.200  0.000  0.300
+          900.- 1200.  0.270  0.290  0.418  0.468  0.418  1.300  0.000  0.300
+         1200.- 1500.  0.240  0.260  0.406  0.457  0.406  1.300  0.000  0.300
+         1500.- 1800.  0.310  0.330  0.385  0.435  0.385  1.300  0.000  0.300
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      30.00      31.95      31.95       6.00
+          150.-  300.      42.00      26.10      26.10       7.50
+          300.-  600.     102.00      46.50      46.50      15.00
+          600.-  900.      96.00      52.50      52.50      15.00
+          900.- 1200.      87.00      38.40      38.40      15.00
+         1200.- 1500.      78.00      43.80      43.80      15.30
+         1500.- 1800.      99.00      16.50      16.50      15.00
+          ---------------------------------------------------------
+               Totals     534.00     255.75     255.75      88.80
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       40.00       16.00
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              75.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- paddock.SurfaceOM Initialisation --------------------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat          500.0   200.0     5.0     0.0   0.221     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.2
+     
+
+------- paddock.soil Nitrogen Initialisation ----------------------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     6.50  1.00    3.60    1.80    0.00
+             2     6.20  0.64    3.60    1.80    0.00
+             3     6.20  0.64    7.20    3.60    0.00
+             4     6.30  0.47    7.20    3.60    0.00
+             5     6.30  0.47    7.80    3.90    0.00
+             6     6.40  0.35    7.80    3.90    0.00
+             7     6.50  0.26    7.80    3.90    0.00
+          ------------------------------------------------
+           Totals               45.00   22.50    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      17477.1  1205.3   522.9    65.4     0.0     0.0
+             2      11400.3   786.2   119.7    15.0     0.0     0.0
+             3      22903.8  1579.6   136.2    17.0     0.0     0.0
+             4      16891.5  1164.9    28.5     3.6     0.0     0.0
+             5      18317.3  1263.3    12.7     1.6     0.0     0.0
+             6      13640.5   940.7     9.5     1.2     0.0     0.0
+             7      10133.0   698.8     7.0     0.9     0.0     0.0
+          ---------------------------------------------------------
+           Totals  110763.5  7638.9   836.4   104.6     0.0     0.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+18 November 1976(Day of year=323), paddock.Empty manager2: 
+     Manager creating a new local real variable : id = 11.00000
+20 December 1976(Day of year=355), paddock.Operations: 
+      Sending sow message to mungbean
+20 December 1976(Day of year=355), paddock.mungbean: 
+     Crop Sow
+        ------------------------------------------------
+        cultivar                   = berken
+        Phases:
+           out
+           sowing
+           germination
+              shoot_lag                  =      15 (dd)
+              shoot_rate                 =       1 (dd/mm)
+           emergence
+              cumvd_emergence            =       0     100 (vd)
+              tt_emergence               =     550     550 (dd)
+           end_of_juvenile
+              x_pp_end_of_juvenile       =    12.5      17 (h)
+              y_tt_end_of_juvenile       =       1       5 (dd)
+           floral_initiation
+              x_pp_floral_initiation     =       1      24 (h)
+              y_tt_floral_initiation     =      25      25 (dd)
+           flowering
+              x_pp_flowering             =       1      24 (h)
+              y_tt_flowering             =     206     206 (dd)
+           start_grain_fill
+              x_pp_start_grain_fill      =       1      24 (h)
+              y_tt_start_grain_fill      =   316.5   316.5 (dd)
+           end_grain_fill
+              tt_end_grain_fill          =      28 (dd)
+           maturity
+              tt_maturity                =       5 (dd)
+           harvest_ripe
+              tt_harvest_ripe            =       1 (dd)
+           end_crop
+     
+        x_pp_hi_incr               =       1.00      24.00
+        y_hi_incr                  =     0.0150     0.0150
+        x_hi_max_pot_stress        =       0.00       1.00
+        y_hi_max_pot               =       0.40       0.40
+        ------------------------------------------------
+     
+     
+                        Root Profile
+         -----------------------------------------------
+          Layer       Kl           Lower    Exploration
+          Depth     Factor         Limit      Factor
+          (mm)         ()        (mm/mm)       (0-1)
+         -----------------------------------------------
+         150.0     0.080          0.200       1.000
+         150.0     0.060          0.280       1.000
+         300.0     0.040          0.340       1.000
+         300.0     0.080          0.340       0.000
+         300.0     0.060          0.340       0.000
+         300.0     0.040          0.400       0.000
+         300.0     0.020          0.380       0.000
+         -----------------------------------------------
+         Extractable SW:   178mm in  1800mm total depth ( 10%).
+         Crop factor for bounding water use is set to 100.0 times eo.
+      stage 1.0 sowing
+     
+                      Crop Sowing Data
+         ------------------------------------------------
+         Sowing  Depth Plants Spacing Skip  Skip  Cultivar
+         Day no   mm     m^2     mm   row   plant name
+         ------------------------------------------------
+            355   40.0   80.0  250.0   0.0   0.0 berken
+         ------------------------------------------------
+     
+21 December 1976(Day of year=356), paddock.mungbean: 
+      stage 2.0 germination
+23 December 1976(Day of year=358), paddock.mungbean: 
+      stage 3.0 emergence
+                     biomass =           8.00 (g/m^2)   lai          =   0.016 (m^2/m^2)
+                     stover N conc =     6.00 (%)    extractable sw =   22.13 (mm)
+24 December 1976(Day of year=359), paddock.Empty manager2: 
+     Manager creating a new local real variable : sla = 1000.00000
+     Manager creating a new local real variable : harvestindex = 0.00000
+27 January 1977(Day of year=27), paddock.mungbean: 
+      stage 4.0 end_of_juvenile
+                     biomass =         256.15 (g/m^2)   lai          =   3.035 (m^2/m^2)
+                     stover N conc =     4.81 (%)    extractable sw =   95.98 (mm)
+28 January 1977(Day of year=28), paddock.mungbean: 
+      stage 5.0 floral_initiation
+                     biomass =         269.55 (g/m^2)   lai          =   3.137 (m^2/m^2)
+                     stover N conc =     4.85 (%)    extractable sw =   88.85 (mm)
+29 January 1977(Day of year=29), paddock.mungbean: 
+      stage 6.0 flowering
+                     biomass =         281.65 (g/m^2)   lai          =   3.177 (m^2/m^2)
+                     stover N conc =     4.65 (%)    extractable sw =   82.48 (mm)
+10 February 1977(Day of year=41), paddock.mungbean: 
+      stage 7.0 start_grain_fill
+                     biomass =         429.35 (g/m^2)   lai          =   3.669 (m^2/m^2)
+                     stover N conc =     3.28 (%)    extractable sw =   92.23 (mm)
+1 March 1977(Day of year=60), paddock.mungbean: 
+      stage 8.0 end_grain_fill
+                     biomass =         670.13 (g/m^2)   lai          =   2.330 (m^2/m^2)
+                     stover N conc =     1.70 (%)    extractable sw =   89.07 (mm)
+2 March 1977(Day of year=61), paddock.mungbean: 
+      stage 9.0 maturity
+                     biomass =         672.73 (g/m^2)   lai          =   2.245 (m^2/m^2)
+                     stover N conc =     1.70 (%)    extractable sw =   86.62 (mm)
+2 March 1977(Day of year=61), paddock.manager: 
+     Manager sending message :- mungbean harvest
+     
+      flowering day          =   29                           stover (kg/ha)         =     4716.9
+      maturity day           =   61                           grain yield (kg/ha)    =     2010.4
+      grain % water content  =   12.0                         grain yield wet (kg/ha)=     2284.5
+      grain wt (g)           =    0.000                       grains/m^2             =        0.0
+      grains/plant           =    0.0                         maximum lai            =      3.678
+      total above ground biomass (kg/ha)    =     6727.3
+      live above ground biomass (kg/ha)     =     6727.3
+      green above ground biomass (kg/ha)    =     5332.2
+      senesced above ground biomass (kg/ha) =     1395.1
+      number of leaves       =     19.0
+      DM Root:Shoot ratio    =     0.41                       Harvest Index          =       0.30
+      Stover C:N ratio       =    26.74                       Root C:N ratio         =      26.76
+      grain N percent        =     4.48                       total N content (kg/ha)=     160.57
+      grain N uptake (kg/ha) =    90.00                       senesced N content (kg/ha)=   13.95
+      green N content (kg/ha)=    56.62
+     
+      Average Stress Indices:                          Water Photo  Water Expan  N Photo      N grain conc
+         emergence            to end_of_juvenile         0.181        0.232        0.004        0.095
+         end_of_juvenile      to floral_initiation       0.383        0.483        0.000        0.056
+         floral_initiation    to flowering               0.388        0.488        0.000        0.000
+         flowering            to start_grain_fill        0.328        0.411        0.000        0.000
+         start_grain_fill     to end_grain_fill          0.181        0.249        0.009        0.046
+     
+     
+     Crop harvested.
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                4636.9                     0.0
+                          N  (kg/ha) =                  65.77                    0.00
+     
+         Organic matter removed from system:-      From Tops               From Roots
+                          DM (kg/ha) =                2010.4                     0.0
+                          N  (kg/ha) =                  90.00                    0.00
+     
+      stage 11.0 end_crop
+     Manager sending message :- mungbean kill_crop
+     Plant kill. 100.00% crop killed because of external action.
+     Manager sending message :- mungbean end_crop
+     Crop ended. Yield (dw) =     0.0  (kg/ha)
+         Organic matter from crop:-      Tops to surface residue      Roots to soil FOM
+                          DM (kg/ha) =                  80.0                  2753.0
+                          N  (kg/ha) =                   4.80                   41.15
+     
+11 May 1977(Day of year=131), clock: 
+     Simulation is terminating due to end criteria being met.
+
