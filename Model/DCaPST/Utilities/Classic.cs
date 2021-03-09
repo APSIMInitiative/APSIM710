@@ -62,11 +62,12 @@ namespace DCAPST.Utilities
             double jTMax,
             double jC,
             double jBeta,
-            double gTMin,
-            double gTOpt,
-            double gTMax,
-            double gC,
-            double gBeta,
+            double gmFactor,
+            //double ggTMin,
+            //double ggTOpt,
+            //double ggTMax,
+            //double ggC,
+            //double ggBeta,
             double KcAt25,
             double KcFactor,
             double KoAt25,
@@ -100,13 +101,14 @@ namespace DCAPST.Utilities
                 Beta = jBeta
             };
 
-            var g = new LeafTemperatureParameters
+            var g = new TemperatureResponseValues
             {
-                TMin = gTMin,
-                TOpt = gTOpt,
-                TMax = gTMax,
-                C = gC,
-                Beta = gBeta,
+                Factor = gmFactor
+                //TMin = gTMin,
+                //TOpt = gTOpt,
+                //TMax = gTMax,
+                //C = gC,
+                //Beta = gBeta,
             };
 
             var Kc = new TemperatureResponseValues
