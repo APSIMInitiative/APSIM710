@@ -91,7 +91,7 @@ namespace ApsimFile
                 XmlHelper.SetAttribute (apsimFileNode, "source", FileName);
 
                 List<string> globalInputs = new List<string>();
-                foreach (XmlNode pluginNode in job.OwnerDocument.SelectNodes("//PlugIns/PlugIn[@enabled='yes']"))
+                foreach (XmlNode pluginNode in Doc.DocumentElement.OwnerDocument.SelectNodes("//PlugIns/PlugIn[@enabled='yes']"))
                 {
                     if (pluginNode.InnerText.IndexOf("%apsim%") < 0)
                     {
