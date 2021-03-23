@@ -26,7 +26,7 @@ namespace DCAPST
         public TemperatureResponseValues Respiration { get; set; }
 
         public LeafTemperatureParameters ElectronTransportRateParams { get; set; }
-        public LeafTemperatureParameters MesophyllCO2ConductanceParams { get; set; }
+        public TemperatureResponseValues MesophyllCO2ConductanceParams { get; set; }
 
         public double SpectralCorrectionFactor { get; set; }
         public double PS2ActivityFraction { get; set; }
