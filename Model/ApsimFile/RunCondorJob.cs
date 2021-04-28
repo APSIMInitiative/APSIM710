@@ -97,7 +97,7 @@ namespace ApsimFile
                     {
                         if (!File.Exists(pluginNode.InnerText))
                             throw new Exception("Plugin file '" + pluginNode.InnerText + "' doesnt exist - cant send it to the cluster.");
-                        File.Copy(pluginNode.InnerText, Path.Combine(WorkingFolder, Path.GetFileName(pluginNode.InnerText)));
+                        File.Copy(pluginNode.InnerText, Path.Combine(WorkingFolder, Path.GetFileName(pluginNode.InnerText)), true);
                         pluginNode.InnerText = Path.GetFileName(pluginNode.InnerText);
                         if (!globalInputs.Contains(pluginNode.InnerText)) { globalInputs.Add(pluginNode.InnerText); }
                     }
@@ -183,7 +183,7 @@ namespace ApsimFile
 							XmlHelper.SetAttribute (input, "name", dest);
 							node.InnerText = dest;
 							if (!File.Exists (Path.Combine (WorkingFolder, dest)))
-								File.Copy (src, Path.Combine (WorkingFolder, dest));
+								File.Copy (src, Path.Combine (WorkingFolder, dest), true);
 						} else {
 							XmlNode output = simulationNode.AppendChild (simulationNode.OwnerDocument.CreateElement ("output"));
 							XmlHelper.SetAttribute (output, "name", node.InnerText);
