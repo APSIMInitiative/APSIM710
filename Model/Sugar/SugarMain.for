@@ -3664,10 +3664,15 @@ c      call sugar_nit_stress_expansion (1)
             ! plant nitrogen
 
       elseif (variable_name .eq. 'n_uptake') then
-         act_N_up = g%N_uptake_tot*gm2kg /sm2ha
+         deepest_layer = find_layer_no (g%root_depth, g%dlayer
+     :                                , max_layer)	  
+         act_N_up = -1.0*sum_real_array(g%dlt_NO3gsm, deepest_layer)
+		 act_N_up = act_N_up - sum_real_array(g%dlt_NH4gsm
+     :                                , deepest_layer) 
+		 act_N_up = max(0.0, act_N_up)
          call respond2get_real_var (variable_name
      :                             , '(kg/ha)'
-     :                             , act_N_up)
+     :                             , act_N_up*10.)
 
       elseif (variable_name .eq. 'no3_tot') then
          deepest_layer = find_layer_no (g%root_depth, g%dlayer
