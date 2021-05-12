@@ -3672,7 +3672,7 @@ c      call sugar_nit_stress_expansion (1)
 		 act_N_up = max(0.0, act_N_up)
          call respond2get_real_var (variable_name
      :                             , '(kg/ha)'
-     :                             , act_N_up*10.)
+     :                             , act_N_up*gm2kg/sm2ha)
 
       elseif (variable_name .eq. 'no3_tot') then
          deepest_layer = find_layer_no (g%root_depth, g%dlayer
