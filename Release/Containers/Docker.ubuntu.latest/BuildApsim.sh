@@ -1,39 +1,20 @@
-#! /bin/bash
+#!/bin/bash
 
-# Build apsim on a 16.04 system
-
-echo Building > /tmp/buildStatus
-
-trap "echo Idle > /tmp/buildStatus" EXIT
-
+# Build apsim 
 APSIM=/usr/local/src/apsim/
 rm -rf $APSIM
 mkdir -p $APSIM/ 
 cd $APSIM/..
 
-if [ -z $1 ] ; then
-  svn co http://apsrunet.apsim.info/svn/apsim/trunk/ apsim
-else 
-  re='^[0-9]+$'
-  if ! [[ $1 =~ $re ]] ; then
-     echo "error: Argument should be a revision number" ; exit 1
-  fi
-  svn co -r $1 http://apsrunet.apsim.info/svn/apsim/trunk/ apsim
-fi
-MY_BUILD_NUMBER=`svnversion -q $APSIM`
-
+git clone https://github.com/APSIMInitiative/APSIMClassic apsim
 
 cd $APSIM/Model/Build
-echo CsiroDMZ\! > /etc/CottonPassword.txt
 sh ./BuildAll.sh
 
 chmod +x $APSIM/Model/Build/VersionInfo.sh
 . $APSIM/Model/Build/VersionInfo.sh
 
-BUILD_NUMBER=$MY_BUILD_NUMBER
-
-# The build number above is the HEAD version, not the BASE.
-
+# Binaries are installed here
 dest=/usr/local/lib/Apsim$MAJOR_VERSION.$MINOR_VERSION-r$BUILD_NUMBER
 mkdir $dest
 cp    $APSIM/Apsim.xml   $dest/Apsim.xml
@@ -56,6 +37,7 @@ cp    $APSIM/UserInterface/*.xml $dest/UserInterface
 mkdir $dest/UserInterface/ToolBoxes
 cp    $APSIM/UserInterface/ToolBoxes/*.xml $dest/UserInterface/ToolBoxes
 
+# Wrappers for the above 
 for i in ApsimUI.exe ApsimToSim.exe ConToSim.exe BundleApsim.exe cscs.exe Apsim.exe JobScheduler.exe; do 
 cat > /usr/local/bin/$i << EOF 
 #!/bin/sh
@@ -63,6 +45,7 @@ mono $dest/Model/$i "\$@"
 EOF
 chmod +x /usr/local/bin/$i
 done
+
 for i in ApsimModel.exe; do
 cat > /usr/local/bin/$i << EOF2 
 #!/bin/sh
@@ -72,16 +55,17 @@ EOF2
 chmod +x /usr/local/bin/$i
 done
 
+# workaround https://github.com/APSIMInitiative/APSIMClassic/issues/1755#issuecomment-619705163
+mkdir $dest/lib
+ln -s /usr/lib/libmono-native.so $dest/lib/libSystem.Native.so
+
+# This is where the installation is archived (mapped to a docker volume)
+dist=/opt/apsim
+
 cd /
+tar cfz $dist/Apsim$MAJOR_VERSION.$MINOR_VERSION-r$BUILD_NUMBER.ubuntu.tar.gz  usr/local/bin/*.exe $dest
 
-# Upload the old style self extracting exe to ???
-tar cfz /var/www/html/Apsim$MAJOR_VERSION.$MINOR_VERSION-r$BUILD_NUMBER.ubuntu.tar.gz  usr/local/bin/*.exe $dest
-cd /var/www/html
-chmod a+r Apsim$MAJOR_VERSION.$MINOR_VERSION-r$BUILD_NUMBER.ubuntu.tar.gz
-rm Apsim$MAJOR_VERSION.$MINOR_VERSION-latest.ubuntu.tar.gz
-ln -s Apsim$MAJOR_VERSION.$MINOR_VERSION-r$BUILD_NUMBER.ubuntu.tar.gz Apsim$MAJOR_VERSION.$MINOR_VERSION-latest.ubuntu.tar.gz
-
-rm -rf $APSIM
-rm -rf $dest
-rm -f /etc/CottonPassword.txt
-
+#if [ -f $dist/Apsim$MAJOR_VERSION.$MINOR_VERSION-r$BUILD_NUMBER.ubuntu.tar.gz ]; then
+#  rm -f $dist/Apsim$MAJOR_VERSION.$MINOR_VERSION-r$BUILD_NUMBER.ubuntu.tar.gz
+#fi
+#ln -s $dist/Apsim$MAJOR_VERSION.$MINOR_VERSION-r$BUILD_NUMBER.ubuntu.tar.gz $dist/Apsim$MAJOR_VERSION.$MINOR_VERSION-latest.ubuntu.tar.gz
