@@ -6,7 +6,7 @@ rm -rf $APSIM
 mkdir -p $APSIM/ 
 cd $APSIM/..
 
-git clone https://github.com/APSIMInitiative/APSIMClassic apsim
+git clone https://github.com/APSIMInitiative/APSIMClassic -branch lowLAIAndFrost apsim
 
 cd $APSIM/Model/Build
 sh ./BuildAll.sh
@@ -60,12 +60,12 @@ mkdir $dest/lib
 ln -s /usr/lib/libmono-native.so $dest/lib/libSystem.Native.so
 
 # This is where the installation is archived (mapped to a docker volume)
-dist=/opt/apsim
+dist=/out
 
 cd /
 tar cfz $dist/Apsim$MAJOR_VERSION.$MINOR_VERSION-r$BUILD_NUMBER.ubuntu.tar.gz  usr/local/bin/*.exe $dest
 
-#if [ -f $dist/Apsim$MAJOR_VERSION.$MINOR_VERSION-r$BUILD_NUMBER.ubuntu.tar.gz ]; then
-#  rm -f $dist/Apsim$MAJOR_VERSION.$MINOR_VERSION-r$BUILD_NUMBER.ubuntu.tar.gz
-#fi
-#ln -s $dist/Apsim$MAJOR_VERSION.$MINOR_VERSION-r$BUILD_NUMBER.ubuntu.tar.gz $dist/Apsim$MAJOR_VERSION.$MINOR_VERSION-latest.ubuntu.tar.gz
+if [ -f $dist/Apsim$MAJOR_VERSION.$MINOR_VERSION-latest.ubuntu.tar.gz ]; then
+   rm -f $dist/Apsim$MAJOR_VERSION.$MINOR_VERSION-latest.ubuntu.tar.gz
+fi
+ln -s $dist/Apsim$MAJOR_VERSION.$MINOR_VERSION-r$BUILD_NUMBER.ubuntu.tar.gz $dist/Apsim$MAJOR_VERSION.$MINOR_VERSION-latest.ubuntu.tar.gz

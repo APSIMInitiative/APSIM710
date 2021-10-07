@@ -34,6 +34,3 @@ RUN Rscript -e "install.packages(c(\"Rcpp\",\"RInside\"), repos =\"https://cloud
 
 ADD BuildApsim.sh usr/local/bin
 RUN chmod +x /usr/local/bin/BuildApsim.sh
-
-#RUN /usr/local/bin/BuildApsim.sh
-#ENTRYPOINT ["BuildApsim.sh"]
