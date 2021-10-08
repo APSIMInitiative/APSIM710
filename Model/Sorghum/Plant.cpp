@@ -144,7 +144,7 @@ void Plant::plantInit2(void)
    {
 	NewCropType NewCrop;
 	NewCrop.crop_type = cropType;
-	NewCrop.sender = "Maize";
+	NewCrop.sender = module_name();
 	scienceAPI.publish("newcrop", NewCrop);
    }
 //------------------------------------------------------------------------------------------------
