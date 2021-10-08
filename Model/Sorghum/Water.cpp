@@ -267,6 +267,7 @@ void Water::onNewProfile(NewProfileType &v /* message */)
 //------------------------------------------------------------------------------------------------
 void Water::process(void)
    {
+	calcDemand();
    getOtherVariables ();
    calcDailySupply();
    calcStresses();
@@ -362,6 +363,8 @@ void Water::calcSupply(void)
 //------------------------------------------------------------------------------------------------
 double Water::calcSwDefPhoto(void)
    {
+	if(swDemand == 0)
+		return 1.0;
    return bound(divide(totalSupply,swDemand,1.0),0.0,1.0);
    }
 //------------------------------------------------------------------------------------------------
@@ -374,6 +377,8 @@ double Water::calcSwDefPheno(void)
 //------------------------------------------------------------------------------------------------
 double Water::calcSwDefExpansion(void)
   {
+  if(swDemand == 0)
+       return 1.0;
   double sdRatio = divide(totalSupply,swDemand,10.0);
   return swExpansionTable.value(sdRatio);
   }
