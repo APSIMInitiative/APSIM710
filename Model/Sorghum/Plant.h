@@ -66,7 +66,7 @@ class Plant
    int das;
    bool isEmerged(void) { return phenology->currentStage() >= emergence; }
    string uptake_source;
-
+   string module_name(void) { return scienceAPI.name(); }
    private:
 // Parameters ----------------------------------------------------------
    string cultivar;
