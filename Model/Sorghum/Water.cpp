@@ -158,6 +158,20 @@ void Water::readParams (void)
    scienceAPI.write("    ---------------------------------------------------\n");
    scienceAPI.write("\n");
 
+   
+   scienceAPI.read("uptake_source", "",1, plant->uptake_source);
+   plant->uptake_source = ToLower(plant->uptake_source);
+   if (plant->uptake_source == "") plant->uptake_source = "calc";
+   float swim3 = 0.0;
+   scienceAPI.get("swim3", "",1, swim3);
+   if (swim3>0.0)
+   {
+	   plant->uptake_source = "swim3";
+	   ostringstream msg;
+	   msg << "Using SWIM3 for Soil Water Uptake." << endl;
+	   scienceAPI.write(msg.str());
+   }
+
    }
 //------------------------------------------------------------------------------------------------
 //------ update Water parameters
@@ -203,9 +217,10 @@ void Water::getOtherVariables (void)
 //-------- Set Water variables in other modules
 //------------------------------------------------------------------------------------------------
 void Water::setOtherVariables (void)
-   {
-   scienceAPI.set("dlt_sw_dep", "mm", dltSwDep);
-   }
+	{
+	if (plant->uptake_source != "swim3")
+		scienceAPI.set("dlt_sw_dep", "mm", dltSwDep);
+	}
 //------------------------------------------------------------------------------------------------
 //------- React to a newProfile message
 //------------------------------------------------------------------------------------------------
@@ -252,6 +267,7 @@ void Water::onNewProfile(NewProfileType &v /* message */)
 //------------------------------------------------------------------------------------------------
 void Water::process(void)
    {
+	calcDemand();
    getOtherVariables ();
    calcDailySupply();
    calcStresses();
@@ -347,6 +363,8 @@ void Water::calcSupply(void)
 //------------------------------------------------------------------------------------------------
 double Water::calcSwDefPhoto(void)
    {
+	if(swDemand == 0)
+		return 1.0;
    return bound(divide(totalSupply,swDemand,1.0),0.0,1.0);
    }
 //------------------------------------------------------------------------------------------------
@@ -359,6 +377,8 @@ double Water::calcSwDefPheno(void)
 //------------------------------------------------------------------------------------------------
 double Water::calcSwDefExpansion(void)
   {
+  if(swDemand == 0)
+       return 1.0;
   double sdRatio = divide(totalSupply,swDemand,10.0);
   return swExpansionTable.value(sdRatio);
   }
@@ -367,31 +387,44 @@ double Water::calcSwDefExpansion(void)
 //------------------------------------------------------------------------------------------------
 void Water::calcUptake(void)
    {
-   //we have no uptake if there is no demand or potential
-   if(totalSupply <= 0.0 || swDemand <= 0.0)
+	if (plant->uptake_source == "calc")
+	{
+		//we have no uptake if there is no demand or potential
+		if (totalSupply <= 0.0 || swDemand <= 0.0)
+		{
+			return;
+		}
+		// if demand is less than roots could take up. water is non-limiting.
+		// distribute demand proportionately in all layers.
+		if (swDemand < totalSupply)
+		{
+			for (int layer = 0; layer <= currentLayer; layer++)
+			{
+				dltSwDep[layer] = -1 * divide(supply[layer], totalSupply, 0.0) * swDemand;
+			}
+		}
+		// water is limiting - not enough to meet demand so take what is available
+		else
+		{
+			for (int layer = 0; layer <= currentLayer; layer++)
+			{
+				dltSwDep[layer] = -1 * supply[layer];
+			}
+		}
+		double tot = sumVector(dltSwDep);
+		totalUptake += sumVector(dltSwDep) * -1;
+	}
+   
+   else if (plant->uptake_source == "swim3")
+	{
+	   scienceAPI.get("uptake_water_" + plant->module_name(), "",1, dltSwDep);
+      for (unsigned i = 0; i < dltSwDep.size(); i++) 
       {
-      return;
-      }
-   // if demand is less than roots could take up. water is non-limiting.
-   // distribute demand proportionately in all layers.
-  if(swDemand < totalSupply)
-      {
-      for(int layer = 0; layer <= currentLayer; layer++)
-         {
-         dltSwDep[layer] = -1 * divide (supply[layer],totalSupply, 0.0) * swDemand;
-         }
-      }
-   // water is limiting - not enough to meet demand so take what is available
-   else
-      {
-      for(int layer = 0; layer <= currentLayer; layer++)
-         {
-         dltSwDep[layer] = -1 * supply[layer];
-         }
-      }
-  double tmpUptake = sumVector(dltSwDep) * -1;
-   totalUptake += sumVector(dltSwDep) * -1;
-   }
+           dltSwDep[i] *= -1;
+       }
+	   totalUptake += -1 * sumVector(dltSwDep);
+	}
+}
 //------------------------------------------------------------------------------------------------
 double Water::calcPeswSeed(void)
    {
