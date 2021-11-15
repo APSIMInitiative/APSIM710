@@ -76,11 +76,7 @@ public class Script
            55, // jTMax
            0.711229539802063, // jC
            1, // jBeta
-           0, // gTMin
-           42, // gTOpt
-           55, // gTMax
-           0.462820450976839, // gC
-           1, // gBeta
+           40600, //mesophyll conductance factor
            1210, // KcAt25
            64200, // KcFactor
            292000, // KoAt25

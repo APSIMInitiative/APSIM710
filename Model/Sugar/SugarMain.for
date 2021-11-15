@@ -1283,7 +1283,7 @@
          endif
 
 
-         hold_ratoon_no = g%ratoon_no
+         hold_ratoon_no = max(0, g%ratoon_no)
          hold_dm_root   = g%dm_green (root)*(1.0 - c%root_die_back_fr)
          hold_n_root    = g%N_green (root)*(1.0 - c%root_die_back_fr)
          hold_num_layers= g%num_layers
@@ -1410,7 +1410,7 @@
       g%dlt_canopy_height          = 0.0
       g%canopy_height              = 0.0
       g%phase_devel                = 0.0
-      g%ratoon_no                = 0
+      g%ratoon_no                = -1
       g%plants                     = 0.0
       g%dlt_plants                 = 0.0
       g%initial_plant_density      = 0.0
@@ -3664,10 +3664,15 @@ c      call sugar_nit_stress_expansion (1)
             ! plant nitrogen
 
       elseif (variable_name .eq. 'n_uptake') then
-         act_N_up = g%N_uptake_tot*gm2kg /sm2ha
+         deepest_layer = find_layer_no (g%root_depth, g%dlayer
+     :                                , max_layer)	  
+         act_N_up = -1.0*sum_real_array(g%dlt_NO3gsm, deepest_layer)
+		 act_N_up = act_N_up - sum_real_array(g%dlt_NH4gsm
+     :                                , deepest_layer) 
+		 act_N_up = max(0.0, act_N_up)
          call respond2get_real_var (variable_name
      :                             , '(kg/ha)'
-     :                             , act_N_up)
+     :                             , act_N_up*gm2kg/sm2ha)
 
       elseif (variable_name .eq. 'no3_tot') then
          deepest_layer = find_layer_no (g%root_depth, g%dlayer
@@ -4340,7 +4345,7 @@ cnh      g%initial_plant_density = 0.0
       g%lai = 0.0
       g%transpiration_tot = 0.0
       g%previous_stage = 0.0
-      g%ratoon_no = 0
+      g%ratoon_no = -1
       g%node_no_detached = 0.0
       g%lodge_flag = .false.
       g%min_sstem_sucrose = 0.0

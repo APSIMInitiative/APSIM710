@@ -141,8 +141,12 @@ void Plant::plantInit1(void)
   }
 //------------------------------------------------------------------------------------------------
 void Plant::plantInit2(void)
-  {
-  }
+   {
+	NewCropType NewCrop;
+	NewCrop.crop_type = cropType;
+	NewCrop.sender = module_name();
+	scienceAPI.publish("newcrop", NewCrop);
+   }
 //------------------------------------------------------------------------------------------------
 void Plant::setStatus(Status status)
    {

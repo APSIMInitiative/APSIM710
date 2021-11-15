@@ -91,13 +91,13 @@ namespace ApsimFile
                 XmlHelper.SetAttribute (apsimFileNode, "source", FileName);
 
                 List<string> globalInputs = new List<string>();
-                foreach (XmlNode pluginNode in job.OwnerDocument.SelectNodes("//PlugIns/PlugIn[@enabled='yes']"))
+                foreach (XmlNode pluginNode in Doc.DocumentElement.OwnerDocument.SelectNodes("//PlugIns/PlugIn[@enabled='yes']"))
                 {
                     if (pluginNode.InnerText.IndexOf("%apsim%") < 0)
                     {
                         if (!File.Exists(pluginNode.InnerText))
                             throw new Exception("Plugin file '" + pluginNode.InnerText + "' doesnt exist - cant send it to the cluster.");
-                        File.Copy(pluginNode.InnerText, Path.Combine(WorkingFolder, Path.GetFileName(pluginNode.InnerText)));
+                        File.Copy(pluginNode.InnerText, Path.Combine(WorkingFolder, Path.GetFileName(pluginNode.InnerText)), true);
                         pluginNode.InnerText = Path.GetFileName(pluginNode.InnerText);
                         if (!globalInputs.Contains(pluginNode.InnerText)) { globalInputs.Add(pluginNode.InnerText); }
                     }
@@ -183,7 +183,7 @@ namespace ApsimFile
 							XmlHelper.SetAttribute (input, "name", dest);
 							node.InnerText = dest;
 							if (!File.Exists (Path.Combine (WorkingFolder, dest)))
-								File.Copy (src, Path.Combine (WorkingFolder, dest));
+								File.Copy (src, Path.Combine (WorkingFolder, dest), true);
 						} else {
 							XmlNode output = simulationNode.AppendChild (simulationNode.OwnerDocument.CreateElement ("output"));
 							XmlHelper.SetAttribute (output, "name", node.InnerText);
