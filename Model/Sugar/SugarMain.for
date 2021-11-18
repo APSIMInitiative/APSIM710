@@ -1885,6 +1885,7 @@
       g%nfact_pheno = 0.0
       g%oxdef_photo = 0.0
       g%lodge_redn_photo = 0.0
+      g%rue = 0.0
 
       call pop_routine (my_name)
       return
@@ -3819,6 +3820,16 @@ c      call sugar_nit_stress_expansion (1)
          call respond2get_real_var (variable_name
      :                             , '(g/m^2)'
      :                             , g%sucrose_respiration)   
+	 
+      elseif (variable_name .eq. 'rue') then
+         call respond2get_real_var (variable_name
+     :                             , '(g/MJ)'
+     :                             , g%rue)   
+	 
+      elseif (variable_name .eq. 'lodge_flag') then
+         call respond2get_logical_var (variable_name
+     :                             , '()'
+     :                             , g%lodge_flag)  	 
    
     
       elseif (variable_name .eq. 'sw_supply') then
