@@ -3827,6 +3827,7 @@ c+!!!!!!!!! check order dependency of deltas
      :              , g%temp_stress_photo
      :              , g%oxdef_photo
      :              , g%lodge_redn_photo
+     :              , g%rue
      :              , g%dlt_dm_pot_rue
      :               )
 
@@ -3858,6 +3859,7 @@ c+!!!!!!!!! check order dependency of deltas
      :              , G_temp_stress_photo
      :              , G_oxdef_photo
      :              , G_lodge_redn_photo
+     :              , G_rue
      :              , dlt_dm_pot
      :               )
 *     ===========================================================
@@ -3872,6 +3874,7 @@ c+!!!!!!!!! check order dependency of deltas
       REAL       G_temp_stress_photo   ! (INPUT)
       REAL       G_oxdef_photo         ! (INPUT)
       REAL       G_lodge_redn_photo    ! (INPUT)
+      REAL       G_rue                 ! (OUTPUT)
       real       dlt_dm_pot            ! (OUTPUT) potential dry matter
                                        ! (carbohydrate) production (g/m^2)
 
@@ -3893,15 +3896,13 @@ c+!!!!!!!!! check order dependency of deltas
 
 *+  Local Variables
       integer    current_phase         ! current phase number
-      real       rue                   ! radiation use efficiency under
-                                       ! no stress (g biomass/mj)
 
 *- Implementation Section ----------------------------------
 
       call push_routine (my_name)
 
       current_phase = int (g_current_stage)
-      rue = c_rue(current_phase) 
+      G_rue = c_rue(current_phase) 
      :    * g%rue_co2_fact * g%rue_leaf_no_fact
      :    * sugar_rue_reduction
      :               (
@@ -3917,7 +3918,7 @@ c+!!!!!!!!! check order dependency of deltas
          ! radiation under stressed conditions.
 
 cnh      call sugar_radn_int (radn_int)
-      dlt_dm_pot = rue * g_radn_int
+      dlt_dm_pot = G_rue * g_radn_int
 
       call pop_routine (my_name)
       return
