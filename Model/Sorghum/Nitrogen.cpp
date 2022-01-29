@@ -197,9 +197,11 @@ void Nitrogen::updateVars(void)
 
    phenoStress = 1.0;
    int stage = plant->phenology->currentStage();
-   if (stage >= emergence && stage < flowering)
-   {
-	   phenoStress = (1.0 / 0.7) * SLN * 1.25 - (3.0 / 7.0);
+   if (stage >= emergence && stage < flag)
+//       if (stage >= emergence && stage < flowering)
+       {
+//	   phenoStress = (1.0 / 0.7) * SLN * 1.25 - (3.0 / 7.0);
+	   phenoStress = (0.5 + 0.5 / 0.3*(SLN - 0.7));
 	   phenoStress = bound(phenoStress, 0.0, 1.0);
    }
 
