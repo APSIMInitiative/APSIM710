@@ -4,7 +4,9 @@
       <variable>today format dd/mm/yyyy as Date</variable>
       <variable>daysAfterSowing as Das</variable>
       <variable>day_of_year</variable>
-      <variable>Stage</variable>
+      <variable>StageName as stage</variable>
+      <variable>Stage as stage_no</variable>
+      <variable>tillers</variable>
       <variable>Biomass</variable>
       <variable>GreenWt</variable>
       <variable>Biomass units g/m^2 as BiomassWt</variable>
@@ -27,6 +29,7 @@
       <variable>LeafNo</variable>
       <variable>LAI</variable>
       <variable>SLAI</variable>
+      <variable>MaxLAI as LaiAnth</variable>
       <variable>ESW</variable>
       <variable>no3() as NO3</variable>
       <variable>SLN</variable>
@@ -78,12 +81,9 @@
       <variable>DeltaTTFM</variable>
       <variable>st</variable>
       <variable>GrainTempFactor</variable>
-      <constants>
-        <constant name="precision">8</constant>
-      </constants>
     </variables>
     <events name="My Variables Events">
-      <event>harvesting</event>
+      <event>end_day</event>
     </events>
   </folder>
   <folder name="Hermitage">
@@ -436,10 +436,10 @@
                 <double>0.01</double>
               </FBiom>
               <FInert>
+                <double>0.3</double>
                 <double>0.45</double>
                 <double>0.6</double>
                 <double>0.75</double>
-                <double>0.9</double>
                 <double>0.9</double>
                 <double>0.9</double>
                 <double>0.9</double>
@@ -558,20 +558,20 @@
                 <double>200</double>
               </Thickness>
               <SW>
-                <double>23.5</double>
-                <double>25.2</double>
-                <double>54</double>
-                <double>60</double>
-                <double>53.6</double>
-                <double>60.8</double>
-                <double>67</double>
-                <double>66</double>
-                <double>64</double>
-                <double>66</double>
+                <double>0.235</double>
+                <double>0.252</double>
+                <double>0.27</double>
+                <double>0.3</double>
+                <double>0.268</double>
+                <double>0.304</double>
+                <double>0.335</double>
+                <double>0.33</double>
+                <double>0.32</double>
+                <double>0.33</double>
               </SW>
               <NO3Units>ppm</NO3Units>
               <NH4Units>ppm</NH4Units>
-              <SWUnits>mm</SWUnits>
+              <SWUnits>Volumetric</SWUnits>
               <OCUnits>Total</OCUnits>
               <PHUnits>Water</PHUnits>
             </Sample>
@@ -1006,10 +1006,10 @@
                 <double>0.01</double>
               </FBiom>
               <FInert>
+                <double>0.3</double>
                 <double>0.45</double>
                 <double>0.6</double>
                 <double>0.75</double>
-                <double>0.9</double>
                 <double>0.9</double>
                 <double>0.9</double>
                 <double>0.9</double>
@@ -1576,16 +1576,16 @@
                 <double>0.01</double>
               </FBiom>
               <FInert>
-                <double>0.45</double>
-                <double>0.6</double>
-                <double>0.75</double>
-                <double>0.9</double>
-                <double>0.9</double>
-                <double>0.9</double>
-                <double>0.9</double>
-                <double>0.9</double>
-                <double>0.9</double>
-                <double>0.9</double>
+                <double>0.300</double>
+                <double>0.450</double>
+                <double>0.600</double>
+                <double>0.750</double>
+                <double>0.900</double>
+                <double>0.900</double>
+                <double>0.900</double>
+                <double>0.900</double>
+                <double>0.900</double>
+                <double>0.900</double>
               </FInert>
               <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
@@ -2140,10 +2140,10 @@
                 <double>0.01</double>
               </FBiom>
               <FInert>
+                <double>0.3</double>
                 <double>0.45</double>
                 <double>0.6</double>
                 <double>0.75</double>
-                <double>0.9</double>
                 <double>0.9</double>
                 <double>0.9</double>
                 <double>0.9</double>
@@ -2219,16 +2219,16 @@
                 <double>200</double>
               </Thickness>
               <NO3>
-                <double>13.936000000000002</double>
-                <double>2.1882200000000003</double>
-                <double>3.27978</double>
-                <double>2.4840000000000004</double>
-                <double>3.0800000000000005</double>
-                <double>4.5477</double>
-                <double>11.55294</double>
-                <double>18.47442</double>
-                <double>19.256</double>
-                <double>24.41712</double>
+                <double>0.134</double>
+                <double>0.035</double>
+                <double>0.133</double>
+                <double>0.16</double>
+                <double>1.104</double>
+                <double>0.58</double>
+                <double>1.628</double>
+                <double>2.484</double>
+                <double>2.387</double>
+                <double>2.352</double>
               </NO3>
               <NH4>
                 <double>0.1</double>
@@ -2625,10 +2625,10 @@
                 <double>0.01</double>
               </FBiom>
               <FInert>
+                <double>0.3</double>
                 <double>0.45</double>
                 <double>0.6</double>
                 <double>0.75</double>
-                <double>0.9</double>
                 <double>0.9</double>
                 <double>0.9</double>
                 <double>0.9</double>
@@ -2704,16 +2704,16 @@
                 <double>200</double>
               </Thickness>
               <NO3>
-                <double>13.936000000000002</double>
-                <double>2.1882200000000003</double>
-                <double>3.27978</double>
-                <double>2.4840000000000004</double>
-                <double>3.0800000000000005</double>
-                <double>4.5477</double>
-                <double>11.55294</double>
-                <double>18.47442</double>
-                <double>19.256</double>
-                <double>24.41712</double>
+                <double>0.134</double>
+                <double>0.035</double>
+                <double>0.133</double>
+                <double>0.16</double>
+                <double>1.104</double>
+                <double>0.58</double>
+                <double>1.628</double>
+                <double>2.484</double>
+                <double>2.387</double>
+                <double>2.352</double>
               </NO3>
               <NH4>
                 <double>0.1</double>
@@ -3110,10 +3110,10 @@
                 <double>0.01</double>
               </FBiom>
               <FInert>
+                <double>0.3</double>
                 <double>0.45</double>
                 <double>0.6</double>
                 <double>0.75</double>
-                <double>0.9</double>
                 <double>0.9</double>
                 <double>0.9</double>
                 <double>0.9</double>
@@ -3189,16 +3189,16 @@
                 <double>200</double>
               </Thickness>
               <NO3>
-                <double>13.936000000000002</double>
-                <double>2.1882200000000003</double>
-                <double>3.27978</double>
-                <double>2.4840000000000004</double>
-                <double>3.0800000000000005</double>
-                <double>4.5477</double>
-                <double>11.55294</double>
-                <double>18.47442</double>
-                <double>19.256</double>
-                <double>24.41712</double>
+                <double>0.134</double>
+                <double>0.035</double>
+                <double>0.133</double>
+                <double>0.16</double>
+                <double>1.104</double>
+                <double>0.58</double>
+                <double>1.628</double>
+                <double>2.484</double>
+                <double>2.387</double>
+                <double>2.352</double>
               </NO3>
               <NH4>
                 <double>0.1</double>
@@ -3475,10 +3475,10 @@
             <double>0.010</double>
           </FBiom>
           <FInert>
+            <double>0.300</double>
             <double>0.450</double>
             <double>0.600</double>
             <double>0.750</double>
-            <double>0.900</double>
             <double>0.900</double>
             <double>0.900</double>
             <double>0.900</double>
@@ -3963,41 +3963,42 @@
                 <double>200</double>
               </Thickness>
               <OC>
-                <double>1.190</double>
-                <double>0.590</double>
-                <double>0.450</double>
-                <double>0.300</double>
-                <double>0.200</double>
-                <double>0.160</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
+                <double>1.19</double>
+                <double>0.59</double>
+                <double>0.45</double>
+                <double>0.3</double>
+                <double>0.2</double>
+                <double>0.16</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
               </OC>
               <FBiom>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
               </FBiom>
               <FInert>
-                <double>0.450</double>
-                <double>0.600</double>
-                <double>0.750</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
+                <double>0.3</double>
+                <double>0.45</double>
+                <double>0.6</double>
+                <double>0.75</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -4478,41 +4479,42 @@
                 <double>200</double>
               </Thickness>
               <OC>
-                <double>1.190</double>
-                <double>0.590</double>
-                <double>0.450</double>
-                <double>0.300</double>
-                <double>0.200</double>
-                <double>0.160</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
+                <double>1.19</double>
+                <double>0.59</double>
+                <double>0.45</double>
+                <double>0.3</double>
+                <double>0.2</double>
+                <double>0.16</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
               </OC>
               <FBiom>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
               </FBiom>
               <FInert>
-                <double>0.450</double>
-                <double>0.600</double>
-                <double>0.750</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
+                <double>0.3</double>
+                <double>0.45</double>
+                <double>0.6</double>
+                <double>0.75</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -5017,10 +5019,10 @@
                 <double>0.010</double>
               </FBiom>
               <FInert>
+                <double>0.300</double>
                 <double>0.450</double>
                 <double>0.600</double>
                 <double>0.750</double>
-                <double>0.900</double>
                 <double>0.900</double>
                 <double>0.900</double>
                 <double>0.900</double>
@@ -5394,10 +5396,10 @@
             <double>0.010</double>
           </FBiom>
           <FInert>
+            <double>0.300</double>
             <double>0.450</double>
             <double>0.600</double>
             <double>0.750</double>
-            <double>0.900</double>
             <double>0.900</double>
             <double>0.900</double>
             <double>0.900</double>
@@ -5856,41 +5858,42 @@
                 <double>200</double>
               </Thickness>
               <OC>
-                <double>1.190</double>
-                <double>0.590</double>
-                <double>0.450</double>
-                <double>0.300</double>
-                <double>0.200</double>
-                <double>0.160</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
+                <double>1.19</double>
+                <double>0.59</double>
+                <double>0.45</double>
+                <double>0.3</double>
+                <double>0.2</double>
+                <double>0.16</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
               </OC>
               <FBiom>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
               </FBiom>
               <FInert>
-                <double>0.450</double>
-                <double>0.600</double>
-                <double>0.750</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
+                <double>0.3</double>
+                <double>0.45</double>
+                <double>0.6</double>
+                <double>0.75</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -6338,41 +6341,42 @@
                 <double>200</double>
               </Thickness>
               <OC>
-                <double>1.190</double>
-                <double>0.590</double>
-                <double>0.450</double>
-                <double>0.300</double>
-                <double>0.200</double>
-                <double>0.160</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
+                <double>1.19</double>
+                <double>0.59</double>
+                <double>0.45</double>
+                <double>0.3</double>
+                <double>0.2</double>
+                <double>0.16</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
               </OC>
               <FBiom>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
               </FBiom>
               <FInert>
-                <double>0.450</double>
-                <double>0.600</double>
-                <double>0.750</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
+                <double>0.3</double>
+                <double>0.45</double>
+                <double>0.6</double>
+                <double>0.75</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -6827,41 +6831,42 @@
                 <double>200</double>
               </Thickness>
               <OC>
-                <double>1.190</double>
-                <double>0.590</double>
-                <double>0.450</double>
-                <double>0.300</double>
-                <double>0.200</double>
-                <double>0.160</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
+                <double>1.19</double>
+                <double>0.59</double>
+                <double>0.45</double>
+                <double>0.3</double>
+                <double>0.2</double>
+                <double>0.16</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
               </OC>
               <FBiom>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
               </FBiom>
               <FInert>
-                <double>0.450</double>
-                <double>0.600</double>
-                <double>0.750</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
+                <double>0.3</double>
+                <double>0.45</double>
+                <double>0.6</double>
+                <double>0.75</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -7154,10 +7159,10 @@
             <double>0.010</double>
           </FBiom>
           <FInert>
+            <double>0.300</double>
             <double>0.450</double>
             <double>0.600</double>
             <double>0.750</double>
-            <double>0.900</double>
             <double>0.900</double>
             <double>0.900</double>
             <double>0.900</double>
@@ -7666,41 +7671,42 @@
                 <double>200</double>
               </Thickness>
               <OC>
-                <double>1.190</double>
-                <double>0.590</double>
-                <double>0.450</double>
-                <double>0.300</double>
-                <double>0.200</double>
-                <double>0.160</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
+                <double>1.19</double>
+                <double>0.59</double>
+                <double>0.45</double>
+                <double>0.3</double>
+                <double>0.2</double>
+                <double>0.16</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
               </OC>
               <FBiom>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
               </FBiom>
               <FInert>
-                <double>0.450</double>
-                <double>0.600</double>
-                <double>0.750</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
+                <double>0.3</double>
+                <double>0.45</double>
+                <double>0.6</double>
+                <double>0.75</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -8205,41 +8211,42 @@
                 <double>200</double>
               </Thickness>
               <OC>
-                <double>1.190</double>
-                <double>0.590</double>
-                <double>0.450</double>
-                <double>0.300</double>
-                <double>0.200</double>
-                <double>0.160</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
+                <double>1.19</double>
+                <double>0.59</double>
+                <double>0.45</double>
+                <double>0.3</double>
+                <double>0.2</double>
+                <double>0.16</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
               </OC>
               <FBiom>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
               </FBiom>
               <FInert>
-                <double>0.450</double>
-                <double>0.600</double>
-                <double>0.750</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
+                <double>0.3</double>
+                <double>0.45</double>
+                <double>0.6</double>
+                <double>0.75</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -8748,41 +8755,42 @@
                 <double>200</double>
               </Thickness>
               <OC>
-                <double>1.190</double>
-                <double>0.590</double>
-                <double>0.450</double>
-                <double>0.300</double>
-                <double>0.200</double>
-                <double>0.160</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
+                <double>1.19</double>
+                <double>0.59</double>
+                <double>0.45</double>
+                <double>0.3</double>
+                <double>0.2</double>
+                <double>0.16</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
               </OC>
               <FBiom>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
               </FBiom>
               <FInert>
-                <double>0.450</double>
-                <double>0.600</double>
-                <double>0.750</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
+                <double>0.3</double>
+                <double>0.45</double>
+                <double>0.6</double>
+                <double>0.75</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -9106,10 +9114,10 @@
             <double>0.010</double>
           </FBiom>
           <FInert>
+            <double>0.300</double>
             <double>0.450</double>
             <double>0.600</double>
             <double>0.750</double>
-            <double>0.900</double>
             <double>0.900</double>
             <double>0.900</double>
             <double>0.900</double>
@@ -9236,8 +9244,6 @@
             <variables name="My Variables" shortcut="/Validation/shared/My Variables" />
             <Graph name="Stage">
               <Legend>
-                <CheckedTitles>Plot, stage,Sorghum_HE6_T1</CheckedTitles>
-                <CheckedTitles>Observed, STAGE_NO,HE6-T1</CheckedTitles>
               </Legend>
               <Plot>
                 <SeriesType>Solid line</SeriesType>
@@ -9610,41 +9616,42 @@
                 <double>200</double>
               </Thickness>
               <OC>
-                <double>1.190</double>
-                <double>0.590</double>
-                <double>0.450</double>
-                <double>0.300</double>
-                <double>0.200</double>
-                <double>0.160</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
+                <double>1.19</double>
+                <double>0.59</double>
+                <double>0.45</double>
+                <double>0.3</double>
+                <double>0.2</double>
+                <double>0.16</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
               </OC>
               <FBiom>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
               </FBiom>
               <FInert>
-                <double>0.450</double>
-                <double>0.600</double>
-                <double>0.750</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
+                <double>0.3</double>
+                <double>0.45</double>
+                <double>0.6</double>
+                <double>0.75</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -9686,16 +9693,16 @@
                 <double>200</double>
               </Thickness>
               <NO3>
-                <double>1.493</double>
-                <double>1.633</double>
-                <double>1.233</double>
-                <double>0.9</double>
-                <double>1.1</double>
-                <double>1.467</double>
-                <double>2.516</double>
-                <double>3.067</double>
-                <double>3.012</double>
-                <double>2.976</double>
+                <double>2.00062</double>
+                <double>2.1882200000000003</double>
+                <double>3.27978</double>
+                <double>2.4840000000000004</double>
+                <double>3.0800000000000005</double>
+                <double>4.5477</double>
+                <double>8.00088</double>
+                <double>9.9984200000000012</double>
+                <double>9.99984</double>
+                <double>9.99936</double>
               </NO3>
               <NH4>
                 <double>0.1</double>
@@ -9709,7 +9716,7 @@
                 <double>0.1</double>
                 <double>0.1</double>
               </NH4>
-              <NO3Units>ppm</NO3Units>
+              <NO3Units>kgha</NO3Units>
               <NH4Units>ppm</NH4Units>
               <SWUnits>Volumetric</SWUnits>
               <OCUnits>Total</OCUnits>
@@ -10141,41 +10148,42 @@
                 <double>200</double>
               </Thickness>
               <OC>
-                <double>1.190</double>
-                <double>0.590</double>
-                <double>0.450</double>
-                <double>0.300</double>
-                <double>0.200</double>
-                <double>0.160</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
+                <double>1.19</double>
+                <double>0.59</double>
+                <double>0.45</double>
+                <double>0.3</double>
+                <double>0.2</double>
+                <double>0.16</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
               </OC>
               <FBiom>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
               </FBiom>
               <FInert>
-                <double>0.450</double>
-                <double>0.600</double>
-                <double>0.750</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
+                <double>0.3</double>
+                <double>0.45</double>
+                <double>0.6</double>
+                <double>0.75</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -10217,16 +10225,16 @@
                 <double>200</double>
               </Thickness>
               <NO3>
-                <double>1.493</double>
-                <double>1.633</double>
-                <double>1.233</double>
-                <double>0.9</double>
-                <double>1.1</double>
-                <double>1.467</double>
-                <double>2.516</double>
-                <double>3.067</double>
-                <double>3.012</double>
-                <double>2.976</double>
+                <double>2.00062</double>
+                <double>2.1882200000000003</double>
+                <double>3.27978</double>
+                <double>2.4840000000000004</double>
+                <double>3.0800000000000005</double>
+                <double>4.5477</double>
+                <double>8.00088</double>
+                <double>9.9984200000000012</double>
+                <double>9.99984</double>
+                <double>9.99936</double>
               </NO3>
               <NH4>
                 <double>0.1</double>
@@ -10240,7 +10248,7 @@
                 <double>0.1</double>
                 <double>0.1</double>
               </NH4>
-              <NO3Units>ppm</NO3Units>
+              <NO3Units>kgha</NO3Units>
               <NH4Units>ppm</NH4Units>
               <SWUnits>Volumetric</SWUnits>
               <OCUnits>Total</OCUnits>
@@ -10694,10 +10702,10 @@
                 <double>0.010</double>
               </FBiom>
               <FInert>
+                <double>0.300</double>
                 <double>0.450</double>
                 <double>0.600</double>
                 <double>0.750</double>
-                <double>0.900</double>
                 <double>0.900</double>
                 <double>0.900</double>
                 <double>0.900</double>
@@ -10746,16 +10754,16 @@
                 <double>200</double>
               </Thickness>
               <NO3>
-                <double>1.493</double>
-                <double>1.633</double>
-                <double>1.233</double>
-                <double>0.9</double>
-                <double>1.1</double>
-                <double>1.467</double>
-                <double>2.516</double>
-                <double>3.067</double>
-                <double>3.012</double>
-                <double>2.976</double>
+                <double>2.00062</double>
+                <double>2.1882200000000003</double>
+                <double>3.27978</double>
+                <double>2.4840000000000004</double>
+                <double>3.0800000000000005</double>
+                <double>4.5477</double>
+                <double>8.00088</double>
+                <double>9.9984200000000012</double>
+                <double>9.99984</double>
+                <double>9.99936</double>
               </NO3>
               <NH4>
                 <double>0.1</double>
@@ -10769,7 +10777,7 @@
                 <double>0.1</double>
                 <double>0.1</double>
               </NH4>
-              <NO3Units>ppm</NO3Units>
+              <NO3Units>kgha</NO3Units>
               <NH4Units>ppm</NH4Units>
               <SWUnits>Volumetric</SWUnits>
               <OCUnits>Total</OCUnits>
@@ -11171,41 +11179,42 @@
                 <double>200</double>
               </Thickness>
               <OC>
-                <double>1.190</double>
-                <double>0.590</double>
-                <double>0.450</double>
-                <double>0.300</double>
-                <double>0.200</double>
-                <double>0.160</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
+                <double>1.19</double>
+                <double>0.59</double>
+                <double>0.45</double>
+                <double>0.3</double>
+                <double>0.2</double>
+                <double>0.16</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
               </OC>
               <FBiom>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
               </FBiom>
               <FInert>
-                <double>0.450</double>
-                <double>0.600</double>
-                <double>0.750</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
+                <double>0.3</double>
+                <double>0.45</double>
+                <double>0.6</double>
+                <double>0.75</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -11666,41 +11675,42 @@
                 <double>200</double>
               </Thickness>
               <OC>
-                <double>1.190</double>
-                <double>0.590</double>
-                <double>0.450</double>
-                <double>0.300</double>
-                <double>0.200</double>
-                <double>0.160</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
+                <double>1.19</double>
+                <double>0.59</double>
+                <double>0.45</double>
+                <double>0.3</double>
+                <double>0.2</double>
+                <double>0.16</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
               </OC>
               <FBiom>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
               </FBiom>
               <FInert>
-                <double>0.450</double>
-                <double>0.600</double>
-                <double>0.750</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
+                <double>0.3</double>
+                <double>0.45</double>
+                <double>0.6</double>
+                <double>0.75</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -12165,41 +12175,42 @@
                 <double>200</double>
               </Thickness>
               <OC>
-                <double>1.190</double>
-                <double>0.590</double>
-                <double>0.450</double>
-                <double>0.300</double>
-                <double>0.200</double>
-                <double>0.160</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
+                <double>1.19</double>
+                <double>0.59</double>
+                <double>0.45</double>
+                <double>0.3</double>
+                <double>0.2</double>
+                <double>0.16</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
               </OC>
               <FBiom>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
               </FBiom>
               <FInert>
-                <double>0.450</double>
-                <double>0.600</double>
-                <double>0.750</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
+                <double>0.3</double>
+                <double>0.45</double>
+                <double>0.6</double>
+                <double>0.75</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -12662,41 +12673,42 @@
                 <double>200</double>
               </Thickness>
               <OC>
-                <double>1.190</double>
-                <double>0.590</double>
-                <double>0.450</double>
-                <double>0.300</double>
-                <double>0.200</double>
-                <double>0.160</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
-                <double>0.170</double>
+                <double>1.19</double>
+                <double>0.59</double>
+                <double>0.45</double>
+                <double>0.3</double>
+                <double>0.2</double>
+                <double>0.16</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
+                <double>0.17</double>
               </OC>
               <FBiom>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.010</double>
-                <double>0.050</double>
-                <double>0.020</double>
-                <double>0.010</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.01</double>
+                <double>0.05</double>
+                <double>0.02</double>
+                <double>0.01</double>
               </FBiom>
               <FInert>
-                <double>0.450</double>
-                <double>0.600</double>
-                <double>0.750</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
-                <double>0.900</double>
+                <double>0.3</double>
+                <double>0.45</double>
+                <double>0.6</double>
+                <double>0.75</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
+                <double>0.9</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -13185,10 +13197,10 @@
                 <double>0.010</double>
               </FBiom>
               <FInert>
+                <double>0.300</double>
                 <double>0.450</double>
                 <double>0.600</double>
                 <double>0.750</double>
-                <double>0.900</double>
                 <double>0.900</double>
                 <double>0.900</double>
                 <double>0.900</double>
@@ -13680,10 +13692,10 @@
                 <double>0.010</double>
               </FBiom>
               <FInert>
+                <double>0.300</double>
                 <double>0.450</double>
                 <double>0.600</double>
                 <double>0.750</double>
-                <double>0.900</double>
                 <double>0.900</double>
                 <double>0.900</double>
                 <double>0.900</double>
@@ -20574,7 +20586,7 @@
                 <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
                 <ftn type="text" description="Enter Fertile Tiller No. : ">0</ftn>
               </ui>
-              <script name="start_of_day">
+              <script>
                 <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
@@ -21002,7 +21014,7 @@
                 <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
                 <ftn type="text" description="Enter Fertile Tiller No. : ">0</ftn>
               </ui>
-              <script name="start_of_day">
+              <script>
                 <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
@@ -21430,7 +21442,7 @@
                 <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
                 <ftn type="text" description="Enter Fertile Tiller No. : ">0</ftn>
               </ui>
-              <script name="start_of_day">
+              <script>
                 <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
@@ -21858,7 +21870,7 @@
                 <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
                 <ftn type="text" description="Enter Fertile Tiller No. : ">0</ftn>
               </ui>
-              <script name="start_of_day">
+              <script>
                 <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
@@ -22258,7 +22270,7 @@
                 <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
                 <ftn type="text" description="Enter Fertile Tiller No. : ">0</ftn>
               </ui>
-              <script name="start_of_day">
+              <script>
                 <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
@@ -22677,7 +22689,7 @@ sd = 0</text>
                 <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
                 <ftn type="text" description="Enter Fertile Tiller No. : ">0</ftn>
               </ui>
-              <script name="start_of_day">
+              <script>
                 <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
@@ -27399,17 +27411,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -27417,14 +27429,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -27447,7 +27460,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -27458,26 +27470,30 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <NO3>
-                <double>11.624</double>
-                <double>5.732</double>
-                <double>2.974</double>
-                <double>1.645</double>
-                <double>1.902</double>
-                <double>2.246</double>
-                <double>1.942</double>
+                <double>30.68736</double>
+                <double>14.9032</double>
+                <double>7.316040000000001</double>
+                <double>6.26745</double>
+                <double>7.8172200000000007</double>
+                <double>9.0963000000000012</double>
+                <double>7.8651</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>kgha</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
             <Sample name="Initial water">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -27489,13 +27505,18 @@ sd = 0</text>
               </Thickness>
               <SW>
                 <double>0.385</double>
-                <double>0.470</double>
+                <double>0.47</double>
                 <double>0.467</double>
                 <double>0.459</double>
                 <double>0.394</double>
                 <double>0.399</double>
-                <double>0.380</double>
+                <double>0.38</double>
               </SW>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <irrigation name="Irrigation">
@@ -27740,17 +27761,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -27758,14 +27779,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -27788,7 +27810,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -27808,17 +27829,21 @@ sd = 0</text>
                 <double>1.942</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
             <Sample name="Initial water">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -27830,13 +27855,18 @@ sd = 0</text>
               </Thickness>
               <SW>
                 <double>0.385</double>
-                <double>0.470</double>
+                <double>0.47</double>
                 <double>0.467</double>
                 <double>0.459</double>
                 <double>0.394</double>
                 <double>0.399</double>
-                <double>0.380</double>
+                <double>0.38</double>
               </SW>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <irrigation name="Irrigation">
@@ -28081,17 +28111,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -28099,14 +28129,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -28129,7 +28160,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -28149,17 +28179,21 @@ sd = 0</text>
                 <double>1.942</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
             <Sample name="Initial water">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -28171,13 +28205,18 @@ sd = 0</text>
               </Thickness>
               <SW>
                 <double>0.385</double>
-                <double>0.470</double>
+                <double>0.47</double>
                 <double>0.467</double>
                 <double>0.459</double>
                 <double>0.394</double>
                 <double>0.399</double>
-                <double>0.380</double>
+                <double>0.38</double>
               </SW>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <irrigation name="Irrigation">
@@ -28424,17 +28463,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -28442,14 +28481,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -28472,7 +28512,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -28483,26 +28522,30 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <NO3>
-                <double>11.624</double>
-                <double>5.732</double>
-                <double>2.974</double>
-                <double>1.645</double>
-                <double>1.902</double>
-                <double>2.246</double>
-                <double>1.942</double>
+                <double>30.68736</double>
+                <double>14.9032</double>
+                <double>7.316040000000001</double>
+                <double>6.26745</double>
+                <double>7.8172200000000007</double>
+                <double>9.0963000000000012</double>
+                <double>7.8651</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>kgha</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
             <Sample name="Initial water">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -28513,14 +28556,19 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <SW>
-                <double>0.390</double>
-                <double>0.470</double>
+                <double>0.39</double>
+                <double>0.47</double>
                 <double>0.479</double>
                 <double>0.422</double>
                 <double>0.393</double>
                 <double>0.379</double>
                 <double>0.405</double>
               </SW>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <irrigation name="Irrigation">
@@ -28889,7 +28937,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -28900,26 +28947,30 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <NO3>
-                <double>11.624</double>
-                <double>5.732</double>
-                <double>2.974</double>
-                <double>1.645</double>
-                <double>1.902</double>
-                <double>2.246</double>
-                <double>1.942</double>
+                <double>30.68736</double>
+                <double>14.9032</double>
+                <double>7.316040000000001</double>
+                <double>6.26745</double>
+                <double>7.8172200000000007</double>
+                <double>9.0963000000000012</double>
+                <double>7.8651</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>kgha</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
             <Sample name="Initial water">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -28930,14 +28981,19 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <SW>
-                <double>0.390</double>
-                <double>0.470</double>
+                <double>0.39</double>
+                <double>0.47</double>
                 <double>0.479</double>
                 <double>0.422</double>
                 <double>0.393</double>
                 <double>0.379</double>
                 <double>0.405</double>
               </SW>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <irrigation name="Irrigation">
@@ -29306,7 +29362,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -29317,26 +29372,30 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <NO3>
-                <double>11.624</double>
-                <double>5.732</double>
-                <double>2.974</double>
-                <double>1.645</double>
-                <double>1.902</double>
-                <double>2.246</double>
-                <double>1.942</double>
+                <double>30.68736</double>
+                <double>14.9032</double>
+                <double>7.316040000000001</double>
+                <double>6.26745</double>
+                <double>7.8172200000000007</double>
+                <double>9.0963000000000012</double>
+                <double>7.8651</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>kgha</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
             <Sample name="Initial water">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -29347,14 +29406,19 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <SW>
-                <double>0.390</double>
-                <double>0.470</double>
+                <double>0.39</double>
+                <double>0.47</double>
                 <double>0.479</double>
                 <double>0.422</double>
                 <double>0.393</double>
                 <double>0.379</double>
                 <double>0.405</double>
               </SW>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <irrigation name="Irrigation">
@@ -29489,18 +29553,18 @@ sd = 0</text>
           <folder name="Manager folder">
             <manager name="Sow SkipRow on a fixed date">
               <ui>
-                <category description="Sowing criteria" type="category" />
+                <category type="category" description="Sowing criteria" />
                 <date type="text" description="Enter sowing date (d/m/yyyy) : ">4/12/1997</date>
-                <category description="Sowing parameters" type="category" />
+                <category type="category" description="Sowing parameters" />
                 <crop type="modulename" description="Enter name of crop to sow : ">Sorghum</crop>
                 <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
                 <depth type="text" description="Enter sowing depth  (mm) : ">25</depth>
                 <cultivar type="cultivars" description="Enter cultivar : ">Buster</cultivar>
                 <row_spacing type="text" description="Enter row spacing (m) : ">0.5</row_spacing>
                 <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
-                <ftn type="text" description="Enter Fertile Tiller No. : ">1</ftn>
+                <ftn type="text" description="Enter Fertile Tiller No. : ">0</ftn>
               </ui>
-              <script name="start_of_day">
+              <script>
                 <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
@@ -29677,17 +29741,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -29695,14 +29759,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -29725,7 +29790,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -29736,13 +29800,13 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <NO3>
-                <double>5.18717876249422</double>
-                <double>2.41329436407467</double>
-                <double>6.50018058597877</double>
-                <double>6.34423361172192</double>
-                <double>6.81416577744233</double>
-                <double>6.70303115210986</double>
-                <double>3.0920520757827</double>
+                <double>45.83832</double>
+                <double>21.002799999999997</double>
+                <double>53.52468</double>
+                <double>80.90916</double>
+                <double>93.744990000000016</double>
+                <double>90.86985</double>
+                <double>41.9175</double>
               </NO3>
               <NH4>
                 <double>0.1</double>
@@ -29753,9 +29817,13 @@ sd = 0</text>
                 <double>0.1</double>
                 <double>0.1</double>
               </NH4>
+              <NO3Units>kgha</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
             <Sample name="Initial water">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -29766,7 +29834,7 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <SW>
-                <double>0.340</double>
+                <double>0.34</double>
                 <double>0.412</double>
                 <double>0.439</double>
                 <double>0.434</double>
@@ -29774,6 +29842,11 @@ sd = 0</text>
                 <double>0.399</double>
                 <double>0.389</double>
               </SW>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <irrigation name="Irrigation">
@@ -29862,18 +29935,18 @@ sd = 0</text>
           <folder name="Manager folder">
             <manager name="Sow SkipRow on a fixed date">
               <ui>
-                <category description="Sowing criteria" type="category" />
+                <category type="category" description="Sowing criteria" />
                 <date type="text" description="Enter sowing date (d/m/yyyy) : ">4/12/1997</date>
-                <category description="Sowing parameters" type="category" />
+                <category type="category" description="Sowing parameters" />
                 <crop type="modulename" description="Enter name of crop to sow : ">Sorghum</crop>
                 <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
                 <depth type="text" description="Enter sowing depth  (mm) : ">25</depth>
                 <cultivar type="cultivars" description="Enter cultivar : ">M35-1</cultivar>
                 <row_spacing type="text" description="Enter row spacing (m) : ">0.5</row_spacing>
                 <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
-                <ftn type="text" description="Enter Fertile Tiller No. : ">1</ftn>
+                <ftn type="text" description="Enter Fertile Tiller No. : ">0</ftn>
               </ui>
-              <script name="start_of_day">
+              <script>
                 <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
@@ -30050,17 +30123,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -30068,14 +30141,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -30098,7 +30172,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -30109,13 +30182,13 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <NO3>
-                <double>17.363</double>
-                <double>8.078</double>
-                <double>21.758</double>
-                <double>21.236</double>
-                <double>22.809</double>
-                <double>22.437</double>
-                <double>10.35</double>
+                <double>45.83832</double>
+                <double>21.002799999999997</double>
+                <double>53.52468</double>
+                <double>80.90916</double>
+                <double>93.744990000000016</double>
+                <double>90.86985</double>
+                <double>41.9175</double>
               </NO3>
               <NH4>
                 <double>0.1</double>
@@ -30126,9 +30199,13 @@ sd = 0</text>
                 <double>0.1</double>
                 <double>0.1</double>
               </NH4>
+              <NO3Units>kgha</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
             <Sample name="Initial water">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -30139,7 +30216,7 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <SW>
-                <double>0.340</double>
+                <double>0.34</double>
                 <double>0.412</double>
                 <double>0.439</double>
                 <double>0.434</double>
@@ -30147,6 +30224,11 @@ sd = 0</text>
                 <double>0.399</double>
                 <double>0.389</double>
               </SW>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <irrigation name="Irrigation">
@@ -30235,18 +30317,18 @@ sd = 0</text>
           <folder name="Manager folder">
             <manager name="Sow SkipRow on a fixed date">
               <ui>
-                <category description="Sowing criteria" type="category" />
+                <category type="category" description="Sowing criteria" />
                 <date type="text" description="Enter sowing date (d/m/yyyy) : ">4/12/1997</date>
-                <category description="Sowing parameters" type="category" />
+                <category type="category" description="Sowing parameters" />
                 <crop type="modulename" description="Enter name of crop to sow : ">Sorghum</crop>
                 <density type="text" description="Enter sowing density  (plants/m2) : ">10</density>
                 <depth type="text" description="Enter sowing depth  (mm) : ">25</depth>
                 <cultivar type="cultivars" description="Enter cultivar : ">CSH13R</cultivar>
                 <row_spacing type="text" description="Enter row spacing (m) : ">0.5</row_spacing>
                 <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
-                <ftn type="text" description="Enter Fertile Tiller No. : ">1</ftn>
+                <ftn type="text" description="Enter Fertile Tiller No. : ">0</ftn>
               </ui>
-              <script name="start_of_day">
+              <script>
                 <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
@@ -30423,17 +30505,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -30441,14 +30523,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -30471,7 +30554,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -30482,26 +30564,30 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <NO3>
-                <double>17.363</double>
-                <double>8.078</double>
-                <double>21.758</double>
-                <double>21.236</double>
-                <double>22.809</double>
-                <double>22.437</double>
-                <double>10.350</double>
+                <double>45.83832</double>
+                <double>21.002799999999997</double>
+                <double>53.52468</double>
+                <double>80.90916</double>
+                <double>93.744990000000016</double>
+                <double>90.86985</double>
+                <double>41.9175</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>kgha</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
             <Sample name="Initial water">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -30512,7 +30598,7 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <SW>
-                <double>0.340</double>
+                <double>0.34</double>
                 <double>0.412</double>
                 <double>0.439</double>
                 <double>0.434</double>
@@ -30520,6 +30606,11 @@ sd = 0</text>
                 <double>0.399</double>
                 <double>0.389</double>
               </SW>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <irrigation name="Irrigation">
@@ -30630,7 +30721,7 @@ sd = 0</text>
                 <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
                 <ftn type="text" description="Enter Fertile Tiller No. : ">0</ftn>
               </ui>
-              <script name="start_of_day">
+              <script>
                 <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
@@ -30667,6 +30758,7 @@ sd = 0</text>
             <NaturalVegetation description="Natural vegetation">Unknown</NaturalVegetation>
             <InitialWater name="Initial water">
               <FractionFull>100</FractionFull>
+              <DepthWetSoil>NaN</DepthWetSoil>
               <PercentMethod>FilledFromTop</PercentMethod>
             </InitialWater>
             <Water>
@@ -30811,17 +30903,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -30829,14 +30921,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -30859,7 +30952,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -30870,23 +30962,28 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <NO3>
-                <double>8.581</double>
-                <double>5.840</double>
-                <double>1.684</double>
-                <double>0.665</double>
-                <double>0.363</double>
-                <double>0.439</double>
-                <double>0.582</double>
+                <double>22.65384</double>
+                <double>15.184</double>
+                <double>4.14264</double>
+                <double>2.53365</double>
+                <double>1.4919300000000002</double>
+                <double>1.77795</double>
+                <double>2.3571</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>kgha</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <fertiliser />
@@ -30933,7 +31030,7 @@ sd = 0</text>
                 <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
                 <ftn type="text" description="Enter Fertile Tiller No. : ">0.2</ftn>
               </ui>
-              <script name="start_of_day">
+              <script>
                 <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
@@ -31110,17 +31207,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -31128,14 +31225,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -31158,7 +31256,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -31170,7 +31267,7 @@ sd = 0</text>
               </Thickness>
               <NO3>
                 <double>8.581</double>
-                <double>5.840</double>
+                <double>5.84</double>
                 <double>1.684</double>
                 <double>0.665</double>
                 <double>0.363</double>
@@ -31178,17 +31275,21 @@ sd = 0</text>
                 <double>0.582</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
             <Sample name="Initial water">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -31204,9 +31305,14 @@ sd = 0</text>
                 <double>0.371</double>
                 <double>0.315</double>
                 <double>0.307</double>
-                <double>0.350</double>
+                <double>0.35</double>
                 <double>0.374</double>
               </SW>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <fertiliser />
@@ -31258,7 +31364,7 @@ sd = 0</text>
                 <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
                 <ftn type="text" description="Enter Fertile Tiller No. : ">0.3</ftn>
               </ui>
-              <script name="start_of_day">
+              <script>
                 <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
@@ -31435,17 +31541,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -31453,14 +31559,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -31483,7 +31590,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -31495,7 +31601,7 @@ sd = 0</text>
               </Thickness>
               <NO3>
                 <double>8.581</double>
-                <double>5.840</double>
+                <double>5.84</double>
                 <double>1.684</double>
                 <double>0.665</double>
                 <double>0.363</double>
@@ -31503,17 +31609,21 @@ sd = 0</text>
                 <double>0.582</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
             <Sample name="Initial water">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -31529,9 +31639,14 @@ sd = 0</text>
                 <double>0.371</double>
                 <double>0.315</double>
                 <double>0.307</double>
-                <double>0.350</double>
+                <double>0.35</double>
                 <double>0.374</double>
               </SW>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <fertiliser />
@@ -31591,7 +31706,7 @@ sd = 0</text>
                 <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
                 <ftn type="text" description="Enter Fertile Tiller No. : ">0.4</ftn>
               </ui>
-              <script name="start_of_day">
+              <script>
                 <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
@@ -31768,17 +31883,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -31786,14 +31901,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -31816,7 +31932,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -31828,7 +31943,7 @@ sd = 0</text>
               </Thickness>
               <NO3>
                 <double>8.581</double>
-                <double>5.840</double>
+                <double>5.84</double>
                 <double>1.684</double>
                 <double>0.665</double>
                 <double>0.363</double>
@@ -31836,17 +31951,21 @@ sd = 0</text>
                 <double>0.582</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
             <Sample name="Initial water">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -31862,9 +31981,14 @@ sd = 0</text>
                 <double>0.371</double>
                 <double>0.315</double>
                 <double>0.307</double>
-                <double>0.350</double>
+                <double>0.35</double>
                 <double>0.374</double>
               </SW>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <fertiliser />
@@ -32066,6 +32190,10 @@ sd = 0</text>
               <CN2Bare>91</CN2Bare>
               <CNRed>20</CNRed>
               <CNCov>0.8</CNCov>
+              <Slope>NaN</Slope>
+              <DischargeWidth>NaN</DischargeWidth>
+              <CatchmentArea>NaN</CatchmentArea>
+              <MaxPond>NaN</MaxPond>
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -32076,13 +32204,13 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <SWCON>
-                <double>0.500</double>
-                <double>0.500</double>
-                <double>0.500</double>
-                <double>0.500</double>
-                <double>0.500</double>
-                <double>0.500</double>
-                <double>0.500</double>
+                <double>0.5</double>
+                <double>0.5</double>
+                <double>0.5</double>
+                <double>0.5</double>
+                <double>0.5</double>
+                <double>0.5</double>
+                <double>0.5</double>
               </SWCON>
             </SoilWater>
             <SoilOrganicMatter>
@@ -32101,17 +32229,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -32119,14 +32247,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -32149,7 +32278,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -32161,7 +32289,7 @@ sd = 0</text>
               </Thickness>
               <NO3>
                 <double>8.581</double>
-                <double>5.840</double>
+                <double>5.84</double>
                 <double>1.684</double>
                 <double>0.665</double>
                 <double>0.363</double>
@@ -32169,17 +32297,21 @@ sd = 0</text>
                 <double>0.582</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
             <Sample name="Initial water">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -32195,9 +32327,14 @@ sd = 0</text>
                 <double>0.371</double>
                 <double>0.315</double>
                 <double>0.307</double>
-                <double>0.350</double>
+                <double>0.35</double>
                 <double>0.374</double>
               </SW>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <fertiliser />
@@ -32421,17 +32558,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -32439,14 +32576,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -32469,7 +32607,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -32481,7 +32618,7 @@ sd = 0</text>
               </Thickness>
               <NO3>
                 <double>8.581</double>
-                <double>5.840</double>
+                <double>5.84</double>
                 <double>1.684</double>
                 <double>0.665</double>
                 <double>0.363</double>
@@ -32489,17 +32626,21 @@ sd = 0</text>
                 <double>0.582</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
             <Sample name="Initial water">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -32515,9 +32656,14 @@ sd = 0</text>
                 <double>0.371</double>
                 <double>0.315</double>
                 <double>0.307</double>
-                <double>0.350</double>
+                <double>0.35</double>
                 <double>0.374</double>
               </SW>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <fertiliser />
@@ -32746,17 +32892,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -32764,14 +32910,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -32794,7 +32941,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -32806,7 +32952,7 @@ sd = 0</text>
               </Thickness>
               <NO3>
                 <double>8.581</double>
-                <double>5.840</double>
+                <double>5.84</double>
                 <double>1.684</double>
                 <double>0.665</double>
                 <double>0.363</double>
@@ -32814,17 +32960,21 @@ sd = 0</text>
                 <double>0.582</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
             <Sample name="Initial water">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -32840,9 +32990,14 @@ sd = 0</text>
                 <double>0.371</double>
                 <double>0.315</double>
                 <double>0.307</double>
-                <double>0.350</double>
+                <double>0.35</double>
                 <double>0.374</double>
               </SW>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <fertiliser />
@@ -33079,17 +33234,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -33097,14 +33252,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -33127,7 +33283,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -33139,7 +33294,7 @@ sd = 0</text>
               </Thickness>
               <NO3>
                 <double>8.581</double>
-                <double>5.840</double>
+                <double>5.84</double>
                 <double>1.684</double>
                 <double>0.665</double>
                 <double>0.363</double>
@@ -33147,17 +33302,21 @@ sd = 0</text>
                 <double>0.582</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
             <Sample name="Initial water">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>200</double>
                 <double>200</double>
@@ -33173,9 +33332,14 @@ sd = 0</text>
                 <double>0.371</double>
                 <double>0.315</double>
                 <double>0.307</double>
-                <double>0.350</double>
+                <double>0.35</double>
                 <double>0.374</double>
               </SW>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <fertiliser />
@@ -33273,7 +33437,8 @@ sd = 0</text>
             <Region>Gatton</Region>
             <NaturalVegetation description="Natural vegetation">Unknown</NaturalVegetation>
             <InitialWater name="Initial water">
-              <FractionFull>1.00</FractionFull>
+              <FractionFull>1</FractionFull>
+              <DepthWetSoil>NaN</DepthWetSoil>
               <PercentMethod>FilledFromTop</PercentMethod>
             </InitialWater>
             <Water>
@@ -33418,17 +33583,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -33436,14 +33601,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -33466,7 +33632,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>150</double>
                 <double>150</double>
@@ -33477,23 +33642,28 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <NO3>
-                <double>9.202</double>
-                <double>4.403</double>
-                <double>2.239</double>
-                <double>1.237</double>
-                <double>1.266</double>
-                <double>1.770</double>
-                <double>2.064</double>
+                <double>18.21996</double>
+                <double>8.5858499999999989</double>
+                <double>8.26191</double>
+                <double>4.71297</double>
+                <double>5.20326</double>
+                <double>7.1685</double>
+                <double>8.3592000000000013</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>kgha</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <irrigation name="Irrigation">
@@ -33589,7 +33759,7 @@ sd = 0</text>
                 <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
                 <ftn type="text" description="Enter Fertile Tiller No. : ">0</ftn>
               </ui>
-              <script name="start_of_day">
+              <script>
                 <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
@@ -33625,7 +33795,8 @@ sd = 0</text>
             <Region>Gatton</Region>
             <NaturalVegetation description="Natural vegetation">Unknown</NaturalVegetation>
             <InitialWater name="Initial water">
-              <FractionFull>1.00</FractionFull>
+              <FractionFull>1</FractionFull>
+              <DepthWetSoil>NaN</DepthWetSoil>
               <PercentMethod>FilledFromTop</PercentMethod>
             </InitialWater>
             <Water>
@@ -33770,17 +33941,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -33788,14 +33959,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -33818,7 +33990,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>150</double>
                 <double>150</double>
@@ -33834,18 +34005,23 @@ sd = 0</text>
                 <double>2.239</double>
                 <double>1.237</double>
                 <double>1.266</double>
-                <double>1.770</double>
+                <double>1.77</double>
                 <double>2.064</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <irrigation name="Irrigation">
@@ -33941,7 +34117,7 @@ sd = 0</text>
                 <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
                 <ftn type="text" description="Enter Fertile Tiller No. : ">0</ftn>
               </ui>
-              <script name="start_of_day">
+              <script>
                 <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
@@ -33977,7 +34153,8 @@ sd = 0</text>
             <Region>Gatton</Region>
             <NaturalVegetation description="Natural vegetation">Unknown</NaturalVegetation>
             <InitialWater name="Initial water">
-              <FractionFull>1.00</FractionFull>
+              <FractionFull>1</FractionFull>
+              <DepthWetSoil>NaN</DepthWetSoil>
               <PercentMethod>FilledFromTop</PercentMethod>
             </InitialWater>
             <Water>
@@ -34122,17 +34299,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -34140,14 +34317,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -34170,7 +34348,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>150</double>
                 <double>150</double>
@@ -34186,18 +34363,23 @@ sd = 0</text>
                 <double>2.239</double>
                 <double>1.237</double>
                 <double>1.266</double>
-                <double>1.770</double>
+                <double>1.77</double>
                 <double>2.064</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <irrigation name="Irrigation">
@@ -34293,7 +34475,7 @@ sd = 0</text>
                 <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
                 <ftn type="text" description="Enter Fertile Tiller No. : ">0</ftn>
               </ui>
-              <script name="start_of_day">
+              <script>
                 <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
@@ -34329,7 +34511,8 @@ sd = 0</text>
             <Region>Gatton</Region>
             <NaturalVegetation description="Natural vegetation">Unknown</NaturalVegetation>
             <InitialWater name="Initial water">
-              <FractionFull>1.00</FractionFull>
+              <FractionFull>1</FractionFull>
+              <DepthWetSoil>NaN</DepthWetSoil>
               <PercentMethod>FilledFromTop</PercentMethod>
             </InitialWater>
             <Water>
@@ -34474,17 +34657,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -34492,14 +34675,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -34522,7 +34706,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>150</double>
                 <double>150</double>
@@ -34538,18 +34721,23 @@ sd = 0</text>
                 <double>2.239</double>
                 <double>1.237</double>
                 <double>1.266</double>
-                <double>1.770</double>
+                <double>1.77</double>
                 <double>2.064</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <irrigation name="Irrigation">
@@ -34685,7 +34873,8 @@ sd = 0</text>
             <Region>Gatton</Region>
             <NaturalVegetation description="Natural vegetation">Unknown</NaturalVegetation>
             <InitialWater name="Initial water">
-              <FractionFull>1.00</FractionFull>
+              <FractionFull>1</FractionFull>
+              <DepthWetSoil>NaN</DepthWetSoil>
               <PercentMethod>FilledFromTop</PercentMethod>
             </InitialWater>
             <Water>
@@ -34830,17 +35019,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -34848,14 +35037,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -34878,7 +35068,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>150</double>
                 <double>150</double>
@@ -34894,18 +35083,23 @@ sd = 0</text>
                 <double>2.239</double>
                 <double>1.237</double>
                 <double>1.266</double>
-                <double>1.770</double>
+                <double>1.77</double>
                 <double>2.064</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <irrigation name="Irrigation">
@@ -35005,7 +35199,7 @@ sd = 0</text>
                 <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
                 <ftn type="text" description="Enter Fertile Tiller No. : ">0</ftn>
               </ui>
-              <script name="start_of_day">
+              <script>
                 <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
@@ -35041,7 +35235,8 @@ sd = 0</text>
             <Region>Gatton</Region>
             <NaturalVegetation description="Natural vegetation">Unknown</NaturalVegetation>
             <InitialWater name="Initial water">
-              <FractionFull>1.00</FractionFull>
+              <FractionFull>1</FractionFull>
+              <DepthWetSoil>NaN</DepthWetSoil>
               <PercentMethod>FilledFromTop</PercentMethod>
             </InitialWater>
             <Water>
@@ -35186,17 +35381,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -35204,14 +35399,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -35234,7 +35430,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>150</double>
                 <double>150</double>
@@ -35250,18 +35445,23 @@ sd = 0</text>
                 <double>2.239</double>
                 <double>1.237</double>
                 <double>1.266</double>
-                <double>1.770</double>
+                <double>1.77</double>
                 <double>2.064</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <irrigation name="Irrigation">
@@ -35361,7 +35561,7 @@ sd = 0</text>
                 <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
                 <ftn type="text" description="Enter Fertile Tiller No. : ">0.9</ftn>
               </ui>
-              <script name="start_of_day">
+              <script>
                 <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
@@ -35397,7 +35597,8 @@ sd = 0</text>
             <Region>Gatton</Region>
             <NaturalVegetation description="Natural vegetation">Unknown</NaturalVegetation>
             <InitialWater name="Initial water">
-              <FractionFull>1.00</FractionFull>
+              <FractionFull>1</FractionFull>
+              <DepthWetSoil>NaN</DepthWetSoil>
               <PercentMethod>FilledFromTop</PercentMethod>
             </InitialWater>
             <Water>
@@ -35542,17 +35743,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -35560,14 +35761,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -35590,7 +35792,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>150</double>
                 <double>150</double>
@@ -35606,18 +35807,23 @@ sd = 0</text>
                 <double>2.239</double>
                 <double>1.237</double>
                 <double>1.266</double>
-                <double>1.770</double>
+                <double>1.77</double>
                 <double>2.064</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <irrigation name="Irrigation">
@@ -35725,7 +35931,7 @@ sd = 0</text>
                 <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
                 <ftn type="text" description="Enter Fertile Tiller No. : ">0.2</ftn>
               </ui>
-              <script name="start_of_day">
+              <script>
                 <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
@@ -35761,7 +35967,8 @@ sd = 0</text>
             <Region>Gatton</Region>
             <NaturalVegetation description="Natural vegetation">Unknown</NaturalVegetation>
             <InitialWater name="Initial water">
-              <FractionFull>1.00</FractionFull>
+              <FractionFull>1</FractionFull>
+              <DepthWetSoil>NaN</DepthWetSoil>
               <PercentMethod>FilledFromTop</PercentMethod>
             </InitialWater>
             <Water>
@@ -35906,17 +36113,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -35924,14 +36131,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -35954,7 +36162,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>150</double>
                 <double>150</double>
@@ -35970,18 +36177,23 @@ sd = 0</text>
                 <double>2.239</double>
                 <double>1.237</double>
                 <double>1.266</double>
-                <double>1.770</double>
+                <double>1.77</double>
                 <double>2.064</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <irrigation name="Irrigation">
@@ -36089,7 +36301,7 @@ sd = 0</text>
                 <RowConfiguration type="list" listvalues="solid, single, double" description="Enter skip row configuration : ">solid</RowConfiguration>
                 <ftn type="text" description="Enter Fertile Tiller No. : ">0.9</ftn>
               </ui>
-              <script name="start_of_day">
+              <script>
                 <text>
             if (paddock_is_fallow() = 1 and today = date('[date]')) then
               [crop] sow plants =[density], sowing_depth = [depth], cultivar = [cultivar], row_spacing = [row_spacing], skip = [RowConfiguration], tiller_no_fertile = [ftn] ()
@@ -36125,7 +36337,8 @@ sd = 0</text>
             <Region>Gatton</Region>
             <NaturalVegetation description="Natural vegetation">Unknown</NaturalVegetation>
             <InitialWater name="Initial water">
-              <FractionFull>1.00</FractionFull>
+              <FractionFull>1</FractionFull>
+              <DepthWetSoil>NaN</DepthWetSoil>
               <PercentMethod>FilledFromTop</PercentMethod>
             </InitialWater>
             <Water>
@@ -36270,17 +36483,17 @@ sd = 0</text>
                 <double>300</double>
               </Thickness>
               <OC>
-                <double>1.300</double>
-                <double>0.650</double>
-                <double>0.320</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
-                <double>0.110</double>
+                <double>1.3</double>
+                <double>0.65</double>
+                <double>0.32</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
+                <double>0.11</double>
               </OC>
               <FBiom>
-                <double>0.030</double>
-                <double>0.010</double>
+                <double>0.03</double>
+                <double>0.01</double>
                 <double>0</double>
                 <double>0</double>
                 <double>0</double>
@@ -36288,14 +36501,15 @@ sd = 0</text>
                 <double>0</double>
               </FBiom>
               <FInert>
-                <double>0.310</double>
-                <double>0.380</double>
-                <double>0.470</double>
-                <double>0.700</double>
-                <double>0.900</double>
-                <double>0.950</double>
-                <double>0.950</double>
+                <double>0.31</double>
+                <double>0.38</double>
+                <double>0.47</double>
+                <double>0.7</double>
+                <double>0.9</double>
+                <double>0.95</double>
+                <double>0.95</double>
               </FInert>
+              <OCUnits>Total</OCUnits>
             </SoilOrganicMatter>
             <Analysis>
               <Thickness>
@@ -36318,7 +36532,6 @@ sd = 0</text>
               </PH>
             </Analysis>
             <Sample name="Initial nitrogen">
-              <Date type="date" description="Sample date:" />
               <Thickness>
                 <double>150</double>
                 <double>150</double>
@@ -36334,18 +36547,23 @@ sd = 0</text>
                 <double>2.239</double>
                 <double>1.237</double>
                 <double>1.266</double>
-                <double>1.770</double>
+                <double>1.77</double>
                 <double>2.064</double>
               </NO3>
               <NH4>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
-                <double>0.100</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
+                <double>0.1</double>
               </NH4>
+              <NO3Units>ppm</NO3Units>
+              <NH4Units>ppm</NH4Units>
+              <SWUnits>Volumetric</SWUnits>
+              <OCUnits>Total</OCUnits>
+              <PHUnits>Water</PHUnits>
             </Sample>
           </Soil>
           <irrigation name="Irrigation">
