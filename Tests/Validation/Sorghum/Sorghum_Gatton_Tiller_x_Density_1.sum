@@ -1,0 +1,747 @@
+     ###     ######     #####   #   #     #   
+    #   #    #     #   #        #   ##   ##   
+   #     #   #     #   #        #   ##   ##   
+   #######   ######     #####   #   # # # #   
+   #     #   #              #   #   #  #  #   
+   #     #   #         #####    #   #  #  #   
+                                              
+                                              
+ The Agricultural Production Systems Simulator
+             Copyright(c) APSRU               
+
+Version                = 7.10 rcf388f30ad3c1a6273b7cd8b41ce24df1364d2ce
+Title                  = Sorghum_Gatton_Tiller_x_Density_1
+   Component                        "clock" = %apsim%\Model\Clock.dll
+   Component                          "met" = %apsim%\Model\Input.dll
+Paddock:
+   Component                   "outputfile" = %apsim%\Model\Report.dll
+   Component                        "accum" = %apsim%\Model\Accum.dll
+   Component                   "operations" = %apsim%\Model\Operations.dll
+   Component                   "fertiliser" = %apsim%\Model\Fertiliser.dll
+   Component                   "Irrigation" = %apsim%\Model\Irrigation.dll
+   Component          "Sow on a fixed date" = %apsim%\Model\Manager.dll
+   Component          "Fertilise at sowing" = %apsim%\Model\Manager.dll
+   Component              "Harvesting rule" = %apsim%\Model\Manager.dll
+   Component     "LawesBlackVertosol Water" = %apsim%\Model\SoilWat.dll
+   Component       "Surface Organic Matter" = %apsim%\Model\SurfaceOM.dll
+   Component  "LawesBlackVertosol Nitrogen" = %apsim%\Model\SoilN.dll
+   Component                      "Sorghum" = %apsim%\Model\Sorghum.dll
+
+------- clock Initialisation --------------------------------------------------
+     Sequencer phases:
+        prepare
+        init_step
+        do_management
+        run_one_step
+        do_pasture_water
+        process
+        do_pasture_growth
+        do_stock
+        do_cashbook
+        post
+        end_step
+     Simulation start date = 23/10/1998
+     Simulation end date   = 21/02/1999
+     Time step =           = 1440 (mins)
+
+------- met Initialisation ----------------------------------------------------
+     Sparse data is not allowed
+     INPUT File name: met\Gatton_Tiller_x_Density.met
+
+------- outputfile Initialisation ---------------------------------------------
+     Output frequency:
+        end_day
+     Output variables:
+        today format dd/mm/yyyy as Date
+        daysAfterSowing as Das
+        day_of_year
+        StageName as stage
+        Stage as stage_no
+        tillers
+        Biomass
+        GreenWt
+        Biomass units g/m^2 as BiomassWt
+        RootGreenWt
+        LeafGreenWt
+        StemGreenWt
+        RachisGreenWt
+        GrainGreenWt
+        biomass_n
+        GreenN
+        RootGreenN
+        LeafGreenN
+        StemGreenN
+        RachisGreenN
+        GrainGreenN
+        GrainGreenNConc
+        GrainNo
+        GrainSize
+        HI
+        LeafNo
+        LAI
+        SLAI
+        MaxLAI as LaiAnth
+        ESW
+        no3() as NO3
+        SLN
+        WaterSD
+        sw()
+        TPLA
+        SPLA
+        dlt_dm_green
+        sw_supply
+        radn_int
+        DeltaGreenWt
+        DeltaLAI
+        DeltaGreenN
+        DeltaLeafGreenN
+        DeltaSLAI
+        DeltaTT
+        SenescedWt
+        SenescedN
+        RootSenescedN
+        RootSenescedWt
+        LeafSenescedWt
+        LeafSenescedN
+        RLV
+        RootDepth
+        RootProportion
+        sum(sw_uptake)
+        n_total_uptake
+        n_supply_soil
+        n_cum_uptake
+        sw_demand
+        sw_deficit
+        root_depth
+        no3
+        sw
+        sw_uptake
+        n_sd_ratio
+        no3_demand
+        esw
+        swdef_pheno
+        swdef_photo
+        swdef_expan
+        nfact_pheno
+        nfact_expan
+        sw_dep
+        n_diffusion_uptake
+        n_massflow_uptake
+        cover_green
+        cover_tot
+        DeltaTTFM
+        st
+        GrainTempFactor
+
+     Output file = Sorghum_Gatton_Tiller_x_Density_1.out
+     Format = normal
+
+------- paddock.accum Initialisation ------------------------------------------
+     Initialising
+
+------- paddock.operations Initialisation -------------------------------------
+     Operations Schedule
+     ===================
+      26/10/1998  Prepare      Irrigation apply amount = 6
+      27/10/1998  Prepare      Irrigation apply amount = 0
+      28/10/1998  Prepare      Irrigation apply amount = 0
+      29/10/1998  Prepare      Irrigation apply amount = 2
+      30/10/1998  Prepare      Irrigation apply amount = 2
+      31/10/1998  Prepare      Irrigation apply amount = 3
+       1/11/1998  Prepare      Irrigation apply amount = 0
+       2/11/1998  Prepare      Irrigation apply amount = 1
+      13/11/1998  Prepare      Irrigation apply amount = 1
+      14/11/1998  Prepare      Irrigation apply amount = 21
+      19/11/1998  Prepare      Irrigation apply amount = 5
+      23/11/1998  Prepare      Irrigation apply amount = 10
+      24/11/1998  Prepare      Irrigation apply amount = 0
+      25/11/1998  Prepare      Irrigation apply amount = 43
+      26/11/1998  Prepare      Irrigation apply amount = 9
+      27/11/1998  Prepare      Irrigation apply amount = 0
+      29/11/1998  Prepare      Irrigation apply amount = 14
+      16/12/1998  Prepare      Irrigation apply amount = 30
+      17/12/1998  Prepare      Irrigation apply amount = 4
+      19/12/1998  Prepare      Irrigation apply amount = 10
+      20/12/1998  Prepare      Irrigation apply amount = 14
+      21/12/1998  Prepare      Irrigation apply amount = 8
+      22/12/1998  Prepare      Irrigation apply amount = 0
+      24/12/1998  Prepare      Irrigation apply amount = 1
+      25/12/1998  Prepare      Irrigation apply amount = 8
+      26/12/1998  Prepare      Irrigation apply amount = 0
+       1/01/1999  Prepare      Irrigation apply amount = 3
+       2/01/1999  Prepare      Irrigation apply amount = 22
+       3/01/1999  Prepare      Irrigation apply amount = 21
+       4/01/1999  Prepare      Irrigation apply amount = 0
+       5/01/1999  Prepare      Irrigation apply amount = 9
+       6/01/1999  Prepare      Irrigation apply amount = 4
+      10/01/1999  Prepare      Irrigation apply amount = 79
+      11/01/1999  Prepare      Irrigation apply amount = 5
+      12/01/1999  Prepare      Irrigation apply amount = 0
+      13/01/1999  Prepare      Irrigation apply amount = 1
+      16/01/1999  Prepare      Irrigation apply amount = 1
+      21/01/1999  Prepare      Irrigation apply amount = 1
+      22/01/1999  Prepare      Irrigation apply amount = 0
+      28/01/1999  Prepare      Irrigation apply amount = 0
+      29/01/1999  Prepare      Irrigation apply amount = 0
+      30/01/1999  Prepare      Irrigation apply amount = 8
+      31/01/1999  Prepare      Irrigation apply amount = 3
+       1/02/1999  Prepare      Irrigation apply amount = 5
+       2/02/1999  Prepare      Irrigation apply amount = 13
+       8/02/1999  Prepare      Irrigation apply amount = 23
+       9/02/1999  Prepare      Irrigation apply amount = 103
+      10/02/1999  Prepare      Irrigation apply amount = 8
+      11/02/1999  Prepare      Irrigation apply amount = 0
+      12/02/1999  Prepare      Irrigation apply amount = 1
+      25/02/1999  Prepare      Irrigation apply amount = 14
+      26/02/1999  Prepare      Irrigation apply amount = 2
+       1/03/1999  Prepare      Irrigation apply amount = 12
+       2/03/1999  Prepare      Irrigation apply amount = 24
+       3/03/1999  Prepare      Irrigation apply amount = 16
+       4/03/1999  Prepare      Irrigation apply amount = 35
+      12/03/1999  Prepare      Irrigation apply amount = 0
+      23/03/1999  Prepare      Irrigation apply amount = 0
+       5/04/1999  Prepare      Irrigation apply amount = 0
+       6/04/1999  Prepare      Irrigation apply amount = 1
+       7/04/1999  Prepare      Irrigation apply amount = 0
+      18/04/1999  Prepare      Irrigation apply amount = 0
+      19/04/1999  Prepare      Irrigation apply amount = 5
+
+------- paddock.Irrigation Initialisation -------------------------------------
+      Initialising
+     
+        - Reading Parameters
+                      Irrigation parameters
+          -----------------------------------------------
+           Automatic Irrigation Application (Disabled)
+           critical fraction of available soil water =  0.50
+           depth for calculating available soil water =     600.00
+           Irrigation Allocation Budget (Disabled)
+          -----------------------------------------------
+
+------- paddock.Sow on a fixed date Initialisation ----------------------------
+     Manager rules:
+     
+     SECTION:- start_of_day
+     if (today = date('23/10/1998') then
+     sorghum sow plants =2, sowing_depth = 30, cultivar = buster, row_spacing = 500, crop_class = plant, skip = solid, tiller_no_fertile = 5
+     endif
+     END of rules
+     
+
+------- paddock.Fertilise at sowing Initialisation ----------------------------
+     Manager rules:
+     
+     SECTION:- sorghum.sowing
+     fertiliser apply amount = 240 (kg/ha), depth = 50 (mm), type = no3_n
+     fert_amount_sow=240
+     END of rules
+     
+
+------- paddock.Harvesting rule Initialisation --------------------------------
+     Manager rules:
+     
+     SECTION:- end_of_day
+     if sorghum.stagename = 'harvest_ripe' or sorghum.plant_status = 'dead' then
+     sorghum  harvest
+     sorghum  end_crop
+     endif
+     END of rules
+     
+
+------- paddock.LawesBlackVertosol Water Initialisation -----------------------
+     
+         - Reading constants
+     
+        - Reading Soil Property Parameters
+     
+        - Reading Soil Profile Parameters
+     Initial soilwater distributed using "sw" parameter.
+     
+     
+     
+                      Soil Profile Properties
+        ---------------------------------------------------------------------
+              Depth  Air_Dry  LL15   Dul    Sat     Sw     BD   Runoff  SWCON
+                mm     mm/mm  mm/mm  mm/mm  mm/mm  mm/mm  g/cc    wf
+        ---------------------------------------------------------------------
+            0.-  150.  0.100  0.260  0.410  0.460  0.410  1.320  0.762  0.500
+          150.-  300.  0.150  0.260  0.430  0.480  0.430  1.300  0.190  0.500
+          300.-  600.  0.250  0.260  0.460  0.510  0.460  1.230  0.048  0.500
+          600.-  900.  0.260  0.260  0.440  0.490  0.440  1.270  0.000  0.500
+          900.- 1200.  0.250  0.250  0.400  0.450  0.400  1.370  0.000  0.500
+         1200.- 1500.  0.280  0.280  0.410  0.460  0.410  1.350  0.000  0.500
+         1500.- 1800.  0.310  0.310  0.380  0.430  0.380  1.350  0.000  0.500
+        ---------------------------------------------------------------------
+     
+     
+     
+                  Soil Water Holding Capacity
+          ---------------------------------------------------------
+              Depth    Unavailable Available  Max Avail.  Drainable
+                          (LL15)   (SW-LL15)  (DUL-LL15)  (SAT-DUL)
+                            mm        mm          mm         mm
+          ---------------------------------------------------------
+            0.-  150.      39.00      22.50      22.50       7.50
+          150.-  300.      39.00      25.50      25.50       7.50
+          300.-  600.      78.00      60.00      60.00      15.00
+          600.-  900.      78.00      54.00      54.00      15.00
+          900.- 1200.      75.00      45.00      45.00      15.00
+         1200.- 1500.      84.00      39.00      39.00      15.00
+         1500.- 1800.      93.00      21.00      21.00      15.00
+          ---------------------------------------------------------
+               Totals     486.00     267.00     267.00      90.00
+          ---------------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Parameters
+          ---------------------------------------------------------
+                 Insoil        Salb     Dif_Con   Dif_Slope
+          ---------------------------------------------------------
+                   0.00        0.13       88.00       35.40
+          ---------------------------------------------------------
+     
+     
+     
+                  Runoff is predicted using scs curve number:
+                Cn2  Cn_Red  Cn_Cov   H_Eff_Depth
+                                           mm
+          ---------------------------------------------------------
+              91.00   20.00    0.80  450.00
+          ---------------------------------------------------------
+     
+     
+     
+           Using Ritchie evaporation model
+            Cuml evap (U):            6.00 (mm^0.5)
+            CONA:                     3.50 ()
+            Eo from priestly-taylor
+
+------- paddock.Surface Organic Matter Initialisation -------------------------
+     
+         - Reading constants
+     
+         - Reading parameters
+     
+     
+     
+                         Initial Surface Organic Matter Data
+         ----------------------------------------------------------------------
+            Name   Type        Dry matter   C        N        P    Cover  Standing_fr
+                                (kg/ha)  (kg/ha)  (kg/ha)  (kg/ha) (0-1)     (0-1)
+         ----------------------------------------------------------------------
+          wheat     wheat         1000.0   400.0     5.0     0.0   0.393     0.0
+         ----------------------------------------------------------------------
+     
+                      Effective Cover from Surface Materials =   0.4
+     
+
+------- paddock.LawesBlackVertosol Nitrogen Initialisation --------------------
+     
+        - Reading Parameters
+     
+        - Reading Constants
+     Using standard soil mineralisation for soil type LawesBlackVertosol
+     
+     
+     
+           TAV and AMP supplied externally
+     
+     
+     
+                      Soil Profile Properties
+          ------------------------------------------------
+           Layer    pH    OC     NO3     NH4    Urea
+                         (%) (kg/ha) (kg/ha) (kg/ha)
+          ------------------------------------------------
+             1     8.20  1.30   13.86    1.98    0.00
+             2     8.70  0.65    9.75    0.97    0.00
+             3     8.90  0.32   14.76    1.11    0.00
+             4     8.10  0.11    7.62    0.76    0.00
+             5     8.00  0.11    6.16    0.82    0.00
+             6     8.00  0.11    4.05    0.81    0.00
+             7     8.00  0.11    2.03    0.81    0.00
+          ------------------------------------------------
+           Totals               58.23    7.27    0.00
+          ------------------------------------------------
+     
+     
+     
+     
+     
+     
+                  Initial Soil Organic Matter Status
+          ---------------------------------------------------------
+           Layer      Hum-C   Hum-N  Biom-C  Biom-N   FOM-C   FOM-N
+                    (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha) (kg/ha)
+          ---------------------------------------------------------
+             1      25222.7  2017.8   517.3    64.7   208.3     6.9
+             2      12597.2  1007.8    77.8     9.7   162.2     5.4
+             3      11808.0   944.6     0.0     0.0    98.4     3.3
+             4       4191.0   335.3     0.0     0.0    59.7     2.0
+             5       4521.0   361.7     0.0     0.0    36.2     1.2
+             6       4455.0   356.4     0.0     0.0    22.0     0.7
+             7       4455.0   356.4     0.0     0.0    13.3     0.4
+          ---------------------------------------------------------
+           Totals   67249.9  5380.0   595.1    74.4   600.0    20.0
+          ---------------------------------------------------------
+------- Start of simulation  --------------------------------------------------
+23 October 1998(Day of year=296), paddock.Sow on a fixed date: 
+     Manager sending message :- sorghum sow  plants = 2, sowing_depth = 30, cultivar = buster, row_spacing = 500, crop_class = plant, skip = solid, tiller_no_fertile = 5
+23 October 1998(Day of year=296), Sorghum: 
+     Sowing initiate
+     
+                 Crop Sowing Data
+         -------------------------------------------------------
+         Sowing   Depth  Plants Spacing Skiprow Cultivar    FTN
+         Day no     mm     m^2    mm     code     name       no
+         -------------------------------------------------------
+            296    30.0     2.0   500    1.0     buster    5.00
+         -------------------------------------------------------
+     
+      - reading constants for plant(sorghum) - buster
+         -------------------------------------------------------
+         tt_emerg_to_endjuv       =  160.00
+         tt_flower_to_maturity    =  761.00
+         tt_flag_to_flower        =  170.00
+         tt_flower_to_start_grain =   80.00
+         tt_maturity_to_ripe      =    1.00
+         ------------------------------------------------------
+     
+     
+                            Root Profile
+         ---------------------------------------------------
+              Layer       Kl           Lower    Exploration
+              Depth     Factor         Limit      Factor
+              (mm)         ()        (mm/mm)       (0-1)
+         ---------------------------------------------------
+             150.0     0.080          0.260       1.000
+             150.0     0.080          0.260       1.000
+             300.0     0.080          0.260       1.000
+             300.0     0.080          0.260       1.000
+             300.0     0.060          0.250       1.000
+             300.0     0.040          0.280       1.000
+             300.0     0.020          0.310       1.000
+         ---------------------------------------------------
+     
+23 October 1998(Day of year=296), paddock.Fertilise at sowing: 
+     Manager sending message :- fertiliser apply  amount = 240 (kg/ha), depth = 50 (mm), type = no3_n
+23 October 1998(Day of year=296), fertiliser: 
+     
+   - Reading Fertiliser Type Parameters
+       240.00 of N as nitrate (no3_n)
+                                         added at depth   50.00 (layer   1)
+     Manager creating a new local real variable : fert_amount_sow = 240.00000
+24 October 1998(Day of year=297), Sorghum: 
+     Stage 2 Germination  DAS = 1
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =   3.89
+26 October 1998(Day of year=299), paddock.operations: 
+      Sending apply message to irrigation
+27 October 1998(Day of year=300), paddock.operations: 
+      Sending apply message to irrigation
+27 October 1998(Day of year=300), Sorghum: 
+     Stage 3 Emergence  DAS = 4
+     		Biomass       =   0.00 		 LAI            =   0.00
+     		Stover N Conc =   0.00 		 Extractable SW =  15.91
+28 October 1998(Day of year=301), paddock.operations: 
+      Sending apply message to irrigation
+29 October 1998(Day of year=302), paddock.operations: 
+      Sending apply message to irrigation
+30 October 1998(Day of year=303), paddock.operations: 
+      Sending apply message to irrigation
+31 October 1998(Day of year=304), paddock.operations: 
+      Sending apply message to irrigation
+1 November 1998(Day of year=305), paddock.operations: 
+      Sending apply message to irrigation
+2 November 1998(Day of year=306), paddock.operations: 
+      Sending apply message to irrigation
+5 November 1998(Day of year=309), Sorghum: 
+     Stage 4 EndOfJuvenile  DAS = 13
+     		Biomass       =   0.93 		 LAI            =   0.01
+     		Stover N Conc =   0.04 		 Extractable SW =  54.73
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.014 		Total LAI in Culms: 0.031 		Diff: 0.0167299 
+6 November 1998(Day of year=310), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.017 		Total LAI in Culms: 0.035 		Diff: 0.0181611 
+7 November 1998(Day of year=311), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.020 		Total LAI in Culms: 0.039 		Diff: 0.0189684 
+8 November 1998(Day of year=312), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.025 		Total LAI in Culms: 0.045 		Diff: 0.0201590 
+9 November 1998(Day of year=313), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.031 		Total LAI in Culms: 0.051 		Diff: 0.0206697 
+10 November 1998(Day of year=314), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.037 		Total LAI in Culms: 0.060 		Diff: 0.0233004 
+11 November 1998(Day of year=315), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.046 		Total LAI in Culms: 0.068 		Diff: 0.0219761 
+12 November 1998(Day of year=316), Sorghum: 
+     Calculated Tiller Number = 10.929
+     Calculated Supply = 967205.627
+     Calculated Demand = 27374.793
+      Leaf Area reduced due to carbon limitation: 
+     	 dltStressedLAI: 0.009 		Reduce by: 0.001 		dltDmGreen: 0.195
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.053 		Total LAI in Culms: 0.077 		Diff: 0.0232173 
+13 November 1998(Day of year=317), paddock.operations: 
+      Sending apply message to irrigation
+13 November 1998(Day of year=317), Sorghum: 
+      Leaf Area reduced due to carbon limitation: 
+     	 dltStressedLAI: 0.011 		Reduce by: 0.001 		dltDmGreen: 0.216
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.062 		Total LAI in Culms: 0.086 		Diff: 0.0241562 
+14 November 1998(Day of year=318), paddock.operations: 
+      Sending apply message to irrigation
+14 November 1998(Day of year=318), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.072 		Total LAI in Culms: 0.097 		Diff: 0.0254689 
+15 November 1998(Day of year=319), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.083 		Total LAI in Culms: 0.116 		Diff: 0.0335886 
+16 November 1998(Day of year=320), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.102 		Total LAI in Culms: 0.138 		Diff: 0.0359165 
+17 November 1998(Day of year=321), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.124 		Total LAI in Culms: 0.161 		Diff: 0.0376595 
+18 November 1998(Day of year=322), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.147 		Total LAI in Culms: 0.185 		Diff: 0.0383655 
+19 November 1998(Day of year=323), paddock.operations: 
+      Sending apply message to irrigation
+19 November 1998(Day of year=323), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.171 		Total LAI in Culms: 0.208 		Diff: 0.0374161 
+20 November 1998(Day of year=324), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.194 		Total LAI in Culms: 0.228 		Diff: 0.0344661 
+21 November 1998(Day of year=325), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.214 		Total LAI in Culms: 0.249 		Diff: 0.0356726 
+22 November 1998(Day of year=326), Sorghum: 
+     Stage 5 FloralInitiation  DAS = 30
+     		Biomass       =  16.67 		 LAI            =   0.23
+     		Stover N Conc =   0.40 		 Extractable SW = 140.03
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.235 		Total LAI in Culms: 0.275 		Diff: 0.0399462 
+23 November 1998(Day of year=327), paddock.operations: 
+      Sending apply message to irrigation
+23 November 1998(Day of year=327), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.260 		Total LAI in Culms: 0.314 		Diff: 0.0533005 
+24 November 1998(Day of year=328), paddock.operations: 
+      Sending apply message to irrigation
+24 November 1998(Day of year=328), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.299 		Total LAI in Culms: 0.355 		Diff: 0.0560111 
+25 November 1998(Day of year=329), paddock.operations: 
+      Sending apply message to irrigation
+25 November 1998(Day of year=329), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.341 		Total LAI in Culms: 0.403 		Diff: 0.0622446 
+26 November 1998(Day of year=330), paddock.operations: 
+      Sending apply message to irrigation
+26 November 1998(Day of year=330), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.389 		Total LAI in Culms: 0.444 		Diff: 0.0556093 
+27 November 1998(Day of year=331), paddock.operations: 
+      Sending apply message to irrigation
+27 November 1998(Day of year=331), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.430 		Total LAI in Culms: 0.489 		Diff: 0.0593183 
+28 November 1998(Day of year=332), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.475 		Total LAI in Culms: 0.530 		Diff: 0.0555318 
+29 November 1998(Day of year=333), paddock.operations: 
+      Sending apply message to irrigation
+29 November 1998(Day of year=333), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.516 		Total LAI in Culms: 0.591 		Diff: 0.0753274 
+30 November 1998(Day of year=334), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.577 		Total LAI in Culms: 0.650 		Diff: 0.0729933 
+1 December 1998(Day of year=335), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.635 		Total LAI in Culms: 0.719 		Diff: 0.0835415 
+2 December 1998(Day of year=336), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.704 		Total LAI in Culms: 0.773 		Diff: 0.0688146 
+3 December 1998(Day of year=337), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.759 		Total LAI in Culms: 0.836 		Diff: 0.0771797 
+4 December 1998(Day of year=338), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.822 		Total LAI in Culms: 0.907 		Diff: 0.0857862 
+5 December 1998(Day of year=339), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.893 		Total LAI in Culms: 0.981 		Diff: 0.0884777 
+6 December 1998(Day of year=340), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 0.967 		Total LAI in Culms: 1.073 		Diff: 0.1059135 
+7 December 1998(Day of year=341), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 1.058 		Total LAI in Culms: 1.168 		Diff: 0.1093016 
+8 December 1998(Day of year=342), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 1.153 		Total LAI in Culms: 1.268 		Diff: 0.1150251 
+9 December 1998(Day of year=343), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 1.254 		Total LAI in Culms: 1.383 		Diff: 0.1290591 
+10 December 1998(Day of year=344), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 1.368 		Total LAI in Culms: 1.488 		Diff: 0.1197467 
+11 December 1998(Day of year=345), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 1.474 		Total LAI in Culms: 1.599 		Diff: 0.1250400 
+12 December 1998(Day of year=346), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 1.584 		Total LAI in Culms: 1.709 		Diff: 0.1245036 
+13 December 1998(Day of year=347), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 1.694 		Total LAI in Culms: 1.813 		Diff: 0.1187635 
+14 December 1998(Day of year=348), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 1.799 		Total LAI in Culms: 1.930 		Diff: 0.1313293 
+15 December 1998(Day of year=349), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 1.916 		Total LAI in Culms: 2.057 		Diff: 0.1416983 
+16 December 1998(Day of year=350), paddock.operations: 
+      Sending apply message to irrigation
+16 December 1998(Day of year=350), Sorghum: 
+      Diff in Leaf LAI and Culm Leaf LAI Values: 
+     	 LAI: 2.043 		Total LAI in Culms: 2.173 		Diff: 0.1296819 
+17 December 1998(Day of year=351), paddock.operations: 
+      Sending apply message to irrigation
+17 December 1998(Day of year=351), Sorghum: 
+     Stage 6 FlagLeaf  DAS = 55
+     		Biomass       = 260.40 		 LAI            =   2.16
+     		Stover N Conc =   4.52 		 Extractable SW = 250.21
+19 December 1998(Day of year=353), paddock.operations: 
+      Sending apply message to irrigation
+20 December 1998(Day of year=354), paddock.operations: 
+      Sending apply message to irrigation
+21 December 1998(Day of year=355), paddock.operations: 
+      Sending apply message to irrigation
+22 December 1998(Day of year=356), paddock.operations: 
+      Sending apply message to irrigation
+24 December 1998(Day of year=358), paddock.operations: 
+      Sending apply message to irrigation
+25 December 1998(Day of year=359), paddock.operations: 
+      Sending apply message to irrigation
+26 December 1998(Day of year=360), paddock.operations: 
+      Sending apply message to irrigation
+30 December 1998(Day of year=364), Sorghum: 
+     Stage 7 Flowering  DAS = 68
+     		Biomass       = 508.89 		 LAI            =   3.41
+     		Stover N Conc =   8.82 		 Extractable SW = 241.00
+1 January 1999(Day of year=1), paddock.operations: 
+      Sending apply message to irrigation
+2 January 1999(Day of year=2), paddock.operations: 
+      Sending apply message to irrigation
+3 January 1999(Day of year=3), paddock.operations: 
+      Sending apply message to irrigation
+4 January 1999(Day of year=4), paddock.operations: 
+      Sending apply message to irrigation
+4 January 1999(Day of year=4), Sorghum: 
+     Stage 8 StartGrainFill  DAS = 73
+     		Biomass       = 557.48 		 LAI            =   3.41
+     		Stover N Conc =   8.99 		 Extractable SW = 296.15
+5 January 1999(Day of year=5), paddock.operations: 
+      Sending apply message to irrigation
+6 January 1999(Day of year=6), paddock.operations: 
+      Sending apply message to irrigation
+10 January 1999(Day of year=10), paddock.operations: 
+      Sending apply message to irrigation
+11 January 1999(Day of year=11), paddock.operations: 
+      Sending apply message to irrigation
+12 January 1999(Day of year=12), paddock.operations: 
+      Sending apply message to irrigation
+13 January 1999(Day of year=13), paddock.operations: 
+      Sending apply message to irrigation
+16 January 1999(Day of year=16), paddock.operations: 
+      Sending apply message to irrigation
+21 January 1999(Day of year=21), paddock.operations: 
+      Sending apply message to irrigation
+22 January 1999(Day of year=22), paddock.operations: 
+      Sending apply message to irrigation
+28 January 1999(Day of year=28), paddock.operations: 
+      Sending apply message to irrigation
+29 January 1999(Day of year=29), paddock.operations: 
+      Sending apply message to irrigation
+30 January 1999(Day of year=30), paddock.operations: 
+      Sending apply message to irrigation
+31 January 1999(Day of year=31), paddock.operations: 
+      Sending apply message to irrigation
+1 February 1999(Day of year=32), paddock.operations: 
+      Sending apply message to irrigation
+2 February 1999(Day of year=33), paddock.operations: 
+      Sending apply message to irrigation
+8 February 1999(Day of year=39), paddock.operations: 
+      Sending apply message to irrigation
+9 February 1999(Day of year=40), paddock.operations: 
+      Sending apply message to irrigation
+9 February 1999(Day of year=40), Sorghum: 
+     Stage 9 EndGrainFill  DAS = 109
+     		Biomass       = 1269.61 		 LAI            =   2.82
+     		Stover N Conc =   5.21 		 Extractable SW = 311.38
+10 February 1999(Day of year=41), paddock.operations: 
+      Sending apply message to irrigation
+11 February 1999(Day of year=42), paddock.operations: 
+      Sending apply message to irrigation
+11 February 1999(Day of year=42), Sorghum: 
+     Stage 10 Maturity  DAS = 111
+     		Biomass       = 1294.14 		 LAI            =   2.63
+     		Stover N Conc =   4.86 		 Extractable SW = 300.50
+12 February 1999(Day of year=43), paddock.operations: 
+      Sending apply message to irrigation
+12 February 1999(Day of year=43), Sorghum: 
+     Stage 11 HarvestRipe  DAS = 112
+     		Biomass       = 1306.07 		 LAI            =   2.63
+     		Stover N Conc =   4.86 		 Extractable SW = 292.62
+12 February 1999(Day of year=43), paddock.Harvesting rule: 
+     Manager sending message :- sorghum harvest
+     
+     Harvest
+     Flowering (DAS)       = 68 		 Maturity (DAS)          = 111
+     Flowering day         = 364 		 Maturity day            = 42
+     Maximum LAI           = 3.4 		 Number of leaves        = 17.1
+     Total above ground biomass    (kg/ha) = 13218.5
+     Green above ground biomass    (kg/ha) = 12881.7
+     Senesced above ground biomass (kg/ha) = 336.8
+     Stover (kg/ha)        = 6948.2 	 Grain yield (kg/ha)     = 6270.3
+     Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 7207.2
+     Weight 1000 grains(g) = 34.5 		 Grains/m^2              = 18171.0
+     Grains/head           = 9085.5
+     Grain N percent    (%)     =      1.67 	 Grain N            (kg/ha) =   104.69
+     Total N content    (kg/ha) =    153.34 	 Senesced N content (kg/ha) =    10.82
+     Green N content    (kg/ha) =     41.48
+     
+     Average Stress Indices:                          Water Photo  Water Expan  N Photo
+        Emergence           to End of juvenile           1.0          1.0        0.8
+        End of juvenile     to Floral initiation         1.0          1.0        1.0
+        Floral initiation   to Flag leaf                 1.0          1.0        1.0
+        Flag leaf           to Flowering                 1.0          1.0        1.0
+        Flowering           to Start grain fill          1.0          1.0        1.0
+        Start grain fill    to End grain fill            1.0          1.0        1.0
+     
+     Crop harvested.
+        Organic matter removed from system:-      From Tops		From Roots
+                         DM (kg/ha) =               6270.27		    0.00
+                         N  (kg/ha) =                104.69		    0.00
+     Manager sending message :- sorghum end_crop
+     Crop ended.
+     Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
+                         DM (kg/ha) =               6948.22		 1831.33
+                         N  (kg/ha) =                 48.64		    3.66
+                         P  (kg/ha) =                  0.00		    0.00
+21 February 1999(Day of year=52), clock: 
+     Simulation is terminating due to end criteria being met.
+

@@ -39,6 +39,8 @@ namespace Sorghum {
 			double leafArea;//changes each day
 			double totalLAI;		// accumulated lai for this culm
 			double totalArea;	// total area of the culm
+			double dltLAI; //growth for the current day
+			double dltStressedLAI; //adjusted growth for stress for the current day
 
 			double noSeed;
 			//double noEmergence;
@@ -91,6 +93,11 @@ namespace Sorghum {
 			double getAreaOfCurrentLeaf(double leaves);
 
 			double getTotalLAI() { return totalLAI; }
+			void setTotalLAI(double val) { totalLAI = val; }
+			double getDltLAI(){return dltLAI;}
+			double setDltLAI(double val) { dltLAI = val; }
+			double getStressedDltLAI(){return dltStressedLAI;}
+			void setStressedDltLAI(double val){dltStressedLAI = val;}
 
 		};
 
@@ -119,6 +126,10 @@ namespace Sorghum {
 			double tillerSdSlope;
 			double tillerSlaBound;
 			double linearLAI;
+			double laiReductionForSLA;
+			double totalLaiReductionForSLA;
+			double maxLaiTarget;
+			double tillerLaiToReduce;
 			// public Methods -------------------------------------------------------
 		public:
 			LeafCulms(ScienceAPI2&, Plant* p);
@@ -136,21 +147,31 @@ namespace Sorghum {
 			virtual void calcTillerAppearance(int newLeafNo, int currentLeafNo);
 			void calcTillerNumber(int newLeafNo, int currentLeafNo);
 			void AddInitialTillers();
-			virtual void LeafCulms::initiateTiller(int tillerNumber, double fractionToAdd, double initialLeaves);
+			virtual void initiateTiller(int tillerNumber, double fractionToAdd, double initialLeaves);
 
 			void addTillerProportion(double leafAtAppearance, double fractionToAdd);
-			virtual void reduceTillers(double reduceLAI);
+			virtual double calcCeaseTillerSignal();
+			virtual bool noAreaAdjustmentNeeded();
+			virtual double calcCarbonLimitation();
+			virtual double calcSLA();
+			virtual void reportAreaDiscrepency();
+			virtual void reduceAllTillersProportionately(double laiReduction);
+			virtual void updateCulmLeafAreas();
 
 			void getLeafSizesMain(vector<float>& result);
 			void getLeafSizesTiller2(vector<float>& result);
 			void getLeafSizesTiller3(vector<float>& result);
 			void getLeafSizesTiller4(vector<float>& result);
 			void getLeafSizesTiller5(vector<float>& result);
-			void LeafCulms::LeafApp(vector<float>& result);
-			void LeafCulms::CulmArea(vector<float>& result);
-
+			void LeafApp(vector<float>& result);
+			void CulmArea(vector<float>& result);
+			void CulmLAI(vector<float>& result);
+			void Proportions(vector<float>& result);
+			
 			vector<double> leafAppearance;
 			vector<double> culmArea;
+			vector<double> culmLAI;
+
 		};
 
 	class LeafCulms_Fixed : public LeafCulms
