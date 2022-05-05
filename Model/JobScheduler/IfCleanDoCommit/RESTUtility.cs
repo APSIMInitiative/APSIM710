@@ -26,8 +26,28 @@ namespace Utils
         /// <returns>The return data</returns>
         public static T CallService<T>(string url)
         {
-            WebRequest wrGETURL;
-            wrGETURL = WebRequest.Create(url);
+            WebRequest wrGETURL = WebRequest.Create(url);
+            return MakeRequest<T>(wrGETURL);
+        }
+
+        /// <summary>Call REST web service.</summary>
+        /// <typeparam name="T">The return type</typeparam>
+        /// <param name="url">The URL of the REST service.</param>
+        /// <param name="authorisation">Authorization header value.</param>
+        /// <returns>The return data</returns>
+        public static T CallService<T>(string url, string authorisation)
+        {
+            WebRequest wrGETURL = WebRequest.Create(url);
+            wrGETURL.Headers.Add("Authorization", authorisation);
+            return MakeRequest<T>(wrGETURL);
+        }
+
+        /// <summary>Call REST web service.</summary>
+        /// <typeparam name="T">The return type</typeparam>
+        /// <param name="wrGETURL">The initialised request object.</param>
+        /// <returns>The return data</returns>
+        private static T MakeRequest<T>(WebRequest wrGETURL)
+        {
             wrGETURL.Method = "GET";
             wrGETURL.ContentType = @"application/xml; charset=utf-8";
             wrGETURL.ContentLength = 0;
