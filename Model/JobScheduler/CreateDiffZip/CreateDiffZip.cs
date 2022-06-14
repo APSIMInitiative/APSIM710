@@ -183,11 +183,16 @@ class Program
 
         // Now we should have a list of the "real" diffs.
         int JobID = Convert.ToInt32(System.Environment.GetEnvironmentVariable("JOB_ID"));
-        string url = "https://apsimdev.apsim.info/APSIM.Builds.Service/BuildsClassic.svc/UpdateNumDiffs" +
+        string url = "https://builds.apsim.info/api/oldapsim/setnumdiffs" +
                              "?JobID=" + JobID +
                              "&NumDiffs=" + ModifiedFiles.Count +
                              "&DbConnectPassword=" + Environment.GetEnvironmentVariable("DB_CONN_PSW");
-        Utils.REST.CallService<object>(url);
+
+        string builds_jwt = Environment.GetEnvironmentVariable("BUILDS_JWT");
+        if (string.IsNullOrEmpty(builds_jwt))
+            throw new Exception("Missing environment variable BUILDS_JWT");
+
+        Utils.REST.CallService<object>(url, "Authorization", $"bearer {builds_jwt}");
         if (ModifiedFiles.Count != 0)
         {
             Console.WriteLine("Files that are different:");
