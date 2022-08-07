@@ -24,13 +24,18 @@ namespace Utils
         /// <typeparam name="T">The return type</typeparam>
         /// <param name="url">The URL of the REST service.</param>
         /// <returns>The return data</returns>
-        public static T CallService<T>(string url)
+        public static T CallService<T>(string url, string headerName = null, string headerValue = null)
         {
             WebRequest wrGETURL;
             wrGETURL = WebRequest.Create(url);
             wrGETURL.Method = "GET";
             wrGETURL.ContentType = @"application/xml; charset=utf-8";
             wrGETURL.ContentLength = 0;
+            if (!string.IsNullOrEmpty(headerName) && !string.IsNullOrEmpty(headerValue))
+            {
+                Console.WriteLine("Header {headerName} is being added to web service call");
+                wrGETURL.Headers.Add(headerName, headerValue);
+            }
             using (HttpWebResponse webresponse = wrGETURL.GetResponse() as HttpWebResponse)
             {
                 Encoding enc = System.Text.Encoding.GetEncoding("utf-8");
