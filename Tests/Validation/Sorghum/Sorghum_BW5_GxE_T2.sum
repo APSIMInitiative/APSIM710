@@ -53,7 +53,9 @@ Paddock:
         today format dd/mm/yyyy as Date
         daysAfterSowing as Das
         day_of_year
-        Stage
+        StageName as stage
+        Stage as stage_no
+        tillers
         Biomass
         GreenWt
         Biomass units g/m^2 as BiomassWt
@@ -76,6 +78,7 @@ Paddock:
         LeafNo
         LAI
         SLAI
+        MaxLAI as LaiAnth
         ESW
         no3() as NO3
         SLN
@@ -406,9 +409,14 @@ Paddock:
      Stage 4 EndOfJuvenile  DAS = 11
      		Biomass       =   3.05 		 LAI            =   0.07
      		Stover N Conc =   0.12 		 Extractable SW =  47.59
+      Leaf Area reduced due to carbon limitation: 
+     	 dltStressedLAI: 0.020 		Reduce by: 0.009 		dltDmGreen: 0.237
+27 October 1996(Day of year=301), sorghum: 
+      Leaf Area reduced due to carbon limitation: 
+     	 dltStressedLAI: 0.058 		Reduce by: 0.024 		dltDmGreen: 0.758
 8 November 1996(Day of year=313), sorghum: 
      Stage 5 FloralInitiation  DAS = 29
-     		Biomass       =  89.77 		 LAI            =   1.25
+     		Biomass       =  89.76 		 LAI            =   1.25
      		Stover N Conc =   2.13 		 Extractable SW = 110.74
 11 November 1996(Day of year=316), paddock.operations: 
       Sending apply message to fertiliser
@@ -419,11 +427,14 @@ Paddock:
                                          added at depth   50.00 (layer   1)
 21 November 1996(Day of year=326), paddock.operations: 
       Sending apply message to irrigation
+23 November 1996(Day of year=328), sorghum: 
+      Leaf Area reduced due to carbon limitation: 
+     	 dltStressedLAI: 0.127 		Reduce by: 0.077 		dltDmGreen: 1.104
 2 December 1996(Day of year=337), paddock.operations: 
       Sending apply message to irrigation
 7 December 1996(Day of year=342), sorghum: 
      Stage 6 FlagLeaf  DAS = 58
-     		Biomass       = 581.47 		 LAI            =   4.50
+     		Biomass       = 581.46 		 LAI            =   4.50
      		Stover N Conc =   9.96 		 Extractable SW = 228.40
 11 December 1996(Day of year=346), paddock.operations: 
       Sending apply message to irrigation
@@ -435,11 +446,11 @@ Paddock:
                                          added at depth   50.00 (layer   1)
 23 December 1996(Day of year=358), sorghum: 
      Stage 7 Flowering  DAS = 74
-     		Biomass       = 865.45 		 LAI            =   4.56
+     		Biomass       = 865.43 		 LAI            =   4.56
      		Stover N Conc =  12.43 		 Extractable SW = 295.89
 29 December 1996(Day of year=364), sorghum: 
      Stage 8 StartGrainFill  DAS = 80
-     		Biomass       = 994.38 		 LAI            =   4.56
+     		Biomass       = 994.36 		 LAI            =   4.56
      		Stover N Conc =  13.21 		 Extractable SW = 264.86
 8 January 1997(Day of year=8), paddock.operations: 
       Sending apply message to irrigation
@@ -447,15 +458,15 @@ Paddock:
       Sending apply message to irrigation
 9 February 1997(Day of year=40), sorghum: 
      Stage 9 EndGrainFill  DAS = 122
-     		Biomass       = 1881.39 		 LAI            =   4.52
-     		Stover N Conc =   8.63 		 Extractable SW = 191.86
+     		Biomass       = 1881.37 		 LAI            =   4.52
+     		Stover N Conc =   8.62 		 Extractable SW = 191.86
 12 February 1997(Day of year=43), sorghum: 
      Stage 10 Maturity  DAS = 125
-     		Biomass       = 1954.71 		 LAI            =   4.07
+     		Biomass       = 1954.69 		 LAI            =   4.07
      		Stover N Conc =   7.66 		 Extractable SW = 172.65
 13 February 1997(Day of year=44), sorghum: 
      Stage 11 HarvestRipe  DAS = 126
-     		Biomass       = 1977.53 		 LAI            =   4.07
+     		Biomass       = 1977.51 		 LAI            =   4.07
      		Stover N Conc =   7.66 		 Extractable SW = 166.47
 13 February 1997(Day of year=44), paddock.Harvesting rule: 
      Manager sending message :- sorghum harvest
@@ -464,15 +475,15 @@ Paddock:
      Flowering (DAS)       = 74 		 Maturity (DAS)          = 125
      Flowering day         = 358 		 Maturity day            = 43
      Maximum LAI           = 4.6 		 Number of leaves        = 18.3
-     Total above ground biomass    (kg/ha) = 20015.6
-     Green above ground biomass    (kg/ha) = 19829.3
-     Senesced above ground biomass (kg/ha) = 186.3
-     Stover (kg/ha)        = 13364.8 	 Grain yield (kg/ha)     = 6650.8
+     Total above ground biomass    (kg/ha) = 20015.4
+     Green above ground biomass    (kg/ha) = 19829.2
+     Senesced above ground biomass (kg/ha) = 186.2
+     Stover (kg/ha)        = 13364.6 	 Grain yield (kg/ha)     = 6650.8
      Grain % water content = 13.0 		 Grain yield wet (kg/ha) = 7644.6
-     Weight 1000 grains(g) = 43.3 		 Grains/m^2              = 15354.6
-     Grains/head           = 1535.5
+     Weight 1000 grains(g) = 43.3 		 Grains/m^2              = 15354.4
+     Grains/head           = 1535.4
      Grain N percent    (%)     =      1.63 	 Grain N            (kg/ha) =   108.67
-     Total N content    (kg/ha) =    185.32 	 Senesced N content (kg/ha) =     6.97
+     Total N content    (kg/ha) =    185.31 	 Senesced N content (kg/ha) =     6.96
      Green N content    (kg/ha) =     76.79
      
      Average Stress Indices:                          Water Photo  Water Expan  N Photo
@@ -485,13 +496,13 @@ Paddock:
      
      Crop harvested.
         Organic matter removed from system:-      From Tops		From Roots
-                         DM (kg/ha) =               6650.82		    0.00
+                         DM (kg/ha) =               6650.78		    0.00
                          N  (kg/ha) =                108.67		    0.00
      Manager sending message :- sorghum end_crop
      Crop ended.
      Organic matter from crop:-      Tops to surface residue	 Roots to soil FOM
-                         DM (kg/ha) =              13364.78		 3559.62
-                         N  (kg/ha) =                 76.65		    7.11
+                         DM (kg/ha) =              13364.60		 3559.51
+                         N  (kg/ha) =                 76.64		    7.11
                          P  (kg/ha) =                  0.00		    0.00
 20 February 1997(Day of year=51), clock: 
      Simulation is terminating due to end criteria being met.
