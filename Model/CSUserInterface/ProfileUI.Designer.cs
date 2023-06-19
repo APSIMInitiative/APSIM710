@@ -108,10 +108,10 @@ namespace CSUserInterface
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.Grid.DefaultCellStyle = dataGridViewCellStyle2;
             this.Grid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.Grid.Location = new System.Drawing.Point(275, 71);
+            this.Grid.Location = new System.Drawing.Point(292, 71);
             this.Grid.Name = "Grid";
             this.Grid.RowHeadersVisible = false;
-            this.Grid.Size = new System.Drawing.Size(380, 227);
+            this.Grid.Size = new System.Drawing.Size(363, 227);
             this.Grid.TabIndex = 25;
             this.Grid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.OnCellValueChanged);
             // 
@@ -119,9 +119,9 @@ namespace CSUserInterface
             // 
             this.panel1.Controls.Add(this.ManageCropsButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(275, 40);
+            this.panel1.Location = new System.Drawing.Point(292, 40);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(380, 31);
+            this.panel1.Size = new System.Drawing.Size(363, 31);
             this.panel1.TabIndex = 28;
             // 
             // ManageCropsButton
@@ -142,15 +142,15 @@ namespace CSUserInterface
             this.Label.Dock = System.Windows.Forms.DockStyle.Top;
             this.Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label.ForeColor = System.Drawing.SystemColors.HighlightText;
-            this.Label.Location = new System.Drawing.Point(275, 0);
+            this.Label.Location = new System.Drawing.Point(292, 0);
             this.Label.Name = "Label";
-            this.Label.Size = new System.Drawing.Size(380, 40);
+            this.Label.Size = new System.Drawing.Size(363, 40);
             this.Label.TabIndex = 24;
             this.Label.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // Splitter
             // 
-            this.Splitter.Location = new System.Drawing.Point(272, 0);
+            this.Splitter.Location = new System.Drawing.Point(289, 0);
             this.Splitter.Name = "Splitter";
             this.Splitter.Size = new System.Drawing.Size(3, 298);
             this.Splitter.TabIndex = 18;
@@ -164,7 +164,7 @@ namespace CSUserInterface
             this.Properties.HelpText = "";
             this.Properties.Location = new System.Drawing.Point(0, 0);
             this.Properties.Name = "Properties";
-            this.Properties.Size = new System.Drawing.Size(272, 298);
+            this.Properties.Size = new System.Drawing.Size(289, 298);
             this.Properties.TabIndex = 29;
             // 
             // splitter1
