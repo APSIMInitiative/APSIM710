@@ -448,13 +448,6 @@ public class Type_NitrificationInhibitor : SoluteType
         SoluteChanges.SoluteUnits = "kg/ha";
         SoluteChanges.DeltaSolute = deltaSoluteTransformed;
         SoluteChanged.Invoke(SoluteChanges);
-
-        // Now increase the degradation product (assumed also solute)
-        NitrogenChangedType NitrogenChanges = new NitrogenChangedType();
-        NitrogenChanges.Sender = "SoluteDegradation";
-        NitrogenChanges.SenderType = "Solute";
-        NitrogenChanges.DeltaUrea = Array.ConvertAll(deltaSoluteTransformed, i => -i);
-        NitrogenChanged.Invoke(NitrogenChanges);
     }
 
     #endregion
