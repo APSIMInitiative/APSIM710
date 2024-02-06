@@ -942,6 +942,7 @@
 
       
       if (g%crop_status.eq.crop_alive) then
+	 
          call sugar_min_sstem_sucrose(1)
          call sugar_phenology_init (1)
          call sugar_phenology (1)
@@ -3300,6 +3301,21 @@ c I removed this NIH
      :                             , g%lai)
 
             ! plant biomass
+
+	  elseif (variable_name .eq. 'residue_wt') then
+	  biomass = (sum_real_array (g%dm_green, max_part)
+     :           - g%dm_green(root) - g%dm_green(sstem)
+     :           - g%dm_green(sucrose))
+	 
+     :        + (sum_real_array (g%dm_senesced, max_part)
+     :           - g%dm_senesced(root))
+
+     :        + (sum_real_array (g%dm_dead, max_part)
+     :           - g%dm_dead(root))
+
+         call respond2get_real_var (variable_name
+     :                             , '(kg/ha)'
+     :                             , biomass * gm2kg/sm2ha)
 
       elseif (variable_name .eq. 'rootgreenwt') then
          call respond2get_real_var (variable_name

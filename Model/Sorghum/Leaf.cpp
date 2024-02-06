@@ -471,25 +471,25 @@ double Leaf::provideN(double requiredN, bool forLeaf)
       * (dilnNSlope * slnToday + dilnNInt) * laiToday;
    dilutionN = Max(dilutionN,0.0);
 
-   // pre anthesis, get N from dilution, reduction in dltLai and senesence
+   // pre anthesis, get N from dilution first, then reduction in dltLai and then senesence
    if(stage <= flowering)
       {
-      double nProvided = Min(dilutionN,requiredN/2.0);
-      dltNRetranslocate -= nProvided;
+	   // Only one third of required N is available from dilution. (To reduce rate of decay in SLN).
+      double nProvided = Min(dilutionN,requiredN/3.0);
+	  dltNRetranslocate -= nProvided;
       requiredN -= nProvided;
       if(requiredN <= 0.0001)
          return nProvided;
 
-      // not sufficient N from dilution - take from decreasing dltLai and senescence
+      // not sufficient N from dilution - take from decreasing dltLai and then senescence if needed.
 	  if (dltLAI > 0)
          {
-         // Only half of the requiredN can be accounted for by reducing DltLAI
-         // If the RequiredN is large enough, it will result in 0 new growth
-         // Stem and Rachis can technically get to this point, but it doesn't occur in all of the validation data sets
+         // All of the remaining requiredN can be obtained by reducing DltLAI.
+         // If the RequiredN is large enough, it will result in 0 delta LAI.
          
          double n = dltLAI * newLeafSLN;
-         double laiN = Min(n,requiredN/2.0);
-         
+		 double laiN = Min(n, requiredN);
+
          dltLAI = (n - laiN) / newLeafSLN;
          if (forLeaf) 
             {
@@ -498,12 +498,15 @@ double Leaf::provideN(double requiredN, bool forLeaf)
          }
 
 	  // recalc the SLN after this N has been removed
+	  // Check for senescance if more N required. (Structural Stem/rachis).
+	  // Bound the rate of supply of N to the amount possible 
       laiToday = calcLAI();
       slnToday = calcSLN();
-      double maxN = plant->phenology->getDltTT()
-      * (dilnNSlope * slnToday + dilnNInt) * laiToday;
-	  maxN = Max(maxN, 0);
+      double maxN = plant->phenology->getDltTT() * (dilnNSlope * slnToday + dilnNInt) * laiToday;
+		maxN = Max(maxN, 0);
       requiredN = Min(requiredN,maxN);
+	  if (maxN < requiredN)
+		  int temp = 0;
 
       double senescenceLAI = Max(divide(requiredN,(slnToday-senescedLeafSLN)),0.0);
 
@@ -517,7 +520,7 @@ double Leaf::provideN(double requiredN, bool forLeaf)
       }
    else        // post anthesis
       {
-      // if sln > 1, dilution then senescence
+      // if sln > 1,  then get required N from dilution then senescence
       if(slnToday > 1.0)
          {
          double nProvided = Min(dilutionN,requiredN);
@@ -533,6 +536,9 @@ double Leaf::provideN(double requiredN, bool forLeaf)
          double maxN = plant->phenology->getDltTT()
                      * (dilnNSlope * slnToday + dilnNInt) * laiToday;
          requiredN = Min(requiredN,maxN);
+	     if (maxN < requiredN)
+  		  int temp = 0;
+
 
          double senescenceLAI = Max(divide(requiredN,(slnToday-senescedLeafSLN)),0.0);
 
@@ -547,7 +553,7 @@ double Leaf::provideN(double requiredN, bool forLeaf)
 
          return nProvided;
          }
-      else     // sln < 1.0
+      else     // SLN < 1.0
          {
          // half from dilution and half from senescence
          // dilution
