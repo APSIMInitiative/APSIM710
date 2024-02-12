@@ -1,6 +1,5 @@
 ; Inno Setup Compiler 5.5.9
 
-
 ;APSIM setup script
 
 #include  "ISPPBuiltins.iss"
