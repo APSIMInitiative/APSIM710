@@ -195,7 +195,7 @@ void Leaf::updateVars(void)
    dltNSenesced = 0.0;
 
    // leaf area
-   if(lai < 0.001)lai = 0.0;
+   if(lai < 0.0) { throw std::runtime_error("LAI < 0 !"); }
    lai += dltLAI;
 
    sLai += dltSlai;
